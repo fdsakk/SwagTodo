@@ -1,0 +1,376 @@
+import { useCallback, useEffect, useMemo, useState } from 'react'
+import { ChevronLeft, ChevronRight, X } from 'lucide-react'
+import { useShallow } from 'zustand/react/shallow'
+import useAppStore from '@renderer/store/useAppStore'
+import SessionsCalendar from '@renderer/components/SessionsCalendar'
+import {
+  addDays,
+  buildIsoAtMinutes,
+  formatHM,
+  isSameDay,
+  startOfDay
+} from '@renderer/utils/calendar'
+import { cn } from '@renderer/utils/cn'
+
+type DayCount = 1 | 3 | 5 | 7
+const DAY_OPTIONS: readonly DayCount[] = [1, 3, 5, 7] as const
+const NOW_TICK_MS = 60 * 1000
+
+interface DraftCreate {
+  dayIso: string
+  startAt: string
+  endAt: string
+}
+
+export default function SessionsPage(): React.JSX.Element {
+  const { sessions, tasks, projects, addSession, updateSession, deleteSession, openEditPanel } =
+    useAppStore(
+      useShallow((state) => ({
+        sessions: state.sessions,
+        tasks: state.tasks,
+        projects: state.projects,
+        addSession: state.addSession,
+        updateSession: state.updateSession,
+        deleteSession: state.deleteSession,
+        openEditPanel: state.openEditPanel
+      }))
+    )
+
+  const [dayCount, setDayCount] = useState<DayCount>(5)
+  const [anchor, setAnchor] = useState<Date>(() => startOfDay(new Date()))
+  const [now, setNow] = useState<Date>(() => new Date())
+  const [error, setError] = useState<string | null>(null)
+  const [draftCreate, setDraftCreate] = useState<DraftCreate | null>(null)
+
+  useEffect(() => {
+    const interval = setInterval(() => setNow(new Date()), NOW_TICK_MS)
+    return () => clearInterval(interval)
+  }, [])
+
+  useEffect(() => {
+    if (!error) return
+    const timer = setTimeout(() => setError(null), 4000)
+    return () => clearTimeout(timer)
+  }, [error])
+
+  useEffect(() => {
+    const onKey = (e: KeyboardEvent): void => {
+      const target = e.target as HTMLElement | null
+      if (target) {
+        const tag = target.tagName
+        if (tag === 'INPUT' || tag === 'TEXTAREA' || target.isContentEditable) return
+      }
+      if (e.ctrlKey || e.metaKey || e.altKey) return
+      if (draftCreate) return
+      if (e.key === '[') {
+        e.preventDefault()
+        setAnchor((current) => addDays(current, -dayCount))
+      } else if (e.key === ']') {
+        e.preventDefault()
+        setAnchor((current) => addDays(current, dayCount))
+      } else if (e.key.toLowerCase() === 'd') {
+        e.preventDefault()
+        setDayCount((current) => {
+          const idx = DAY_OPTIONS.indexOf(current)
+          return DAY_OPTIONS[(idx + 1) % DAY_OPTIONS.length] ?? current
+        })
+      } else if (e.key.toLowerCase() === 'g') {
+        e.preventDefault()
+        setAnchor(startOfDay(new Date()))
+      }
+    }
+    window.addEventListener('keydown', onKey)
+    return () => window.removeEventListener('keydown', onKey)
+  }, [dayCount, draftCreate])
+
+  const days = useMemo(() => {
+    const out: Date[] = []
+    for (let i = 0; i < dayCount; i++) out.push(addDays(anchor, i))
+    return out
+  }, [anchor, dayCount])
+
+  const projectTasks = useMemo(() => tasks.filter((t) => Boolean(t.projectId)), [tasks])
+
+  const pendingDraft = useMemo(() => {
+    if (!draftCreate) return null
+    const draftDay = new Date(draftCreate.dayIso)
+    const dayIndex = days.findIndex((d) => isSameDay(d, draftDay))
+    if (dayIndex === -1) return null
+    const start = new Date(draftCreate.startAt)
+    const end = new Date(draftCreate.endAt)
+    return {
+      dayIndex,
+      startMin: start.getHours() * 60 + start.getMinutes(),
+      endMin: end.getHours() * 60 + end.getMinutes()
+    }
+  }, [draftCreate, days])
+
+  const projectById = useMemo(() => {
+    const m = new Map<string, (typeof projects)[number]>()
+    for (let i = 0; i < projects.length; i++) m.set(projects[i].id, projects[i])
+    return m
+  }, [projects])
+
+  const shiftRange = useCallback(
+    (direction: -1 | 1) => {
+      setAnchor((current) => addDays(current, direction * dayCount))
+    },
+    [dayCount]
+  )
+
+  const goToday = useCallback(() => setAnchor(startOfDay(new Date())), [])
+
+  const rangeLabel = useMemo(() => {
+    const first = days[0]
+    const last = days[days.length - 1]
+    if (!first || !last) return ''
+    const fmt = (d: Date): string =>
+      d.toLocaleDateString(undefined, { month: 'short', day: 'numeric' })
+    const year = last.getFullYear()
+    if (isSameDay(first, last)) return `${fmt(first)} ${year}`
+    return `${fmt(first)} – ${fmt(last)} ${year}`
+  }, [days])
+
+  const handleCreateDraft = useCallback(
+    (dayIndex: number, startMin: number, endMin: number) => {
+      const day = days[dayIndex]
+      if (!day) return
+      const startAt = buildIsoAtMinutes(day, startMin)
+      const endAt = buildIsoAtMinutes(day, endMin)
+      setDraftCreate({ dayIso: day.toISOString(), startAt, endAt })
+    },
+    [days]
+  )
+
+  const handleUpdate = useCallback(
+    (sessionId: string, startAt: string, endAt: string) => {
+      const result = updateSession(sessionId, { startAt, endAt })
+      if (!result.ok) setError(result.error)
+    },
+    [updateSession]
+  )
+
+  const handleOpenSession = useCallback(
+    (sessionId: string) => {
+      const session = sessions.find((s) => s.id === sessionId)
+      if (!session) return
+      const task = tasks.find((t) => t.id === session.taskId)
+      if (!task) return
+      openEditPanel(task.id)
+    },
+    [sessions, tasks, openEditPanel]
+  )
+
+  const handlePickTask = useCallback(
+    (taskId: string) => {
+      if (!draftCreate) return
+      const result = addSession({ taskId, startAt: draftCreate.startAt, endAt: draftCreate.endAt })
+      if (!result.ok) {
+        setError(result.error)
+        return
+      }
+      setDraftCreate(null)
+    },
+    [addSession, draftCreate]
+  )
+
+  const handleDeleteSession = useCallback(
+    (sessionId: string) => {
+      deleteSession(sessionId)
+    },
+    [deleteSession]
+  )
+
+  return (
+    <div className="flex h-full flex-col">
+      <div className="flex items-center gap-2 px-4 py-2">
+        <div className="flex items-center gap-1">
+          <button
+            type="button"
+            onClick={() => shiftRange(-1)}
+            className="flex h-7 w-7 items-center justify-center rounded-md text-zinc-400 hover:bg-white/[0.04] hover:text-zinc-200"
+            title="Previous range"
+          >
+            <ChevronLeft size={14} />
+          </button>
+          <button
+            type="button"
+            onClick={goToday}
+            className="h-7 rounded-md px-2 text-xs text-zinc-400 hover:bg-white/[0.04] hover:text-zinc-200"
+          >
+            Today
+          </button>
+          <button
+            type="button"
+            onClick={() => shiftRange(1)}
+            className="flex h-7 w-7 items-center justify-center rounded-md text-zinc-400 hover:bg-white/[0.04] hover:text-zinc-200"
+            title="Next range"
+          >
+            <ChevronRight size={14} />
+          </button>
+        </div>
+        <span className="text-sm text-zinc-300">{rangeLabel}</span>
+        <div className="ml-auto flex items-center gap-1 rounded-md border border-white/[0.06] bg-white/[0.02] p-0.5">
+          {DAY_OPTIONS.map((opt) => (
+            <button
+              key={opt}
+              type="button"
+              onClick={() => setDayCount(opt)}
+              className={cn(
+                'h-6 rounded-sm px-2 text-xs transition-colors',
+                dayCount === opt
+                  ? 'bg-white/[0.1] text-zinc-100'
+                  : 'text-zinc-400 hover:text-zinc-200'
+              )}
+            >
+              {opt} {opt === 1 ? 'day' : 'days'}
+            </button>
+          ))}
+        </div>
+      </div>
+
+      {error && (
+        <div className="mx-4 mb-2 rounded-md border border-red-500/40 bg-red-500/10 px-3 py-1.5 text-xs text-red-300">
+          {error}
+        </div>
+      )}
+
+      {projectTasks.length === 0 && (
+        <div className="mx-4 mb-2 rounded-md border border-white/[0.06] bg-white/[0.02] px-3 py-1.5 text-xs text-zinc-400">
+          Only tasks that belong to a project can be scheduled. Add a project first, then a task.
+        </div>
+      )}
+
+      <div className="min-h-0 flex-1 border-t border-white/[0.06]">
+        <SessionsCalendar
+          days={days}
+          sessions={sessions}
+          tasks={tasks}
+          projects={projects}
+          now={now}
+          pendingDraft={pendingDraft}
+          onCreateDraft={handleCreateDraft}
+          onUpdate={handleUpdate}
+          onOpenSession={handleOpenSession}
+          onDeleteSession={handleDeleteSession}
+        />
+      </div>
+
+      {draftCreate && (
+        <TaskPickerDialog
+          draft={draftCreate}
+          tasks={projectTasks}
+          projectById={projectById}
+          onCancel={() => setDraftCreate(null)}
+          onPick={handlePickTask}
+        />
+      )}
+
+    </div>
+  )
+}
+
+interface TaskPickerDialogProps {
+  draft: DraftCreate
+  tasks: ReadonlyArray<{ id: string; title: string; projectId?: string }>
+  projectById: Map<string, { id: string; name: string; color: string; emoji?: string }>
+  onCancel: () => void
+  onPick: (taskId: string) => void
+}
+
+function TaskPickerDialog({
+  draft,
+  tasks,
+  projectById,
+  onCancel,
+  onPick
+}: TaskPickerDialogProps): React.JSX.Element {
+  const [query, setQuery] = useState('')
+  const filtered = useMemo(() => {
+    const q = query.trim().toLowerCase()
+    if (!q) return tasks
+    return tasks.filter((t) => t.title.toLowerCase().includes(q))
+  }, [query, tasks])
+
+  const startMin = minutesFromIso(draft.startAt)
+  const endMin = minutesFromIso(draft.endAt)
+  const day = new Date(draft.dayIso).toLocaleDateString(undefined, {
+    weekday: 'short',
+    month: 'short',
+    day: 'numeric'
+  })
+
+  return (
+    <div
+      className="fixed inset-0 z-40 flex items-center justify-center bg-black/50 p-6"
+      onClick={onCancel}
+    >
+      <div
+        className="w-full max-w-md overflow-hidden rounded-lg border border-white/[0.06] bg-app-bg shadow-xl"
+        onClick={(e) => e.stopPropagation()}
+      >
+        <div className="flex items-center justify-between border-b border-white/[0.06] px-4 py-3">
+          <div>
+            <div className="text-sm text-zinc-100">New session</div>
+            <div className="text-[11px] text-zinc-500">
+              {day} · {formatHM(startMin)}–{formatHM(endMin)}
+            </div>
+          </div>
+          <button
+            type="button"
+            onClick={onCancel}
+            className="flex h-6 w-6 items-center justify-center rounded text-zinc-500 hover:bg-white/[0.04] hover:text-zinc-200"
+          >
+            <X size={14} />
+          </button>
+        </div>
+        <div className="border-b border-white/[0.06] px-4 py-2">
+          <input
+            autoFocus
+            value={query}
+            onChange={(e) => setQuery(e.target.value)}
+            placeholder="Search tasks..."
+            className="h-8 w-full bg-transparent text-sm text-zinc-200 placeholder:text-zinc-600 focus:outline-none"
+          />
+        </div>
+        <div className="max-h-80 overflow-y-auto py-1">
+          {filtered.length === 0 ? (
+            <div className="px-4 py-6 text-center text-xs text-zinc-500">
+              No project tasks match.
+            </div>
+          ) : (
+            filtered.map((task) => {
+              const project = task.projectId ? projectById.get(task.projectId) : undefined
+              return (
+                <button
+                  key={task.id}
+                  type="button"
+                  onClick={() => onPick(task.id)}
+                  className="flex w-full items-center gap-2 px-4 py-2 text-left text-sm text-zinc-200 hover:bg-white/[0.04]"
+                >
+                  {project && (
+                    <span
+                      className="size-2 shrink-0 rounded-full"
+                      style={{ background: project.color }}
+                    />
+                  )}
+                  <span className="flex-1 truncate">{task.title}</span>
+                  {project && (
+                    <span className="text-[11px] text-zinc-500">
+                      {project.emoji ?? ''} {project.name}
+                    </span>
+                  )}
+                </button>
+              )
+            })
+          )}
+        </div>
+      </div>
+    </div>
+  )
+}
+
+function minutesFromIso(iso: string): number {
+  const d = new Date(iso)
+  return d.getHours() * 60 + d.getMinutes()
+}
