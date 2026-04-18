@@ -23,24 +23,40 @@ interface DraftCreate {
 }
 
 export default function SessionsPage(): React.JSX.Element {
-  const { sessions, tasks, projects, addSession, updateSession, deleteSession, openEditPanel } =
-    useAppStore(
-      useShallow((state) => ({
-        sessions: state.sessions,
-        tasks: state.tasks,
-        projects: state.projects,
-        addSession: state.addSession,
-        updateSession: state.updateSession,
-        deleteSession: state.deleteSession,
-        openEditPanel: state.openEditPanel
-      }))
-    )
+  const {
+    sessions,
+    tasks,
+    projects,
+    timeBlocks,
+    addSession,
+    updateSession,
+    deleteSession,
+    addTimeBlock,
+    updateTimeBlock,
+    deleteTimeBlock,
+    openEditPanel
+  } = useAppStore(
+    useShallow((state) => ({
+      sessions: state.sessions,
+      tasks: state.tasks,
+      projects: state.projects,
+      timeBlocks: state.timeBlocks,
+      addSession: state.addSession,
+      updateSession: state.updateSession,
+      deleteSession: state.deleteSession,
+      addTimeBlock: state.addTimeBlock,
+      updateTimeBlock: state.updateTimeBlock,
+      deleteTimeBlock: state.deleteTimeBlock,
+      openEditPanel: state.openEditPanel
+    }))
+  )
 
   const [dayCount, setDayCount] = useState<DayCount>(5)
   const [anchor, setAnchor] = useState<Date>(() => startOfDay(new Date()))
   const [now, setNow] = useState<Date>(() => new Date())
   const [error, setError] = useState<string | null>(null)
   const [draftCreate, setDraftCreate] = useState<DraftCreate | null>(null)
+  const [draftMode, setDraftMode] = useState<'task' | 'ghost'>('task')
 
   useEffect(() => {
     const interval = setInterval(() => setNow(new Date()), NOW_TICK_MS)
@@ -137,6 +153,7 @@ export default function SessionsPage(): React.JSX.Element {
       if (!day) return
       const startAt = buildIsoAtMinutes(day, startMin)
       const endAt = buildIsoAtMinutes(day, endMin)
+      setDraftMode('task')
       setDraftCreate({ dayIso: day.toISOString(), startAt, endAt })
     },
     [days]
@@ -179,6 +196,34 @@ export default function SessionsPage(): React.JSX.Element {
       deleteSession(sessionId)
     },
     [deleteSession]
+  )
+
+  const handleUpdateTimeBlock = useCallback(
+    (id: string, startAt: string, endAt: string) => {
+      const result = updateTimeBlock(id, { startAt, endAt })
+      if (!result.ok) setError(result.error)
+    },
+    [updateTimeBlock]
+  )
+
+  const handleDeleteTimeBlock = useCallback(
+    (id: string) => {
+      deleteTimeBlock(id)
+    },
+    [deleteTimeBlock]
+  )
+
+  const handlePickGhostBlock = useCallback(
+    (label: string) => {
+      if (!draftCreate) return
+      const result = addTimeBlock({ label, startAt: draftCreate.startAt, endAt: draftCreate.endAt })
+      if (!result.ok) {
+        setError(result.error)
+        return
+      }
+      setDraftCreate(null)
+    },
+    [addTimeBlock, draftCreate]
   )
 
   return (
@@ -247,22 +292,35 @@ export default function SessionsPage(): React.JSX.Element {
           sessions={sessions}
           tasks={tasks}
           projects={projects}
+          timeBlocks={timeBlocks}
           now={now}
           pendingDraft={pendingDraft}
           onCreateDraft={handleCreateDraft}
           onUpdate={handleUpdate}
           onOpenSession={handleOpenSession}
           onDeleteSession={handleDeleteSession}
+          onUpdateTimeBlock={handleUpdateTimeBlock}
+          onDeleteTimeBlock={handleDeleteTimeBlock}
         />
       </div>
 
-      {draftCreate && (
+      {draftCreate && draftMode === 'task' && (
         <TaskPickerDialog
           draft={draftCreate}
           tasks={projectTasks}
           projectById={projectById}
           onCancel={() => setDraftCreate(null)}
           onPick={handlePickTask}
+          onSwitchToGhost={() => setDraftMode('ghost')}
+        />
+      )}
+
+      {draftCreate && draftMode === 'ghost' && (
+        <GhostBlockDialog
+          draft={draftCreate}
+          onCancel={() => setDraftCreate(null)}
+          onCreate={handlePickGhostBlock}
+          onSwitchToTask={() => setDraftMode('task')}
         />
       )}
 
@@ -276,6 +334,7 @@ interface TaskPickerDialogProps {
   projectById: Map<string, { id: string; name: string; color: string; emoji?: string }>
   onCancel: () => void
   onPick: (taskId: string) => void
+  onSwitchToGhost: () => void
 }
 
 function TaskPickerDialog({
@@ -283,7 +342,8 @@ function TaskPickerDialog({
   tasks,
   projectById,
   onCancel,
-  onPick
+  onPick,
+  onSwitchToGhost
 }: TaskPickerDialogProps): React.JSX.Element {
   const [query, setQuery] = useState('')
   const filtered = useMemo(() => {
@@ -316,19 +376,30 @@ function TaskPickerDialog({
               {day} · {formatHM(startMin)}–{formatHM(endMin)}
             </div>
           </div>
-          <button
-            type="button"
-            onClick={onCancel}
-            className="flex h-6 w-6 items-center justify-center rounded text-zinc-500 hover:bg-white/[0.04] hover:text-zinc-200"
-          >
-            <X size={14} />
-          </button>
+          <div className="flex items-center gap-2">
+            <button
+              type="button"
+              onClick={onSwitchToGhost}
+              className="h-6 rounded px-2 text-[11px] text-zinc-400 hover:bg-white/[0.04] hover:text-zinc-200"
+              title="Add ghost block instead"
+            >
+              Ghost block
+            </button>
+            <button
+              type="button"
+              onClick={onCancel}
+              className="flex h-6 w-6 items-center justify-center rounded text-zinc-500 hover:bg-white/[0.04] hover:text-zinc-200"
+            >
+              <X size={14} />
+            </button>
+          </div>
         </div>
         <div className="border-b border-white/[0.06] px-4 py-2">
           <input
             autoFocus
             value={query}
             onChange={(e) => setQuery(e.target.value)}
+            onKeyDown={(e) => e.key === 'Escape' && onCancel()}
             placeholder="Search tasks..."
             className="h-8 w-full bg-transparent text-sm text-zinc-200 placeholder:text-zinc-600 focus:outline-none"
           />
@@ -365,6 +436,97 @@ function TaskPickerDialog({
             })
           )}
         </div>
+      </div>
+    </div>
+  )
+}
+
+interface GhostBlockDialogProps {
+  draft: DraftCreate
+  onCancel: () => void
+  onCreate: (label: string) => void
+  onSwitchToTask: () => void
+}
+
+function GhostBlockDialog({
+  draft,
+  onCancel,
+  onCreate,
+  onSwitchToTask
+}: GhostBlockDialogProps): React.JSX.Element {
+  const [label, setLabel] = useState('')
+
+  const startMin = minutesFromIso(draft.startAt)
+  const endMin = minutesFromIso(draft.endAt)
+  const day = new Date(draft.dayIso).toLocaleDateString(undefined, {
+    weekday: 'short',
+    month: 'short',
+    day: 'numeric'
+  })
+
+  const handleSubmit = (e: React.FormEvent): void => {
+    e.preventDefault()
+    onCreate(label.trim() || 'Block')
+  }
+
+  return (
+    <div
+      className="fixed inset-0 z-40 flex items-center justify-center bg-black/50 p-6"
+      onClick={onCancel}
+    >
+      <div
+        className="w-full max-w-md overflow-hidden rounded-lg border border-white/[0.06] bg-app-bg shadow-xl"
+        onClick={(e) => e.stopPropagation()}
+      >
+        <div className="flex items-center justify-between border-b border-white/[0.06] px-4 py-3">
+          <div>
+            <div className="text-sm text-zinc-100">New ghost block</div>
+            <div className="text-[11px] text-zinc-500">
+              {day} · {formatHM(startMin)}–{formatHM(endMin)}
+            </div>
+          </div>
+          <div className="flex items-center gap-2">
+            <button
+              type="button"
+              onClick={onSwitchToTask}
+              className="h-6 rounded px-2 text-[11px] text-zinc-400 hover:bg-white/[0.04] hover:text-zinc-200"
+            >
+              Task session
+            </button>
+            <button
+              type="button"
+              onClick={onCancel}
+              className="flex h-6 w-6 items-center justify-center rounded text-zinc-500 hover:bg-white/[0.04] hover:text-zinc-200"
+            >
+              <X size={14} />
+            </button>
+          </div>
+        </div>
+        <form onSubmit={handleSubmit} className="px-4 py-3">
+          <input
+            autoFocus
+            value={label}
+            onChange={(e) => setLabel(e.target.value)}
+            onKeyDown={(e) => e.key === 'Escape' && onCancel()}
+            placeholder="Label (e.g. Lunch, Break...)"
+            className="h-8 w-full bg-transparent text-sm text-zinc-200 placeholder:text-zinc-600 focus:outline-none"
+          />
+          <div className="mt-3 flex justify-end gap-2">
+            <button
+              type="button"
+              onClick={onCancel}
+              className="h-7 rounded px-3 text-xs text-zinc-400 hover:bg-white/[0.04] hover:text-zinc-200"
+            >
+              Cancel
+            </button>
+            <button
+              type="submit"
+              className="h-7 rounded bg-white/[0.08] px-3 text-xs text-zinc-200 hover:bg-white/[0.12]"
+            >
+              Add block
+            </button>
+          </div>
+        </form>
       </div>
     </div>
   )

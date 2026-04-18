@@ -10,6 +10,7 @@ import {
   type ProjectTab,
   type Task,
   type TaskSession,
+  type TimeBlock,
   type TaskSort,
   type TaskStatus,
   type UiScale,
@@ -29,6 +30,21 @@ export type SessionUpdateInput = {
 
 export type SessionResult = { ok: true; id: string } | { ok: false; error: string }
 export type SessionUpdateResult = { ok: true } | { ok: false; error: string }
+
+export type TimeBlockCreateInput = {
+  label: string
+  startAt: string
+  endAt: string
+}
+
+export type TimeBlockUpdateInput = {
+  label?: string
+  startAt?: string
+  endAt?: string
+}
+
+export type TimeBlockResult = { ok: true; id: string } | { ok: false; error: string }
+export type TimeBlockUpdateResult = { ok: true } | { ok: false; error: string }
 
 interface TaskPanelCreateDefaults {
   mode: 'create'
@@ -97,6 +113,9 @@ interface AppStore extends AppState {
   addSession: (input: SessionCreateInput) => SessionResult
   updateSession: (sessionId: string, updates: SessionUpdateInput) => SessionUpdateResult
   deleteSession: (sessionId: string) => void
+  addTimeBlock: (input: TimeBlockCreateInput) => TimeBlockResult
+  updateTimeBlock: (id: string, updates: TimeBlockUpdateInput) => TimeBlockUpdateResult
+  deleteTimeBlock: (id: string) => void
 }
 
 const UI_SCALE_SET: ReadonlySet<number> = new Set(UI_SCALE_OPTIONS)
@@ -133,6 +152,7 @@ const useAppStore = create<AppStore>((set, get) => ({
   projects: [],
   labels: [],
   sessions: [],
+  timeBlocks: [],
   hydrated: false,
   selectedView: 'inbox',
   selectedProjectId: undefined,
@@ -157,6 +177,7 @@ const useAppStore = create<AppStore>((set, get) => ({
         projects: persisted?.projects ?? [],
         labels: persisted?.labels ?? [],
         sessions: persisted?.sessions ?? [],
+        timeBlocks: persisted?.timeBlocks ?? [],
         uiScale: isUiScale(persisted?.uiScale) ? persisted.uiScale : 100,
         isSidebarCollapsed: persisted?.isSidebarCollapsed ?? false,
         hydrated: true
@@ -423,6 +444,55 @@ const useAppStore = create<AppStore>((set, get) => ({
       sessions.splice(idx, 1)
       return { sessions }
     }),
+  addTimeBlock: (input) => {
+    const label = input.label.trim()
+    const startMs = Date.parse(input.startAt)
+    const endMs = Date.parse(input.endAt)
+    if (!Number.isFinite(startMs) || !Number.isFinite(endMs)) {
+      return { ok: false, error: 'Invalid start/end time' }
+    }
+    if (endMs <= startMs) return { ok: false, error: 'End must be after start' }
+    const block: TimeBlock = {
+      id: uuidv4(),
+      label: label || 'Block',
+      startAt: input.startAt,
+      endAt: input.endAt,
+      createdAt: nowIso()
+    }
+    set((s) => ({ timeBlocks: [...s.timeBlocks, block] }))
+    return { ok: true, id: block.id }
+  },
+  updateTimeBlock: (id, updates) => {
+    const state = get()
+    const idx = state.timeBlocks.findIndex((b) => b.id === id)
+    if (idx === -1) return { ok: false, error: 'Time block not found' }
+    const current = state.timeBlocks[idx]
+    const startAt = updates.startAt ?? current.startAt
+    const endAt = updates.endAt ?? current.endAt
+    const startMs = Date.parse(startAt)
+    const endMs = Date.parse(endAt)
+    if (!Number.isFinite(startMs) || !Number.isFinite(endMs)) {
+      return { ok: false, error: 'Invalid start/end time' }
+    }
+    if (endMs <= startMs) return { ok: false, error: 'End must be after start' }
+    const timeBlocks = state.timeBlocks.slice()
+    timeBlocks[idx] = {
+      ...current,
+      label: updates.label?.trim() ?? current.label,
+      startAt,
+      endAt
+    }
+    set({ timeBlocks })
+    return { ok: true }
+  },
+  deleteTimeBlock: (id) =>
+    set((state) => {
+      const idx = state.timeBlocks.findIndex((b) => b.id === id)
+      if (idx === -1) return state
+      const timeBlocks = state.timeBlocks.slice()
+      timeBlocks.splice(idx, 1)
+      return { timeBlocks }
+    }),
   applyKanbanOrder: (projectId, columns) => {
     const updatedAt = nowIso()
     const byTaskId = new Map<string, { status: TaskStatus; order: number }>()
@@ -463,6 +533,7 @@ useAppStore.subscribe((state, prev) => {
     state.projects === prev.projects &&
     state.labels === prev.labels &&
     state.sessions === prev.sessions &&
+    state.timeBlocks === prev.timeBlocks &&
     state.uiScale === prev.uiScale &&
     state.isSidebarCollapsed === prev.isSidebarCollapsed
   ) {
@@ -470,11 +541,11 @@ useAppStore.subscribe((state, prev) => {
   }
 
   if (persistTimer) clearTimeout(persistTimer)
-  const { tasks, projects, labels, sessions, uiScale, isSidebarCollapsed } = state
+  const { tasks, projects, labels, sessions, timeBlocks, uiScale, isSidebarCollapsed } = state
   persistTimer = setTimeout(() => {
     persistTimer = undefined
     window.api.storage
-      .saveState({ tasks, projects, labels, sessions, uiScale, isSidebarCollapsed })
+      .saveState({ tasks, projects, labels, sessions, timeBlocks, uiScale, isSidebarCollapsed })
       .catch((err) => console.error('[store] persist failed', err))
   }, PERSIST_DEBOUNCE_MS)
 })

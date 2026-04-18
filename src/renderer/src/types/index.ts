@@ -61,11 +61,20 @@ export interface TaskSessionStats {
   lastEndAt?: string
 }
 
+export interface TimeBlock {
+  id: string
+  label: string
+  startAt: string
+  endAt: string
+  createdAt: string
+}
+
 export interface AppState {
   tasks: Task[]
   projects: Project[]
   labels: Label[]
   sessions: TaskSession[]
+  timeBlocks: TimeBlock[]
   uiScale?: UiScale
   isSidebarCollapsed?: boolean
 }

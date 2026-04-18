@@ -52,11 +52,20 @@ interface TaskSession {
   updatedAt: string
 }
 
+interface TimeBlock {
+  id: string
+  label: string
+  startAt: string
+  endAt: string
+  createdAt: string
+}
+
 interface AppState {
   tasks: Task[]
   projects: Project[]
   labels: Label[]
   sessions: TaskSession[]
+  timeBlocks: TimeBlock[]
   uiScale?: UiScale
   isSidebarCollapsed?: boolean
 }

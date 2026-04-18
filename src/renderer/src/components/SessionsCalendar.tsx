@@ -7,8 +7,8 @@ import {
   type CSSProperties,
   type PointerEvent as ReactPointerEvent
 } from 'react'
-import { Trash2, X } from 'lucide-react'
-import type { Project, Task, TaskSession } from '@renderer/types'
+import { X } from 'lucide-react'
+import type { Project, Task, TaskSession, TimeBlock } from '@renderer/types'
 import { cn } from '@renderer/utils/cn'
 import {
   HOUR_PX,
@@ -98,9 +98,32 @@ type DraftResize = {
   endMin: number
 }
 
-type Draft = DraftCreate | DraftMove | DraftResize
+type Draft = DraftCreate | DraftMove | DraftResize | DraftTimeBlockMove | DraftTimeBlockResize
 
 interface PendingDraft {
+  dayIndex: number
+  startMin: number
+  endMin: number
+}
+
+interface TimeBlockDisplayBlock {
+  block: TimeBlock
+  startMin: number
+  endMin: number
+  dayIndex: number
+}
+
+type DraftTimeBlockMove = {
+  kind: 'tb_move'
+  blockId: string
+  dayIndex: number
+  startMin: number
+  endMin: number
+}
+
+type DraftTimeBlockResize = {
+  kind: 'tb_resize'
+  blockId: string
   dayIndex: number
   startMin: number
   endMin: number
@@ -111,12 +134,44 @@ interface SessionsCalendarProps {
   sessions: readonly TaskSession[]
   tasks: readonly Task[]
   projects: readonly Project[]
+  timeBlocks: readonly TimeBlock[]
   now: Date
   pendingDraft: PendingDraft | null
   onCreateDraft: (dayIndex: number, startMin: number, endMin: number) => void
   onUpdate: (sessionId: string, startAt: string, endAt: string) => void
   onOpenSession: (sessionId: string) => void
   onDeleteSession: (sessionId: string) => void
+  onUpdateTimeBlock: (id: string, startAt: string, endAt: string) => void
+  onDeleteTimeBlock: (id: string) => void
+}
+
+const computeTimeBlockDisplayBlocks = (
+  timeBlocks: readonly TimeBlock[],
+  days: Date[]
+): TimeBlockDisplayBlock[] => {
+  if (days.length === 0) return []
+  const rangeStart = days[0].getTime()
+  const rangeEnd = days[days.length - 1].getTime() + DAY_MS
+  const out: TimeBlockDisplayBlock[] = []
+  for (let i = 0; i < timeBlocks.length; i++) {
+    const b = timeBlocks[i]
+    const startMs = Date.parse(b.startAt)
+    const endMs = Date.parse(b.endAt)
+    if (!Number.isFinite(startMs) || !Number.isFinite(endMs)) continue
+    if (endMs <= rangeStart || startMs >= rangeEnd) continue
+    for (let d = 0; d < days.length; d++) {
+      const dayStart = days[d].getTime()
+      const dayEnd = dayStart + DAY_MS
+      if (endMs <= dayStart || startMs >= dayEnd) continue
+      const startMin =
+        startMs <= dayStart ? 0 : new Date(startMs).getHours() * 60 + new Date(startMs).getMinutes()
+      const endMin =
+        endMs >= dayEnd ? 24 * 60 : new Date(endMs).getHours() * 60 + new Date(endMs).getMinutes()
+      if (endMin <= startMin) continue
+      out.push({ block: b, startMin, endMin, dayIndex: d })
+    }
+  }
+  return out
 }
 
 const DEFAULT_CLICK_MIN = 60
@@ -126,12 +181,15 @@ export default function SessionsCalendar({
   sessions,
   tasks,
   projects,
+  timeBlocks,
   now,
   pendingDraft,
   onCreateDraft,
   onUpdate,
   onOpenSession,
-  onDeleteSession
+  onDeleteSession,
+  onUpdateTimeBlock,
+  onDeleteTimeBlock
 }: SessionsCalendarProps): React.JSX.Element {
   const scrollRef = useRef<HTMLDivElement>(null)
   const columnRefs = useRef<(HTMLDivElement | null)[]>([])
@@ -152,6 +210,11 @@ export default function SessionsCalendar({
   const blocks = useMemo(
     () => computeBlocks(sessions, days, taskMap, projectMap),
     [sessions, days, taskMap, projectMap]
+  )
+
+  const tbBlocks = useMemo(
+    () => computeTimeBlockDisplayBlocks(timeBlocks, days),
+    [timeBlocks, days]
   )
 
   const daysKey = days.length > 0 ? days[0].toISOString() : ''
@@ -309,6 +372,65 @@ export default function SessionsCalendar({
     [days, onUpdate, onOpenSession]
   )
 
+  const handleTimeBlockPointerDown = useCallback(
+    (tb: TimeBlockDisplayBlock, mode: 'move' | 'resize') =>
+      (event: ReactPointerEvent<HTMLDivElement>): void => {
+        if (event.button !== 0) return
+        event.preventDefault()
+        event.stopPropagation()
+        const startDayIndex = tb.dayIndex
+        const column = columnRefs.current[startDayIndex]
+        if (!column) return
+        const initialPointer = pointToMinutes(event.clientY, column)
+        const duration = tb.endMin - tb.startMin
+        const offsetMin = initialPointer - tb.startMin
+        let current: DraftTimeBlockMove | DraftTimeBlockResize =
+          mode === 'move'
+            ? { kind: 'tb_move', blockId: tb.block.id, dayIndex: startDayIndex, startMin: tb.startMin, endMin: tb.endMin }
+            : { kind: 'tb_resize', blockId: tb.block.id, dayIndex: startDayIndex, startMin: tb.startMin, endMin: tb.endMin }
+        setDraft(current)
+        let moved = false
+        const onMove = (e: PointerEvent): void => {
+          moved = true
+          let nextDayIndex = startDayIndex
+          if (mode === 'move') {
+            for (let i = 0; i < columnRefs.current.length; i++) {
+              const col = columnRefs.current[i]
+              if (!col) continue
+              const r = col.getBoundingClientRect()
+              if (e.clientX >= r.left && e.clientX <= r.right) { nextDayIndex = i; break }
+            }
+          }
+          const col = columnRefs.current[nextDayIndex]
+          if (!col) return
+          const cur = pointToMinutes(e.clientY, col)
+          if (mode === 'move') {
+            const nextStart = clampMin(snapMin(cur - offsetMin))
+            const maxStart = 24 * 60 - duration
+            const start = Math.min(maxStart, nextStart)
+            current = { kind: 'tb_move', blockId: tb.block.id, dayIndex: nextDayIndex, startMin: start, endMin: start + duration }
+          } else {
+            const end = Math.max(tb.startMin + SLOT_MIN, clampMin(cur))
+            current = { kind: 'tb_resize', blockId: tb.block.id, dayIndex: startDayIndex, startMin: tb.startMin, endMin: end }
+          }
+          setDraft(current)
+        }
+        const onUp = (): void => {
+          window.removeEventListener('pointermove', onMove)
+          window.removeEventListener('pointerup', onUp)
+          setDraft(null)
+          if (!moved) return
+          const targetDay = days[current.dayIndex] ?? days[startDayIndex]
+          const startAt = buildIsoAtMinutes(targetDay, current.startMin)
+          const endAt = buildIsoAtMinutes(targetDay, current.endMin)
+          onUpdateTimeBlock(tb.block.id, startAt, endAt)
+        }
+        window.addEventListener('pointermove', onMove)
+        window.addEventListener('pointerup', onUp)
+      },
+    [days, onUpdateTimeBlock]
+  )
+
   const hours = useMemo(() => {
     const out: number[] = []
     for (let h = 0; h <= 24; h++) out.push(h)
@@ -418,6 +540,35 @@ export default function SessionsCalendar({
                       />
                     )
                   })}
+                {tbBlocks
+                  .filter((tb) => tb.dayIndex === dayIdx)
+                  .map((tb) => {
+                    const isDraftTarget =
+                      draft &&
+                      (draft.kind === 'tb_move' || draft.kind === 'tb_resize') &&
+                      draft.blockId === tb.block.id
+                    if (isDraftTarget && draft.dayIndex !== dayIdx) return null
+                    const startMin = isDraftTarget && draft ? draft.startMin : tb.startMin
+                    const endMin = isDraftTarget && draft ? draft.endMin : tb.endMin
+                    return (
+                      <TimeBlockView
+                        key={tb.block.id}
+                        tb={tb}
+                        startMin={startMin}
+                        endMin={endMin}
+                        onMovePointerDown={handleTimeBlockPointerDown(tb, 'move')}
+                        onResizePointerDown={handleTimeBlockPointerDown(tb, 'resize')}
+                        onDelete={() => onDeleteTimeBlock(tb.block.id)}
+                      />
+                    )
+                  })}
+                {/* Ghost for tb move-across-days */}
+                {draft &&
+                  draft.kind === 'tb_move' &&
+                  draft.dayIndex === dayIdx &&
+                  !tbBlocks.some((tb) => tb.block.id === draft.blockId && tb.dayIndex === dayIdx) && (
+                    <DraftGhost startMin={draft.startMin} endMin={draft.endMin} label="Moving..." />
+                  )}
                 {/* Ghost for move-across-days */}
                 {draft &&
                   draft.kind === 'move' &&
@@ -497,6 +648,53 @@ function SessionBlockView({
         }}
         title="Delete session"
         className="rounded absolute right-1 top-1 z-50 flex h-5 w-5 items-center justify-center text-zinc-300 opacity-0 duration-200 hover: hover:border border-red-600 hover:bg-app-titlebar/80 group-hover:opacity-100 transition-all"
+      >
+        <X size={10} />
+      </button>
+      <div
+        onPointerDown={onResizePointerDown}
+        className="absolute bottom-0 left-0 right-0 h-1.5 cursor-ns-resize bg-white/[0.04] hover:bg-white/[0.1]"
+      />
+    </div>
+  )
+}
+
+interface TimeBlockViewProps {
+  tb: TimeBlockDisplayBlock
+  startMin: number
+  endMin: number
+  onMovePointerDown: (event: ReactPointerEvent<HTMLDivElement>) => void
+  onResizePointerDown: (event: ReactPointerEvent<HTMLDivElement>) => void
+  onDelete: () => void
+}
+
+function TimeBlockView({
+  tb,
+  startMin,
+  endMin,
+  onMovePointerDown,
+  onResizePointerDown,
+  onDelete
+}: TimeBlockViewProps): React.JSX.Element {
+  const top = startMin * PX_PER_MIN
+  const height = Math.max(PX_PER_MIN * SLOT_MIN, (endMin - startMin) * PX_PER_MIN)
+  return (
+    <div
+      data-session-block
+      className="group absolute left-1 right-1 z-[4] select-none overflow-hidden rounded-md border border-zinc-600/50 bg-zinc-700/40 px-1.5 py-1 text-[11px] text-zinc-400 shadow-sm hover:bg-zinc-700/60"
+      style={{ top, height }}
+      onPointerDown={onMovePointerDown}
+    >
+      <div className="flex items-center gap-1 text-[10px] text-zinc-500">
+        <span>{formatHM(startMin)}–{formatHM(endMin)}</span>
+      </div>
+      <div className="truncate text-[11px] font-medium text-zinc-300">{tb.block.label}</div>
+      <button
+        type="button"
+        onPointerDown={(e) => e.stopPropagation()}
+        onClick={(e) => { e.stopPropagation(); onDelete() }}
+        title="Delete block"
+        className="rounded absolute right-1 top-1 z-50 flex h-5 w-5 items-center justify-center text-zinc-400 opacity-0 duration-200 hover:border border-red-600 hover:bg-app-titlebar/80 group-hover:opacity-100 transition-all"
       >
         <X size={10} />
       </button>

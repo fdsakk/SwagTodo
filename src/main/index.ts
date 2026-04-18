@@ -64,11 +64,20 @@ interface TaskSession {
   updatedAt: string
 }
 
+interface TimeBlock {
+  id: string
+  label: string
+  startAt: string
+  endAt: string
+  createdAt: string
+}
+
 interface AppState {
   tasks: Task[]
   projects: Project[]
   labels: Label[]
   sessions: TaskSession[]
+  timeBlocks: TimeBlock[]
   uiScale?: UiScale
   isSidebarCollapsed?: boolean
 }
@@ -78,6 +87,7 @@ const defaultAppState: AppState = {
   projects: [],
   labels: [],
   sessions: [],
+  timeBlocks: [],
   uiScale: DEFAULT_UI_SCALE
 }
 
@@ -113,6 +123,7 @@ const isAppState = (v: unknown): v is AppState => {
     Array.isArray(d.projects) &&
     Array.isArray(d.labels) &&
     Array.isArray(d.sessions) &&
+    Array.isArray(d.timeBlocks) &&
     (d.uiScale === undefined || isUiScale(d.uiScale))
   )
 }
