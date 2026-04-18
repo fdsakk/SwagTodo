@@ -29,6 +29,25 @@ function isInputLikeElement(element: Element | null): boolean {
   )
 }
 
+type HandlerKey = keyof KeyboardShortcutOptions
+
+const KEY_BINDINGS: Record<string, HandlerKey> = {
+  n: 'onNewTask',
+  p: 'onGoProjects',
+  o: 'onNewProject',
+  l: 'onOpenLabels',
+  b: 'onToggleSidebar',
+  i: 'onGoInbox',
+  t: 'onGoToday',
+  a: 'onGoActivity',
+  s: 'onGoSessions',
+  ',': 'onGoSettings',
+  '/': 'onFocusSearch',
+  '?': 'onShowHelp',
+  '1': 'onProjectTabList',
+  '2': 'onProjectTabKanban'
+}
+
 export function useKeyboardShortcuts(options: KeyboardShortcutOptions): void {
   const optsRef = useRef(options)
   optsRef.current = options
@@ -49,80 +68,14 @@ export function useKeyboardShortcuts(options: KeyboardShortcutOptions): void {
       if (isInputLikeElement(activeElement)) return
       if (event.ctrlKey || event.metaKey || event.altKey) return
 
-      const key = event.key.toLowerCase()
-
-      switch (key) {
-        case 'n':
-          event.preventDefault()
-          o.onNewTask()
-          return
-        case 'p':
-          event.preventDefault()
-          o.onGoProjects()
-          return
-        case 'o':
-          event.preventDefault()
-          o.onNewProject()
-          return
-        case 'l':
-          event.preventDefault()
-          o.onOpenLabels()
-          return
-        case 'b':
-          event.preventDefault()
-          o.onToggleSidebar()
-          return
-        case 'i':
-          event.preventDefault()
-          o.onGoInbox()
-          return
-        case 't':
-          event.preventDefault()
-          o.onGoToday()
-          return
-        case 'a':
-          event.preventDefault()
-          o.onGoActivity()
-          return
-        case 's':
-          event.preventDefault()
-          o.onGoSessions()
-          return
-      }
-
-      if (event.key === ',') {
+      const handlerKey = KEY_BINDINGS[event.key]
+      if (handlerKey) {
         event.preventDefault()
-        o.onGoSettings()
-        return
-      }
-
-      if (event.key === '/') {
-        event.preventDefault()
-        o.onFocusSearch()
-        return
-      }
-
-      if (event.key === '?') {
-        event.preventDefault()
-        o.onShowHelp()
-        return
-      }
-
-      if (event.key === '1') {
-        event.preventDefault()
-        o.onProjectTabList()
-        return
-      }
-
-      if (event.key === '2') {
-        event.preventDefault()
-        o.onProjectTabKanban()
+        o[handlerKey]()
       }
     }
 
     window.addEventListener('keydown', onKeyDown)
-    return () => {
-      window.removeEventListener('keydown', onKeyDown)
-    }
+    return () => window.removeEventListener('keydown', onKeyDown)
   }, [])
 }

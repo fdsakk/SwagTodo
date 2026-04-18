@@ -56,7 +56,7 @@ export default function ProjectPage(props: ProjectPageProps): React.JSX.Element 
 
   if (!project) {
     return (
-      <div className="flex h-full items-center justify-center text-sm text-zinc-500">
+      <div className="flex h-full items-center justify-center text-sm text-app-text-muted">
         Select a project from the sidebar.
       </div>
     )
@@ -65,18 +65,18 @@ export default function ProjectPage(props: ProjectPageProps): React.JSX.Element 
   return (
     <div className="flex h-full flex-col">
       <div className="mb-4 flex items-center justify-between px-6">
-        <h2 className="text-base font-semibold text-zinc-100">
+        <h2 className="text-base font-semibold text-app-text">
           {project.emoji || '#'} {project.name}
         </h2>
 
         <div className="flex items-center gap-2">
-          <div className="flex rounded-md bg-white/[0.03] p-0.5">
+          <div className="flex rounded-md bg-app-hover p-0.5">
             <button
               className={cn(
                 'h-6 rounded px-3 text-sm transition-colors',
                 projectTab === 'list'
-                  ? 'bg-white/[0.08] text-zinc-200'
-                  : 'text-zinc-500 hover:text-zinc-300'
+                  ? 'bg-app-active text-app-text'
+                  : 'text-app-text-muted hover:text-app-text-secondary'
               )}
               onClick={() => setProjectTab('list')}
               type="button"
@@ -87,8 +87,8 @@ export default function ProjectPage(props: ProjectPageProps): React.JSX.Element 
               className={cn(
                 'h-6 rounded px-3 text-sm transition-colors',
                 projectTab === 'kanban'
-                  ? 'bg-white/[0.08] text-zinc-200'
-                  : 'text-zinc-500 hover:text-zinc-300'
+                  ? 'bg-app-active text-app-text'
+                  : 'text-app-text-muted hover:text-app-text-secondary'
               )}
               onClick={() => setProjectTab('kanban')}
               type="button"
@@ -97,7 +97,7 @@ export default function ProjectPage(props: ProjectPageProps): React.JSX.Element 
             </button>
           </div>
           <button
-            className="flex h-7 w-7 items-center justify-center rounded text-zinc-500 hover:bg-white/[0.04] hover:text-zinc-300"
+            className="flex h-7 w-7 items-center justify-center rounded text-app-text-muted hover:bg-app-hover hover:text-app-text-secondary"
             onClick={() => props.onEditProject(project)}
             title="Edit project"
             type="button"

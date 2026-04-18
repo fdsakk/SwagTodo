@@ -39,7 +39,7 @@ export default function SearchSortBar(): React.JSX.Element {
   )
 
   useEffect(() => {
-    inputRef.current?.focus()
+    if (searchFocusSignal > 0) inputRef.current?.focus()
   }, [searchFocusSignal])
 
   return (

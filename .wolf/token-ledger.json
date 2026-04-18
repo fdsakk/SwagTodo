@@ -1,0 +1,583 @@
+{
+  "version": 1,
+  "created_at": "2026-04-18T19:20:23.576Z",
+  "lifetime": {
+    "total_tokens_estimated": 56242,
+    "total_reads": 41,
+    "total_writes": 46,
+    "total_sessions": 3,
+    "anatomy_hits": 29,
+    "anatomy_misses": 12,
+    "repeated_reads_blocked": 0,
+    "estimated_savings_vs_bare_cli": 5800
+  },
+  "sessions": [
+    {
+      "id": "session-2026-04-18-2124",
+      "started": "2026-04-18T19:24:56.888Z",
+      "ended": "2026-04-18T19:28:31.216Z",
+      "reads": [
+        {
+          "file": "/home/fenta/Projects/electron-todo/src/renderer/src/components/SearchSortBar.tsx",
+          "tokens_estimated": 900,
+          "was_repeated": false,
+          "anatomy_had_description": false
+        },
+        {
+          "file": "/home/fenta/Projects/electron-todo/tailwind.config.ts",
+          "tokens_estimated": 713,
+          "was_repeated": false,
+          "anatomy_had_description": false
+        },
+        {
+          "file": "/home/fenta/Projects/electron-todo/src/renderer/src/assets/base.css",
+          "tokens_estimated": 400,
+          "was_repeated": false,
+          "anatomy_had_description": false
+        },
+        {
+          "file": "/home/fenta/Projects/electron-todo/src/renderer/src/assets/main.css",
+          "tokens_estimated": 372,
+          "was_repeated": false,
+          "anatomy_had_description": false
+        },
+        {
+          "file": "/home/fenta/Projects/electron-todo/src/renderer/src/components/ThemeProvider.tsx",
+          "tokens_estimated": 144,
+          "was_repeated": false,
+          "anatomy_had_description": false
+        },
+        {
+          "file": "/home/fenta/Projects/electron-todo/src/renderer/src/types/index.ts",
+          "tokens_estimated": 2091,
+          "was_repeated": false,
+          "anatomy_had_description": false
+        },
+        {
+          "file": "/home/fenta/Projects/electron-todo/src/renderer/src/components/sessions-calendar/SessionsCalendar.tsx",
+          "tokens_estimated": 4933,
+          "was_repeated": false,
+          "anatomy_had_description": false
+        }
+      ],
+      "writes": [
+        {
+          "file": "/home/fenta/Projects/electron-todo/src/renderer/src/components/SearchSortBar.tsx",
+          "tokens_estimated": 30,
+          "action": "edit"
+        },
+        {
+          "file": "/home/fenta/Projects/electron-todo/src/renderer/src/types/index.ts",
+          "tokens_estimated": 164,
+          "action": "edit"
+        },
+        {
+          "file": "/home/fenta/Projects/electron-todo/src/renderer/src/components/sessions-calendar/SessionsCalendar.tsx",
+          "tokens_estimated": 15,
+          "action": "edit"
+        },
+        {
+          "file": "/home/fenta/Projects/electron-todo/src/renderer/src/components/sessions-calendar/SessionsCalendar.tsx",
+          "tokens_estimated": 28,
+          "action": "edit"
+        },
+        {
+          "file": "/home/fenta/Projects/electron-todo/src/renderer/src/components/sessions-calendar/SessionsCalendar.tsx",
+          "tokens_estimated": 30,
+          "action": "edit"
+        },
+        {
+          "file": "/home/fenta/Projects/electron-todo/src/renderer/src/components/sessions-calendar/SessionsCalendar.tsx",
+          "tokens_estimated": 175,
+          "action": "edit"
+        },
+        {
+          "file": "/home/fenta/Projects/electron-todo/src/renderer/src/components/sessions-calendar/SessionsCalendar.tsx",
+          "tokens_estimated": 34,
+          "action": "edit"
+        }
+      ],
+      "totals": {
+        "input_tokens_estimated": 9553,
+        "output_tokens_estimated": 476,
+        "reads_count": 7,
+        "writes_count": 7,
+        "repeated_reads_blocked": 0,
+        "anatomy_lookups": 7
+      }
+    },
+    {
+      "id": "session-2026-04-18-2124",
+      "started": "2026-04-18T19:24:56.888Z",
+      "ended": "2026-04-18T19:34:51.980Z",
+      "reads": [
+        {
+          "file": "/home/fenta/Projects/electron-todo/src/renderer/src/components/SearchSortBar.tsx",
+          "tokens_estimated": 900,
+          "was_repeated": false,
+          "anatomy_had_description": false
+        },
+        {
+          "file": "/home/fenta/Projects/electron-todo/tailwind.config.ts",
+          "tokens_estimated": 713,
+          "was_repeated": false,
+          "anatomy_had_description": false
+        },
+        {
+          "file": "/home/fenta/Projects/electron-todo/src/renderer/src/assets/base.css",
+          "tokens_estimated": 400,
+          "was_repeated": false,
+          "anatomy_had_description": false
+        },
+        {
+          "file": "/home/fenta/Projects/electron-todo/src/renderer/src/assets/main.css",
+          "tokens_estimated": 372,
+          "was_repeated": false,
+          "anatomy_had_description": false
+        },
+        {
+          "file": "/home/fenta/Projects/electron-todo/src/renderer/src/components/ThemeProvider.tsx",
+          "tokens_estimated": 144,
+          "was_repeated": false,
+          "anatomy_had_description": false
+        },
+        {
+          "file": "/home/fenta/Projects/electron-todo/src/renderer/src/types/index.ts",
+          "tokens_estimated": 2091,
+          "was_repeated": false,
+          "anatomy_had_description": false
+        },
+        {
+          "file": "/home/fenta/Projects/electron-todo/src/renderer/src/components/sessions-calendar/SessionsCalendar.tsx",
+          "tokens_estimated": 4933,
+          "was_repeated": false,
+          "anatomy_had_description": false
+        },
+        {
+          "file": "/home/fenta/Projects/electron-todo/src/renderer/src/components/kanban/KanbanCard.tsx",
+          "tokens_estimated": 738,
+          "was_repeated": false,
+          "anatomy_had_description": false
+        },
+        {
+          "file": "/home/fenta/Projects/electron-todo/src/renderer/src/components/kanban/KanbanColumn.tsx",
+          "tokens_estimated": 881,
+          "was_repeated": false,
+          "anatomy_had_description": false
+        },
+        {
+          "file": "/home/fenta/Projects/electron-todo/src/renderer/src/pages/ActivityPage.tsx",
+          "tokens_estimated": 1483,
+          "was_repeated": false,
+          "anatomy_had_description": false
+        },
+        {
+          "file": "/home/fenta/Projects/electron-todo/src/renderer/src/pages/ProjectPage.tsx",
+          "tokens_estimated": 1184,
+          "was_repeated": false,
+          "anatomy_had_description": false
+        },
+        {
+          "file": "/home/fenta/Projects/electron-todo/src/renderer/src/pages/SessionsPage.tsx",
+          "tokens_estimated": 4972,
+          "was_repeated": false,
+          "anatomy_had_description": false
+        },
+        {
+          "file": "/home/fenta/Projects/electron-todo/src/renderer/src/pages/sessions/GhostBlockDialog.tsx",
+          "tokens_estimated": 0,
+          "was_repeated": false,
+          "anatomy_had_description": false
+        },
+        {
+          "file": "/home/fenta/Projects/electron-todo/src/renderer/src/pages/sessions/TaskPickerDialog.tsx",
+          "tokens_estimated": 0,
+          "was_repeated": false,
+          "anatomy_had_description": false
+        },
+        {
+          "file": "/home/fenta/Projects/electron-todo/src/renderer/src/pages/TodayPage.tsx",
+          "tokens_estimated": 407,
+          "was_repeated": false,
+          "anatomy_had_description": false
+        },
+        {
+          "file": "/home/fenta/Projects/electron-todo/src/renderer/src/pages/InboxPage.tsx",
+          "tokens_estimated": 445,
+          "was_repeated": false,
+          "anatomy_had_description": false
+        },
+        {
+          "file": "/home/fenta/Projects/electron-todo/src/renderer/src/components/TaskList.tsx",
+          "tokens_estimated": 592,
+          "was_repeated": false,
+          "anatomy_had_description": false
+        }
+      ],
+      "writes": [
+        {
+          "file": "/home/fenta/Projects/electron-todo/src/renderer/src/components/SearchSortBar.tsx",
+          "tokens_estimated": 30,
+          "action": "edit"
+        },
+        {
+          "file": "/home/fenta/Projects/electron-todo/src/renderer/src/types/index.ts",
+          "tokens_estimated": 164,
+          "action": "edit"
+        },
+        {
+          "file": "/home/fenta/Projects/electron-todo/src/renderer/src/components/sessions-calendar/SessionsCalendar.tsx",
+          "tokens_estimated": 15,
+          "action": "edit"
+        },
+        {
+          "file": "/home/fenta/Projects/electron-todo/src/renderer/src/components/sessions-calendar/SessionsCalendar.tsx",
+          "tokens_estimated": 28,
+          "action": "edit"
+        },
+        {
+          "file": "/home/fenta/Projects/electron-todo/src/renderer/src/components/sessions-calendar/SessionsCalendar.tsx",
+          "tokens_estimated": 30,
+          "action": "edit"
+        },
+        {
+          "file": "/home/fenta/Projects/electron-todo/src/renderer/src/components/sessions-calendar/SessionsCalendar.tsx",
+          "tokens_estimated": 175,
+          "action": "edit"
+        },
+        {
+          "file": "/home/fenta/Projects/electron-todo/src/renderer/src/components/sessions-calendar/SessionsCalendar.tsx",
+          "tokens_estimated": 34,
+          "action": "edit"
+        },
+        {
+          "file": "/home/fenta/Projects/electron-todo/src/renderer/src/components/kanban/KanbanCard.tsx",
+          "tokens_estimated": 53,
+          "action": "edit"
+        },
+        {
+          "file": "/home/fenta/Projects/electron-todo/src/renderer/src/components/kanban/KanbanCard.tsx",
+          "tokens_estimated": 32,
+          "action": "edit"
+        },
+        {
+          "file": "/home/fenta/Projects/electron-todo/src/renderer/src/components/kanban/KanbanCard.tsx",
+          "tokens_estimated": 35,
+          "action": "edit"
+        },
+        {
+          "file": "/home/fenta/Projects/electron-todo/src/renderer/src/components/kanban/KanbanColumn.tsx",
+          "tokens_estimated": 105,
+          "action": "edit"
+        },
+        {
+          "file": "/home/fenta/Projects/electron-todo/src/renderer/src/components/kanban/KanbanColumn.tsx",
+          "tokens_estimated": 69,
+          "action": "edit"
+        },
+        {
+          "file": "/home/fenta/Projects/electron-todo/src/renderer/src/pages/ActivityPage.tsx",
+          "tokens_estimated": 30,
+          "action": "edit"
+        },
+        {
+          "file": "/home/fenta/Projects/electron-todo/src/renderer/src/pages/ActivityPage.tsx",
+          "tokens_estimated": 44,
+          "action": "edit"
+        },
+        {
+          "file": "/home/fenta/Projects/electron-todo/src/renderer/src/pages/ActivityPage.tsx",
+          "tokens_estimated": 126,
+          "action": "edit"
+        },
+        {
+          "file": "/home/fenta/Projects/electron-todo/src/renderer/src/pages/ActivityPage.tsx",
+          "tokens_estimated": 51,
+          "action": "edit"
+        },
+        {
+          "file": "/home/fenta/Projects/electron-todo/src/renderer/src/pages/ActivityPage.tsx",
+          "tokens_estimated": 24,
+          "action": "edit"
+        },
+        {
+          "file": "/home/fenta/Projects/electron-todo/src/renderer/src/pages/ActivityPage.tsx",
+          "tokens_estimated": 64,
+          "action": "edit"
+        },
+        {
+          "file": "/home/fenta/Projects/electron-todo/src/renderer/src/pages/ActivityPage.tsx",
+          "tokens_estimated": 20,
+          "action": "edit"
+        },
+        {
+          "file": "/home/fenta/Projects/electron-todo/src/renderer/src/pages/ProjectPage.tsx",
+          "tokens_estimated": 26,
+          "action": "edit"
+        },
+        {
+          "file": "/home/fenta/Projects/electron-todo/src/renderer/src/pages/ProjectPage.tsx",
+          "tokens_estimated": 18,
+          "action": "edit"
+        },
+        {
+          "file": "/home/fenta/Projects/electron-todo/src/renderer/src/pages/ProjectPage.tsx",
+          "tokens_estimated": 312,
+          "action": "edit"
+        },
+        {
+          "file": "/home/fenta/Projects/electron-todo/src/renderer/src/pages/SessionsPage.tsx",
+          "tokens_estimated": 405,
+          "action": "edit"
+        },
+        {
+          "file": "/home/fenta/Projects/electron-todo/src/renderer/src/pages/SessionsPage.tsx",
+          "tokens_estimated": 37,
+          "action": "edit"
+        },
+        {
+          "file": "/home/fenta/Projects/electron-todo/src/renderer/src/pages/SessionsPage.tsx",
+          "tokens_estimated": 19,
+          "action": "edit"
+        },
+        {
+          "file": "/home/fenta/Projects/electron-todo/src/renderer/src/pages/sessions/GhostBlockDialog.tsx",
+          "tokens_estimated": 931,
+          "action": "create"
+        },
+        {
+          "file": "/home/fenta/Projects/electron-todo/src/renderer/src/pages/sessions/TaskPickerDialog.tsx",
+          "tokens_estimated": 1235,
+          "action": "create"
+        }
+      ],
+      "totals": {
+        "input_tokens_estimated": 20255,
+        "output_tokens_estimated": 4112,
+        "reads_count": 17,
+        "writes_count": 27,
+        "repeated_reads_blocked": 0,
+        "anatomy_lookups": 15
+      }
+    },
+    {
+      "id": "session-2026-04-18-2136",
+      "started": "2026-04-18T19:36:13.880Z",
+      "ended": "2026-04-18T19:37:48.624Z",
+      "reads": [
+        {
+          "file": "/home/fenta/Projects/electron-todo/src/renderer/src/components/ThemeProvider.tsx",
+          "tokens_estimated": 144,
+          "was_repeated": false,
+          "anatomy_had_description": false
+        },
+        {
+          "file": "/home/fenta/Projects/electron-todo/src/renderer/src/pages/SettingsPage.tsx",
+          "tokens_estimated": 2173,
+          "was_repeated": false,
+          "anatomy_had_description": false
+        },
+        {
+          "file": "/home/fenta/Projects/electron-todo/src/renderer/src/types/index.ts",
+          "tokens_estimated": 2091,
+          "was_repeated": false,
+          "anatomy_had_description": false
+        },
+        {
+          "file": "/home/fenta/Projects/electron-todo/src/renderer/src/components/settings/ThemeSection.tsx",
+          "tokens_estimated": 0,
+          "was_repeated": false,
+          "anatomy_had_description": false
+        },
+        {
+          "file": "/home/fenta/Projects/electron-todo/src/renderer/src/components/settings/ThemeSwatch.tsx",
+          "tokens_estimated": 0,
+          "was_repeated": false,
+          "anatomy_had_description": false
+        }
+      ],
+      "writes": [
+        {
+          "file": "/home/fenta/Projects/electron-todo/src/renderer/src/types/index.ts",
+          "tokens_estimated": 51,
+          "action": "edit"
+        },
+        {
+          "file": "/home/fenta/Projects/electron-todo/src/renderer/src/types/index.ts",
+          "tokens_estimated": 1113,
+          "action": "edit"
+        }
+      ],
+      "totals": {
+        "input_tokens_estimated": 4408,
+        "output_tokens_estimated": 1164,
+        "reads_count": 5,
+        "writes_count": 2,
+        "repeated_reads_blocked": 0,
+        "anatomy_lookups": 3
+      }
+    },
+    {
+      "id": "session-2026-04-18-2143",
+      "started": "2026-04-18T19:43:52.577Z",
+      "ended": "2026-04-18T19:46:38.142Z",
+      "reads": [
+        {
+          "file": "/home/fenta/Projects/electron-todo/src/renderer/src/pages/SettingsPage.tsx",
+          "tokens_estimated": 2173,
+          "was_repeated": false,
+          "anatomy_had_description": false
+        },
+        {
+          "file": "/home/fenta/Projects/electron-todo/src/renderer/src/components/settings/ThemeSection.tsx",
+          "tokens_estimated": 0,
+          "was_repeated": false,
+          "anatomy_had_description": false
+        },
+        {
+          "file": "/home/fenta/Projects/electron-todo/src/renderer/src/components/settings/CustomizeSection.tsx",
+          "tokens_estimated": 0,
+          "was_repeated": false,
+          "anatomy_had_description": false
+        },
+        {
+          "file": "/home/fenta/Projects/electron-todo/src/renderer/src/components/settings/BackgroundSection.tsx",
+          "tokens_estimated": 0,
+          "was_repeated": false,
+          "anatomy_had_description": false
+        },
+        {
+          "file": "/home/fenta/Projects/electron-todo/src/renderer/src/components/settings/ThemeSwatch.tsx",
+          "tokens_estimated": 0,
+          "was_repeated": false,
+          "anatomy_had_description": false
+        },
+        {
+          "file": "/home/fenta/Projects/electron-todo/src/renderer/src/types/index.ts",
+          "tokens_estimated": 3208,
+          "was_repeated": false,
+          "anatomy_had_description": false
+        }
+      ],
+      "writes": [
+        {
+          "file": "/home/fenta/Projects/electron-todo/src/renderer/src/pages/SettingsPage.tsx",
+          "tokens_estimated": 183,
+          "action": "edit"
+        },
+        {
+          "file": "/home/fenta/Projects/electron-todo/src/renderer/src/components/settings/ThemeSection.tsx",
+          "tokens_estimated": 428,
+          "action": "edit"
+        },
+        {
+          "file": "/home/fenta/Projects/electron-todo/src/renderer/src/components/settings/ThemeSwatch.tsx",
+          "tokens_estimated": 320,
+          "action": "edit"
+        },
+        {
+          "file": "/home/fenta/Projects/electron-todo/src/renderer/src/components/settings/BackgroundSection.tsx",
+          "tokens_estimated": 1021,
+          "action": "create"
+        },
+        {
+          "file": "/home/fenta/Projects/electron-todo/src/renderer/src/components/settings/CustomizeSection.tsx",
+          "tokens_estimated": 804,
+          "action": "edit"
+        }
+      ],
+      "totals": {
+        "input_tokens_estimated": 5381,
+        "output_tokens_estimated": 2756,
+        "reads_count": 6,
+        "writes_count": 5,
+        "repeated_reads_blocked": 0,
+        "anatomy_lookups": 2
+      }
+    },
+    {
+      "id": "session-2026-04-18-2143",
+      "started": "2026-04-18T19:43:52.577Z",
+      "ended": "2026-04-18T20:02:13.793Z",
+      "reads": [
+        {
+          "file": "/home/fenta/Projects/electron-todo/src/renderer/src/pages/SettingsPage.tsx",
+          "tokens_estimated": 2173,
+          "was_repeated": false,
+          "anatomy_had_description": false
+        },
+        {
+          "file": "/home/fenta/Projects/electron-todo/src/renderer/src/components/settings/ThemeSection.tsx",
+          "tokens_estimated": 0,
+          "was_repeated": false,
+          "anatomy_had_description": false
+        },
+        {
+          "file": "/home/fenta/Projects/electron-todo/src/renderer/src/components/settings/CustomizeSection.tsx",
+          "tokens_estimated": 0,
+          "was_repeated": false,
+          "anatomy_had_description": false
+        },
+        {
+          "file": "/home/fenta/Projects/electron-todo/src/renderer/src/components/settings/BackgroundSection.tsx",
+          "tokens_estimated": 0,
+          "was_repeated": false,
+          "anatomy_had_description": false
+        },
+        {
+          "file": "/home/fenta/Projects/electron-todo/src/renderer/src/components/settings/ThemeSwatch.tsx",
+          "tokens_estimated": 0,
+          "was_repeated": false,
+          "anatomy_had_description": false
+        },
+        {
+          "file": "/home/fenta/Projects/electron-todo/src/renderer/src/types/index.ts",
+          "tokens_estimated": 3208,
+          "was_repeated": false,
+          "anatomy_had_description": false
+        }
+      ],
+      "writes": [
+        {
+          "file": "/home/fenta/Projects/electron-todo/src/renderer/src/pages/SettingsPage.tsx",
+          "tokens_estimated": 183,
+          "action": "edit"
+        },
+        {
+          "file": "/home/fenta/Projects/electron-todo/src/renderer/src/components/settings/ThemeSection.tsx",
+          "tokens_estimated": 428,
+          "action": "edit"
+        },
+        {
+          "file": "/home/fenta/Projects/electron-todo/src/renderer/src/components/settings/ThemeSwatch.tsx",
+          "tokens_estimated": 320,
+          "action": "edit"
+        },
+        {
+          "file": "/home/fenta/Projects/electron-todo/src/renderer/src/components/settings/BackgroundSection.tsx",
+          "tokens_estimated": 1021,
+          "action": "create"
+        },
+        {
+          "file": "/home/fenta/Projects/electron-todo/src/renderer/src/components/settings/CustomizeSection.tsx",
+          "tokens_estimated": 804,
+          "action": "edit"
+        }
+      ],
+      "totals": {
+        "input_tokens_estimated": 5381,
+        "output_tokens_estimated": 2756,
+        "reads_count": 6,
+        "writes_count": 5,
+        "repeated_reads_blocked": 0,
+        "anatomy_lookups": 2
+      }
+    }
+  ],
+  "daemon_usage": [],
+  "waste_flags": [],
+  "optimization_report": {
+    "last_generated": null,
+    "patterns": []
+  }
+}

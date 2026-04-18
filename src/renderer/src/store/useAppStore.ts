@@ -545,7 +545,7 @@ const useAppStore = create<AppStore>((set, get) => ({
 
 let persistTimer: ReturnType<typeof setTimeout> | undefined
 
-useAppStore.subscribe((state, prev) => {
+const unsubscribePersist = useAppStore.subscribe((state, prev) => {
   if (!state.hydrated || !window.api?.storage) return
   if (
     state.tasks === prev.tasks &&
@@ -579,5 +579,12 @@ useAppStore.subscribe((state, prev) => {
       .catch((err) => console.error('[store] persist failed', err))
   }, PERSIST_DEBOUNCE_MS)
 })
+
+if (import.meta.hot) {
+  import.meta.hot.dispose(() => {
+    unsubscribePersist()
+    if (persistTimer) clearTimeout(persistTimer)
+  })
+}
 
 export default useAppStore

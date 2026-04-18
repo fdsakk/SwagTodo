@@ -126,7 +126,18 @@ export const THEME_TOKEN_KEYS: (keyof ThemeTokens)[] = [
   '--app-scrollbar-hover'
 ]
 
-export type ThemeId = 'default' | 'light' | 'retro' | 'cyberpunk' | 'nord'
+export type ThemeId =
+  | 'default'
+  | 'light'
+  | 'retro'
+  | 'cyberpunk'
+  | 'nord'
+  | 'dracula'
+  | 'gruvbox'
+  | 'solarized'
+  | 'rose-pine'
+  | 'nero'
+  | 'everforest'
 
 export interface ThemePreset {
   id: ThemeId
@@ -163,7 +174,7 @@ export const THEME_PRESETS: ThemePreset[] = [
       '--app-bg': '#ffffff',
       '--app-sidebar': '#f4f4f5',
       '--app-titlebar': '#e4e4e7',
-      '--app-content': '#ffffff',
+      '--app-content': '#fcfcfc',
       '--app-card': '#f9f9fa',
       '--app-text': '#18181b',
       '--app-text-secondary': '#52525b',
@@ -181,21 +192,21 @@ export const THEME_PRESETS: ThemePreset[] = [
     id: 'retro',
     name: 'Retro',
     tokens: {
-      '--app-bg': '#f5f0e8',
-      '--app-sidebar': '#ece5d8',
-      '--app-titlebar': '#d5cbba',
-      '--app-content': '#f5f0e8',
-      '--app-card': '#efe9de',
-      '--app-text': '#3d3529',
-      '--app-text-secondary': '#6b5f4f',
-      '--app-text-muted': '#9c8e7a',
-      '--app-border': 'rgba(61,53,41,0.12)',
-      '--app-hover': 'rgba(61,53,41,0.05)',
-      '--app-active': 'rgba(61,53,41,0.10)',
+      '--app-bg': '#e8e0d0',
+      '--app-sidebar': '#ddd4c0',
+      '--app-titlebar': '#c8bcaa',
+      '--app-content': '#e8e0d0',
+      '--app-card': '#e0d8c8',
+      '--app-text': '#2e2518',
+      '--app-text-secondary': '#5a4d3c',
+      '--app-text-muted': '#7a6e5e',
+      '--app-border': 'rgba(46,37,24,0.18)',
+      '--app-hover': 'rgba(46,37,24,0.07)',
+      '--app-active': 'rgba(46,37,24,0.13)',
       '--app-accent': '#5c4a2f',
       '--app-accent-text': '#f5f0e8',
-      '--app-scrollbar': '#c9bfae',
-      '--app-scrollbar-hover': '#b0a48f'
+      '--app-scrollbar': '#b8ac9a',
+      '--app-scrollbar-hover': '#9e9080'
     }
   },
   {
@@ -239,6 +250,132 @@ export const THEME_PRESETS: ThemePreset[] = [
       '--app-scrollbar': '#434c5e',
       '--app-scrollbar-hover': '#4c566a'
     }
+  },
+  {
+    id: 'dracula',
+    name: 'Dracula',
+    tokens: {
+      '--app-bg': '#282a36',
+      '--app-sidebar': '#21222c',
+      '--app-titlebar': '#191a21',
+      '--app-content': '#282a36',
+      '--app-card': '#44475a',
+      '--app-text': '#f8f8f2',
+      '--app-text-secondary': '#bd93f9',
+      '--app-text-muted': '#6272a4',
+      '--app-border': 'rgba(98,114,164,0.25)',
+      '--app-hover': 'rgba(98,114,164,0.08)',
+      '--app-active': 'rgba(98,114,164,0.16)',
+      '--app-accent': '#bd93f9',
+      '--app-accent-text': '#282a36',
+      '--app-scrollbar': '#44475a',
+      '--app-scrollbar-hover': '#6272a4'
+    }
+  },
+  {
+    id: 'gruvbox',
+    name: 'Gruvbox',
+    tokens: {
+      '--app-bg': '#282828',
+      '--app-sidebar': '#1d2021',
+      '--app-titlebar': '#181818',
+      '--app-content': '#282828',
+      '--app-card': '#3c3836',
+      '--app-text': '#ebdbb2',
+      '--app-text-secondary': '#d5c4a1',
+      '--app-text-muted': '#928374',
+      '--app-border': 'rgba(235,219,178,0.10)',
+      '--app-hover': 'rgba(235,219,178,0.04)',
+      '--app-active': 'rgba(235,219,178,0.08)',
+      '--app-accent': '#d65d0e',
+      '--app-accent-text': '#fbf1c7',
+      '--app-scrollbar': '#504945',
+      '--app-scrollbar-hover': '#665c54'
+    }
+  },
+  {
+    id: 'solarized',
+    name: 'Solarized',
+    tokens: {
+      '--app-bg': '#002b36',
+      '--app-sidebar': '#00212b',
+      '--app-titlebar': '#001a22',
+      '--app-content': '#002b36',
+      '--app-card': '#073642',
+      '--app-text': '#839496',
+      '--app-text-secondary': '#657b83',
+      '--app-text-muted': '#586e75',
+      '--app-border': 'rgba(131,148,150,0.15)',
+      '--app-hover': 'rgba(131,148,150,0.05)',
+      '--app-active': 'rgba(131,148,150,0.10)',
+      '--app-accent': '#268bd2',
+      '--app-accent-text': '#002b36',
+      '--app-scrollbar': '#073642',
+      '--app-scrollbar-hover': '#094555'
+    }
+  },
+  {
+    id: 'rose-pine',
+    name: 'Rose Pine',
+    tokens: {
+      '--app-bg': '#191724',
+      '--app-sidebar': '#13111e',
+      '--app-titlebar': '#0f0d17',
+      '--app-content': '#191724',
+      '--app-card': '#1f1d2e',
+      '--app-text': '#e0def4',
+      '--app-text-secondary': '#c4c0d9',
+      '--app-text-muted': '#6e6a86',
+      '--app-border': 'rgba(110,106,134,0.20)',
+      '--app-hover': 'rgba(110,106,134,0.07)',
+      '--app-active': 'rgba(110,106,134,0.14)',
+      '--app-accent': '#ebbcba',
+      '--app-accent-text': '#191724',
+      '--app-scrollbar': '#2a2837',
+      '--app-scrollbar-hover': '#3a3750'
+    }
+  },
+  {
+    id: 'nero',
+    name: 'Nero',
+    tokens: {
+      '--app-bg': '#010101',
+      '--app-sidebar': '#080808',
+      '--app-titlebar': '#050505',
+      '--app-content': '#020202',
+      '--app-card': '#121212',
+      '--app-text': '#eeeeee',
+      '--app-text-secondary': '#aaaaaa',
+      '--app-text-muted': '#666666',
+      '--app-border': 'rgba(255,255,255,0.07)',
+      '--app-hover': 'rgba(255,255,255,0.03)',
+      '--app-active': 'rgba(255,255,255,0.06)',
+      '--app-accent': '#9e9e9e',
+      '--app-accent-text': '#000000',
+      '--app-scrollbar': '#222222',
+      '--app-scrollbar-hover': '#333333'
+    }
+  },
+  {
+    id: 'everforest',
+    name: 'Everforest',
+    tokens: {
+      '--app-bg': '#2b3339',
+      '--app-sidebar': '#232b30',
+      '--app-titlebar': '#1e2529',
+      '--app-content': '#2b3339',
+      '--app-card': '#323d43',
+      '--app-text': '#d3c6aa',
+      '--app-text-secondary': '#b9a98a',
+      '--app-text-muted': '#7a8478',
+      '--app-border': 'rgba(167,192,128,0.14)',
+      '--app-hover': 'rgba(167,192,128,0.05)',
+      '--app-active': 'rgba(167,192,128,0.10)',
+      '--app-accent': '#a7c080',
+      '--app-accent-text': '#2b3339',
+      '--app-scrollbar': '#404d52',
+      '--app-scrollbar-hover': '#516066'
+    }
   }
 ]
 
@@ -261,10 +398,14 @@ export function normalizeAppearance(raw: unknown): AppearanceSettings {
     typeof obj.themeId === 'string' && THEME_PRESETS.some((p) => p.id === obj.themeId)
       ? (obj.themeId as ThemeId)
       : 'default'
-  const customTokens =
-    obj.customTokens && typeof obj.customTokens === 'object'
-      ? (obj.customTokens as Partial<ThemeTokens>)
-      : {}
+  const customTokens: Partial<ThemeTokens> = {}
+  if (obj.customTokens && typeof obj.customTokens === 'object') {
+    const raw = obj.customTokens as Record<string, unknown>
+    for (const key of THEME_TOKEN_KEYS) {
+      const v = raw[key]
+      if (typeof v === 'string') customTokens[key] = v
+    }
+  }
   const backgroundId = typeof obj.backgroundId === 'string' ? obj.backgroundId : 'none'
   return { themeId, customTokens, backgroundId }
 }

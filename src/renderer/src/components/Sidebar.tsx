@@ -4,69 +4,22 @@ import {
   Calendar,
   ChevronLeft,
   ChevronRight,
-  Hash,
   Inbox,
   Palette,
-  Plus,
-  Sun,
-  ZoomIn
+  Sun
 } from 'lucide-react'
 import useAppStore from '@renderer/store/useAppStore'
 import { isTaskDueToday, isTaskInFuture, isTaskOverdue } from '@renderer/utils/task'
 import { cn } from '@renderer/utils/cn'
-import {
-  Select,
-  SelectContent,
-  SelectItem,
-  SelectTrigger,
-  SelectValue
-} from '@renderer/components/ui/select'
 import { UI_SCALE_OPTIONS, type UiScale } from '@renderer/types'
 import { useShallow } from 'zustand/react/shallow'
+import { NavItem } from './sidebar/NavItem'
+import { ProjectList } from './sidebar/ProjectList'
+import { SidebarFooter } from './sidebar/SidebarFooter'
 
 interface SidebarProps {
   onOpenProjectPanel: () => void
   onOpenLabelModal: () => void
-}
-
-function NavItem({
-  icon,
-  label,
-  count,
-  active,
-  collapsed,
-  onClick
-}: {
-  icon: React.ReactNode
-  label: string
-  count?: number
-  active?: boolean
-  collapsed: boolean
-  onClick: () => void
-}): React.JSX.Element {
-  return (
-    <button
-      className={cn(
-        'flex h-8 w-full items-center rounded-md px-2 text-sm transition-colors',
-        active
-          ? 'bg-app-active text-app-text'
-          : 'text-app-text-secondary hover:bg-app-hover hover:text-app-text',
-        collapsed && 'justify-center px-0'
-      )}
-      onClick={onClick}
-      type="button"
-    >
-      <span className="flex h-4 w-4 items-center justify-center">{icon}</span>
-      {!collapsed && (
-        <>
-          <span className="ml-2.5 flex-1 text-left">{label}</span>
-          {typeof count === 'number' && count > 0 && (
-            <span className="text-xs text-zinc-500">{count}</span>
-          )}
-        </>
-      )}
-    </button>
-  )
 }
 
 export default function Sidebar(props: SidebarProps): React.JSX.Element {
@@ -123,9 +76,7 @@ export default function Sidebar(props: SidebarProps): React.JSX.Element {
 
   const handleScaleChange = (value: string): void => {
     const nextScale = UI_SCALE_OPTIONS.find((scale): scale is UiScale => String(scale) === value)
-    if (nextScale !== undefined) {
-      setUiScale(nextScale)
-    }
+    if (nextScale !== undefined) setUiScale(nextScale)
   }
 
   return (
@@ -193,82 +144,22 @@ export default function Sidebar(props: SidebarProps): React.JSX.Element {
         />
       </div>
 
-      <div className="mt-6 flex-1 overflow-x-hidden overflow-y-auto px-2">
-        {!isSidebarCollapsed && (
-          <div className="mb-1 flex items-center justify-between px-2 py-1">
-            <span className="text-[11px] font-medium text-app-text-muted">Projects</span>
-            <button
-              className="flex h-5 w-5 items-center justify-center rounded text-app-text-muted hover:bg-app-hover hover:text-app-text-secondary"
-              onClick={props.onOpenProjectPanel}
-              type="button"
-            >
-              <Plus size={12} />
-            </button>
-          </div>
-        )}
-
-        <div className="space-y-0.5">
-          {projects.map((project) => {
-            const active = selectedView === 'project' && selectedProjectId === project.id
-            return (
-              <button
-                className={cn(
-                  'flex h-8 w-full items-center rounded-md px-2 text-sm transition-colors',
-                  active
-                    ? 'bg-app-active text-app-text'
-                    : 'text-app-text-secondary hover:bg-app-hover hover:text-app-text',
-                  isSidebarCollapsed && 'justify-center px-0'
-                )}
-                key={project.id}
-                onClick={() => selectProject(project.id)}
-                type="button"
-              >
-                <span className="flex h-4 w-4 items-center justify-center text-xs">
-                  {project.emoji || '#'}
-                </span>
-                {!isSidebarCollapsed && (
-                  <span className="ml-2 flex-1 truncate text-left">{project.name}</span>
-                )}
-              </button>
-            )
-          })}
-        </div>
-      </div>
+      <ProjectList
+        projects={projects}
+        selectedProjectId={selectedProjectId}
+        isProjectView={selectedView === 'project'}
+        collapsed={isSidebarCollapsed}
+        onSelect={selectProject}
+        onOpenCreatePanel={props.onOpenProjectPanel}
+      />
 
       {!isSidebarCollapsed && (
-        <div className="px-2 py-2 space-y-0.5 overflow-hidden">
-          <div className="flex h-8 w-full items-center rounded-md px-2 text-sm text-app-text-secondary gap-2 whitespace-nowrap">
-            <span className="flex h-4 w-4 items-center justify-center">
-              <ZoomIn size={13} />
-            </span>
-            <span className="text-left text-[0.8rem] ">UI scale</span>
-            <Select onValueChange={handleScaleChange} value={String(uiScale)}>
-              <SelectTrigger className="h-6 w-20 border-app-border pl-4 pr-2 bg-app-hover text-[0.8rem] text-app-text-secondary">
-                <SelectValue />
-              </SelectTrigger>
-              <SelectContent>
-                {UI_SCALE_OPTIONS.map((scale) => (
-                  <SelectItem className="text-[0.8rem]" key={scale} value={String(scale)}>
-                    {scale}%
-                  </SelectItem>
-                ))}
-              </SelectContent>
-            </Select>
-          </div>
-
-          {labels.length > 0 && (
-            <button
-              className="flex h-8 w-full items-center rounded-md px-2 text-sm text-app-text-secondary hover:bg-app-hover hover:text-app-text"
-              onClick={props.onOpenLabelModal}
-              type="button"
-            >
-              <span className="flex h-4 w-4 items-center justify-center">
-                <Hash size={14} />
-              </span>
-              <span className="ml-2.5">Manage labels</span>
-            </button>
-          )}
-        </div>
+        <SidebarFooter
+          uiScale={uiScale}
+          hasLabels={labels.length > 0}
+          onScaleChange={handleScaleChange}
+          onOpenLabelModal={props.onOpenLabelModal}
+        />
       )}
     </aside>
   )

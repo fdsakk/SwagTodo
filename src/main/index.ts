@@ -120,17 +120,31 @@ const isUiScale = (v: unknown): v is UiScale => typeof v === 'number' && UI_SCAL
 const isZoomFactor = (v: unknown): v is number =>
   typeof v === 'number' && v >= MIN_ZOOM_FACTOR && v <= MAX_ZOOM_FACTOR
 
+const isStringRecord = (v: unknown): v is Record<string, string> =>
+  !!v &&
+  typeof v === 'object' &&
+  !Array.isArray(v) &&
+  Object.values(v as object).every((x) => typeof x === 'string')
+
 const isAppState = (v: unknown): v is AppState => {
   if (!v || typeof v !== 'object') return false
   const d = v as Partial<AppState>
-  return (
-    Array.isArray(d.tasks) &&
-    Array.isArray(d.projects) &&
-    Array.isArray(d.labels) &&
-    Array.isArray(d.sessions) &&
-    Array.isArray(d.timeBlocks) &&
-    (d.uiScale === undefined || isUiScale(d.uiScale))
+  if (
+    !Array.isArray(d.tasks) ||
+    !Array.isArray(d.projects) ||
+    !Array.isArray(d.labels) ||
+    !Array.isArray(d.sessions) ||
+    !Array.isArray(d.timeBlocks)
   )
+    return false
+  if (d.uiScale !== undefined && !isUiScale(d.uiScale)) return false
+  if (d.appearance !== undefined) {
+    const a = d.appearance as Partial<AppearanceSettings>
+    if (typeof a.themeId !== 'string') return false
+    if (a.customTokens !== undefined && !isStringRecord(a.customTokens)) return false
+    if (a.backgroundId !== undefined && typeof a.backgroundId !== 'string') return false
+  }
+  return true
 }
 
 const getPersistedUiScale = (): UiScale => {
@@ -160,7 +174,9 @@ function createWindow(): void {
     icon,
     webPreferences: {
       preload: join(__dirname, '../preload/index.js'),
-      sandbox: false
+      sandbox: false,
+      nodeIntegration: false,
+      contextIsolation: true
     }
   })
 
@@ -184,8 +200,12 @@ function createWindow(): void {
 
   mainWindow.once('ready-to-show', () => mainWindow.show())
 
+  const ALLOWED_PROTOCOLS = new Set(['https:', 'http:'])
   mainWindow.webContents.setWindowOpenHandler(({ url }) => {
-    void shell.openExternal(url)
+    try {
+      const { protocol } = new URL(url)
+      if (ALLOWED_PROTOCOLS.has(protocol)) void shell.openExternal(url)
+    } catch {}
     return { action: 'deny' }
   })
 

@@ -1,0 +1,197 @@
+{
+  "version": 1,
+  "bugs": [
+    {
+      "id": "bug-001",
+      "timestamp": "2026-04-18T19:28:05.683Z",
+      "error_message": "Incorrect value in code",
+      "file": "src/renderer/src/components/sessions-calendar/SessionsCalendar.tsx",
+      "root_cause": "Had \"grid border-b border-white/[0.06]\"",
+      "fix": "Changed to \"grid border-b border-app-border\"",
+      "tags": [
+        "auto-detected",
+        "wrong-value",
+        "tsx"
+      ],
+      "related_bugs": [],
+      "occurrences": 4,
+      "last_seen": "2026-04-18T19:28:22.379Z"
+    },
+    {
+      "id": "bug-002",
+      "timestamp": "2026-04-18T19:32:35.245Z",
+      "error_message": "Incorrect value in code",
+      "file": "src/renderer/src/components/kanban/KanbanCard.tsx",
+      "root_cause": "Had \"mt-1 flex flex-wrap items-center gap-x-1.5 gap-y-",
+      "fix": "Changed to \"mt-1 flex flex-wrap items-center gap-x-1.5 gap-y-",
+      "tags": [
+        "auto-detected",
+        "wrong-value",
+        "tsx"
+      ],
+      "related_bugs": [],
+      "occurrences": 2,
+      "last_seen": "2026-04-18T19:32:38.203Z"
+    },
+    {
+      "id": "bug-003",
+      "timestamp": "2026-04-18T19:32:42.822Z",
+      "error_message": "CSS fix: hover",
+      "file": "src/renderer/src/components/kanban/KanbanColumn.tsx",
+      "root_cause": "hover: bg-white/[0.04] hover:text-zinc-300\" → bg-app-hover hover:text-app-text-secondary\"",
+      "fix": "Changed hover: bg-white/[0.04] hover:text-zinc-300\" → bg-app-hover hover:text-app-text-secondary\"",
+      "tags": [
+        "auto-detected",
+        "style-fix",
+        "tsx"
+      ],
+      "related_bugs": [],
+      "occurrences": 2,
+      "last_seen": "2026-04-18T19:32:48.544Z"
+    },
+    {
+      "id": "bug-004",
+      "timestamp": "2026-04-18T19:32:51.891Z",
+      "error_message": "Incorrect value in code",
+      "file": "src/renderer/src/pages/ActivityPage.tsx",
+      "root_cause": "Had 'text-zinc-500 line-through'",
+      "fix": "Changed to 'text-app-text-muted line-through'",
+      "tags": [
+        "auto-detected",
+        "wrong-value",
+        "tsx"
+      ],
+      "related_bugs": [],
+      "occurrences": 6,
+      "last_seen": "2026-04-18T19:33:13.899Z"
+    },
+    {
+      "id": "bug-005",
+      "timestamp": "2026-04-18T19:33:17.801Z",
+      "error_message": "Incorrect value in code",
+      "file": "src/renderer/src/pages/ProjectPage.tsx",
+      "root_cause": "Had \"flex h-full items-center justify-center text-sm t",
+      "fix": "Changed to \"flex h-full items-center justify-center text-sm t",
+      "tags": [
+        "auto-detected",
+        "wrong-value",
+        "tsx"
+      ],
+      "related_bugs": [],
+      "occurrences": 2,
+      "last_seen": "2026-04-18T19:33:21.671Z"
+    },
+    {
+      "id": "bug-006",
+      "timestamp": "2026-04-18T19:33:34.807Z",
+      "error_message": "CSS fix: hover",
+      "file": "src/renderer/src/pages/ProjectPage.tsx",
+      "root_cause": "hover: bg-white/[0.04] hover:text-zinc-300\" → bg-app-hover hover:text-app-text-secondary\"",
+      "fix": "Changed hover: bg-white/[0.04] hover:text-zinc-300\" → bg-app-hover hover:text-app-text-secondary\"",
+      "tags": [
+        "auto-detected",
+        "style-fix",
+        "tsx"
+      ],
+      "related_bugs": [],
+      "occurrences": 1,
+      "last_seen": "2026-04-18T19:33:34.807Z"
+    },
+    {
+      "id": "bug-007",
+      "timestamp": "2026-04-18T19:33:55.219Z",
+      "error_message": "CSS fix: hover",
+      "file": "src/renderer/src/pages/SessionsPage.tsx",
+      "root_cause": "hover: text-zinc-200' → text-app-text'",
+      "fix": "Changed hover: text-zinc-200' → text-app-text'",
+      "tags": [
+        "auto-detected",
+        "style-fix",
+        "tsx"
+      ],
+      "related_bugs": [],
+      "occurrences": 1,
+      "last_seen": "2026-04-18T19:33:55.219Z"
+    },
+    {
+      "id": "bug-008",
+      "timestamp": "2026-04-18T19:33:59.010Z",
+      "error_message": "Incorrect value in code",
+      "file": "src/renderer/src/pages/SessionsPage.tsx",
+      "root_cause": "Had \"mx-4 mb-2 rounded-md border border-white/[0.06] b",
+      "fix": "Changed to \"mx-4 mb-2 rounded-md border border-app-border bg-",
+      "tags": [
+        "auto-detected",
+        "wrong-value",
+        "tsx"
+      ],
+      "related_bugs": [],
+      "occurrences": 2,
+      "last_seen": "2026-04-18T19:34:04.908Z"
+    },
+    {
+      "id": "bug-009",
+      "timestamp": "2026-04-18T19:42:54.000Z",
+      "error_message": "Appearance page layout spacing and arrangement did not match Today/Activity pages.",
+      "file": "src/renderer/src/pages/SettingsPage.tsx",
+      "root_cause": "SettingsPage used a centered max-width container with p-6, which diverged from the list-page spacing pattern.",
+      "fix": "Aligned container spacing to app list pages using px-4/px-2 section alignment and section stack spacing.",
+      "tags": [
+        "ui-consistency",
+        "layout",
+        "settings"
+      ],
+      "related_bugs": [],
+      "occurrences": 1,
+      "last_seen": "2026-04-18T19:42:54.000Z"
+    },
+    {
+      "id": "bug-010",
+      "timestamp": "2026-04-18T19:45:24.468Z",
+      "error_message": "CSS fix: hover",
+      "file": "src/renderer/src/components/settings/ThemeSection.tsx",
+      "root_cause": "hover: bg-app-active' → border-app-accent/50'",
+      "fix": "Changed hover: bg-app-active' → border-app-accent/50'",
+      "tags": [
+        "auto-detected",
+        "style-fix",
+        "tsx"
+      ],
+      "related_bugs": [],
+      "occurrences": 1,
+      "last_seen": "2026-04-18T19:45:24.468Z"
+    },
+    {
+      "id": "bug-011",
+      "timestamp": "2026-04-18T19:45:32.675Z",
+      "error_message": "CSS fix: background",
+      "file": "src/renderer/src/components/settings/ThemeSwatch.tsx",
+      "root_cause": "background: t['--app-card'] → t['--app-hover']",
+      "fix": "Changed background: t['--app-card'] → t['--app-hover']",
+      "tags": [
+        "auto-detected",
+        "style-fix",
+        "tsx"
+      ],
+      "related_bugs": [],
+      "occurrences": 1,
+      "last_seen": "2026-04-18T19:45:32.675Z"
+    },
+    {
+      "id": "bug-012",
+      "timestamp": "2026-04-18T19:46:03.367Z",
+      "error_message": "CSS fix: hover",
+      "file": "src/renderer/src/components/settings/CustomizeSection.tsx",
+      "root_cause": "hover: text-app-text-secondary\" → text-app-text transition-colors shrink-0\"",
+      "fix": "Changed hover: text-app-text-secondary\" → text-app-text transition-colors shrink-0\"",
+      "tags": [
+        "auto-detected",
+        "style-fix",
+        "tsx"
+      ],
+      "related_bugs": [],
+      "occurrences": 1,
+      "last_seen": "2026-04-18T19:46:03.367Z"
+    }
+  ]
+}

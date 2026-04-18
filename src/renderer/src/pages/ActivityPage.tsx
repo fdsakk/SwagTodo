@@ -77,24 +77,24 @@ function ActivityRow({
 }): React.JSX.Element {
   const meta = KIND_META[event.kind]
   const relative = formatDistanceToNow(parseISO(event.at), { addSuffix: true })
-  const titleClass = event.kind === 'completed' ? 'text-zinc-500 line-through' : 'text-zinc-200'
+  const titleClass = event.kind === 'completed' ? 'text-app-text-muted line-through' : 'text-app-text'
 
   return (
     <li
-      className="grid grid-cols-[24px_110px_1fr_150px_130px] items-center gap-3 border-b border-white/[0.04] py-2.5 px-2 hover:bg-white/[0.02] cursor-pointer"
+      className="grid grid-cols-[24px_110px_1fr_150px_130px] items-center gap-3 border-b border-app-border py-2.5 px-2 hover:bg-app-hover cursor-pointer"
       onClick={() => onOpen(event.task.id)}
     >
       <span className={`flex h-6 w-6 items-center justify-center rounded-full ${meta.iconClass}`}>
         {meta.icon}
       </span>
-      <span className="text-sm text-zinc-400">{meta.verb}</span>
-      <span className={`truncate rounded-md bg-white/[0.04] px-2 py-0.5 text-sm ${titleClass}`}>
+      <span className="text-sm text-app-text-secondary">{meta.verb}</span>
+      <span className={`truncate rounded-md bg-app-hover px-2 py-0.5 text-sm ${titleClass}`}>
         {event.task.title}
       </span>
-      <span className="truncate text-xs text-zinc-500">
+      <span className="truncate text-xs text-app-text-muted">
         {project ? `${project.emoji ?? '#'} ${project.name}` : 'Inbox'}
       </span>
-      <span className="text-xs text-zinc-500 text-right">{relative}</span>
+      <span className="text-xs text-app-text-muted text-right">{relative}</span>
     </li>
   )
 }
@@ -114,21 +114,21 @@ export default function ActivityPage(): React.JSX.Element {
   if (days.length === 0) {
     return (
       <div className="flex h-full flex-col items-center justify-center text-center">
-        <p className="text-sm text-zinc-300">No activity yet</p>
-        <p className="mt-1 text-xs text-zinc-500">Create or complete a task to see it here.</p>
+        <p className="text-sm text-app-text-secondary">No activity yet</p>
+        <p className="mt-1 text-xs text-app-text-muted">Create or complete a task to see it here.</p>
       </div>
     )
   }
 
   return (
     <div className="h-full overflow-y-auto px-4 pb-6">
-      <h2 className="mb-4 px-2 text-base font-semibold text-zinc-100">Activity</h2>
+      <h2 className="mb-4 px-2 text-base font-semibold text-app-text">Activity</h2>
       <div className="space-y-6">
         {days.map((day) => (
           <section key={day.key}>
-            <h3 className="mb-1 flex items-center gap-2 px-2 text-xs font-medium text-zinc-400">
+            <h3 className="mb-1 flex items-center gap-2 px-2 text-xs font-medium text-app-text-secondary">
               <span>{day.label}</span>
-              <span className="text-zinc-600">{day.events.length}</span>
+              <span className="text-app-text-muted">{day.events.length}</span>
             </h3>
             <ul>
               {day.events.map((event) => (
@@ -142,7 +142,7 @@ export default function ActivityPage(): React.JSX.Element {
             </ul>
           </section>
         ))}
-        <p className="pt-2 text-center text-xs text-zinc-600">
+        <p className="pt-2 text-center text-xs text-app-text-muted">
           That's it. No more history to load.
         </p>
       </div>

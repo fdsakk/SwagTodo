@@ -1,14 +1,14 @@
 import { useCallback, useEffect, useMemo, useRef, useState } from 'react'
 import { Trash2, X } from 'lucide-react'
 import { Button } from '@renderer/components/ui/button'
-import { AnimatedCheckbox } from '@renderer/components/animated-checkbox'
 import { Separator } from '@renderer/components/ui/separator'
 import useAppStore from '@renderer/store/useAppStore'
 import type { Priority, Task, TaskStatus } from '@renderer/types'
 import { TaskFormFields } from '@renderer/components/task-form-fields'
-import { cn } from '@renderer/utils/cn'
 import { useShallow } from 'zustand/react/shallow'
-import { computeTaskStats, formatDuration } from '@renderer/utils/sessions'
+import { computeTaskStats } from '@renderer/utils/sessions'
+import { SessionStats } from './task-edit/SessionStats'
+import { SubtaskList } from './task-edit/SubtaskList'
 
 interface TaskEditPanelProps {
   task: Task
@@ -206,75 +206,19 @@ export default function TaskEditPanel({ task, onClose }: TaskEditPanelProps): Re
         <Separator className="bg-white/[0.06]" />
         <div>
           <div className="mb-2 text-xs text-zinc-500">Sessions</div>
-          {stats.count === 0 ? (
-            <div className="text-xs text-zinc-600">No completed sessions yet.</div>
-          ) : (
-            <div className="flex flex-wrap gap-x-4 gap-y-1 text-xs text-zinc-400">
-              <div>
-                <span className="text-zinc-500">Count:</span>{' '}
-                <span className="text-zinc-300">{stats.count}</span>
-              </div>
-              <div>
-                <span className="text-zinc-500">Total:</span>{' '}
-                <span className="text-zinc-300">{formatDuration(stats.totalMs)}</span>
-              </div>
-              {stats.lastEndAt && (
-                <div>
-                  <span className="text-zinc-500">Last:</span>{' '}
-                  <span className="text-zinc-300">
-                    {new Date(stats.lastEndAt).toLocaleString(undefined, {
-                      month: 'short',
-                      day: 'numeric',
-                      hour: '2-digit',
-                      minute: '2-digit'
-                    })}
-                  </span>
-                </div>
-              )}
-            </div>
-          )}
+          <SessionStats stats={stats} />
         </div>
 
         <Separator className="bg-white/[0.06]" />
-        <div>
-          <div className="mb-2 text-xs text-zinc-500">Subtasks</div>
-          <div className="space-y-1">
-            {task.subTasks.map((subTask) => (
-              <div
-                className="group flex items-center gap-2 rounded px-1 py-1 hover:bg-white/[0.02]"
-                key={subTask.id}
-              >
-                <AnimatedCheckbox
-                  checked={subTask.completed}
-                  className="size-[14px]"
-                  onCheckedChange={() => toggleSubTask(task.id, subTask.id)}
-                />
-                <span
-                  className={cn(
-                    'flex-1 text-sm text-zinc-300',
-                    subTask.completed && 'line-through text-zinc-600'
-                  )}
-                >
-                  {subTask.title}
-                </span>
-                <button
-                  className="flex size-5 items-center justify-center rounded text-zinc-600 opacity-0 hover:bg-white/[0.04] hover:text-zinc-300 group-hover:opacity-100"
-                  onClick={() => deleteSubTask(task.id, subTask.id)}
-                  type="button"
-                >
-                  <Trash2 size={11} />
-                </button>
-              </div>
-            ))}
-          </div>
-          <input
-            className="mt-1 h-7 w-full bg-transparent px-1 text-sm text-zinc-300 placeholder:text-zinc-600 focus:outline-none"
-            onChange={(event) => setNewSubTaskTitle(event.target.value)}
-            onKeyDown={handleAddSubTask}
-            placeholder="+ Add subtask"
-            value={newSubTaskTitle}
-          />
-        </div>
+        <SubtaskList
+          taskId={task.id}
+          subTasks={task.subTasks}
+          newSubTaskTitle={newSubTaskTitle}
+          onNewSubTaskTitleChange={setNewSubTaskTitle}
+          onToggle={(subTaskId) => toggleSubTask(task.id, subTaskId)}
+          onDelete={(subTaskId) => deleteSubTask(task.id, subTaskId)}
+          onAdd={handleAddSubTask}
+        />
       </div>
 
       <div className="flex items-center justify-end px-4 py-3">

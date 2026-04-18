@@ -1,26 +1,21 @@
 import { useCallback, useEffect, useMemo, useState } from 'react'
-import { ChevronLeft, ChevronRight, X } from 'lucide-react'
+import { ChevronLeft, ChevronRight } from 'lucide-react'
 import { useShallow } from 'zustand/react/shallow'
 import useAppStore from '@renderer/store/useAppStore'
 import SessionsCalendar from '@renderer/components/SessionsCalendar'
 import {
   addDays,
   buildIsoAtMinutes,
-  formatHM,
   isSameDay,
   startOfDay
 } from '@renderer/utils/calendar'
 import { cn } from '@renderer/utils/cn'
+import { TaskPickerDialog, type DraftCreate } from './sessions/TaskPickerDialog'
+import { GhostBlockDialog } from './sessions/GhostBlockDialog'
 
 type DayCount = 1 | 3 | 5 | 7
 const DAY_OPTIONS: readonly DayCount[] = [1, 3, 5, 7] as const
 const NOW_TICK_MS = 60 * 1000
-
-interface DraftCreate {
-  dayIso: string
-  startAt: string
-  endAt: string
-}
 
 export default function SessionsPage(): React.JSX.Element {
   const {
@@ -233,7 +228,7 @@ export default function SessionsPage(): React.JSX.Element {
           <button
             type="button"
             onClick={() => shiftRange(-1)}
-            className="flex h-7 w-7 items-center justify-center rounded-md text-zinc-400 hover:bg-white/[0.04] hover:text-zinc-200"
+            className="flex h-7 w-7 items-center justify-center rounded-md text-app-text-muted hover:bg-app-hover hover:text-app-text"
             title="Previous range"
           >
             <ChevronLeft size={14} />
@@ -241,21 +236,21 @@ export default function SessionsPage(): React.JSX.Element {
           <button
             type="button"
             onClick={goToday}
-            className="h-7 rounded-md px-2 text-xs text-zinc-400 hover:bg-white/[0.04] hover:text-zinc-200"
+            className="h-7 rounded-md px-2 text-xs text-app-text-muted hover:bg-app-hover hover:text-app-text"
           >
             Today
           </button>
           <button
             type="button"
             onClick={() => shiftRange(1)}
-            className="flex h-7 w-7 items-center justify-center rounded-md text-zinc-400 hover:bg-white/[0.04] hover:text-zinc-200"
+            className="flex h-7 w-7 items-center justify-center rounded-md text-app-text-muted hover:bg-app-hover hover:text-app-text"
             title="Next range"
           >
             <ChevronRight size={14} />
           </button>
         </div>
-        <span className="text-sm text-zinc-300">{rangeLabel}</span>
-        <div className="ml-auto flex items-center gap-1 rounded-md border border-white/[0.06] bg-white/[0.02] p-0.5">
+        <span className="text-sm text-app-text-secondary">{rangeLabel}</span>
+        <div className="ml-auto flex items-center gap-1 rounded-md border border-app-border bg-app-hover p-0.5">
           {DAY_OPTIONS.map((opt) => (
             <button
               key={opt}
@@ -264,8 +259,8 @@ export default function SessionsPage(): React.JSX.Element {
               className={cn(
                 'h-6 rounded-sm px-2 text-xs transition-colors',
                 dayCount === opt
-                  ? 'bg-white/[0.1] text-zinc-100'
-                  : 'text-zinc-400 hover:text-zinc-200'
+                  ? 'bg-app-active text-app-text'
+                  : 'text-app-text-muted hover:text-app-text'
               )}
             >
               {opt} {opt === 1 ? 'day' : 'days'}
@@ -281,12 +276,12 @@ export default function SessionsPage(): React.JSX.Element {
       )}
 
       {projectTasks.length === 0 && (
-        <div className="mx-4 mb-2 rounded-md border border-white/[0.06] bg-white/[0.02] px-3 py-1.5 text-xs text-zinc-400">
+        <div className="mx-4 mb-2 rounded-md border border-app-border bg-app-hover px-3 py-1.5 text-xs text-app-text-secondary">
           Only tasks that belong to a project can be scheduled. Add a project first, then a task.
         </div>
       )}
 
-      <div className="min-h-0 flex-1 border-t border-white/[0.06]">
+      <div className="min-h-0 flex-1 border-t border-app-border">
         <SessionsCalendar
           days={days}
           sessions={sessions}
@@ -323,216 +318,6 @@ export default function SessionsPage(): React.JSX.Element {
           onSwitchToTask={() => setDraftMode('task')}
         />
       )}
-
     </div>
   )
-}
-
-interface TaskPickerDialogProps {
-  draft: DraftCreate
-  tasks: ReadonlyArray<{ id: string; title: string; projectId?: string }>
-  projectById: Map<string, { id: string; name: string; color: string; emoji?: string }>
-  onCancel: () => void
-  onPick: (taskId: string) => void
-  onSwitchToGhost: () => void
-}
-
-function TaskPickerDialog({
-  draft,
-  tasks,
-  projectById,
-  onCancel,
-  onPick,
-  onSwitchToGhost
-}: TaskPickerDialogProps): React.JSX.Element {
-  const [query, setQuery] = useState('')
-  const filtered = useMemo(() => {
-    const q = query.trim().toLowerCase()
-    if (!q) return tasks
-    return tasks.filter((t) => t.title.toLowerCase().includes(q))
-  }, [query, tasks])
-
-  const startMin = minutesFromIso(draft.startAt)
-  const endMin = minutesFromIso(draft.endAt)
-  const day = new Date(draft.dayIso).toLocaleDateString(undefined, {
-    weekday: 'short',
-    month: 'short',
-    day: 'numeric'
-  })
-
-  return (
-    <div
-      className="fixed inset-0 z-40 flex items-center justify-center bg-black/50 p-6"
-      onClick={onCancel}
-    >
-      <div
-        className="w-full max-w-md overflow-hidden rounded-lg border border-white/[0.06] bg-app-bg shadow-xl"
-        onClick={(e) => e.stopPropagation()}
-      >
-        <div className="flex items-center justify-between border-b border-white/[0.06] px-4 py-3">
-          <div>
-            <div className="text-sm text-zinc-100">New session</div>
-            <div className="text-[11px] text-zinc-500">
-              {day} · {formatHM(startMin)}–{formatHM(endMin)}
-            </div>
-          </div>
-          <div className="flex items-center gap-2">
-            <button
-              type="button"
-              onClick={onSwitchToGhost}
-              className="h-6 rounded px-2 text-[11px] text-zinc-400 hover:bg-white/[0.04] hover:text-zinc-200"
-              title="Add ghost block instead"
-            >
-              Ghost block
-            </button>
-            <button
-              type="button"
-              onClick={onCancel}
-              className="flex h-6 w-6 items-center justify-center rounded text-zinc-500 hover:bg-white/[0.04] hover:text-zinc-200"
-            >
-              <X size={14} />
-            </button>
-          </div>
-        </div>
-        <div className="border-b border-white/[0.06] px-4 py-2">
-          <input
-            autoFocus
-            value={query}
-            onChange={(e) => setQuery(e.target.value)}
-            onKeyDown={(e) => e.key === 'Escape' && onCancel()}
-            placeholder="Search tasks..."
-            className="h-8 w-full bg-transparent text-sm text-zinc-200 placeholder:text-zinc-600 focus:outline-none"
-          />
-        </div>
-        <div className="max-h-80 overflow-y-auto py-1">
-          {filtered.length === 0 ? (
-            <div className="px-4 py-6 text-center text-xs text-zinc-500">
-              No project tasks match.
-            </div>
-          ) : (
-            filtered.map((task) => {
-              const project = task.projectId ? projectById.get(task.projectId) : undefined
-              return (
-                <button
-                  key={task.id}
-                  type="button"
-                  onClick={() => onPick(task.id)}
-                  className="flex w-full items-center gap-2 px-4 py-2 text-left text-sm text-zinc-200 hover:bg-white/[0.04]"
-                >
-                  {project && (
-                    <span
-                      className="size-2 shrink-0 rounded-full"
-                      style={{ background: project.color }}
-                    />
-                  )}
-                  <span className="flex-1 truncate">{task.title}</span>
-                  {project && (
-                    <span className="text-[11px] text-zinc-500">
-                      {project.emoji ?? ''} {project.name}
-                    </span>
-                  )}
-                </button>
-              )
-            })
-          )}
-        </div>
-      </div>
-    </div>
-  )
-}
-
-interface GhostBlockDialogProps {
-  draft: DraftCreate
-  onCancel: () => void
-  onCreate: (label: string) => void
-  onSwitchToTask: () => void
-}
-
-function GhostBlockDialog({
-  draft,
-  onCancel,
-  onCreate,
-  onSwitchToTask
-}: GhostBlockDialogProps): React.JSX.Element {
-  const [label, setLabel] = useState('')
-
-  const startMin = minutesFromIso(draft.startAt)
-  const endMin = minutesFromIso(draft.endAt)
-  const day = new Date(draft.dayIso).toLocaleDateString(undefined, {
-    weekday: 'short',
-    month: 'short',
-    day: 'numeric'
-  })
-
-  const handleSubmit = (e: React.FormEvent): void => {
-    e.preventDefault()
-    onCreate(label.trim() || 'Block')
-  }
-
-  return (
-    <div
-      className="fixed inset-0 z-40 flex items-center justify-center bg-black/50 p-6"
-      onClick={onCancel}
-    >
-      <div
-        className="w-full max-w-md overflow-hidden rounded-lg border border-white/[0.06] bg-app-bg shadow-xl"
-        onClick={(e) => e.stopPropagation()}
-      >
-        <div className="flex items-center justify-between border-b border-white/[0.06] px-4 py-3">
-          <div>
-            <div className="text-sm text-zinc-100">New ghost block</div>
-            <div className="text-[11px] text-zinc-500">
-              {day} · {formatHM(startMin)}–{formatHM(endMin)}
-            </div>
-          </div>
-          <div className="flex items-center gap-2">
-            <button
-              type="button"
-              onClick={onSwitchToTask}
-              className="h-6 rounded px-2 text-[11px] text-zinc-400 hover:bg-white/[0.04] hover:text-zinc-200"
-            >
-              Task session
-            </button>
-            <button
-              type="button"
-              onClick={onCancel}
-              className="flex h-6 w-6 items-center justify-center rounded text-zinc-500 hover:bg-white/[0.04] hover:text-zinc-200"
-            >
-              <X size={14} />
-            </button>
-          </div>
-        </div>
-        <form onSubmit={handleSubmit} className="px-4 py-3">
-          <input
-            autoFocus
-            value={label}
-            onChange={(e) => setLabel(e.target.value)}
-            onKeyDown={(e) => e.key === 'Escape' && onCancel()}
-            placeholder="Label (e.g. Lunch, Break...)"
-            className="h-8 w-full bg-transparent text-sm text-zinc-200 placeholder:text-zinc-600 focus:outline-none"
-          />
-          <div className="mt-3 flex justify-end gap-2">
-            <button
-              type="button"
-              onClick={onCancel}
-              className="h-7 rounded px-3 text-xs text-zinc-400 hover:bg-white/[0.04] hover:text-zinc-200"
-            >
-              Cancel
-            </button>
-            <button
-              type="submit"
-              className="h-7 rounded bg-white/[0.08] px-3 text-xs text-zinc-200 hover:bg-white/[0.12]"
-            >
-              Add block
-            </button>
-          </div>
-        </form>
-      </div>
-    </div>
-  )
-}
-
-function minutesFromIso(iso: string): number {
-  const d = new Date(iso)
-  return d.getHours() * 60 + d.getMinutes()
 }
