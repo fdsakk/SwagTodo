@@ -6,6 +6,7 @@ import {
   ChevronRight,
   Hash,
   Inbox,
+  Palette,
   Plus,
   Sun,
   ZoomIn
@@ -48,8 +49,8 @@ function NavItem({
       className={cn(
         'flex h-8 w-full items-center rounded-md px-2 text-sm transition-colors',
         active
-          ? 'bg-white/[0.06] text-zinc-100'
-          : 'text-zinc-400 hover:bg-white/[0.03] hover:text-zinc-200',
+          ? 'bg-app-active text-app-text'
+          : 'text-app-text-secondary hover:bg-app-hover hover:text-app-text',
         collapsed && 'justify-center px-0'
       )}
       onClick={onClick}
@@ -81,6 +82,7 @@ export default function Sidebar(props: SidebarProps): React.JSX.Element {
     selectToday,
     selectActivity,
     selectSessions,
+    selectSettings,
     selectProject,
     setUiScale,
     toggleSidebar
@@ -97,6 +99,7 @@ export default function Sidebar(props: SidebarProps): React.JSX.Element {
       selectToday: state.selectToday,
       selectActivity: state.selectActivity,
       selectSessions: state.selectSessions,
+      selectSettings: state.selectSettings,
       selectProject: state.selectProject,
       setUiScale: state.setUiScale,
       toggleSidebar: state.toggleSidebar
@@ -132,10 +135,17 @@ export default function Sidebar(props: SidebarProps): React.JSX.Element {
         isSidebarCollapsed ? 'w-[56px]' : 'w-[220px]'
       )}
     >
-      <div className={cn('flex h-12 items-center px-2', isSidebarCollapsed ? 'justify-center' : 'justify-between')}>
-        {!isSidebarCollapsed && <span className="text-xs font-medium text-zinc-500">Tasks</span>}
+      <div
+        className={cn(
+          'flex h-12 items-center px-2',
+          isSidebarCollapsed ? 'justify-center' : 'justify-between'
+        )}
+      >
+        {!isSidebarCollapsed && (
+          <span className="text-xs font-medium text-app-text-muted">Tasks</span>
+        )}
         <button
-          className="flex h-8 w-8 items-center justify-center rounded-md text-zinc-400 hover:bg-white/[0.03] hover:text-zinc-200"
+          className="flex h-8 w-8 items-center justify-center rounded-md text-app-text-secondary hover:bg-app-hover hover:text-app-text"
           onClick={toggleSidebar}
           type="button"
         >
@@ -174,14 +184,21 @@ export default function Sidebar(props: SidebarProps): React.JSX.Element {
           label="Sessions"
           onClick={selectSessions}
         />
+        <NavItem
+          active={selectedView === 'settings'}
+          collapsed={isSidebarCollapsed}
+          icon={<Palette size={14} />}
+          label="Appearance"
+          onClick={selectSettings}
+        />
       </div>
 
       <div className="mt-6 flex-1 overflow-x-hidden overflow-y-auto px-2">
         {!isSidebarCollapsed && (
           <div className="mb-1 flex items-center justify-between px-2 py-1">
-            <span className="text-[11px] font-medium text-zinc-500">Projects</span>
+            <span className="text-[11px] font-medium text-app-text-muted">Projects</span>
             <button
-              className="flex h-5 w-5 items-center justify-center rounded text-zinc-500 hover:bg-white/[0.04] hover:text-zinc-300"
+              className="flex h-5 w-5 items-center justify-center rounded text-app-text-muted hover:bg-app-hover hover:text-app-text-secondary"
               onClick={props.onOpenProjectPanel}
               type="button"
             >
@@ -198,8 +215,8 @@ export default function Sidebar(props: SidebarProps): React.JSX.Element {
                 className={cn(
                   'flex h-8 w-full items-center rounded-md px-2 text-sm transition-colors',
                   active
-                    ? 'bg-white/[0.06] text-zinc-100'
-                    : 'text-zinc-400 hover:bg-white/[0.03] hover:text-zinc-200',
+                    ? 'bg-app-active text-app-text'
+                    : 'text-app-text-secondary hover:bg-app-hover hover:text-app-text',
                   isSidebarCollapsed && 'justify-center px-0'
                 )}
                 key={project.id}
@@ -220,13 +237,13 @@ export default function Sidebar(props: SidebarProps): React.JSX.Element {
 
       {!isSidebarCollapsed && (
         <div className="px-2 py-2 space-y-0.5 overflow-hidden">
-          <div className="flex h-8 w-full items-center rounded-md px-2 text-sm text-zinc-400 gap-2 whitespace-nowrap">
+          <div className="flex h-8 w-full items-center rounded-md px-2 text-sm text-app-text-secondary gap-2 whitespace-nowrap">
             <span className="flex h-4 w-4 items-center justify-center">
               <ZoomIn size={13} />
             </span>
             <span className="text-left text-[0.8rem] ">UI scale</span>
             <Select onValueChange={handleScaleChange} value={String(uiScale)}>
-              <SelectTrigger className="h-6 w-20 border-white/[0.08] pl-4 pr-2 bg-white/[0.02] text-[0.8rem] text-zinc-400">
+              <SelectTrigger className="h-6 w-20 border-app-border pl-4 pr-2 bg-app-hover text-[0.8rem] text-app-text-secondary">
                 <SelectValue />
               </SelectTrigger>
               <SelectContent>
@@ -241,7 +258,7 @@ export default function Sidebar(props: SidebarProps): React.JSX.Element {
 
           {labels.length > 0 && (
             <button
-              className="flex h-8 w-full items-center rounded-md px-2 text-sm text-zinc-400 hover:bg-white/[0.03] hover:text-zinc-200"
+              className="flex h-8 w-full items-center rounded-md px-2 text-sm text-app-text-secondary hover:bg-app-hover hover:text-app-text"
               onClick={props.onOpenLabelModal}
               type="button"
             >

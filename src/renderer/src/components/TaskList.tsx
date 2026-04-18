@@ -17,8 +17,8 @@ export default function TaskList(props: TaskListProps): React.JSX.Element {
   if (!hasTasks) {
     return (
       <div className="flex h-full flex-col items-center justify-center text-center">
-        <p className="text-sm text-zinc-300">{props.emptyStateTitle}</p>
-        <p className="mt-1 text-xs text-zinc-500">{props.emptyStateDescription}</p>
+        <p className="text-sm text-app-text-secondary">{props.emptyStateTitle}</p>
+        <p className="mt-1 text-xs text-app-text-muted">{props.emptyStateDescription}</p>
       </div>
     )
   }
@@ -29,7 +29,7 @@ export default function TaskList(props: TaskListProps): React.JSX.Element {
         {props.groups.map((group, groupIndex) =>
           group.tasks.length > 0 ? (
             <section key={group.id}>
-              <h3 className="mb-1 px-2 text-xs font-medium text-zinc-500">{group.title}</h3>
+              <h3 className="mb-1 px-2 text-xs font-medium text-app-text-muted">{group.title}</h3>
               <ul>
                 {group.tasks.map((task, taskIndex) => {
                   const index =

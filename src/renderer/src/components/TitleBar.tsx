@@ -54,8 +54,8 @@ export default function TitleBar(): React.JSX.Element | null {
       className="flex h-8 shrink-0 items-center justify-between select-none px-2.5 z-50"
       style={{ WebkitAppRegion: 'drag' } as React.CSSProperties}
     >
-      <span className="text-sm text-zinc-400 ml-2">😎</span>
-      <span className="text-xs font-medium tracking-wide tabular-nums text-zinc-400">{clock}</span>
+      <span className="text-sm text-app-text-secondary ml-2">😎</span>
+      <span className="text-xs font-medium tracking-wide tabular-nums text-app-text-secondary">{clock}</span>
 
       {!isMac && (
         <div

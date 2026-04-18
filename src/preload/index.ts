@@ -60,6 +60,12 @@ interface TimeBlock {
   createdAt: string
 }
 
+interface AppearanceSettings {
+  themeId: string
+  customTokens: Record<string, string>
+  backgroundId: string
+}
+
 interface AppState {
   tasks: Task[]
   projects: Project[]
@@ -68,6 +74,7 @@ interface AppState {
   timeBlocks: TimeBlock[]
   uiScale?: UiScale
   isSidebarCollapsed?: boolean
+  appearance?: AppearanceSettings
 }
 
 interface WindowState {

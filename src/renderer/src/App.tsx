@@ -11,6 +11,9 @@ import TodayPage from '@renderer/pages/TodayPage'
 import ActivityPage from '@renderer/pages/ActivityPage'
 import ProjectPage from '@renderer/pages/ProjectPage'
 import SessionsPage from '@renderer/pages/SessionsPage'
+import SettingsPage from '@renderer/pages/SettingsPage'
+import ThemeProvider from '@renderer/components/ThemeProvider'
+import BackgroundLayer from '@renderer/components/BackgroundLayer'
 import useAppStore from '@renderer/store/useAppStore'
 import { useKeyboardShortcuts } from '@renderer/hooks/useKeyboardShortcuts'
 import { useShallow } from 'zustand/react/shallow'
@@ -34,6 +37,7 @@ function App(): React.JSX.Element {
     selectToday,
     selectActivity,
     selectSessions,
+    selectSettings,
     selectProject,
     projects,
     toggleSidebar,
@@ -57,6 +61,7 @@ function App(): React.JSX.Element {
       selectToday: state.selectToday,
       selectActivity: state.selectActivity,
       selectSessions: state.selectSessions,
+      selectSettings: state.selectSettings,
       selectProject: state.selectProject,
       projects: state.projects,
       toggleSidebar: state.toggleSidebar,
@@ -94,6 +99,7 @@ function App(): React.JSX.Element {
     onGoToday: selectToday,
     onGoActivity: selectActivity,
     onGoSessions: selectSessions,
+    onGoSettings: selectSettings,
     onGoProjects: () => setProjectPickerOpen(true),
     onProjectTabList: () => setProjectTab('list'),
     onProjectTabKanban: () => setProjectTab('kanban')
@@ -112,6 +118,8 @@ function App(): React.JSX.Element {
 
   return (
     <div className="flex h-full flex-col overflow-hidden rounded-xl bg-app-titlebar px-2 pb-2">
+      <ThemeProvider />
+      <BackgroundLayer />
       <TitleBar />
       <div className="relative flex min-h-0 flex-1 overflow-hidden rounded-lg bg-app-bg">
         <Sidebar
@@ -120,12 +128,19 @@ function App(): React.JSX.Element {
         />
 
         <div className="flex min-w-0 flex-1 flex-col overflow-hidden bg-app-content">
-          {selectedView !== 'sessions' && <SearchSortBar />}
-          <div className={selectedView === 'sessions' ? 'min-h-0 flex-1' : 'min-h-0 flex-1 mt-4'}>
+          {selectedView !== 'sessions' && selectedView !== 'settings' && <SearchSortBar />}
+          <div
+            className={
+              selectedView === 'sessions' || selectedView === 'settings'
+                ? 'min-h-0 flex-1 overflow-y-auto'
+                : 'min-h-0 flex-1 mt-4'
+            }
+          >
             {selectedView === 'inbox' && <InboxPage />}
             {selectedView === 'today' && <TodayPage />}
             {selectedView === 'activity' && <ActivityPage />}
             {selectedView === 'sessions' && <SessionsPage />}
+            {selectedView === 'settings' && <SettingsPage />}
             {selectedView === 'project' && (
               <ProjectPage onEditProject={(project) => openEditProjectPanel(project.id)} />
             )}
@@ -138,11 +153,11 @@ function App(): React.JSX.Element {
       <button
         type="button"
         onClick={() => setHelpOpen((v) => !v)}
-        className="absolute bottom-1 right-1 z-10 flex items-center gap-1.5 rounded-ss-xl bg-app-titlebar px-2 py-1.5 text-[10px] text-zinc-500 hover:text-zinc-300 transition-colors"
+        className="absolute bottom-1 right-1 z-10 flex items-center gap-1.5 rounded-ss-xl bg-app-titlebar px-2 py-1.5 text-[10px] text-app-text-muted hover:text-app-text-secondary transition-colors"
         title="Show keyboard shortcuts"
       >
         <span>Help</span>
-        <kbd className="rounded border border-white/[0.08] bg-white/[0.04] px-1 font-mono text-[9px] text-zinc-300">
+        <kbd className="rounded border border-app-border bg-app-hover px-1 font-mono text-[9px] text-app-text-secondary">
           ?
         </kbd>
       </button>

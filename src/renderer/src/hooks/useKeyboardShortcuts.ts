@@ -12,6 +12,7 @@ interface KeyboardShortcutOptions {
   onGoToday: () => void
   onGoActivity: () => void
   onGoSessions: () => void
+  onGoSettings: () => void
   onGoProjects: () => void
   onProjectTabList: () => void
   onProjectTabKanban: () => void
@@ -87,6 +88,12 @@ export function useKeyboardShortcuts(options: KeyboardShortcutOptions): void {
           event.preventDefault()
           o.onGoSessions()
           return
+      }
+
+      if (event.key === ',') {
+        event.preventDefault()
+        o.onGoSettings()
+        return
       }
 
       if (event.key === '/') {

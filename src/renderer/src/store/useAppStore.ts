@@ -3,6 +3,11 @@ import { v4 as uuidv4 } from 'uuid'
 import {
   TASK_STATUSES,
   UI_SCALE_OPTIONS,
+  DEFAULT_APPEARANCE,
+  normalizeAppearance,
+  type AppearanceSettings,
+  type ThemeId,
+  type ThemeTokens,
   type AppState,
   type CreateTaskInput,
   type Label,
@@ -74,11 +79,13 @@ interface AppStore extends AppState {
   uiScale: UiScale
   projectTab: ProjectTab
   searchFocusSignal: number
+  appearance: AppearanceSettings
   hydrate: () => Promise<void>
   selectInbox: () => void
   selectToday: () => void
   selectActivity: () => void
   selectSessions: () => void
+  selectSettings: () => void
   selectProject: (projectId: string) => void
   setProjectTab: (tab: ProjectTab) => void
   setSearchQuery: (query: string) => void
@@ -116,6 +123,10 @@ interface AppStore extends AppState {
   addTimeBlock: (input: TimeBlockCreateInput) => TimeBlockResult
   updateTimeBlock: (id: string, updates: TimeBlockUpdateInput) => TimeBlockUpdateResult
   deleteTimeBlock: (id: string) => void
+  setThemeId: (id: ThemeId) => void
+  setCustomTokens: (tokens: Partial<ThemeTokens>) => void
+  resetCustomTokens: () => void
+  setBackgroundId: (id: string) => void
 }
 
 const UI_SCALE_SET: ReadonlySet<number> = new Set(UI_SCALE_OPTIONS)
@@ -130,8 +141,7 @@ const nextOrder = (tasks: readonly Task[]): number => {
   return max + 1
 }
 
-const isUiScale = (v: unknown): v is UiScale =>
-  typeof v === 'number' && UI_SCALE_SET.has(v)
+const isUiScale = (v: unknown): v is UiScale => typeof v === 'number' && UI_SCALE_SET.has(v)
 
 const nowIso = (): string => new Date().toISOString()
 
@@ -162,6 +172,7 @@ const useAppStore = create<AppStore>((set, get) => ({
   sortMode: 'priority',
   showCompleted: false,
   uiScale: 100,
+  appearance: DEFAULT_APPEARANCE,
   projectTab: 'list',
   searchFocusSignal: 0,
   hydrate: async () => {
@@ -180,6 +191,7 @@ const useAppStore = create<AppStore>((set, get) => ({
         timeBlocks: persisted?.timeBlocks ?? [],
         uiScale: isUiScale(persisted?.uiScale) ? persisted.uiScale : 100,
         isSidebarCollapsed: persisted?.isSidebarCollapsed ?? false,
+        appearance: normalizeAppearance(persisted?.appearance),
         hydrated: true
       })
     } catch (err) {
@@ -191,6 +203,7 @@ const useAppStore = create<AppStore>((set, get) => ({
   selectToday: () => set({ selectedView: 'today', selectedProjectId: undefined }),
   selectActivity: () => set({ selectedView: 'activity', selectedProjectId: undefined }),
   selectSessions: () => set({ selectedView: 'sessions', selectedProjectId: undefined }),
+  selectSettings: () => set({ selectedView: 'settings', selectedProjectId: undefined }),
   selectProject: (projectId) => set({ selectedView: 'project', selectedProjectId: projectId }),
   setProjectTab: (tab) => set({ projectTab: tab }),
   setSearchQuery: (query) => set({ searchQuery: query }),
@@ -272,9 +285,7 @@ const useAppStore = create<AppStore>((set, get) => ({
       tasks.splice(idx, 1)
       const sessions = state.sessions.filter((s) => s.taskId !== taskId)
       const closingEdited =
-        state.taskPanel.open &&
-        state.taskPanel.mode === 'edit' &&
-        state.taskPanel.taskId === taskId
+        state.taskPanel.open && state.taskPanel.mode === 'edit' && state.taskPanel.taskId === taskId
       return {
         tasks,
         sessions: sessions.length === state.sessions.length ? state.sessions : sessions,
@@ -493,6 +504,14 @@ const useAppStore = create<AppStore>((set, get) => ({
       timeBlocks.splice(idx, 1)
       return { timeBlocks }
     }),
+  setThemeId: (id) =>
+    set((s) => ({ appearance: { ...s.appearance, themeId: id, customTokens: {} } })),
+  setCustomTokens: (tokens) =>
+    set((s) => ({
+      appearance: { ...s.appearance, customTokens: { ...s.appearance.customTokens, ...tokens } }
+    })),
+  resetCustomTokens: () => set((s) => ({ appearance: { ...s.appearance, customTokens: {} } })),
+  setBackgroundId: (id) => set((s) => ({ appearance: { ...s.appearance, backgroundId: id } })),
   applyKanbanOrder: (projectId, columns) => {
     const updatedAt = nowIso()
     const byTaskId = new Map<string, { status: TaskStatus; order: number }>()
@@ -535,17 +554,28 @@ useAppStore.subscribe((state, prev) => {
     state.sessions === prev.sessions &&
     state.timeBlocks === prev.timeBlocks &&
     state.uiScale === prev.uiScale &&
-    state.isSidebarCollapsed === prev.isSidebarCollapsed
+    state.isSidebarCollapsed === prev.isSidebarCollapsed &&
+    state.appearance === prev.appearance
   ) {
     return
   }
 
   if (persistTimer) clearTimeout(persistTimer)
-  const { tasks, projects, labels, sessions, timeBlocks, uiScale, isSidebarCollapsed } = state
+  const { tasks, projects, labels, sessions, timeBlocks, uiScale, isSidebarCollapsed, appearance } =
+    state
   persistTimer = setTimeout(() => {
     persistTimer = undefined
     window.api.storage
-      .saveState({ tasks, projects, labels, sessions, timeBlocks, uiScale, isSidebarCollapsed })
+      .saveState({
+        tasks,
+        projects,
+        labels,
+        sessions,
+        timeBlocks,
+        uiScale,
+        isSidebarCollapsed,
+        appearance
+      })
       .catch((err) => console.error('[store] persist failed', err))
   }, PERSIST_DEBOUNCE_MS)
 })

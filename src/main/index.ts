@@ -14,8 +14,7 @@ const DEFAULT_UI_SCALE: UiScale = 100
 const MIN_ZOOM_FACTOR = UI_SCALE_OPTIONS[0] / 100
 const MAX_ZOOM_FACTOR = UI_SCALE_OPTIONS[UI_SCALE_OPTIONS.length - 1] / 100
 const IS_MAC = process.platform === 'darwin'
-const IS_WAYLAND =
-  process.platform === 'linux' && process.env.XDG_SESSION_TYPE === 'wayland'
+const IS_WAYLAND = process.platform === 'linux' && process.env.XDG_SESSION_TYPE === 'wayland'
 
 interface SubTask {
   id: string
@@ -72,6 +71,12 @@ interface TimeBlock {
   createdAt: string
 }
 
+interface AppearanceSettings {
+  themeId: string
+  customTokens: Record<string, string>
+  backgroundId: string
+}
+
 interface AppState {
   tasks: Task[]
   projects: Project[]
@@ -80,6 +85,7 @@ interface AppState {
   timeBlocks: TimeBlock[]
   uiScale?: UiScale
   isSidebarCollapsed?: boolean
+  appearance?: AppearanceSettings
 }
 
 const defaultAppState: AppState = {
@@ -109,8 +115,7 @@ if (IS_WAYLAND) {
   )
 }
 
-const isUiScale = (v: unknown): v is UiScale =>
-  typeof v === 'number' && UI_SCALE_SET.has(v)
+const isUiScale = (v: unknown): v is UiScale => typeof v === 'number' && UI_SCALE_SET.has(v)
 
 const isZoomFactor = (v: unknown): v is number =>
   typeof v === 'number' && v >= MIN_ZOOM_FACTOR && v <= MAX_ZOOM_FACTOR
@@ -204,9 +209,7 @@ function registerIpcHandlers(): void {
     appStore.set('appState', nextState)
   })
 
-  ipcMain.handle('ui:getZoomFactor', (event) =>
-    senderWindow(event).webContents.getZoomFactor()
-  )
+  ipcMain.handle('ui:getZoomFactor', (event) => senderWindow(event).webContents.getZoomFactor())
 
   ipcMain.handle('ui:setZoomFactor', (event, nextZoomFactor: unknown) => {
     if (!isZoomFactor(nextZoomFactor)) throw new Error('Invalid zoom factor payload')

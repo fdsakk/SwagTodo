@@ -40,12 +40,19 @@ export default {
           foreground: 'hsl(var(--card-foreground))'
         },
         app: {
-          bg: 'hsl(0 0% 5%)',
-          titlebar: 'hsl(0 0 1.5%)',
-          sidebar: 'hsl(0 0% 3%)',
-          content: 'hsl(0 0% 5%)',
-          card: 'hsl(0 0% 6%)',
-          accent: 'hsl(0 0% 90%)'
+          bg: 'var(--app-bg)',
+          titlebar: 'var(--app-titlebar)',
+          sidebar: 'var(--app-sidebar)',
+          content: 'var(--app-content)',
+          card: 'var(--app-card)',
+          accent: 'var(--app-accent)',
+          'accent-text': 'var(--app-accent-text)',
+          text: 'var(--app-text)',
+          'text-secondary': 'var(--app-text-secondary)',
+          'text-muted': 'var(--app-text-muted)',
+          border: 'var(--app-border)',
+          hover: 'var(--app-hover)',
+          active: 'var(--app-active)'
         },
         priority: {
           p1: 'hsl(0 70% 60%)',

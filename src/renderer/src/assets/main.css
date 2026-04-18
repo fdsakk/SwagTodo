@@ -72,10 +72,10 @@
 }
 
 ::-webkit-scrollbar-thumb {
-  background: hsl(0 0% 15%);
+  background: var(--app-scrollbar, hsl(0 0% 15%));
   border-radius: 999px;
 }
 
 ::-webkit-scrollbar-thumb:hover {
-  background: hsl(0 0% 22%);
+  background: var(--app-scrollbar-hover, hsl(0 0% 22%));
 }

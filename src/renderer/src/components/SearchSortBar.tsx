@@ -46,11 +46,11 @@ export default function SearchSortBar(): React.JSX.Element {
     <div className="flex h-12 items-center gap-3 px-4">
       <div className="relative flex-1">
         <Search
-          className="pointer-events-none absolute left-0 top-1/2 -translate-y-1/2 text-zinc-600"
+          className="pointer-events-none absolute left-0 top-1/2 -translate-y-1/2 text-app-text-muted"
           size={14}
         />
         <input
-          className="h-8 w-full bg-transparent pl-6 text-sm text-zinc-200 placeholder:text-zinc-600 focus:outline-none"
+          className="h-8 w-full bg-transparent pl-6 text-sm text-app-text placeholder:text-app-text-muted focus:outline-none"
           onChange={(event) => setSearchQuery(event.target.value)}
           placeholder="Search"
           ref={inputRef}
@@ -58,7 +58,7 @@ export default function SearchSortBar(): React.JSX.Element {
         />
       </div>
       <Select onValueChange={(value) => setSortMode(value as typeof sortMode)} value={sortMode}>
-        <SelectTrigger className="h-8 w-auto gap-1 border-0 bg-transparent px-2 text-xs text-zinc-500 shadow-none hover:text-zinc-300 focus:ring-0">
+        <SelectTrigger className="h-8 w-auto gap-1 border-0 bg-transparent px-2 text-xs text-app-text-muted shadow-none hover:text-app-text-secondary focus:ring-0">
           <SelectValue />
         </SelectTrigger>
         <SelectContent>
@@ -70,7 +70,7 @@ export default function SearchSortBar(): React.JSX.Element {
         </SelectContent>
       </Select>
       {selectedView !== 'project' && (
-        <label className="flex cursor-pointer items-center gap-2 px-2 text-xs text-zinc-500 hover:text-zinc-300">
+        <label className="flex cursor-pointer items-center gap-2 px-2 text-xs text-app-text-muted hover:text-app-text-secondary">
           <AnimatedCheckbox
             checked={showCompleted}
             className="size-[18px] rounded-[5px]"
@@ -80,7 +80,7 @@ export default function SearchSortBar(): React.JSX.Element {
         </label>
       )}
       <button
-        className="flex h-7 w-7 items-center justify-center rounded-md text-zinc-400 hover:bg-white/[0.06] hover:text-zinc-100"
+        className="flex h-7 w-7 items-center justify-center rounded-md text-app-text-secondary hover:bg-app-active hover:text-app-text"
         onClick={openCreatePanelForCurrentView}
         title="Add task"
         type="button"
