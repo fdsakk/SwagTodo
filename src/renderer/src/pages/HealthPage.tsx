@@ -1,4 +1,4 @@
-import { useMemo, useState } from 'react'
+import { useMemo, useState, useCallback, useRef } from 'react'
 import { RotateCcw, Settings2, Trash2 } from 'lucide-react'
 import {
   Dialog,
@@ -22,8 +22,7 @@ import {
   generateDailyChartData,
   MED_PRESETS,
   MED_IDS,
-  MED_DISPLAY_NAME,
-  CHART_TICK_INTERVAL
+  MED_DISPLAY_NAME
 } from '@renderer/utils/pharmacokinetics'
 import { DEFAULT_MED_PK_SETTINGS } from '@renderer/types'
 import { cn } from '@renderer/utils/cn'
@@ -97,6 +96,14 @@ export function HealthPage(): React.JSX.Element {
 
   const [selectedDate, setSelectedDate] = useState(today)
   const [editingId, setEditingId] = useState<string | null>(null)
+  const [chartWidth, setChartWidth] = useState(600)
+  const roRef = useRef<ResizeObserver | null>(null)
+  const chartContainerRef = useCallback((node: HTMLDivElement | null) => {
+    roRef.current?.disconnect()
+    if (!node) return
+    roRef.current = new ResizeObserver(([entry]) => setChartWidth(entry.contentRect.width))
+    roRef.current.observe(node)
+  }, [])
 
   const todayLogs = useMemo(
     () => medications.filter((m) => m.takenAt.slice(0, 10) === selectedDate),
@@ -107,6 +114,8 @@ export function HealthPage(): React.JSX.Element {
     () => generateDailyChartData(todayLogs, selectedDate, pkSettings),
     [todayLogs, selectedDate, pkSettings]
   )
+
+  const xTickInterval = chartWidth < 700 ? 35 : chartWidth < 1000 ? 23 : 11
 
   const { maxConc, yTicks } = useMemo(() => {
     const max = Math.max(...chartData.map((p) => p.concentration), 0.1)
@@ -131,7 +140,7 @@ export function HealthPage(): React.JSX.Element {
   }
 
   return (
-    <div className="flex min-h-0 flex-1 flex-col gap-6 overflow-y-auto px-6 py-6">
+    <div className="flex min-h-0 flex-1 flex-col gap-6 overflow-y-auto px-6 py-6 overflow-hidden">
       {/* Header */}
       <div className="flex items-center gap-3">
         <h1 className="text-base font-semibold text-app-text">Medications</h1>
@@ -214,7 +223,7 @@ export function HealthPage(): React.JSX.Element {
       </div>
 
       {/* Chart */}
-      <div className="rounded-xl border border-app-border bg-app-card p-4 [&_*]:outline-none">
+      <div ref={chartContainerRef} className="rounded-xl border border-app-border bg-app-card p-4 [&_*]:outline-none">
         <p className="mb-3 text-xs font-medium text-app-text-muted">Estimated effect (effect-site model)</p>
         <ResponsiveContainer width="100%" height={200}>
           <AreaChart data={chartData} margin={{ top: 8, right: 8, bottom: 0, left: -16 }}>
@@ -227,10 +236,18 @@ export function HealthPage(): React.JSX.Element {
             <CartesianGrid strokeDasharray="2 4" stroke="var(--app-border)" vertical={false} />
             <XAxis
               dataKey="timeLabel"
-              tick={{ fontSize: 10, fill: 'var(--app-text-muted)' }}
+              tick={({ x, y, payload, index }) => {
+                if (index % (xTickInterval + 1) !== 0) return <g />
+                if (payload.value === '00:00' || payload.value === '24:00') return <g />
+                return (
+                  <text x={x} y={(y as number) + 10} textAnchor="middle" fontSize={10} fill="var(--app-text-muted)">
+                    {payload.value}
+                  </text>
+                )
+              }}
               tickLine={false}
               axisLine={false}
-              interval={CHART_TICK_INTERVAL}
+              interval={0}
             />
             <YAxis
               domain={[0, maxConc]}
@@ -287,7 +304,7 @@ export function HealthPage(): React.JSX.Element {
       </div>
 
       {/* Log list */}
-      <div>
+      <div className="w-1/2">
         <p className="mb-2 text-xs font-medium text-app-text-muted">
           Taken {selectedDate === today() ? 'today' : `on ${selectedDate}`}
         </p>

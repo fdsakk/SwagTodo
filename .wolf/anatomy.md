@@ -1,6 +1,6 @@
 # anatomy.md
 
-> Auto-maintained by OpenWolf. Last scanned: 2026-04-19T10:35:05.553Z
+> Auto-maintained by OpenWolf. Last scanned: 2026-04-19T10:49:43.191Z
 > Files: 124 tracked | Anatomy hits: 0 | Misses: 0
 
 ## ./
@@ -189,7 +189,7 @@
 ## src/renderer/src/pages/
 
 - `ActivityPage.tsx` — buildEvents — uses useMemo (~1495 tok)
-- `HealthPage.tsx` — today — renders modal (~3690 tok)
+- `HealthPage.tsx` — today — renders modal (~3930 tok)
 - `InboxPage.tsx` — InboxPage (~446 tok)
 - `ProjectPage.tsx` — ProjectPage — uses useMemo (~1197 tok)
 - `SessionsPage.tsx` — DAY_OPTIONS — uses useEffect, useMemo, useCallback (~2987 tok)
