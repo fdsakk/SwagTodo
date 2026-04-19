@@ -1,7 +1,7 @@
 import { memo } from 'react'
 import { Flag } from 'lucide-react'
-import { AnimatedCheckbox } from '@renderer/components/animated-checkbox'
-import { SubtaskProgressRing } from '@renderer/components/subtask-progress-ring'
+import { AnimatedCheckbox } from './animated-checkbox'
+import { SubtaskProgressRing } from './subtask-progress-ring'
 import type { Label, Project, Task } from '@renderer/types'
 import { PRIORITY_META, formatDueDate, isTaskOverdue } from '@renderer/utils/task'
 import { cn } from '@renderer/utils/cn'
@@ -15,7 +15,7 @@ interface TaskRowProps {
   onToggleComplete: (taskId: string) => void
 }
 
-function TaskRow(props: TaskRowProps): React.JSX.Element {
+function TaskRowBase(props: TaskRowProps): React.JSX.Element {
   const overdue = isTaskOverdue(props.task)
   const priorityMeta = PRIORITY_META[props.task.priority]
   const showFlag = props.task.priority !== 'p4'
@@ -90,4 +90,4 @@ function TaskRow(props: TaskRowProps): React.JSX.Element {
   )
 }
 
-export default memo(TaskRow)
+export const TaskRow = memo(TaskRowBase)

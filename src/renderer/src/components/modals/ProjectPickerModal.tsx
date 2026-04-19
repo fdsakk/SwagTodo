@@ -9,7 +9,7 @@ interface ProjectPickerModalProps {
   onSelect: (projectId: string) => void
 }
 
-export default function ProjectPickerModal({
+export function ProjectPickerModal({
   open,
   projects,
   onClose,

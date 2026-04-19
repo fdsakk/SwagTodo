@@ -1,14 +1,14 @@
 import { AnimatePresence, motion } from 'framer-motion'
 import useAppStore from '@renderer/store/useAppStore'
-import TaskEditPanel from '@renderer/components/TaskEditPanel'
-import TaskCreatePanel from '@renderer/components/TaskCreatePanel'
-import ProjectPanel from '@renderer/components/ProjectPanel'
+import { TaskEditPanel } from './TaskEditPanel'
+import { TaskCreatePanel } from './TaskCreatePanel'
+import { ProjectPanel } from '@renderer/components/project/ProjectPanel'
 
 interface TaskDetailPanelProps {
   onClose: () => void
 }
 
-export default function TaskDetailPanel({ onClose }: TaskDetailPanelProps): React.JSX.Element {
+export function TaskDetailPanel({ onClose }: TaskDetailPanelProps): React.JSX.Element {
   const taskPanel = useAppStore((state) => state.taskPanel)
   const task = useAppStore((state) =>
     taskPanel.open && taskPanel.mode === 'edit'

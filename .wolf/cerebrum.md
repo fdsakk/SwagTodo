@@ -6,20 +6,27 @@
 
 ## User Preferences
 
-<!-- How the user likes things done. Code style, tools, patterns, communication. -->
 - Keep page padding and content alignment visually consistent across views (especially matching Activity/Today spacing).
+- Components must be organized in subfolders — no loose files at `components/` root.
+- All component exports are **named** (not default). Default exports only in legacy shadcn/ui primitives under `components/ui/`.
+- Each component subfolder has an `index.tsx` barrel that re-exports everything from that folder.
 
 ## Key Learnings
 
 - **Project:** swag-todo
 - **Description:** An Electron application with React and TypeScript
 - Settings/Appearance page should follow the same container rhythm used by list pages (`px-4` outer, `px-2` inner alignment) for consistent layout.
+- Component subfolders: `layout/`, `task-panel/`, `task-list/`, `modals/`, `project/`, `sidebar/`, `settings/`, `task-edit/`, `kanban/`, `backgrounds/`, `sessions-calendar/`, `ui/`. See CLAUDE.md component table for full mapping.
+- `SubtaskList` (`task-edit/`) imports `AnimatedCheckbox` from `task-list/animated-checkbox` — not from root.
+- `KanbanCard` (`kanban/`) imports `SubtaskProgressRing` from `task-list/subtask-progress-ring` — not from root.
+- `ProjectPanel` (`project/`) imports `Field` from `task-panel/panel-field` — shared primitive across folders.
 
 ## Do-Not-Repeat
 
-<!-- Mistakes made and corrected. Each entry prevents the same mistake recurring. -->
 <!-- Format: [YYYY-MM-DD] Description of what went wrong and what to do instead. -->
+- [2026-04-19] Do NOT place new components as loose files in `components/` root. Always put in appropriate subfolder + export from its `index.tsx`.
+- [2026-04-19] Do NOT use default exports for new components. Use named exports throughout.
 
 ## Decision Log
 
-<!-- Significant technical decisions with rationale. Why X was chosen over Y. -->
+- [2026-04-19] Moved all 23 loose `components/` root files into domain subfolders with `index.tsx` barrels. Rationale: reduce import noise, enforce discoverability, eliminate root clutter. Named exports chosen over default so barrel re-exports work without aliasing.

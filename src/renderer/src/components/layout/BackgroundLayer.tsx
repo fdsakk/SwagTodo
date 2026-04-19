@@ -1,12 +1,12 @@
 import useAppStore from '@renderer/store/useAppStore'
 import { useThemeColors } from '@renderer/hooks/useThemeColors'
-import Aurora from './backgrounds/Aurora'
-import Plasma from './backgrounds/Plasma'
-import PixelSnow from './backgrounds/Pixels'
-import PixelBlast from './backgrounds/PixelBlast'
-import SoftAurora from './backgrounds/SoftAurora'
+import Aurora from '@renderer/components/backgrounds/Aurora'
+import Plasma from '@renderer/components/backgrounds/Plasma'
+import PixelSnow from '@renderer/components/backgrounds/Pixels'
+import PixelBlast from '@renderer/components/backgrounds/PixelBlast'
+import SoftAurora from '@renderer/components/backgrounds/SoftAurora'
 
-export default function BackgroundLayer(): React.JSX.Element | null {
+export function BackgroundLayer(): React.JSX.Element | null {
   const backgroundId = useAppStore((s) => s.appearance.backgroundId)
   const { accent, bg } = useThemeColors()
 

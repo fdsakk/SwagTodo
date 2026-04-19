@@ -1,5 +1,5 @@
 import type { SubTask } from '@renderer/types'
-import { AnimatedCheckbox } from '@renderer/components/animated-checkbox'
+import { AnimatedCheckbox } from '@renderer/components/task-list/animated-checkbox'
 import { cn } from '@renderer/utils/cn'
 import { Trash2 } from 'lucide-react'
 

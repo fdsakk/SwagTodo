@@ -26,7 +26,7 @@ const SHORTCUTS: { keys: string[]; label: string }[] = [
   { keys: ['g'], label: 'Sessions: go to today' }
 ]
 
-export default function ShortcutsHelpModal({
+export function ShortcutsHelpModal({
   open,
   onClose
 }: ShortcutsHelpModalProps): React.JSX.Element {

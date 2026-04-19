@@ -1,7 +1,7 @@
 # anatomy.md
 
-> Auto-maintained by OpenWolf. Last scanned: 2026-04-18T22:00:00.313Z
-> Files: 112 tracked | Anatomy hits: 0 | Misses: 0
+> Auto-maintained by OpenWolf. Last scanned: 2026-04-19T09:03:53.463Z
+> Files: 121 tracked | Anatomy hits: 0 | Misses: 0
 
 ## ./
 
@@ -10,7 +10,7 @@
 - `.gitignore` — Git ignore rules (~14 tok)
 - `.prettierignore` (~18 tok)
 - `.prettierrc.yaml` (~19 tok)
-- `CLAUDE.md` — OpenWolf (~1694 tok)
+- `CLAUDE.md` — OpenWolf (~2010 tok)
 - `components.json` (~173 tok)
 - `electron-builder.yml` (~398 tok)
 - `electron.vite.config.ts` (~90 tok)
@@ -64,7 +64,7 @@
 
 ## src/renderer/src/
 
-- `App.tsx` — App — uses useState, useEffect (~1909 tok)
+- `App.tsx` — App (~1823 tok)
 - `env.d.ts` — / <reference types="vite/client" /> (~11 tok)
 - `main.tsx` (~97 tok)
 
@@ -75,33 +75,11 @@
 
 ## src/renderer/src/components/
 
-- `animated-checkbox.tsx` — AnimatedCheckbox (~427 tok)
-- `BackgroundLayer.tsx` — BackgroundLayer (~574 tok)
-- `color-selector.tsx` — sizeClass (~387 tok)
-- `custom-color-input.tsx` — HEX_RE — uses useState, useEffect (~573 tok)
-- `emoji-picker.tsx` — EMOJI_GROUPS — uses useState, useEffect (~995 tok)
-- `KanbanBoard.tsx` (~14 tok)
-- `LabelManagerModal.tsx` — LabelManagerModal — renders modal — uses useState (~1088 tok)
-- `panel-field.tsx` — Field (~91 tok)
-- `ProjectPanel.tsx` — ProjectPanel — renders form (~1568 tok)
-- `ProjectPickerModal.tsx` — ProjectPickerModal — uses useEffect (~1152 tok)
-- `SearchSortBar.tsx` — SearchSortBar — uses useEffect (~908 tok)
-- `SessionsCalendar.tsx` (~18 tok)
-- `ShortcutsHelpModal.tsx` — SHORTCUTS (~944 tok)
-- `Sidebar.tsx` — Sidebar — uses useMemo (~1373 tok)
-- `subtask-progress-ring.tsx` — SubtaskProgressRingBase (~558 tok)
-- `task-form-fields.tsx` — INBOX_VALUE — uses useCallback (~2283 tok)
-- `TaskCreatePanel.tsx` — INITIAL_STATE — renders form — uses useCallback (~1375 tok)
-- `TaskDetailPanel.tsx` — TaskDetailPanel (~859 tok)
-- `TaskEditPanel.tsx` — TEXT_COMMIT_DEBOUNCE_MS — uses useMemo, useState, useEffect, useCallback (~2150 tok)
-- `TaskList.tsx` — TaskList (~592 tok)
-- `TaskRow.tsx` — TaskRow (~848 tok)
-- `ThemeProvider.tsx` — ThemeProvider — uses useEffect (~144 tok)
-- `TitleBar.tsx` — isMac — uses useState, useEffect (~829 tok)
 
 ## src/renderer/src/components/backgrounds/
 
 - `Aurora.tsx` — VERT — uses useEffect (~1661 tok)
+- `index.tsx` (~70 tok)
 - `PixelBlast.tsx` — createTouchTexture — uses useRef, useEffect (~6568 tok)
 - `Pixels.tsx` — vertexShader — uses useRef, useMemo, useCallback, useEffect (~3240 tok)
 - `Plasma.tsx` — hexToRgb — uses useRef, useEffect (~1811 tok)
@@ -109,15 +87,41 @@
 
 ## src/renderer/src/components/kanban/
 
+- `index.tsx` (~88 tok)
 - `KanbanBoard.tsx` — KanbanBoard — uses useMemo, useCallback (~1681 tok)
-- `KanbanCard.tsx` — CardBody — uses useCallback (~741 tok)
+- `KanbanCard.tsx` — CardBody (~744 tok)
 - `KanbanCardPreview.tsx` — KanbanCardPreview (~151 tok)
 - `KanbanColumn.tsx` — KanbanColumn — uses useState, useMemo, useCallback (~889 tok)
 - `types.ts` — Exports COLUMNS, COLUMN_PREFIX, EMPTY_LABELS, byOrderAsc, resolveTaskLabels (~207 tok)
 
+## src/renderer/src/components/layout/
+
+- `BackgroundLayer.tsx` — BackgroundLayer (~599 tok)
+- `index.tsx` (~64 tok)
+- `SearchSortBar.tsx` — SearchSortBar (~909 tok)
+- `Sidebar.tsx` — Sidebar (~1387 tok)
+- `ThemeProvider.tsx` — ThemeProvider (~142 tok)
+- `TitleBar.tsx` — isMac (~827 tok)
+
+## src/renderer/src/components/modals/
+
+- `index.tsx` (~50 tok)
+- `LabelManagerModal.tsx` — LabelManagerModal — renders modal (~1086 tok)
+- `ProjectPickerModal.tsx` — ProjectPickerModal (~1150 tok)
+- `ShortcutsHelpModal.tsx` — SHORTCUTS (~942 tok)
+
+## src/renderer/src/components/project/
+
+- `color-selector.tsx` — sizeClass (~387 tok)
+- `custom-color-input.tsx` — HEX_RE (~573 tok)
+- `emoji-picker.tsx` — EMOJI_GROUPS (~995 tok)
+- `index.tsx` (~56 tok)
+- `ProjectPanel.tsx` — ProjectPanel — renders form (~1552 tok)
+
 ## src/renderer/src/components/sessions-calendar/
 
 - `DraftGhost.tsx` — DraftGhost (~212 tok)
+- `index.tsx` (~60 tok)
 - `SessionBlockView.tsx` — SessionBlockView (~676 tok)
 - `SessionsCalendar.tsx` — WEEKDAYS — uses useMemo, useEffect, useCallback (~5052 tok)
 - `TimeBlockView.tsx` — TimeBlockView (~566 tok)
@@ -127,19 +131,39 @@
 
 - `BackgroundSection.tsx` — BACKGROUND_OPTIONS (~1406 tok)
 - `CustomizeSection.tsx` — TOKEN_LABELS — uses useState (~1307 tok)
+- `index.tsx` (~58 tok)
 - `ThemeSection.tsx` — ThemeSection (~508 tok)
 - `ThemeSwatch.tsx` — ThemeSwatch (~402 tok)
 
 ## src/renderer/src/components/sidebar/
 
+- `index.tsx` (~37 tok)
 - `NavItem.tsx` — NavItem (~295 tok)
 - `ProjectList.tsx` — ProjectList (~598 tok)
 - `SidebarFooter.tsx` — SidebarFooter (~542 tok)
 
 ## src/renderer/src/components/task-edit/
 
+- `index.tsx` (~26 tok)
 - `SessionStats.tsx` — SessionStats (~335 tok)
-- `SubtaskList.tsx` — SubtaskList (~597 tok)
+- `SubtaskList.tsx` — SubtaskList (~600 tok)
+
+## src/renderer/src/components/task-list/
+
+- `animated-checkbox.tsx` — AnimatedCheckbox (~427 tok)
+- `index.tsx` (~55 tok)
+- `subtask-progress-ring.tsx` — SubtaskProgressRingBase (~558 tok)
+- `TaskList.tsx` — TaskList (~585 tok)
+- `TaskRow.tsx` — TaskRowBase (~842 tok)
+
+## src/renderer/src/components/task-panel/
+
+- `index.tsx` (~70 tok)
+- `panel-field.tsx` — Field (~91 tok)
+- `task-form-fields.tsx` — INBOX_VALUE (~2277 tok)
+- `TaskCreatePanel.tsx` — INITIAL_STATE — renders form (~1368 tok)
+- `TaskDetailPanel.tsx` — TaskDetailPanel (~852 tok)
+- `TaskEditPanel.tsx` — TEXT_COMMIT_DEBOUNCE_MS (~2153 tok)
 
 ## src/renderer/src/components/ui/
 
@@ -167,11 +191,11 @@
 ## src/renderer/src/pages/
 
 - `ActivityPage.tsx` — buildEvents — uses useMemo (~1495 tok)
-- `InboxPage.tsx` — InboxPage (~445 tok)
-- `ProjectPage.tsx` — ProjectPage — uses useMemo (~1196 tok)
-- `SessionsPage.tsx` — DAY_OPTIONS — uses useEffect, useMemo, useCallback (~2985 tok)
+- `InboxPage.tsx` — InboxPage (~446 tok)
+- `ProjectPage.tsx` — ProjectPage (~1197 tok)
+- `SessionsPage.tsx` — DAY_OPTIONS (~2987 tok)
 - `SettingsPage.tsx` — SettingsPage (~401 tok)
-- `TodayPage.tsx` — TodayPage (~407 tok)
+- `TodayPage.tsx` — TodayPage (~408 tok)
 
 ## src/renderer/src/pages/sessions/
 

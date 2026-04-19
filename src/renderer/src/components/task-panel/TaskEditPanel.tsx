@@ -4,11 +4,11 @@ import { Button } from '@renderer/components/ui/button'
 import { Separator } from '@renderer/components/ui/separator'
 import useAppStore from '@renderer/store/useAppStore'
 import type { Priority, Task, TaskStatus } from '@renderer/types'
-import { TaskFormFields } from '@renderer/components/task-form-fields'
+import { TaskFormFields } from './task-form-fields'
 import { useShallow } from 'zustand/react/shallow'
 import { computeTaskStats } from '@renderer/utils/sessions'
-import { SessionStats } from './task-edit/SessionStats'
-import { SubtaskList } from './task-edit/SubtaskList'
+import { SessionStats } from '@renderer/components/task-edit/SessionStats'
+import { SubtaskList } from '@renderer/components/task-edit/SubtaskList'
 
 interface TaskEditPanelProps {
   task: Task
@@ -17,7 +17,7 @@ interface TaskEditPanelProps {
 
 const TEXT_COMMIT_DEBOUNCE_MS = 200
 
-export default function TaskEditPanel({ task, onClose }: TaskEditPanelProps): React.JSX.Element {
+export function TaskEditPanel({ task, onClose }: TaskEditPanelProps): React.JSX.Element {
   const {
     projects,
     labels,

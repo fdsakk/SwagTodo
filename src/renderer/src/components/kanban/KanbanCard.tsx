@@ -4,7 +4,7 @@ import { useSortable } from '@dnd-kit/sortable'
 import type { Label, Task } from '@renderer/types'
 import { PRIORITY_META, formatDueDate } from '@renderer/utils/task'
 import { cn } from '@renderer/utils/cn'
-import { SubtaskProgressRing } from '@renderer/components/subtask-progress-ring'
+import { SubtaskProgressRing } from '@renderer/components/task-list/subtask-progress-ring'
 
 interface CardBodyProps {
   task: Task

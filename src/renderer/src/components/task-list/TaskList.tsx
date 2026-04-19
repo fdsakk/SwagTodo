@@ -1,5 +1,5 @@
 import type { Label, Project, TaskGroup } from '@renderer/types'
-import TaskRow from '@renderer/components/TaskRow'
+import { TaskRow } from './TaskRow'
 
 interface TaskListProps {
   groups: TaskGroup[]
@@ -11,7 +11,7 @@ interface TaskListProps {
   onOpenTask: (taskId: string) => void
 }
 
-export default function TaskList(props: TaskListProps): React.JSX.Element {
+export function TaskList(props: TaskListProps): React.JSX.Element {
   const hasTasks = props.groups.some((group) => group.tasks.length > 0)
 
   if (!hasTasks) {

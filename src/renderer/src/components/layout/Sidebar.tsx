@@ -13,16 +13,16 @@ import { isTaskDueToday, isTaskInFuture, isTaskOverdue } from '@renderer/utils/t
 import { cn } from '@renderer/utils/cn'
 import { UI_SCALE_OPTIONS, type UiScale } from '@renderer/types'
 import { useShallow } from 'zustand/react/shallow'
-import { NavItem } from './sidebar/NavItem'
-import { ProjectList } from './sidebar/ProjectList'
-import { SidebarFooter } from './sidebar/SidebarFooter'
+import { NavItem } from '@renderer/components/sidebar/NavItem'
+import { ProjectList } from '@renderer/components/sidebar/ProjectList'
+import { SidebarFooter } from '@renderer/components/sidebar/SidebarFooter'
 
 interface SidebarProps {
   onOpenProjectPanel: () => void
   onOpenLabelModal: () => void
 }
 
-export default function Sidebar(props: SidebarProps): React.JSX.Element {
+export function Sidebar(props: SidebarProps): React.JSX.Element {
   const {
     tasks,
     projects,

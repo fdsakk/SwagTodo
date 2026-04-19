@@ -4,7 +4,7 @@ import { Button } from '@renderer/components/ui/button'
 import { Separator } from '@renderer/components/ui/separator'
 import useAppStore from '@renderer/store/useAppStore'
 import type { Priority, TaskStatus } from '@renderer/types'
-import { TaskFormFields } from '@renderer/components/task-form-fields'
+import { TaskFormFields } from './task-form-fields'
 import { useShallow } from 'zustand/react/shallow'
 
 interface FormState {
@@ -34,7 +34,7 @@ const INITIAL_STATE = (props: TaskCreatePanelProps): FormState => ({
   labels: []
 })
 
-export default function TaskCreatePanel(props: TaskCreatePanelProps): React.JSX.Element {
+export function TaskCreatePanel(props: TaskCreatePanelProps): React.JSX.Element {
   const { projects, labels, addTask } = useAppStore(
     useShallow((state) => ({
       projects: state.projects,

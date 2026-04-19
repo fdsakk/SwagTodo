@@ -2,7 +2,7 @@ import { useCallback, useEffect, useMemo, useState } from 'react'
 import { ChevronLeft, ChevronRight } from 'lucide-react'
 import { useShallow } from 'zustand/react/shallow'
 import useAppStore from '@renderer/store/useAppStore'
-import SessionsCalendar from '@renderer/components/SessionsCalendar'
+import { SessionsCalendar } from '@renderer/components/sessions-calendar'
 import {
   addDays,
   buildIsoAtMinutes,

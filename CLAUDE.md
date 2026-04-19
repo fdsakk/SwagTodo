@@ -56,13 +56,32 @@ When adding a persistent field: update `AppState` in `src/renderer/src/types/ind
 - `Task.order` is a per-project-column integer used by the kanban board; `applyKanbanOrder` rewrites `status` + `order` atomically for a project's tasks from drag output.
 - Deleting a project nulls `projectId` on its tasks (does not delete them) and resets the current view to `inbox` if it was selected. Deleting a label strips its id from every task's `labels[]`.
 
+### Component structure
+
+All components live in `src/renderer/src/components/` subfolders — no loose files at root. Each subfolder has an `index.tsx` barrel. All exports are **named** (no default exports except legacy shadcn/ui primitives).
+
+| Subfolder | Contents |
+|-----------|----------|
+| `layout/` | `TitleBar`, `Sidebar`, `BackgroundLayer`, `ThemeProvider`, `SearchSortBar` |
+| `task-panel/` | `TaskDetailPanel`, `TaskCreatePanel`, `TaskEditPanel`, `TaskFormFields`, `Field` |
+| `task-list/` | `TaskList`, `TaskRow`, `AnimatedCheckbox`, `SubtaskProgressRing` |
+| `modals/` | `LabelManagerModal`, `ShortcutsHelpModal`, `ProjectPickerModal` |
+| `project/` | `ProjectPanel`, `ColorSelector`, `CustomColorInput`, `EmojiPicker` |
+| `sidebar/` | `NavItem`, `ProjectList`, `SidebarFooter` |
+| `settings/` | `BackgroundSection`, `CustomizeSection`, `ThemeSection`, `ThemeSwatch` |
+| `task-edit/` | `SessionStats`, `SubtaskList` |
+| `kanban/` | `KanbanBoard`, `KanbanCard`, `KanbanCardPreview`, `KanbanColumn` |
+| `backgrounds/` | `Aurora`, `Plasma`, `PixelSnow`, `PixelBlast`, `SoftAurora` |
+| `sessions-calendar/` | `SessionsCalendar`, `SessionBlockView`, `TimeBlockView`, `DraftGhost` |
+| `ui/` | shadcn/ui primitives |
+
 ### Views
 
-`App.tsx` renders one of four pages driven by `selectedView`: `InboxPage`, `TodayPage`, `ActivityPage`, `ProjectPage`. `ProjectPage` has two tabs (`list` | `kanban`) controlled by `projectTab` in the store. `TaskDetailPanel` is a slide-over that renders `TaskCreatePanel` / `TaskEditPanel` / project create/edit forms based on the discriminated-union `taskPanel` state.
+`App.tsx` renders one of six pages driven by `selectedView`: `InboxPage`, `TodayPage`, `ActivityPage`, `ProjectPage`, `SessionsPage`, `SettingsPage`. `ProjectPage` has two tabs (`list` | `kanban`) controlled by `projectTab` in the store. `TaskDetailPanel` is a slide-over that renders `TaskCreatePanel` / `TaskEditPanel` / project create/edit forms based on the discriminated-union `taskPanel` state.
 
 ### Shared form UI
 
-`TaskCreatePanel` and `TaskEditPanel` share `components/task-form-fields.tsx` (priority / due date / project / status / labels). The edit panel debounces title + description writes locally (200 ms + blur flush) to avoid store-wide re-renders per keystroke; `task.id` changes reset the local buffer via a render-time diff (no effect).
+`TaskCreatePanel` and `TaskEditPanel` share `components/task-panel/task-form-fields.tsx` (priority / due date / project / status / labels). The edit panel debounces title + description writes locally (200 ms + blur flush) to avoid store-wide re-renders per keystroke; `task.id` changes reset the local buffer via a render-time diff (no effect).
 
 ### IPC surface (renderer → main)
 

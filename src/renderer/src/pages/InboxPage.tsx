@@ -1,5 +1,5 @@
 import { useMemo } from 'react'
-import TaskList from '@renderer/components/TaskList'
+import { TaskList } from '@renderer/components/task-list'
 import useAppStore from '@renderer/store/useAppStore'
 import {
   isTaskDueToday,

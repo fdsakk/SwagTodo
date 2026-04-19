@@ -20,7 +20,7 @@ interface LabelManagerModalProps {
   onDelete: (labelId: string) => void
 }
 
-export default function LabelManagerModal(props: LabelManagerModalProps): React.JSX.Element {
+export function LabelManagerModal(props: LabelManagerModalProps): React.JSX.Element {
   const [newName, setNewName] = useState('')
   const [newColor, setNewColor] = useState('#71717a')
 

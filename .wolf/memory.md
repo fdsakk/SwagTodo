@@ -3,6 +3,8 @@
 > Chronological action log. Hooks and AI append to this file automatically.
 > Old sessions are consolidated by the daemon weekly.
 
+| 09:30 | Refactored all loose components into subfolders (task-panel, task-list, modals, project, layout) with index.tsx barrel files; converted default exports to named exports; updated all imports in App.tsx and pages | components/, App.tsx, pages/ | success, typecheck clean | ~8000 |
+
 | 20:56 | perf audit + fixes: pre-grouped blocks by day map, stable pointerDown handler, cached HOURS constant, single Date ctor per block, Date.parse in sort, Sidebar hasLabels bool selector | SessionsCalendar.tsx, types.ts, ActivityPage.tsx, Sidebar.tsx | ok ~2000 tok |
 
 | 21:37 | Added 6 new themes (Dracula, Gruvbox, Solarized, Rose Pine, Midnight, Everforest) | src/renderer/src/types/index.ts | success | ~300 tok |
@@ -103,3 +105,72 @@
 | 22:53 | Edited src/renderer/src/components/Sidebar.tsx | inline fix | ~12 |
 | 22:54 | Edited src/renderer/src/components/Sidebar.tsx | inline fix | ~9 |
 | 22:56 | Session end: 11 writes across 4 files (SessionsCalendar.tsx, types.ts, ActivityPage.tsx, Sidebar.tsx) | 12 reads | ~33713 tok |
+
+## Session: 2026-04-19 10:49
+
+| Time | Action | File(s) | Outcome | ~Tokens |
+|------|--------|---------|---------|--------|
+| 10:55 | Created src/renderer/src/components/task-panel/panel-field.tsx | — | ~91 |
+| 10:56 | Created src/renderer/src/components/task-panel/task-form-fields.tsx | — | ~2277 |
+| 10:56 | Created src/renderer/src/components/task-panel/TaskCreatePanel.tsx | — | ~1368 |
+| 10:57 | Created src/renderer/src/components/task-panel/TaskEditPanel.tsx | — | ~2153 |
+| 10:57 | Created src/renderer/src/components/task-panel/TaskDetailPanel.tsx | — | ~852 |
+| 10:57 | Created src/renderer/src/components/task-panel/index.tsx | — | ~70 |
+| 10:57 | Created src/renderer/src/components/task-list/animated-checkbox.tsx | — | ~427 |
+| 10:57 | Created src/renderer/src/components/task-list/subtask-progress-ring.tsx | — | ~558 |
+| 10:57 | Created src/renderer/src/components/task-list/TaskRow.tsx | — | ~839 |
+| 10:57 | Edited src/renderer/src/components/task-list/TaskRow.tsx | inline fix | ~18 |
+| 10:57 | Edited src/renderer/src/components/task-list/TaskRow.tsx | inline fix | ~12 |
+| 10:58 | Created src/renderer/src/components/task-list/TaskList.tsx | — | ~585 |
+| 10:58 | Created src/renderer/src/components/task-list/index.tsx | — | ~55 |
+| 10:58 | Created src/renderer/src/components/modals/LabelManagerModal.tsx | — | ~1086 |
+| 10:58 | Created src/renderer/src/components/modals/ShortcutsHelpModal.tsx | — | ~942 |
+| 10:58 | Created src/renderer/src/components/modals/ProjectPickerModal.tsx | — | ~1150 |
+| 10:58 | Created src/renderer/src/components/modals/index.tsx | — | ~50 |
+| 10:58 | Created src/renderer/src/components/project/color-selector.tsx | — | ~387 |
+| 10:59 | Created src/renderer/src/components/project/custom-color-input.tsx | — | ~573 |
+| 10:59 | Created src/renderer/src/components/project/emoji-picker.tsx | — | ~995 |
+| 10:59 | Created src/renderer/src/components/project/ProjectPanel.tsx | — | ~1552 |
+| 10:59 | Created src/renderer/src/components/project/index.tsx | — | ~56 |
+| 10:59 | Created src/renderer/src/components/layout/TitleBar.tsx | — | ~827 |
+| 10:59 | Created src/renderer/src/components/layout/ThemeProvider.tsx | — | ~142 |
+| 11:00 | Created src/renderer/src/components/layout/BackgroundLayer.tsx | — | ~599 |
+| 11:00 | Created src/renderer/src/components/layout/SearchSortBar.tsx | — | ~909 |
+| 11:00 | Created src/renderer/src/components/layout/Sidebar.tsx | — | ~1387 |
+| 11:00 | Created src/renderer/src/components/layout/index.tsx | — | ~64 |
+| 11:00 | Created src/renderer/src/components/sidebar/index.tsx | — | ~37 |
+| 11:00 | Edited src/renderer/src/components/task-edit/SubtaskList.tsx | "@renderer/components/anim" → "@renderer/components/task" | ~24 |
+| 11:00 | Created src/renderer/src/components/task-edit/index.tsx | — | ~26 |
+| 11:00 | Created src/renderer/src/components/settings/index.tsx | — | ~58 |
+| 11:01 | Created src/renderer/src/components/kanban/index.tsx | — | ~88 |
+| 11:01 | Created src/renderer/src/components/backgrounds/index.tsx | — | ~70 |
+| 11:01 | Created src/renderer/src/components/sessions-calendar/index.tsx | — | ~60 |
+| 11:01 | Edited src/renderer/src/App.tsx | reduced (-6 lines) | ~172 |
+| 11:01 | Edited src/renderer/src/pages/InboxPage.tsx | "@renderer/components/Task" → "@renderer/components/task" | ~17 |
+| 11:01 | Edited src/renderer/src/pages/TodayPage.tsx | "@renderer/components/Task" → "@renderer/components/task" | ~17 |
+| 11:01 | Edited src/renderer/src/pages/ProjectPage.tsx | 2→2 lines | ~33 |
+| 11:01 | Edited src/renderer/src/pages/SessionsPage.tsx | "@renderer/components/Sess" → "@renderer/components/sess" | ~21 |
+| 11:02 | Edited src/renderer/src/components/kanban/KanbanCard.tsx | "@renderer/components/subt" → "@renderer/components/task" | ~26 |
+| 11:03 | Session end: 41 writes across 29 files (panel-field.tsx, task-form-fields.tsx, TaskCreatePanel.tsx, TaskEditPanel.tsx, TaskDetailPanel.tsx) | 36 reads | ~52280 tok |
+| 11:03 | Edited CLAUDE.md | expanded (+19 lines) | ~534 |
+| 11:04 | Session end: 42 writes across 30 files (panel-field.tsx, task-form-fields.tsx, TaskCreatePanel.tsx, TaskEditPanel.tsx, TaskDetailPanel.tsx) | 37 reads | ~54546 tok |
+
+## Session: 2026-04-19 11:04
+
+| Time | Action | File(s) | Outcome | ~Tokens |
+|------|--------|---------|---------|--------|
+
+## Session: 2026-04-19 11:05
+
+| Time | Action | File(s) | Outcome | ~Tokens |
+|------|--------|---------|---------|--------|
+
+## Session: 2026-04-19 11:05
+
+| Time | Action | File(s) | Outcome | ~Tokens |
+|------|--------|---------|---------|--------|
+
+## Session: 2026-04-19 11:09
+
+| Time | Action | File(s) | Outcome | ~Tokens |
+|------|--------|---------|---------|--------|

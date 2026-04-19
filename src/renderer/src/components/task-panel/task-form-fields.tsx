@@ -15,7 +15,7 @@ import {
 } from '@renderer/components/ui/select'
 import type { Label, Priority, Project, TaskStatus } from '@renderer/types'
 import { PRIORITY_META } from '@renderer/utils/task'
-import { Field } from '@renderer/components/panel-field'
+import { Field } from './panel-field'
 import { cn } from '@renderer/utils/cn'
 
 const INBOX_VALUE = '__inbox__'

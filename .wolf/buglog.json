@@ -288,6 +288,150 @@
       "related_bugs": [],
       "occurrences": 3,
       "last_seen": "2026-04-18T20:54:00.967Z"
+    },
+    {
+      "id": "bug-019",
+      "timestamp": "2026-04-19T08:57:51.645Z",
+      "error_message": "Wrong reference: TaskRow should be TaskRowBase",
+      "file": "src/renderer/src/components/task-list/TaskRow.tsx",
+      "root_cause": "Used \"TaskRow\" instead of \"TaskRowBase\"",
+      "fix": "Changed TaskRow → TaskRowBase",
+      "tags": [
+        "auto-detected",
+        "wrong-reference",
+        "tsx"
+      ],
+      "related_bugs": [],
+      "occurrences": 2,
+      "last_seen": "2026-04-19T08:57:53.607Z"
+    },
+    {
+      "id": "bug-020",
+      "timestamp": "2026-04-19T09:00:54.467Z",
+      "error_message": "Incorrect value in code",
+      "file": "src/renderer/src/components/task-edit/SubtaskList.tsx",
+      "root_cause": "Had '@renderer/components/animated-checkbox'",
+      "fix": "Changed to '@renderer/components/task-list/animated-checkbox'",
+      "tags": [
+        "auto-detected",
+        "wrong-value",
+        "tsx"
+      ],
+      "related_bugs": [],
+      "occurrences": 1,
+      "last_seen": "2026-04-19T09:00:54.467Z"
+    },
+    {
+      "id": "bug-021",
+      "timestamp": "2026-04-19T09:01:15.364Z",
+      "error_message": "Significant refactor of ",
+      "file": "src/renderer/src/App.tsx",
+      "root_cause": "9 lines replaced/restructured",
+      "fix": "Rewrote 15→9 lines (9 removed)",
+      "tags": [
+        "auto-detected",
+        "refactor",
+        "tsx"
+      ],
+      "related_bugs": [],
+      "occurrences": 1,
+      "last_seen": "2026-04-19T09:01:15.364Z"
+    },
+    {
+      "id": "bug-022",
+      "timestamp": "2026-04-19T09:01:24.212Z",
+      "error_message": "Incorrect value in code",
+      "file": "src/renderer/src/pages/InboxPage.tsx",
+      "root_cause": "Had '@renderer/components/TaskList'",
+      "fix": "Changed to '@renderer/components/task-list'",
+      "tags": [
+        "auto-detected",
+        "wrong-value",
+        "tsx"
+      ],
+      "related_bugs": [],
+      "occurrences": 1,
+      "last_seen": "2026-04-19T09:01:24.213Z"
+    },
+    {
+      "id": "bug-023",
+      "timestamp": "2026-04-19T09:01:25.717Z",
+      "error_message": "Incorrect value in code",
+      "file": "src/renderer/src/pages/TodayPage.tsx",
+      "root_cause": "Had '@renderer/components/TaskList'",
+      "fix": "Changed to '@renderer/components/task-list'",
+      "tags": [
+        "auto-detected",
+        "wrong-value",
+        "tsx"
+      ],
+      "related_bugs": [],
+      "occurrences": 1,
+      "last_seen": "2026-04-19T09:01:25.717Z"
+    },
+    {
+      "id": "bug-024",
+      "timestamp": "2026-04-19T09:01:27.118Z",
+      "error_message": "Incorrect value in code",
+      "file": "src/renderer/src/pages/ProjectPage.tsx",
+      "root_cause": "Had '@renderer/components/KanbanBoard'",
+      "fix": "Changed to '@renderer/components/kanban'",
+      "tags": [
+        "auto-detected",
+        "wrong-value",
+        "tsx"
+      ],
+      "related_bugs": [],
+      "occurrences": 1,
+      "last_seen": "2026-04-19T09:01:27.118Z"
+    },
+    {
+      "id": "bug-025",
+      "timestamp": "2026-04-19T09:01:28.139Z",
+      "error_message": "Incorrect value in code",
+      "file": "src/renderer/src/pages/SessionsPage.tsx",
+      "root_cause": "Had '@renderer/components/SessionsCalendar'",
+      "fix": "Changed to '@renderer/components/sessions-calendar'",
+      "tags": [
+        "auto-detected",
+        "wrong-value",
+        "tsx"
+      ],
+      "related_bugs": [],
+      "occurrences": 1,
+      "last_seen": "2026-04-19T09:01:28.139Z"
+    },
+    {
+      "id": "bug-026",
+      "timestamp": "2026-04-19T09:02:02.709Z",
+      "error_message": "Incorrect value in code",
+      "file": "src/renderer/src/components/kanban/KanbanCard.tsx",
+      "root_cause": "Had '@renderer/components/subtask-progress-ring'",
+      "fix": "Changed to '@renderer/components/task-list/subtask-progress-r",
+      "tags": [
+        "auto-detected",
+        "wrong-value",
+        "tsx"
+      ],
+      "related_bugs": [],
+      "occurrences": 1,
+      "last_seen": "2026-04-19T09:02:02.709Z"
+    },
+    {
+      "id": "bug-027",
+      "timestamp": "2026-04-19T09:03:53.470Z",
+      "error_message": "Significant refactor of ",
+      "file": "CLAUDE.md",
+      "root_cause": "2 lines replaced/restructured",
+      "fix": "Rewrote 7→26 lines (2 removed)",
+      "tags": [
+        "auto-detected",
+        "refactor",
+        "md"
+      ],
+      "related_bugs": [],
+      "occurrences": 1,
+      "last_seen": "2026-04-19T09:03:53.470Z"
     }
   ]
 }

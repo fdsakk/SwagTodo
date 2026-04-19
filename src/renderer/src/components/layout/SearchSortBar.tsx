@@ -8,11 +8,11 @@ import {
   SelectTrigger,
   SelectValue
 } from '@renderer/components/ui/select'
-import { AnimatedCheckbox } from '@renderer/components/animated-checkbox'
+import { AnimatedCheckbox } from '@renderer/components/task-list/animated-checkbox'
 import useAppStore from '@renderer/store/useAppStore'
 import { useShallow } from 'zustand/react/shallow'
 
-export default function SearchSortBar(): React.JSX.Element {
+export function SearchSortBar(): React.JSX.Element {
   const inputRef = useRef<HTMLInputElement>(null)
   const {
     searchQuery,

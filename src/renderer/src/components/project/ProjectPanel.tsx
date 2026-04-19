@@ -5,10 +5,10 @@ import { Separator } from '@renderer/components/ui/separator'
 import useAppStore from '@renderer/store/useAppStore'
 import type { Project } from '@renderer/types'
 import { PROJECT_COLOR_SWATCHES } from '@renderer/utils/task'
-import { Field } from '@renderer/components/panel-field'
-import { ColorSelector } from '@renderer/components/color-selector'
-import { CustomColorInput } from '@renderer/components/custom-color-input'
-import { EmojiPicker } from '@renderer/components/emoji-picker'
+import { Field } from '@renderer/components/task-panel/panel-field'
+import { ColorSelector } from './color-selector'
+import { CustomColorInput } from './custom-color-input'
+import { EmojiPicker } from './emoji-picker'
 import { useShallow } from 'zustand/react/shallow'
 
 interface FormState {
@@ -23,7 +23,7 @@ interface ProjectPanelProps {
   onClose: () => void
 }
 
-export default function ProjectPanel({ project, onClose }: ProjectPanelProps): React.JSX.Element {
+export function ProjectPanel({ project, onClose }: ProjectPanelProps): React.JSX.Element {
   const { addProject, updateProject, deleteProject, selectProject } = useAppStore(
     useShallow((state) => ({
       addProject: state.addProject,

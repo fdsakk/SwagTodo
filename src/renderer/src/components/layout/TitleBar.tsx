@@ -13,7 +13,7 @@ function useClockTick(): string {
   return `${day}  ${time}`
 }
 
-export default function TitleBar(): React.JSX.Element | null {
+export function TitleBar(): React.JSX.Element | null {
   const [isMaximized, setIsMaximized] = useState(false)
   const [isFullScreen, setIsFullScreen] = useState(false)
   const clock = useClockTick()
