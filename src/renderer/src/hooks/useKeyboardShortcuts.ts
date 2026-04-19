@@ -50,7 +50,10 @@ const KEY_BINDINGS: Record<string, HandlerKey> = {
 
 export function useKeyboardShortcuts(options: KeyboardShortcutOptions): void {
   const optsRef = useRef(options)
-  optsRef.current = options
+
+  useEffect(() => {
+    optsRef.current = options
+  }, [options])
 
   useEffect(() => {
     const onKeyDown = (event: KeyboardEvent): void => {

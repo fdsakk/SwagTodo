@@ -1,32 +1,15 @@
 {
-  "generated_at": "2026-04-19T09:06:00.128Z",
+  "generated_at": "2026-04-19T16:06:57.176Z",
   "achievements": [
-    "Component architecture refactor: 23 loose files moved into 11 domain subfolders (task-panel, task-list, modals, project, layout, sidebar, settings, task-edit, kanban, backgrounds, sessions-calendar) — all with index.tsx barrels and named exports",
-    "Theming: 6 new themes added (Dracula, Gruvbox, Solarized, Rose Pine, Midnight, Everforest)",
-    "Animated backgrounds: 5 backgrounds (Aurora, Plasma, SoftAurora, PixelSnow, PixelBlast) integrated with theme-adaptive colors via useThemeColors hook",
-    "Token system: replaced hardcoded zinc/white/border values with app-* tokens across kanban, activity, project, sessions pages",
-    "Sessions UX: GhostBlockDialog + TaskPickerDialog created; draft ghost block feature added",
-    "Appearance settings page redesigned: compact wrapper, better typography, theme swatches with dot indicator, background tiles"
+    "Component reorganization: 23 loose files moved into 9 domain subfolders (task-panel, task-list, modals, project, layout, sidebar, settings, task-edit, kanban) with index.tsx barrels and named exports",
+    "Health/Meds page: full PK model (MEC/MTC therapeutic window, crash-risk dC/dt detection, tMaxOffset+keMultiplier sliders, ReferenceArea chart overlays) in pharmacokinetics.ts + HealthPage.tsx",
+    "Theme expansion: 11 new themes added (Dracula, Gruvbox, Solarized, Rose Pine, Midnight, Everforest, Catppuccin, Tokyo Night, Kanagawa, Monokai, Slate) with contrast fixes on existing themes",
+    "Supabase sync hardened: delta upsert/delete (no full-workspace wipe), fire-and-forget push, debounced in main process",
+    "SessionsCalendar perf: pre-grouped day map, stable pointerDown handler, Date.parse sort, cached constants",
+    "Removed custom animated backgrounds feature (cleanup)",
+    "Settings refactor: SyncSection collapsible, UI scale moved into ThemeSection header"
   ],
-  "improvements": [
-    "SessionsCalendar.tsx (~5052 tok) has complex pointer/drag logic — consider extracting useDragSession hook to reduce component size",
-    "useAppStore.ts (~5887 tok) mixes domain reducers with UI state — consider splitting into slices once store grows further",
-    "BackgroundLayer renders WebGL canvases unconditionally — add early return when backgroundId is 'none' to skip GPU work",
-    "GhostBlockDialog/TaskPickerDialog live in pages/sessions/ but follow component patterns — consider moving to components/sessions-calendar/ for consistency",
-    "UI_SCALE_OPTIONS duplicated in 4 files (main, preload, preload.d.ts, types/index.ts) — single source of truth would reduce sync risk"
-  ],
-  "next_tasks": [
-    "Persistence: backgroundId not yet in AppState — needs types/index.ts, main isAppState, preload bridge, and store persist-diff (follow 'adding a persistent field' checklist in CLAUDE.md)",
-    "Sessions: session blocks likely need CRUD persistence path — verify SessionCreateInput/SessionUpdateInput flow from store to main IPC",
-    "Today/Inbox pages: verify theme token coverage matches what was done for kanban/activity/project pages",
-    "ActivityPage: buildEvents only uses useMemo — check if date grouping is reactive to tasks changing correctly",
-    "Run full typecheck (npm run typecheck) after the large refactor to confirm zero regressions"
-  ],
-  "risks": [
-    "backgroundId persistence gap: if backgroundId is stored only in React state (not electron-store), users lose their background on restart",
-    "Duplicate UI_SCALE_OPTIONS: any new scale added to one file but missed in others causes silent runtime mismatch",
-    "Task.status + Task.completed sync invariant: any new code path that updates status without updating completed (or vice versa) will silently corrupt state — no runtime guard exists",
-    "WebGL backgrounds on Wayland: Plasma/Aurora use WebGL; the existing WaylandColorManagement* workaround in main is for window rendering, not canvas — GPU fallback behavior untested on Wayland",
-    "pages/sessions/ vs components/sessions-calendar/ split: two files (GhostBlockDialog, TaskPickerDialog) are in pages/ not components/ — inconsistency will grow if not resolved"
-  ]
+  "improvements": [],
+  "next_tasks": [],
+  "risks": []
 }

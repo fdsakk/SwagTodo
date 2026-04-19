@@ -2,14 +2,14 @@
   "version": 1,
   "created_at": "2026-04-18T19:20:23.576Z",
   "lifetime": {
-    "total_tokens_estimated": 783185,
-    "total_reads": 324,
+    "total_tokens_estimated": 801831,
+    "total_reads": 327,
     "total_writes": 689,
-    "total_sessions": 18,
-    "anatomy_hits": 292,
+    "total_sessions": 25,
+    "anatomy_hits": 295,
     "anatomy_misses": 32,
     "repeated_reads_blocked": 138,
-    "estimated_savings_vs_bare_cli": 576642
+    "estimated_savings_vs_bare_cli": 577242
   },
   "sessions": [
     {
@@ -6181,12 +6181,144 @@
         "repeated_reads_blocked": 4,
         "anatomy_lookups": 6
       }
+    },
+    {
+      "id": "session-2026-04-19-1750",
+      "started": "2026-04-19T15:50:46.296Z",
+      "ended": "2026-04-19T15:51:28.469Z",
+      "reads": [
+        {
+          "file": "/home/fenta/Projects/electron-todo/src/main/index.ts",
+          "tokens_estimated": 4702,
+          "was_repeated": false,
+          "anatomy_had_description": false
+        }
+      ],
+      "writes": [],
+      "totals": {
+        "input_tokens_estimated": 4702,
+        "output_tokens_estimated": 0,
+        "reads_count": 1,
+        "writes_count": 0,
+        "repeated_reads_blocked": 0,
+        "anatomy_lookups": 1
+      }
+    },
+    {
+      "id": "session-2026-04-19-1752",
+      "started": "2026-04-19T15:52:11.038Z",
+      "ended": "2026-04-19T15:52:23.273Z",
+      "reads": [
+        {
+          "file": "/home/fenta/Projects/electron-todo/src/renderer/src/store/useAppStore.ts",
+          "tokens_estimated": 6972,
+          "was_repeated": false,
+          "anatomy_had_description": false
+        }
+      ],
+      "writes": [],
+      "totals": {
+        "input_tokens_estimated": 6972,
+        "output_tokens_estimated": 0,
+        "reads_count": 1,
+        "writes_count": 0,
+        "repeated_reads_blocked": 0,
+        "anatomy_lookups": 1
+      }
+    },
+    {
+      "id": "session-2026-04-19-1752",
+      "started": "2026-04-19T15:52:11.038Z",
+      "ended": "2026-04-19T15:52:39.655Z",
+      "reads": [
+        {
+          "file": "/home/fenta/Projects/electron-todo/src/renderer/src/store/useAppStore.ts",
+          "tokens_estimated": 6972,
+          "was_repeated": false,
+          "anatomy_had_description": false
+        }
+      ],
+      "writes": [],
+      "totals": {
+        "input_tokens_estimated": 6972,
+        "output_tokens_estimated": 0,
+        "reads_count": 1,
+        "writes_count": 0,
+        "repeated_reads_blocked": 0,
+        "anatomy_lookups": 1
+      }
     }
   ],
   "daemon_usage": [],
-  "waste_flags": [],
+  "waste_flags": [
+    {
+      "pattern": "memory_bloat",
+      "description": "memory.md is ~8472 tokens",
+      "tokens_wasted": 3472,
+      "suggestion": "memory.md is growing large. Consolidation should run more frequently.",
+      "detected_at": "2026-04-19T16:01:13.488Z"
+    },
+    {
+      "pattern": "anatomy_miss_rate",
+      "description": "40% of file lookups missed anatomy in session session-2026-04-18-2136",
+      "tokens_wasted": 0,
+      "suggestion": "Run openwolf scan to refresh anatomy.md.",
+      "detected_at": "2026-04-19T16:01:13.488Z"
+    },
+    {
+      "pattern": "anatomy_miss_rate",
+      "description": "67% of file lookups missed anatomy in session session-2026-04-18-2143",
+      "tokens_wasted": 0,
+      "suggestion": "Run openwolf scan to refresh anatomy.md.",
+      "detected_at": "2026-04-19T16:01:13.488Z"
+    },
+    {
+      "pattern": "anatomy_miss_rate",
+      "description": "67% of file lookups missed anatomy in session session-2026-04-18-2143",
+      "tokens_wasted": 0,
+      "suggestion": "Run openwolf scan to refresh anatomy.md.",
+      "detected_at": "2026-04-19T16:01:13.488Z"
+    },
+    {
+      "pattern": "anatomy_miss_rate",
+      "description": "42% of file lookups missed anatomy in session session-2026-04-18-2208",
+      "tokens_wasted": 0,
+      "suggestion": "Run openwolf scan to refresh anatomy.md.",
+      "detected_at": "2026-04-19T16:01:13.488Z"
+    },
+    {
+      "pattern": "anatomy_miss_rate",
+      "description": "38% of file lookups missed anatomy in session session-2026-04-18-2208",
+      "tokens_wasted": 0,
+      "suggestion": "Run openwolf scan to refresh anatomy.md.",
+      "detected_at": "2026-04-19T16:01:13.488Z"
+    },
+    {
+      "pattern": "anatomy_miss_rate",
+      "description": "38% of file lookups missed anatomy in session session-2026-04-18-2208",
+      "tokens_wasted": 0,
+      "suggestion": "Run openwolf scan to refresh anatomy.md.",
+      "detected_at": "2026-04-19T16:01:13.488Z"
+    },
+    {
+      "pattern": "anatomy_miss_rate",
+      "description": "38% of file lookups missed anatomy in session session-2026-04-18-2208",
+      "tokens_wasted": 0,
+      "suggestion": "Run openwolf scan to refresh anatomy.md.",
+      "detected_at": "2026-04-19T16:01:13.488Z"
+    }
+  ],
   "optimization_report": {
-    "last_generated": null,
-    "patterns": []
+    "last_generated": "2026-04-19T16:01:13.489Z",
+    "patterns": [
+      "memory_bloat",
+      "anatomy_miss_rate",
+      "anatomy_miss_rate",
+      "anatomy_miss_rate",
+      "anatomy_miss_rate",
+      "anatomy_miss_rate",
+      "anatomy_miss_rate",
+      "anatomy_miss_rate"
+    ]
   }
 }

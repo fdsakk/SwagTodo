@@ -77,7 +77,8 @@ function ActivityRow({
 }): React.JSX.Element {
   const meta = KIND_META[event.kind]
   const relative = formatDistanceToNow(parseISO(event.at), { addSuffix: true })
-  const titleClass = event.kind === 'completed' ? 'text-app-text-muted line-through' : 'text-app-text'
+  const titleClass =
+    event.kind === 'completed' ? 'text-app-text-muted line-through' : 'text-app-text'
 
   return (
     <li
@@ -115,7 +116,9 @@ export default function ActivityPage(): React.JSX.Element {
     return (
       <div className="flex h-full flex-col items-center justify-center text-center">
         <p className="text-sm text-app-text-secondary">No activity yet</p>
-        <p className="mt-1 text-xs text-app-text-muted">Create or complete a task to see it here.</p>
+        <p className="mt-1 text-xs text-app-text-muted">
+          Create or complete a task to see it here.
+        </p>
       </div>
     )
   }
@@ -143,7 +146,7 @@ export default function ActivityPage(): React.JSX.Element {
           </section>
         ))}
         <p className="pt-2 text-center text-xs text-app-text-muted">
-          That's it. No more history to load.
+          That&apos;s it. No more history to load.
         </p>
       </div>
     </div>

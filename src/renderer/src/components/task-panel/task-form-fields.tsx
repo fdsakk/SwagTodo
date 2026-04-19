@@ -44,8 +44,8 @@ const LabelChip = memo(function LabelChip({
       className={cn(
         'h-6 rounded-md px-2 text-xs transition-colors',
         selected
-          ? 'bg-white/10 text-zinc-100'
-          : 'bg-white/[0.03] text-zinc-500 hover:bg-white/[0.06] hover:text-zinc-300'
+          ? 'bg-app-active text-app-text'
+          : 'bg-app-hover text-app-text-muted hover:bg-app-active hover:text-app-text-secondary'
       )}
       onClick={handleClick}
       type="button"
@@ -104,17 +104,16 @@ function TaskFormFieldsImpl({
   )
   const clearDate = useCallback(() => onDueDateChange(undefined), [onDueDateChange])
   const handleCalendarSelect = useCallback(
-    (date: Date | undefined) =>
-      onDueDateChange(date ? format(date, 'yyyy-MM-dd') : undefined),
+    (date: Date | undefined) => onDueDateChange(date ? format(date, 'yyyy-MM-dd') : undefined),
     [onDueDateChange]
   )
 
   return (
     <>
-      <div className="divide-y divide-white/[0.04]">
+      <div className="divide-y divide-app-border">
         <Field label="Priority">
           <Select onValueChange={handlePriority} value={priority}>
-            <SelectTrigger className="h-7 border-0 bg-transparent px-0 text-sm text-zinc-300 shadow-none focus:ring-0">
+            <SelectTrigger className="h-7 border-0 bg-transparent px-0 text-sm text-app-text-secondary shadow-none focus:ring-0">
               <SelectValue />
             </SelectTrigger>
             <SelectContent>
@@ -140,7 +139,7 @@ function TaskFormFieldsImpl({
             <Popover>
               <PopoverTrigger asChild>
                 <Button
-                  className="h-7 flex-1 justify-between border-0 bg-transparent px-0 text-sm font-normal text-zinc-300 shadow-none hover:bg-transparent hover:text-zinc-100 data-[empty=true]:text-zinc-500"
+                  className="h-7 flex-1 justify-between border-0 bg-transparent px-0 text-sm font-normal text-app-text-secondary shadow-none hover:bg-transparent hover:text-app-text data-[empty=true]:text-app-text-muted"
                   data-empty={!selectedDate}
                   type="button"
                   variant="ghost"
@@ -163,7 +162,7 @@ function TaskFormFieldsImpl({
             </Popover>
             {selectedDate && (
               <button
-                className="flex h-6 w-6 items-center justify-center rounded text-zinc-500 hover:bg-white/[0.04] hover:text-zinc-200"
+                className="flex h-6 w-6 items-center justify-center rounded text-app-text-muted hover:bg-app-hover hover:text-app-text-secondary"
                 onClick={clearDate}
                 type="button"
               >
@@ -175,7 +174,7 @@ function TaskFormFieldsImpl({
 
         <Field label="Project">
           <Select onValueChange={handleProject} value={projectValue}>
-            <SelectTrigger className="h-7 border-0 bg-transparent px-0 text-sm text-zinc-300 shadow-none focus:ring-0">
+            <SelectTrigger className="h-7 border-0 bg-transparent px-0 text-sm text-app-text-secondary shadow-none focus:ring-0">
               <SelectValue placeholder="Inbox" />
             </SelectTrigger>
             <SelectContent>
@@ -193,7 +192,7 @@ function TaskFormFieldsImpl({
 
         <Field label="Status">
           <Select onValueChange={handleStatus} value={status}>
-            <SelectTrigger className="h-7 border-0 bg-transparent px-0 text-sm text-zinc-300 shadow-none focus:ring-0">
+            <SelectTrigger className="h-7 border-0 bg-transparent px-0 text-sm text-app-text-secondary shadow-none focus:ring-0">
               <SelectValue />
             </SelectTrigger>
             <SelectContent>
@@ -211,9 +210,9 @@ function TaskFormFieldsImpl({
 
       {labels.length > 0 && (
         <>
-          <Separator className="bg-white/[0.06]" />
+          <Separator className="bg-app-border" />
           <div>
-            <div className="mb-2 text-xs text-zinc-500">Labels</div>
+            <div className="mb-2 text-xs text-app-text-muted">Labels</div>
             <div className="flex flex-wrap gap-1.5">
               {labels.map((label) => (
                 <LabelChip
@@ -225,7 +224,7 @@ function TaskFormFieldsImpl({
               ))}
             </div>
             {emptyLabelsMessage && selectedLabelSet.size === 0 && (
-              <p className="mt-2 text-xs text-zinc-600">{emptyLabelsMessage}</p>
+              <p className="mt-2 text-xs text-app-text-muted">{emptyLabelsMessage}</p>
             )}
           </div>
         </>

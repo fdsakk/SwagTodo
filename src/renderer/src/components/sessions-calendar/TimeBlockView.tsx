@@ -29,22 +29,27 @@ export function TimeBlockView({
       style={{ top, height }}
       onPointerDown={onMovePointerDown}
     >
-      <div className="flex items-center gap-1 text-[10px] text-zinc-500">
-        <span>{formatHM(startMin)}–{formatHM(endMin)}</span>
+      <div className="flex items-center gap-1 text-[10px] text-app-text-muted">
+        <span>
+          {formatHM(startMin)}–{formatHM(endMin)}
+        </span>
       </div>
       <div className="truncate text-[11px] font-medium text-zinc-300">{tb.block.label}</div>
       <button
         type="button"
         onPointerDown={(e) => e.stopPropagation()}
-        onClick={(e) => { e.stopPropagation(); onDelete() }}
+        onClick={(e) => {
+          e.stopPropagation()
+          onDelete()
+        }}
         title="Delete block"
-        className="rounded absolute right-1 top-1 z-50 flex h-5 w-5 items-center justify-center text-zinc-400 opacity-0 duration-200 hover:border border-red-600 hover:bg-app-titlebar/80 group-hover:opacity-100 transition-all"
+        className="absolute right-1 top-1 z-50 flex h-5 w-5 items-center justify-center rounded border border-transparent text-app-text-secondary opacity-0 transition-all duration-200 hover:border-red-600 hover:bg-app-titlebar/80 group-hover:opacity-100"
       >
         <X size={10} />
       </button>
       <div
         onPointerDown={onResizePointerDown}
-        className="absolute bottom-0 left-0 right-0 h-1.5 cursor-ns-resize bg-white/[0.04] hover:bg-white/[0.1]"
+        className="absolute bottom-0 left-0 right-0 h-1.5 cursor-ns-resize bg-app-hover hover:bg-app-active"
       />
     </div>
   )

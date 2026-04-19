@@ -34,7 +34,7 @@ export function NavItem({
         <>
           <span className="ml-2.5 flex-1 text-left">{label}</span>
           {typeof count === 'number' && count > 0 && (
-            <span className="text-xs text-zinc-500">{count}</span>
+            <span className="text-xs text-app-text-muted">{count}</span>
           )}
         </>
       )}

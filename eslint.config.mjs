@@ -6,7 +6,7 @@ import eslintPluginReactHooks from 'eslint-plugin-react-hooks'
 import eslintPluginReactRefresh from 'eslint-plugin-react-refresh'
 
 export default defineConfig(
-  { ignores: ['**/node_modules', '**/dist', '**/out'] },
+  { ignores: ['**/node_modules', '**/dist', '**/out', '**/.wolf/**'] },
   tseslint.configs.recommended,
   eslintPluginReact.configs.flat.recommended,
   eslintPluginReact.configs.flat['jsx-runtime'],
@@ -25,7 +25,16 @@ export default defineConfig(
     },
     rules: {
       ...eslintPluginReactHooks.configs.recommended.rules,
-      ...eslintPluginReactRefresh.configs.vite.rules
+      ...eslintPluginReactRefresh.configs.vite.rules,
+
+      // TypeScript already provides function return inference.
+      '@typescript-eslint/explicit-function-return-type': 'off',
+
+      // TS props are typed; prop-types rule is noise.
+      'react/prop-types': 'off',
+
+      // Fast Refresh rule too noisy for shadcn/ui + barrel exports in this repo.
+      'react-refresh/only-export-components': 'off'
     }
   },
   eslintConfigPrettier

@@ -14,23 +14,17 @@ interface ProjectPageProps {
 }
 
 export default function ProjectPage(props: ProjectPageProps): React.JSX.Element {
-  const {
-    projects,
-    labels,
-    selectedProjectId,
-    projectTab,
-    setProjectTab,
-    openEditPanel
-  } = useAppStore(
-    useShallow((state) => ({
-      projects: state.projects,
-      labels: state.labels,
-      selectedProjectId: state.selectedProjectId,
-      projectTab: state.projectTab,
-      setProjectTab: state.setProjectTab,
-      openEditPanel: state.openEditPanel
-    }))
-  )
+  const { projects, labels, selectedProjectId, projectTab, setProjectTab, openEditPanel } =
+    useAppStore(
+      useShallow((state) => ({
+        projects: state.projects,
+        labels: state.labels,
+        selectedProjectId: state.selectedProjectId,
+        projectTab: state.projectTab,
+        setProjectTab: state.setProjectTab,
+        openEditPanel: state.openEditPanel
+      }))
+    )
   const toggleTaskComplete = useTaskComplete()
 
   const project = projects.find((p) => p.id === selectedProjectId)

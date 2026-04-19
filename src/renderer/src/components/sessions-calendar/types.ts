@@ -57,7 +57,12 @@ export type DraftTimeBlockResize = {
   endMin: number
 }
 
-export type Draft = DraftCreate | DraftMove | DraftResize | DraftTimeBlockMove | DraftTimeBlockResize
+export type Draft =
+  | DraftCreate
+  | DraftMove
+  | DraftResize
+  | DraftTimeBlockMove
+  | DraftTimeBlockResize
 
 export interface PendingDraft {
   dayIndex: number

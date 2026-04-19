@@ -1,5 +1,14 @@
 import { useMemo } from 'react'
-import { Activity, Calendar, ChevronLeft, ChevronRight, Inbox, Pill, Settings, Sun } from 'lucide-react'
+import {
+  Activity,
+  Calendar,
+  ChevronLeft,
+  ChevronRight,
+  Inbox,
+  Pill,
+  Settings,
+  Sun
+} from 'lucide-react'
 import useAppStore from '@renderer/store/useAppStore'
 import { isTaskDueToday, isTaskInFuture, isTaskOverdue } from '@renderer/utils/task'
 import { cn } from '@renderer/utils/cn'

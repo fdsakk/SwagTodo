@@ -7,7 +7,7 @@ export function Field({
 }): React.JSX.Element {
   return (
     <div className="flex items-center gap-3 py-2">
-      <span className="w-20 shrink-0 text-xs text-zinc-500">{label}</span>
+      <span className="w-20 shrink-0 text-xs text-app-text-muted">{label}</span>
       <div className="flex-1">{children}</div>
     </div>
   )

@@ -198,8 +198,20 @@ export default function SessionsCalendar({
         const offsetMin = initialPointer - block.startMin
         let current: DraftMove | DraftResize =
           mode === 'move'
-            ? { kind: 'move', sessionId: block.session.id, dayIndex: startDayIndex, startMin: block.startMin, endMin: block.endMin }
-            : { kind: 'resize', sessionId: block.session.id, dayIndex: startDayIndex, startMin: block.startMin, endMin: block.endMin }
+            ? {
+                kind: 'move',
+                sessionId: block.session.id,
+                dayIndex: startDayIndex,
+                startMin: block.startMin,
+                endMin: block.endMin
+              }
+            : {
+                kind: 'resize',
+                sessionId: block.session.id,
+                dayIndex: startDayIndex,
+                startMin: block.startMin,
+                endMin: block.endMin
+              }
         setDraft(current)
         let moved = false
         const onMove = (e: PointerEvent): void => {
@@ -210,7 +222,10 @@ export default function SessionsCalendar({
               const col = columnRefs.current[i]
               if (!col) continue
               const r = col.getBoundingClientRect()
-              if (e.clientX >= r.left && e.clientX <= r.right) { nextDayIndex = i; break }
+              if (e.clientX >= r.left && e.clientX <= r.right) {
+                nextDayIndex = i
+                break
+              }
             }
           }
           const col = columnRefs.current[nextDayIndex]
@@ -220,10 +235,22 @@ export default function SessionsCalendar({
             const nextStart = clampMin(snapMin(cur - offsetMin))
             const maxStart = 24 * 60 - duration
             const start = Math.min(maxStart, nextStart)
-            current = { kind: 'move', sessionId: block.session.id, dayIndex: nextDayIndex, startMin: start, endMin: start + duration }
+            current = {
+              kind: 'move',
+              sessionId: block.session.id,
+              dayIndex: nextDayIndex,
+              startMin: start,
+              endMin: start + duration
+            }
           } else {
             const end = Math.max(block.startMin + SLOT_MIN, clampMin(cur))
-            current = { kind: 'resize', sessionId: block.session.id, dayIndex: startDayIndex, startMin: block.startMin, endMin: end }
+            current = {
+              kind: 'resize',
+              sessionId: block.session.id,
+              dayIndex: startDayIndex,
+              startMin: block.startMin,
+              endMin: end
+            }
           }
           setDraft(current)
         }
@@ -231,7 +258,10 @@ export default function SessionsCalendar({
           window.removeEventListener('pointermove', onMove)
           window.removeEventListener('pointerup', onUp)
           setDraft(null)
-          if (!moved) { onOpenSession(block.session.id); return }
+          if (!moved) {
+            onOpenSession(block.session.id)
+            return
+          }
           const targetDay = days[current.dayIndex] ?? days[startDayIndex]
           const startAt = buildIsoAtMinutes(targetDay, current.startMin)
           const endAt = buildIsoAtMinutes(targetDay, current.endMin)
@@ -257,8 +287,20 @@ export default function SessionsCalendar({
         const offsetMin = initialPointer - tb.startMin
         let current: DraftTimeBlockMove | DraftTimeBlockResize =
           mode === 'move'
-            ? { kind: 'tb_move', blockId: tb.block.id, dayIndex: startDayIndex, startMin: tb.startMin, endMin: tb.endMin }
-            : { kind: 'tb_resize', blockId: tb.block.id, dayIndex: startDayIndex, startMin: tb.startMin, endMin: tb.endMin }
+            ? {
+                kind: 'tb_move',
+                blockId: tb.block.id,
+                dayIndex: startDayIndex,
+                startMin: tb.startMin,
+                endMin: tb.endMin
+              }
+            : {
+                kind: 'tb_resize',
+                blockId: tb.block.id,
+                dayIndex: startDayIndex,
+                startMin: tb.startMin,
+                endMin: tb.endMin
+              }
         setDraft(current)
         let moved = false
         const onMove = (e: PointerEvent): void => {
@@ -269,7 +311,10 @@ export default function SessionsCalendar({
               const col = columnRefs.current[i]
               if (!col) continue
               const r = col.getBoundingClientRect()
-              if (e.clientX >= r.left && e.clientX <= r.right) { nextDayIndex = i; break }
+              if (e.clientX >= r.left && e.clientX <= r.right) {
+                nextDayIndex = i
+                break
+              }
             }
           }
           const col = columnRefs.current[nextDayIndex]
@@ -279,10 +324,22 @@ export default function SessionsCalendar({
             const nextStart = clampMin(snapMin(cur - offsetMin))
             const maxStart = 24 * 60 - duration
             const start = Math.min(maxStart, nextStart)
-            current = { kind: 'tb_move', blockId: tb.block.id, dayIndex: nextDayIndex, startMin: start, endMin: start + duration }
+            current = {
+              kind: 'tb_move',
+              blockId: tb.block.id,
+              dayIndex: nextDayIndex,
+              startMin: start,
+              endMin: start + duration
+            }
           } else {
             const end = Math.max(tb.startMin + SLOT_MIN, clampMin(cur))
-            current = { kind: 'tb_resize', blockId: tb.block.id, dayIndex: startDayIndex, startMin: tb.startMin, endMin: end }
+            current = {
+              kind: 'tb_resize',
+              blockId: tb.block.id,
+              dayIndex: startDayIndex,
+              startMin: tb.startMin,
+              endMin: end
+            }
           }
           setDraft(current)
         }
@@ -431,13 +488,21 @@ export default function SessionsCalendar({
                   )
                 })}
 
-                {draft && draft.kind === 'tb_move' && draft.dayIndex === dayIdx &&
-                  !(tbBlocksByDay.get(dayIdx) ?? []).some((tb) => tb.block.id === (draft as { blockId: string }).blockId) && (
+                {draft &&
+                  draft.kind === 'tb_move' &&
+                  draft.dayIndex === dayIdx &&
+                  !(tbBlocksByDay.get(dayIdx) ?? []).some(
+                    (tb) => tb.block.id === (draft as { blockId: string }).blockId
+                  ) && (
                     <DraftGhost startMin={draft.startMin} endMin={draft.endMin} label="Moving..." />
                   )}
 
-                {draft && draft.kind === 'move' && draft.dayIndex === dayIdx &&
-                  !(blocksByDay.get(dayIdx) ?? []).some((b) => b.session.id === (draft as { sessionId: string }).sessionId) && (
+                {draft &&
+                  draft.kind === 'move' &&
+                  draft.dayIndex === dayIdx &&
+                  !(blocksByDay.get(dayIdx) ?? []).some(
+                    (b) => b.session.id === (draft as { sessionId: string }).sessionId
+                  ) && (
                     <DraftGhost startMin={draft.startMin} endMin={draft.endMin} label="Moving..." />
                   )}
 

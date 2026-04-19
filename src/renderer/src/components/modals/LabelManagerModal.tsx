@@ -28,7 +28,7 @@ export function LabelManagerModal(props: LabelManagerModalProps): React.JSX.Elem
     <Dialog open={props.open} onOpenChange={(open) => !open && props.onClose()}>
       <DialogContent className="w-full max-w-lg border-zinc-700 bg-zinc-950 p-4 shadow-soft">
         <DialogHeader>
-          <DialogTitle className="text-sm text-zinc-200">Manage labels</DialogTitle>
+          <DialogTitle className="text-sm text-app-text">Manage labels</DialogTitle>
         </DialogHeader>
 
         <div className="mb-4 flex gap-2">
@@ -78,7 +78,7 @@ export function LabelManagerModal(props: LabelManagerModalProps): React.JSX.Elem
                 value={label.color}
               />
               <Button
-                className="size-8 p-0 text-zinc-500 hover:bg-zinc-800 hover:text-zinc-200"
+                className="size-8 p-0 text-app-text-muted hover:bg-app-hover hover:text-app-text-secondary"
                 onClick={() => props.onDelete(label.id)}
                 type="button"
                 variant="ghost"
@@ -87,7 +87,9 @@ export function LabelManagerModal(props: LabelManagerModalProps): React.JSX.Elem
               </Button>
             </div>
           ))}
-          {props.labels.length === 0 && <p className="text-sm text-zinc-500">No labels yet.</p>}
+          {props.labels.length === 0 && (
+            <p className="text-sm text-app-text-muted">No labels yet.</p>
+          )}
         </div>
 
         <DialogFooter className="mt-4">

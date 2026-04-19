@@ -24,7 +24,7 @@ export default function TodayPage(): React.JSX.Element {
       {
         id: 'overdue',
         title: 'Overdue',
-        accentClass: 'text-zinc-200',
+        accentClass: 'text-app-text-secondary',
         tasks: todayTasks.filter(isTaskOverdue)
       },
       { id: 'today', title: 'Today', tasks: todayTasks.filter(isTaskDueToday) }

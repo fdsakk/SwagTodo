@@ -110,21 +110,26 @@ export function HealthPage(): React.JSX.Element {
     [medications, selectedDate]
   )
 
+  const chartStepMinutes = chartWidth < 700 ? 10 : 5
+
   const chartData = useMemo(
-    () => generateDailyChartData(todayLogs, selectedDate, pkSettings),
-    [todayLogs, selectedDate, pkSettings]
+    () =>
+      generateDailyChartData(todayLogs, selectedDate, pkSettings, {
+        stepMinutes: chartStepMinutes
+      }),
+    [todayLogs, selectedDate, pkSettings, chartStepMinutes]
   )
 
-  const xTickInterval = chartWidth < 700 ? 35 : chartWidth < 1000 ? 23 : 11
+  const xTickInterval = chartWidth < 700 ? 17 : chartWidth < 1000 ? 23 : 11
 
   const nowLabel = useMemo(() => {
     if (selectedDate !== today()) return null
     const n = new Date()
-    const roundedMin = Math.round(n.getMinutes() / 5) * 5
+    const roundedMin = Math.round(n.getMinutes() / chartStepMinutes) * chartStepMinutes
     const h = roundedMin === 60 ? n.getHours() + 1 : n.getHours()
     const m = roundedMin === 60 ? 0 : roundedMin
     return `${String(h).padStart(2, '0')}:${String(m).padStart(2, '0')}`
-  }, [selectedDate])
+  }, [selectedDate, chartStepMinutes])
 
   const { yDomain, yTicks, crashSegments } = useMemo(() => {
     let maxEffect = 0

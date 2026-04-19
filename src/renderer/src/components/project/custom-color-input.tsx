@@ -36,7 +36,7 @@ export function CustomColorInput({
   return (
     <div className={cn('flex items-center gap-2', className)}>
       <label
-        className="relative flex h-7 w-7 cursor-pointer items-center justify-center rounded-md border border-white/[0.08] overflow-hidden"
+        className="relative flex h-7 w-7 cursor-pointer items-center justify-center overflow-hidden rounded-md border border-app-border"
         style={{ backgroundColor: displayColor }}
         title="Pick custom color"
       >
@@ -52,7 +52,7 @@ export function CustomColorInput({
         />
       </label>
       <input
-        className="h-7 flex-1 rounded-md border border-white/[0.08] bg-white/[0.03] px-2 font-mono text-xs text-zinc-300 placeholder:text-zinc-600 focus:border-white/20 focus:outline-none"
+        className="h-7 flex-1 rounded-md border border-app-border bg-app-hover px-2 font-mono text-xs text-app-text-secondary placeholder:text-app-text-muted focus:border-app-border focus:outline-none"
         maxLength={7}
         onBlur={() => commit(draft)}
         onChange={(event) => setDraft(event.target.value)}

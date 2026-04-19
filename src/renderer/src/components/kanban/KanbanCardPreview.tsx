@@ -8,7 +8,11 @@ interface KanbanCardPreviewProps {
   style?: CSSProperties
 }
 
-export function KanbanCardPreview({ task, labels, style }: KanbanCardPreviewProps): React.JSX.Element {
+export function KanbanCardPreview({
+  task,
+  labels,
+  style
+}: KanbanCardPreviewProps): React.JSX.Element {
   return (
     <div
       className="rounded-md border border-white/[0.1] bg-zinc-900/95 p-3 shadow-xl"

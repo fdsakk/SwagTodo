@@ -51,9 +51,7 @@ export function ProjectList({
               <span className="flex h-4 w-4 items-center justify-center text-xs">
                 {project.emoji || '#'}
               </span>
-              {!collapsed && (
-                <span className="ml-2 flex-1 truncate text-left">{project.name}</span>
-              )}
+              {!collapsed && <span className="ml-2 flex-1 truncate text-left">{project.name}</span>}
             </button>
           )
         })}

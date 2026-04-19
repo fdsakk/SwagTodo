@@ -55,7 +55,9 @@ export function TitleBar(): React.JSX.Element | null {
       style={{ WebkitAppRegion: 'drag' } as React.CSSProperties}
     >
       <span className="text-sm text-app-text-secondary ml-2">😎</span>
-      <span className="text-xs font-semibold tracking-wide tabular-nums text-app-text-secondary">{clock}</span>
+      <span className="text-xs font-semibold tracking-wide tabular-nums text-app-text-secondary">
+        {clock}
+      </span>
 
       {!isMac && (
         <div

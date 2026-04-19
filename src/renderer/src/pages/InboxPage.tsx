@@ -26,7 +26,12 @@ export default function InboxPage(): React.JSX.Element {
   const groupedTasks = useMemo<TaskGroup[]>(() => {
     const inbox = tasks.filter((t) => !t.projectId)
     return [
-      { id: 'overdue', title: 'Overdue', accentClass: 'text-zinc-200', tasks: inbox.filter(isTaskOverdue) },
+      {
+        id: 'overdue',
+        title: 'Overdue',
+        accentClass: 'text-app-text-secondary',
+        tasks: inbox.filter(isTaskOverdue)
+      },
       { id: 'no-date', title: 'No date', tasks: inbox.filter((t) => !t.dueDate) },
       { id: 'today', title: 'Today', tasks: inbox.filter(isTaskDueToday) },
       { id: 'future', title: 'Future', tasks: inbox.filter(isTaskInFuture) }

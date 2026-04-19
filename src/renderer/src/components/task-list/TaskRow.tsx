@@ -80,12 +80,7 @@ function TaskRowBase(props: TaskRowProps): React.JSX.Element {
         />
       )}
 
-      {subTaskTotal > 0 && (
-        <SubtaskProgressRing
-          completed={subTaskDone}
-          total={subTaskTotal}
-        />
-      )}
+      {subTaskTotal > 0 && <SubtaskProgressRing completed={subTaskDone} total={subTaskTotal} />}
     </li>
   )
 }

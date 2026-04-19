@@ -89,9 +89,9 @@ export function TaskCreatePanel(props: TaskCreatePanelProps): React.JSX.Element 
   return (
     <div className="flex h-full flex-col">
       <div className="flex h-12 items-center justify-between px-4">
-        <span className="text-xs text-zinc-500">New task</span>
+        <span className="text-xs text-app-text-muted">New task</span>
         <button
-          className="flex h-6 w-6 items-center justify-center rounded text-zinc-500 hover:bg-white/[0.04] hover:text-zinc-200"
+          className="flex h-6 w-6 items-center justify-center rounded text-app-text-muted hover:bg-app-hover hover:text-app-text-secondary"
           onClick={props.onClose}
           type="button"
         >
@@ -116,7 +116,7 @@ export function TaskCreatePanel(props: TaskCreatePanelProps): React.JSX.Element 
           value={form.description}
         />
 
-        <Separator className="bg-white/[0.06]" />
+        <Separator className="bg-app-border" />
 
         <TaskFormFields
           dueDate={form.dueDate || undefined}
@@ -136,7 +136,7 @@ export function TaskCreatePanel(props: TaskCreatePanelProps): React.JSX.Element 
 
       <div className="flex items-center justify-end gap-2 px-4 py-3">
         <Button
-          className="h-7 bg-transparent px-3 text-xs text-zinc-400 hover:bg-white/[0.04] hover:text-zinc-200"
+          className="h-7 bg-transparent px-3 text-xs text-app-text-muted hover:bg-app-hover hover:text-app-text-secondary"
           onClick={props.onClose}
           type="button"
           variant="ghost"

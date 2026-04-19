@@ -9,8 +9,8 @@ export interface MedPreset {
 
 interface PkComponent {
   fraction: number
-  ka: number  // absorption rate [1/h]
-  ke: number  // elimination rate [1/h]
+  ka: number // absorption rate [1/h]
+  ke: number // elimination rate [1/h]
 }
 
 interface PkDef {
@@ -23,6 +23,14 @@ interface PkDef {
   /** Reference dose in mg. dose/refDoseMg = Y scale factor so 1 ref-dose → peak 1.0. */
   refDoseMg: number
 }
+
+interface EffectCurveCacheEntry {
+  curve: Float32Array
+  durationH: number
+  refDoseMg: number
+}
+
+const EFFECT_CURVE_CACHE = new Map<string, EffectCurveCacheEntry>()
 
 /**
  * Base PK definitions (plasma compartment only).
@@ -47,8 +55,8 @@ const PK_DEFS: Record<string, PkDef> = {
   },
   concerta: {
     components: [
-      { fraction: 0.22, ka: 4.0, ke: 0.20 },
-      { fraction: 0.78, ka: 0.28, ke: 0.20 }
+      { fraction: 0.22, ka: 4.0, ke: 0.2 },
+      { fraction: 0.78, ka: 0.28, ke: 0.2 }
     ],
     baseDurationH: 10,
     defaultKe0: 1.5,
@@ -158,44 +166,68 @@ function applyUserParams(def: PkDef, keMultiplier: number): PkDef {
   }
 }
 
+const effectCurveCacheKey = (medId: string, keMultiplier: number): string =>
+  `${medId}|${keMultiplier.toFixed(4)}`
+
+function getEffectCurveCached(
+  medId: string,
+  keMultiplier: number
+): EffectCurveCacheEntry | undefined {
+  const baseDef = PK_DEFS[medId]
+  if (!baseDef) return undefined
+  const key = effectCurveCacheKey(medId, keMultiplier)
+  const hit = EFFECT_CURVE_CACHE.get(key)
+  if (hit) return hit
+
+  const TAIL_H = 3
+  const STEP_H = 5 / 60
+  const def = applyUserParams(baseDef, keMultiplier)
+  const durationH = def.baseDurationH + TAIL_H
+  const created: EffectCurveCacheEntry = {
+    curve: computeEffectSiteCurve(def, durationH, def.defaultKe0, STEP_H),
+    durationH,
+    refDoseMg: def.refDoseMg
+  }
+  EFFECT_CURVE_CACHE.set(key, created)
+  return created
+}
+
+interface GenerateChartOptions {
+  stepMinutes?: 5 | 10
+}
+
 export function generateDailyChartData(
   logs: MedicationLog[],
   date: string,
-  pkSettings: PkSettings
+  pkSettings: PkSettings,
+  options: GenerateChartOptions = {}
 ): ChartPoint[] {
   const { peakScale, tMaxOffsetH, keMultiplier, mec, mtc, crashThreshold } = pkSettings
+  const stepMinutes = options.stepMinutes ?? 5
   const dayStart = new Date(`${date}T00:00:00`).getTime()
-  const STEP_H = 5 / 60
+  const STEP_H = stepMinutes / 60
   const TOTAL_MIN = 24 * 60
 
-  // Longer tail (3h) so slow meds (Elvanse) decay smoothly rather than cliff-cutting
-  const TAIL_H = 3
-
-  const curveCache = new Map<string, { curve: Float32Array; durationH: number; refDoseMg: number }>()
-
-  for (const log of logs) {
-    if (curveCache.has(log.medId)) continue
-    const baseDef = PK_DEFS[log.medId]
-    if (!baseDef) continue
-    const def = applyUserParams(baseDef, keMultiplier)
-    const durationH = def.baseDurationH + TAIL_H
-    curveCache.set(log.medId, {
-      curve: computeEffectSiteCurve(def, durationH, def.defaultKe0, STEP_H),
-      durationH,
-      refDoseMg: def.refDoseMg
+  const preparedLogs = logs
+    .map((log) => {
+      const curve = getEffectCurveCached(log.medId, keMultiplier)
+      if (!curve) return null
+      return {
+        dose: log.dose,
+        effectiveIntakeMs: Date.parse(log.takenAt) + tMaxOffsetH * 3_600_000,
+        curve
+      }
     })
-  }
+    .filter((entry): entry is NonNullable<typeof entry> => !!entry)
 
   const rawEffects: number[] = []
-  for (let minute = 0; minute <= TOTAL_MIN; minute += 5) {
+  for (let minute = 0; minute <= TOTAL_MIN; minute += stepMinutes) {
     const absMs = dayStart + minute * 60_000
     let effect = 0
 
-    for (const log of logs) {
-      const cache = curveCache.get(log.medId)
-      if (!cache) continue
-      const effectiveIntakeMs = new Date(log.takenAt).getTime() + tMaxOffsetH * 3_600_000
-      const hoursFromIntake = (absMs - effectiveIntakeMs) / 3_600_000
+    for (const log of preparedLogs) {
+      const hoursFromIntake = (absMs - log.effectiveIntakeMs) / 3_600_000
+      const cache = log.curve
       if (hoursFromIntake < 0 || hoursFromIntake > cache.durationH) continue
       const idx = Math.round(hoursFromIntake / STEP_H)
       if (idx < cache.curve.length) {
@@ -207,12 +239,13 @@ export function generateDailyChartData(
     rawEffects.push(Math.max(0, effect))
   }
 
-  // Smooth slope over ±3 points (30 min window) to avoid noise-induced split segments
-  const SLOPE_WINDOW = 3
+  // Smooth slope over ~30 min window to avoid noise-induced split segments
+  const SLOPE_WINDOW = Math.max(1, Math.round(15 / stepMinutes))
   const smoothSlope: number[] = rawEffects.map((_, i) => {
     const lo = Math.max(0, i - SLOPE_WINDOW)
     const hi = Math.min(rawEffects.length - 1, i + SLOPE_WINDOW)
-    return (rawEffects[hi] - rawEffects[lo]) / (hi - lo)
+    const deltaPerPoint = (rawEffects[hi] - rawEffects[lo]) / (hi - lo)
+    return deltaPerPoint * (5 / stepMinutes)
   })
 
   const points: ChartPoint[] = []
@@ -222,7 +255,7 @@ export function generateDailyChartData(
     const crashRisk = slope < crashThreshold && c > mec * 0.5
     const band: ChartPoint['band'] = c >= mtc ? 'above' : c >= mec ? 'therapeutic' : 'below'
 
-    const minute = i * 5
+    const minute = i * stepMinutes
     const h = Math.floor(minute / 60)
     const m = minute % 60
     points.push({

@@ -4,7 +4,6 @@
 
 This project uses OpenWolf for context management. Read and follow .wolf/OPENWOLF.md every session. Check .wolf/cerebrum.md before generating code. Check .wolf/anatomy.md before reading files.
 
-
 # CLAUDE.md
 
 This file provides guidance to Claude Code (claude.ai/code) when working with code in this repository.
@@ -13,18 +12,18 @@ This file provides guidance to Claude Code (claude.ai/code) when working with co
 
 Package manager: npm (lockfile present). `bun.lock` also exists but CI/scripts target npm.
 
-| Task | Command |
-|------|---------|
-| Install | `npm install` |
-| Dev (hot reload, Electron window + Vite renderer) | `npm run dev` |
-| Type-check both targets | `npm run typecheck` |
-| Type-check node/main+preload only | `npm run typecheck:node` |
-| Type-check web/renderer only | `npm run typecheck:web` |
-| Lint | `npm run lint` (ESLint flat config, caching on) |
-| Format | `npm run format` (Prettier) |
-| Build (typecheck + bundle) | `npm run build` |
-| Preview built app | `npm run start` |
-| Platform packages | `npm run build:linux` / `build:mac` / `build:win` |
+| Task                                              | Command                                           |
+| ------------------------------------------------- | ------------------------------------------------- |
+| Install                                           | `npm install`                                     |
+| Dev (hot reload, Electron window + Vite renderer) | `npm run dev`                                     |
+| Type-check both targets                           | `npm run typecheck`                               |
+| Type-check node/main+preload only                 | `npm run typecheck:node`                          |
+| Type-check web/renderer only                      | `npm run typecheck:web`                           |
+| Lint                                              | `npm run lint` (ESLint flat config, caching on)   |
+| Format                                            | `npm run format` (Prettier)                       |
+| Build (typecheck + bundle)                        | `npm run build`                                   |
+| Preview built app                                 | `npm run start`                                   |
+| Platform packages                                 | `npm run build:linux` / `build:mac` / `build:win` |
 
 No test runner configured. No `test` script in `package.json`.
 
@@ -43,6 +42,7 @@ Electron app with three build targets via `electron-vite`: `main`, `preload`, `r
 Single Zustand store in `src/renderer/src/store/useAppStore.ts` holds both persistent domain data (`tasks`, `projects`, `labels`, `uiScale`) and transient UI state (`selectedView`, `taskPanel`, `searchQuery`, `sortMode`, `showCompleted`, `isSidebarCollapsed`, `projectTab`, `searchFocusSignal`, `hydrated`).
 
 Persistence flow:
+
 1. `hydrate()` loads via `window.api.storage.loadState()` on mount (`App.tsx` `useEffect`).
 2. A `useAppStore.subscribe` listener diff-checks `tasks` / `projects` / `labels` / `uiScale` by reference; unrelated UI state changes do **not** trigger persistence.
 3. Debounced (120 ms) `window.api.storage.saveState({ tasks, projects, labels, uiScale })`.
@@ -60,19 +60,19 @@ When adding a persistent field: update `AppState` in `src/renderer/src/types/ind
 
 All components live in `src/renderer/src/components/` subfolders — no loose files at root. Each subfolder has an `index.tsx` barrel. All exports are **named** (no default exports except legacy shadcn/ui primitives).
 
-| Subfolder | Contents |
-|-----------|----------|
-| `layout/` | `TitleBar`, `Sidebar`, `ThemeProvider`, `SearchSortBar` |
-| `task-panel/` | `TaskDetailPanel`, `TaskCreatePanel`, `TaskEditPanel`, `TaskFormFields`, `Field` |
-| `task-list/` | `TaskList`, `TaskRow`, `AnimatedCheckbox`, `SubtaskProgressRing` |
-| `modals/` | `LabelManagerModal`, `ShortcutsHelpModal`, `ProjectPickerModal` |
-| `project/` | `ProjectPanel`, `ColorSelector`, `CustomColorInput`, `EmojiPicker` |
-| `sidebar/` | `NavItem`, `ProjectList`, `SidebarFooter` |
-| `settings/` | `SyncSection`, `CustomizeSection`, `ThemeSection`, `ThemeSwatch` |
-| `task-edit/` | `SessionStats`, `SubtaskList` |
-| `kanban/` | `KanbanBoard`, `KanbanCard`, `KanbanCardPreview`, `KanbanColumn` |
-| `sessions-calendar/` | `SessionsCalendar`, `SessionBlockView`, `TimeBlockView`, `DraftGhost` |
-| `ui/` | shadcn/ui primitives |
+| Subfolder            | Contents                                                                         |
+| -------------------- | -------------------------------------------------------------------------------- |
+| `layout/`            | `TitleBar`, `Sidebar`, `ThemeProvider`, `SearchSortBar`                          |
+| `task-panel/`        | `TaskDetailPanel`, `TaskCreatePanel`, `TaskEditPanel`, `TaskFormFields`, `Field` |
+| `task-list/`         | `TaskList`, `TaskRow`, `AnimatedCheckbox`, `SubtaskProgressRing`                 |
+| `modals/`            | `LabelManagerModal`, `ShortcutsHelpModal`, `ProjectPickerModal`                  |
+| `project/`           | `ProjectPanel`, `ColorSelector`, `CustomColorInput`, `EmojiPicker`               |
+| `sidebar/`           | `NavItem`, `ProjectList`, `SidebarFooter`                                        |
+| `settings/`          | `SyncSection`, `CustomizeSection`, `ThemeSection`, `ThemeSwatch`                 |
+| `task-edit/`         | `SessionStats`, `SubtaskList`                                                    |
+| `kanban/`            | `KanbanBoard`, `KanbanCard`, `KanbanCardPreview`, `KanbanColumn`                 |
+| `sessions-calendar/` | `SessionsCalendar`, `SessionBlockView`, `TimeBlockView`, `DraftGhost`            |
+| `ui/`                | shadcn/ui primitives                                                             |
 
 ### Views
 

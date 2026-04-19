@@ -1,4 +1,5 @@
-import { create } from 'zustand'
+import { create, type StoreApi } from 'zustand'
+import { persist, type PersistStorage } from 'zustand/middleware'
 import { v4 as uuidv4 } from 'uuid'
 import {
   TASK_STATUSES,
@@ -146,7 +147,35 @@ interface AppStore extends AppState {
 }
 
 const UI_SCALE_SET: ReadonlySet<number> = new Set(UI_SCALE_OPTIONS)
-const PERSIST_DEBOUNCE_MS = 120
+
+type PersistedSlice = Pick<
+  AppStore,
+  | 'tasks'
+  | 'projects'
+  | 'labels'
+  | 'sessions'
+  | 'timeBlocks'
+  | 'medications'
+  | 'pkSettings'
+  | 'uiScale'
+  | 'isSidebarCollapsed'
+  | 'appearance'
+  | 'sync'
+>
+
+const PERSISTED_KEYS: (keyof PersistedSlice)[] = [
+  'tasks',
+  'projects',
+  'labels',
+  'sessions',
+  'timeBlocks',
+  'medications',
+  'pkSettings',
+  'uiScale',
+  'isSidebarCollapsed',
+  'appearance',
+  'sync'
+]
 
 const nextOrder = (tasks: readonly Task[]): number => {
   let max = 0
@@ -217,14 +246,58 @@ const stateFromPersisted = (
     timeBlocks: Array.isArray(data.timeBlocks) ? data.timeBlocks : [],
     medications: Array.isArray(data.medications) ? data.medications : [],
     pkSettings: normalizePkSettings(data.pkSettings),
-    uiScale: isUiScale(data.uiScale) ? data.uiScale : 100,
+    uiScale: isUiScale(data.uiScale) ? data.uiScale : UI_SCALE_OPTIONS[0],
     isSidebarCollapsed: data.isSidebarCollapsed ?? false,
     appearance: normalizeAppearance(data.appearance),
     sync: normalizeSyncSettings(data.sync)
   }
 }
 
-const useAppStore = create<AppStore>((set, get) => ({
+const pickPersistedSlice = (state: AppStore): PersistedSlice => ({
+  tasks: state.tasks,
+  projects: state.projects,
+  labels: state.labels,
+  sessions: state.sessions,
+  timeBlocks: state.timeBlocks,
+  medications: state.medications,
+  pkSettings: state.pkSettings,
+  uiScale: state.uiScale,
+  isSidebarCollapsed: state.isSidebarCollapsed,
+  appearance: state.appearance,
+  sync: state.sync
+})
+
+let lastPersistedSlice: PersistedSlice | undefined
+
+const persistedStorage: PersistStorage<PersistedSlice> = {
+  getItem: async () => {
+    if (!window.api?.storage) return null
+    const loaded = stateFromPersisted(await window.api.storage.loadState())
+    lastPersistedSlice = loaded
+    return { state: loaded, version: 1 }
+  },
+  setItem: async (_, value) => {
+    if (!window.api?.storage) return
+    const next = value.state
+    const patch: Partial<PersistedSlice> = {}
+    for (const key of PERSISTED_KEYS) {
+      if (!lastPersistedSlice || next[key] !== lastPersistedSlice[key]) {
+        ;(patch as Record<string, unknown>)[key] = next[key]
+      }
+    }
+    if (Object.keys(patch).length === 0) return
+    await window.api.storage.savePartial(patch)
+    lastPersistedSlice = { ...(lastPersistedSlice ?? next), ...patch }
+  },
+  removeItem: async () => {
+    lastPersistedSlice = undefined
+  }
+}
+
+type AppStoreSet = StoreApi<AppStore>['setState']
+type AppStoreGet = StoreApi<AppStore>['getState']
+
+const createLegacyStore = (set: AppStoreSet, get: AppStoreGet): AppStore => ({
   tasks: [],
   projects: [],
   labels: [],
@@ -240,16 +313,20 @@ const useAppStore = create<AppStore>((set, get) => ({
   searchQuery: '',
   sortMode: 'priority',
   showCompleted: false,
-  uiScale: 100,
+  uiScale: UI_SCALE_OPTIONS[0],
   appearance: DEFAULT_APPEARANCE,
   sync: DEFAULT_SYNC_SETTINGS,
   projectTab: 'list',
   searchFocusSignal: 0,
   refreshFromStorage: async () => {
-    if (!window.api?.storage) return
+    if (!window.api?.storage) {
+      set({ hydrated: true })
+      return
+    }
     try {
-      const persisted = await window.api.storage.loadState()
-      set({ ...stateFromPersisted(persisted), hydrated: true })
+      const persisted = stateFromPersisted(await window.api.storage.loadState())
+      lastPersistedSlice = persisted
+      set({ ...persisted, hydrated: true })
     } catch (err) {
       console.error('[store] refresh failed', err)
       set({ hydrated: true })
@@ -257,10 +334,6 @@ const useAppStore = create<AppStore>((set, get) => ({
   },
   hydrate: async () => {
     if (get().hydrated) return
-    if (!window.api?.storage) {
-      set({ hydrated: true })
-      return
-    }
     await get().refreshFromStorage()
   },
   selectInbox: () => set({ selectedView: 'inbox', selectedProjectId: undefined }),
@@ -602,8 +675,7 @@ const useAppStore = create<AppStore>((set, get) => ({
       medications.splice(idx, 1)
       return { medications }
     }),
-  updateChartSettings: (patch) =>
-    set((s) => ({ pkSettings: { ...s.pkSettings, ...patch } })),
+  updateChartSettings: (patch) => set((s) => ({ pkSettings: { ...s.pkSettings, ...patch } })),
   applyKanbanOrder: (projectId, columns) => {
     const updatedAt = nowIso()
     const byTaskId = new Map<string, { status: TaskStatus; order: number }>()
@@ -633,67 +705,124 @@ const useAppStore = create<AppStore>((set, get) => ({
       return changed ? { tasks } : state
     })
   }
-}))
-
-let persistTimer: ReturnType<typeof setTimeout> | undefined
-
-const unsubscribePersist = useAppStore.subscribe((state, prev) => {
-  if (!state.hydrated || !window.api?.storage) return
-  if (
-    state.tasks === prev.tasks &&
-    state.projects === prev.projects &&
-    state.labels === prev.labels &&
-    state.sessions === prev.sessions &&
-    state.timeBlocks === prev.timeBlocks &&
-    state.medications === prev.medications &&
-    state.pkSettings === prev.pkSettings &&
-    state.uiScale === prev.uiScale &&
-    state.isSidebarCollapsed === prev.isSidebarCollapsed &&
-    state.appearance === prev.appearance &&
-    state.sync === prev.sync
-  ) {
-    return
-  }
-
-  if (persistTimer) clearTimeout(persistTimer)
-  const {
-    tasks,
-    projects,
-    labels,
-    sessions,
-    timeBlocks,
-    medications,
-    pkSettings,
-    uiScale,
-    isSidebarCollapsed,
-    appearance,
-    sync
-  } = state
-  persistTimer = setTimeout(() => {
-    persistTimer = undefined
-    window.api.storage
-      .saveState({
-        tasks,
-        projects,
-        labels,
-        sessions,
-        timeBlocks,
-        medications,
-        pkSettings,
-        uiScale,
-        isSidebarCollapsed,
-        appearance,
-        sync
-      })
-      .catch((err) => console.error('[store] persist failed', err))
-  }, PERSIST_DEBOUNCE_MS)
 })
 
-if (import.meta.hot) {
-  import.meta.hot.dispose(() => {
-    unsubscribePersist()
-    if (persistTimer) clearTimeout(persistTimer)
-  })
+const pickSlice = <T extends object, const K extends readonly (keyof T)[]>(
+  source: T,
+  keys: K
+): Pick<T, K[number]> => {
+  const out = {} as Pick<T, K[number]>
+  for (const key of keys) out[key] = source[key]
+  return out
 }
+
+const UI_SLICE_KEYS = [
+  'hydrated',
+  'selectedView',
+  'selectedProjectId',
+  'taskPanel',
+  'isSidebarCollapsed',
+  'searchQuery',
+  'sortMode',
+  'showCompleted',
+  'projectTab',
+  'searchFocusSignal',
+  'hydrate',
+  'refreshFromStorage',
+  'selectInbox',
+  'selectToday',
+  'selectActivity',
+  'selectSessions',
+  'selectSettings',
+  'selectProject',
+  'setProjectTab',
+  'setSearchQuery',
+  'setSortMode',
+  'setShowCompleted',
+  'toggleSidebar',
+  'triggerSearchFocus',
+  'openCreatePanel',
+  'openCreatePanelForCurrentView',
+  'openCreateProjectPanel',
+  'openEditProjectPanel',
+  'openEditPanel',
+  'closeTaskPanel',
+  'selectHealth'
+] as const satisfies readonly (keyof AppStore)[]
+
+const TASK_PROJECT_SLICE_KEYS = [
+  'tasks',
+  'projects',
+  'labels',
+  'addTask',
+  'updateTask',
+  'toggleTaskComplete',
+  'deleteTask',
+  'addSubTask',
+  'toggleSubTask',
+  'deleteSubTask',
+  'addProject',
+  'updateProject',
+  'deleteProject',
+  'addLabel',
+  'updateLabel',
+  'deleteLabel',
+  'applyKanbanOrder'
+] as const satisfies readonly (keyof AppStore)[]
+
+const SESSION_SLICE_KEYS = [
+  'sessions',
+  'timeBlocks',
+  'addSession',
+  'updateSession',
+  'deleteSession',
+  'addTimeBlock',
+  'updateTimeBlock',
+  'deleteTimeBlock'
+] as const satisfies readonly (keyof AppStore)[]
+
+const SETTINGS_SLICE_KEYS = [
+  'uiScale',
+  'appearance',
+  'sync',
+  'setUiScale',
+  'setThemeId',
+  'setCustomTokens',
+  'resetCustomTokens',
+  'setSyncSupabaseUrl',
+  'setSyncSupabaseAnonKey',
+  'setSyncWorkspaceId'
+] as const satisfies readonly (keyof AppStore)[]
+
+const HEALTH_SLICE_KEYS = [
+  'medications',
+  'pkSettings',
+  'addMedicationLog',
+  'updateMedicationLog',
+  'deleteMedicationLog',
+  'updateChartSettings'
+] as const satisfies readonly (keyof AppStore)[]
+
+const useAppStore = create<AppStore>()(
+  persist(
+    (set, get) => {
+      const legacy = createLegacyStore(set, get)
+      return {
+        ...pickSlice(legacy, UI_SLICE_KEYS),
+        ...pickSlice(legacy, TASK_PROJECT_SLICE_KEYS),
+        ...pickSlice(legacy, SESSION_SLICE_KEYS),
+        ...pickSlice(legacy, SETTINGS_SLICE_KEYS),
+        ...pickSlice(legacy, HEALTH_SLICE_KEYS)
+      }
+    },
+    {
+      name: 'app-state',
+      version: 1,
+      storage: persistedStorage,
+      partialize: pickPersistedSlice,
+      skipHydration: true
+    }
+  )
+)
 
 export default useAppStore

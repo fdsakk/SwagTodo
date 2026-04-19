@@ -53,13 +53,13 @@ export function SessionBlockView({
           onDelete()
         }}
         title="Delete session"
-        className="rounded absolute right-1 top-1 z-50 flex h-5 w-5 items-center justify-center text-zinc-300 opacity-0 duration-200 hover: hover:border border-red-600 hover:bg-app-titlebar/80 group-hover:opacity-100 transition-all"
+        className="absolute right-1 top-1 z-50 flex h-5 w-5 items-center justify-center rounded border border-transparent text-app-text-secondary opacity-0 transition-all duration-200 hover:border-red-600 hover:bg-app-titlebar/80 group-hover:opacity-100"
       >
         <X size={10} />
       </button>
       <div
         onPointerDown={onResizePointerDown}
-        className="absolute bottom-0 left-0 right-0 h-1.5 cursor-ns-resize bg-white/[0.04] hover:bg-white/[0.1]"
+        className="absolute bottom-0 left-0 right-0 h-1.5 cursor-ns-resize bg-app-hover hover:bg-app-active"
       />
     </div>
   )

@@ -26,10 +26,7 @@ const SHORTCUTS: { keys: string[]; label: string }[] = [
   { keys: ['g'], label: 'Sessions: go to today' }
 ]
 
-export function ShortcutsHelpModal({
-  open,
-  onClose
-}: ShortcutsHelpModalProps): React.JSX.Element {
+export function ShortcutsHelpModal({ open, onClose }: ShortcutsHelpModalProps): React.JSX.Element {
   return (
     <AnimatePresence>
       {open && (
@@ -45,41 +42,41 @@ export function ShortcutsHelpModal({
           <div className="pointer-events-none fixed left-2 right-2 top-8 bottom-2 z-50 flex items-center justify-center">
             <motion.div
               animate={{ opacity: 1, scale: 1 }}
-              className="pointer-events-auto w-[420px] max-h-[90%] overflow-y-auto rounded-lg border border-white/[0.06] bg-app-bg p-5 shadow-xl"
+              className="pointer-events-auto w-[420px] max-h-[90%] overflow-y-auto rounded-lg border border-app-border bg-app-bg p-5 shadow-xl"
               exit={{ opacity: 0, scale: 0.98 }}
               initial={{ opacity: 0, scale: 0.98 }}
               transition={{ duration: 0.15 }}
             >
-            <div className="mb-4 flex items-center justify-between">
-              <h2 className="text-sm font-semibold text-zinc-100">Keyboard shortcuts</h2>
-              <button
-                className="text-xs text-zinc-500 hover:text-zinc-300"
-                onClick={onClose}
-                type="button"
-              >
-                Close
-              </button>
-            </div>
-            <div className="space-y-1.5">
-              {SHORTCUTS.map((sc) => (
-                <div
-                  key={sc.keys.join('+')}
-                  className="flex items-center justify-between text-xs"
+              <div className="mb-4 flex items-center justify-between">
+                <h2 className="text-sm font-semibold text-zinc-100">Keyboard shortcuts</h2>
+                <button
+                  className="text-xs text-app-text-muted hover:text-app-text-secondary"
+                  onClick={onClose}
+                  type="button"
                 >
-                  <span className="text-zinc-400">{sc.label}</span>
-                  <div className="flex items-center gap-1">
-                    {sc.keys.map((k, idx) => (
-                      <kbd
-                        key={`${k}-${idx}`}
-                        className="rounded border border-white/[0.08] bg-white/[0.04] px-1.5 py-0.5 font-mono text-[10px] text-zinc-300"
-                      >
-                        {k}
-                      </kbd>
-                    ))}
+                  Close
+                </button>
+              </div>
+              <div className="space-y-1.5">
+                {SHORTCUTS.map((sc) => (
+                  <div
+                    key={sc.keys.join('+')}
+                    className="flex items-center justify-between text-xs"
+                  >
+                    <span className="text-zinc-400">{sc.label}</span>
+                    <div className="flex items-center gap-1">
+                      {sc.keys.map((k, idx) => (
+                        <kbd
+                          key={`${k}-${idx}`}
+                          className="rounded border border-app-border bg-app-hover px-1.5 py-0.5 font-mono text-[10px] text-app-text-secondary"
+                        >
+                          {k}
+                        </kbd>
+                      ))}
+                    </div>
                   </div>
-                </div>
-              ))}
-            </div>
+                ))}
+              </div>
             </motion.div>
           </div>
         </>

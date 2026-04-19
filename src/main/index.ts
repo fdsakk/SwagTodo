@@ -4,20 +4,29 @@ import { electronApp, optimizer, is } from '@electron-toolkit/utils'
 import ElectronStore from 'electron-store'
 import { createClient, type SupabaseClient } from '@supabase/supabase-js'
 import icon from '../../resources/icon.png?asset'
+import {
+  DEFAULT_SYNC_SETTINGS,
+  DEFAULT_UI_SCALE,
+  DEFAULT_WORKSPACE_ID,
+  UI_SCALE_OPTIONS
+} from '../shared/defaults'
+import {
+  type AppState,
+  type AppearanceSettings,
+  type Priority,
+  type SyncMode,
+  type SyncSettings,
+  type SyncStatus,
+  type Task,
+  type TaskStatus,
+  type UiScale
+} from '../shared/types'
 
-type Priority = 'p1' | 'p2' | 'p3' | 'p4'
-type TaskStatus = 'todo' | 'in_progress' | 'done'
-type UiScale = 100 | 110 | 125 | 150 | 175
-type SyncMode = 'local' | 'supabase'
-
-const UI_SCALE_OPTIONS: readonly UiScale[] = [100, 110, 125, 150, 175] as const
 const UI_SCALE_SET: ReadonlySet<number> = new Set(UI_SCALE_OPTIONS)
-const DEFAULT_UI_SCALE: UiScale = 100
 const MIN_ZOOM_FACTOR = UI_SCALE_OPTIONS[0] / 100
 const MAX_ZOOM_FACTOR = UI_SCALE_OPTIONS[UI_SCALE_OPTIONS.length - 1] / 100
 const IS_MAC = process.platform === 'darwin'
 const IS_WAYLAND = process.platform === 'linux' && process.env.XDG_SESSION_TYPE === 'wayland'
-const DEFAULT_WORKSPACE_ID = 'default'
 const REMOTE_PUSH_DEBOUNCE_MS = 800
 
 const TABLES = {
@@ -30,111 +39,7 @@ const TABLES = {
   timeBlocks: 'swagtodo_time_blocks'
 } as const
 
-interface SubTask {
-  id: string
-  title: string
-  completed: boolean
-}
-
-interface Task {
-  id: string
-  title: string
-  description?: string
-  priority: Priority
-  dueDate?: string
-  projectId?: string
-  labels: string[]
-  completed: boolean
-  status: TaskStatus
-  createdAt: string
-  updatedAt: string
-  order: number
-  subTasks: SubTask[]
-}
-
-interface Project {
-  id: string
-  name: string
-  color: string
-  emoji?: string
-  description?: string
-  createdAt: string
-}
-
-interface Label {
-  id: string
-  name: string
-  color: string
-}
-
-interface TaskSession {
-  id: string
-  taskId: string
-  projectId: string
-  startAt: string
-  endAt: string
-  createdAt: string
-  updatedAt: string
-}
-
-interface TimeBlock {
-  id: string
-  label: string
-  startAt: string
-  endAt: string
-  createdAt: string
-}
-
-interface AppearanceSettings {
-  themeId: string
-  customTokens: Record<string, string>
-}
-
-interface SyncSettings {
-  mode: SyncMode
-  supabaseUrl: string
-  supabaseAnonKey: string
-  workspaceId: string
-}
-
-interface SyncStatus {
-  mode: SyncMode
-  connected: boolean
-  lastSyncAt?: string
-  lastError?: string
-}
-
-interface MedicationLog {
-  id: string
-  medId: string
-  medName: string
-  dose: number
-  takenAt: string
-  createdAt: string
-}
-
-interface AppState {
-  tasks: Task[]
-  projects: Project[]
-  labels: Label[]
-  sessions: TaskSession[]
-  timeBlocks: TimeBlock[]
-  medications?: MedicationLog[]
-  pkSettings?: unknown
-  uiScale?: UiScale
-  isSidebarCollapsed?: boolean
-  appearance?: AppearanceSettings
-  sync?: SyncSettings
-}
-
 type SyncSlice = Pick<AppState, 'tasks' | 'projects' | 'labels' | 'sessions' | 'timeBlocks'>
-
-const DEFAULT_SYNC_SETTINGS: SyncSettings = {
-  mode: 'local',
-  supabaseUrl: '',
-  supabaseAnonKey: '',
-  workspaceId: DEFAULT_WORKSPACE_ID
-}
 
 const defaultAppState: AppState = {
   tasks: [],
@@ -176,6 +81,20 @@ const isStringRecord = (v: unknown): v is Record<string, string> =>
   !Array.isArray(v) &&
   Object.values(v as object).every((x) => typeof x === 'string')
 
+const APP_STATE_KEYS: ReadonlySet<string> = new Set([
+  'tasks',
+  'projects',
+  'labels',
+  'sessions',
+  'timeBlocks',
+  'medications',
+  'pkSettings',
+  'uiScale',
+  'isSidebarCollapsed',
+  'appearance',
+  'sync'
+])
+
 const isAppState = (v: unknown): v is AppState => {
   if (!v || typeof v !== 'object') return false
   const d = v as Partial<AppState>
@@ -204,6 +123,45 @@ const isAppState = (v: unknown): v is AppState => {
   return true
 }
 
+const isAppStatePatch = (v: unknown): v is Partial<AppState> => {
+  if (!v || typeof v !== 'object' || Array.isArray(v)) return false
+  const patch = v as Record<string, unknown>
+  for (const key of Object.keys(patch)) {
+    if (!APP_STATE_KEYS.has(key)) return false
+  }
+  if ('tasks' in patch && !Array.isArray(patch.tasks)) return false
+  if ('projects' in patch && !Array.isArray(patch.projects)) return false
+  if ('labels' in patch && !Array.isArray(patch.labels)) return false
+  if ('sessions' in patch && !Array.isArray(patch.sessions)) return false
+  if ('timeBlocks' in patch && !Array.isArray(patch.timeBlocks)) return false
+  if (
+    'medications' in patch &&
+    patch.medications !== undefined &&
+    !Array.isArray(patch.medications)
+  )
+    return false
+  if ('uiScale' in patch && patch.uiScale !== undefined && !isUiScale(patch.uiScale)) return false
+  if (
+    'isSidebarCollapsed' in patch &&
+    patch.isSidebarCollapsed !== undefined &&
+    typeof patch.isSidebarCollapsed !== 'boolean'
+  )
+    return false
+  if ('appearance' in patch && patch.appearance !== undefined) {
+    const a = patch.appearance as Partial<AppearanceSettings>
+    if (typeof a.themeId !== 'string') return false
+    if (a.customTokens !== undefined && !isStringRecord(a.customTokens)) return false
+  }
+  if ('sync' in patch && patch.sync !== undefined) {
+    const s = patch.sync as Partial<SyncSettings>
+    if (!isSyncMode(s.mode)) return false
+    if (s.supabaseUrl !== undefined && typeof s.supabaseUrl !== 'string') return false
+    if (s.supabaseAnonKey !== undefined && typeof s.supabaseAnonKey !== 'string') return false
+    if (s.workspaceId !== undefined && typeof s.workspaceId !== 'string') return false
+  }
+  return true
+}
+
 const normalizeSyncSettings = (raw: unknown): SyncSettings => {
   if (!raw || typeof raw !== 'object') return DEFAULT_SYNC_SETTINGS
   const sync = raw as Partial<SyncSettings>
@@ -222,6 +180,23 @@ const normalizeAppState = (state: AppState): AppState => ({
   ...state,
   sync: normalizeSyncSettings(state.sync)
 })
+
+const mergeAppState = (current: AppState, patch: Partial<AppState>): AppState => {
+  let next = current
+  if (patch.tasks !== undefined) next = { ...next, tasks: patch.tasks }
+  if (patch.projects !== undefined) next = { ...next, projects: patch.projects }
+  if (patch.labels !== undefined) next = { ...next, labels: patch.labels }
+  if (patch.sessions !== undefined) next = { ...next, sessions: patch.sessions }
+  if (patch.timeBlocks !== undefined) next = { ...next, timeBlocks: patch.timeBlocks }
+  if ('medications' in patch) next = { ...next, medications: patch.medications }
+  if ('pkSettings' in patch) next = { ...next, pkSettings: patch.pkSettings }
+  if (patch.uiScale !== undefined) next = { ...next, uiScale: patch.uiScale }
+  if ('isSidebarCollapsed' in patch)
+    next = { ...next, isSidebarCollapsed: patch.isSidebarCollapsed }
+  if ('appearance' in patch) next = { ...next, appearance: patch.appearance }
+  if ('sync' in patch) next = { ...next, sync: normalizeSyncSettings(patch.sync) }
+  return normalizeAppState(next)
+}
 
 const toSyncSlice = (state: AppState): SyncSlice => ({
   tasks: state.tasks,
@@ -399,7 +374,11 @@ class SupabaseSyncService {
   }
 
   private async ping(client: SupabaseClient, workspaceId: string): Promise<void> {
-    const { error } = await client.from(TABLES.tasks).select('id').eq('workspace_id', workspaceId).limit(1)
+    const { error } = await client
+      .from(TABLES.tasks)
+      .select('id')
+      .eq('workspace_id', workspaceId)
+      .limit(1)
     if (error) throw new Error(error.message)
   }
 
@@ -558,7 +537,13 @@ class SupabaseSyncService {
     const deleteTimeBlockIds: string[] = []
     for (const [id, b] of nextTimeBlocks) {
       const prev = prevTimeBlocks.get(id)
-      if (!prev || prev.label !== b.label || prev.startAt !== b.startAt || prev.endAt !== b.endAt || prev.createdAt !== b.createdAt) {
+      if (
+        !prev ||
+        prev.label !== b.label ||
+        prev.startAt !== b.startAt ||
+        prev.endAt !== b.endAt ||
+        prev.createdAt !== b.createdAt
+      ) {
         upsertTimeBlocks.push({
           workspace_id: workspaceId,
           id: b.id,
@@ -605,7 +590,13 @@ class SupabaseSyncService {
     const deleteSubTaskIds: string[] = []
     for (const [id, row] of nextSubTasks) {
       const prev = prevSubTasks.get(id)
-      if (!prev || prev.task_id !== row.task_id || prev.title !== row.title || prev.completed !== row.completed || prev.sort_order !== row.sort_order) {
+      if (
+        !prev ||
+        prev.task_id !== row.task_id ||
+        prev.title !== row.title ||
+        prev.completed !== row.completed ||
+        prev.sort_order !== row.sort_order
+      ) {
         upsertSubTasks.push(row)
       }
     }
@@ -693,7 +684,11 @@ class SupabaseSyncService {
   ): Promise<void> {
     if (ids.length === 0) return
     for (const part of chunk(ids, MAX_FILTER_CHUNK)) {
-      const { error } = await client.from(table).delete().eq('workspace_id', workspaceId).in('id', part)
+      const { error } = await client
+        .from(table)
+        .delete()
+        .eq('workspace_id', workspaceId)
+        .in('id', part)
       if (error) throw new Error(error.message)
     }
   }
@@ -723,14 +718,23 @@ class SupabaseSyncService {
     }
   }
 
-  private async applyDelta(client: SupabaseClient, workspaceId: string, delta: SyncDelta): Promise<string> {
+  private async applyDelta(
+    client: SupabaseClient,
+    workspaceId: string,
+    delta: SyncDelta
+  ): Promise<string> {
     await this.upsertRows(client, TABLES.projects, delta.upsertProjects, 'workspace_id,id')
     await this.upsertRows(client, TABLES.labels, delta.upsertLabels, 'workspace_id,id')
     await this.upsertRows(client, TABLES.tasks, delta.upsertTasks, 'workspace_id,id')
     await this.upsertRows(client, TABLES.sessions, delta.upsertSessions, 'workspace_id,id')
     await this.upsertRows(client, TABLES.timeBlocks, delta.upsertTimeBlocks, 'workspace_id,id')
     await this.upsertRows(client, TABLES.subtasks, delta.upsertSubTasks, 'workspace_id,id')
-    await this.upsertRows(client, TABLES.taskLabels, delta.upsertTaskLabels, 'workspace_id,task_id,label_id')
+    await this.upsertRows(
+      client,
+      TABLES.taskLabels,
+      delta.upsertTaskLabels,
+      'workspace_id,task_id,label_id'
+    )
 
     await this.deleteTaskLabels(client, workspaceId, delta.deleteTaskLabelKeys)
     await this.deleteByIds(client, TABLES.subtasks, workspaceId, delta.deleteSubTaskIds)
@@ -743,7 +747,11 @@ class SupabaseSyncService {
     return new Date().toISOString()
   }
 
-  private withRemoteSlice(state: AppState, slice: SyncSlice, params: SupabaseConnectParams): AppState {
+  private withRemoteSlice(
+    state: AppState,
+    slice: SyncSlice,
+    params: SupabaseConnectParams
+  ): AppState {
     return {
       ...state,
       tasks: slice.tasks,
@@ -764,16 +772,23 @@ class SupabaseSyncService {
     client: SupabaseClient,
     workspaceId: string
   ): Promise<{ slice: SyncSlice; lastSyncAt: string } | null> {
-    const [projectsRes, labelsRes, tasksRes, subtasksRes, taskLabelsRes, sessionsRes, timeBlocksRes] =
-      await Promise.all([
-        client.from(TABLES.projects).select('*').eq('workspace_id', workspaceId),
-        client.from(TABLES.labels).select('*').eq('workspace_id', workspaceId),
-        client.from(TABLES.tasks).select('*').eq('workspace_id', workspaceId),
-        client.from(TABLES.subtasks).select('*').eq('workspace_id', workspaceId),
-        client.from(TABLES.taskLabels).select('*').eq('workspace_id', workspaceId),
-        client.from(TABLES.sessions).select('*').eq('workspace_id', workspaceId),
-        client.from(TABLES.timeBlocks).select('*').eq('workspace_id', workspaceId)
-      ])
+    const [
+      projectsRes,
+      labelsRes,
+      tasksRes,
+      subtasksRes,
+      taskLabelsRes,
+      sessionsRes,
+      timeBlocksRes
+    ] = await Promise.all([
+      client.from(TABLES.projects).select('*').eq('workspace_id', workspaceId),
+      client.from(TABLES.labels).select('*').eq('workspace_id', workspaceId),
+      client.from(TABLES.tasks).select('*').eq('workspace_id', workspaceId),
+      client.from(TABLES.subtasks).select('*').eq('workspace_id', workspaceId),
+      client.from(TABLES.taskLabels).select('*').eq('workspace_id', workspaceId),
+      client.from(TABLES.sessions).select('*').eq('workspace_id', workspaceId),
+      client.from(TABLES.timeBlocks).select('*').eq('workspace_id', workspaceId)
+    ])
 
     if (projectsRes.error) throw new Error(projectsRes.error.message)
     if (labelsRes.error) throw new Error(labelsRes.error.message)
@@ -1106,6 +1121,14 @@ function registerIpcHandlers(): void {
     const normalized = normalizeAppState(nextState)
     appStore.set('appState', normalized)
     supabaseSync.pushOnSave(normalized)
+  })
+
+  ipcMain.handle('store:savePartial', async (_, patch: unknown) => {
+    if (!isAppStatePatch(patch)) throw new Error('Invalid app state patch payload')
+    const current = normalizeAppState(appStore.get('appState'))
+    const next = mergeAppState(current, patch)
+    appStore.set('appState', next)
+    supabaseSync.pushOnSave(next)
   })
 
   ipcMain.handle('sync:turnOn', async (_, payload: unknown) => {

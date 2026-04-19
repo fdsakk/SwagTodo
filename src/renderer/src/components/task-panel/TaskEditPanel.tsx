@@ -156,9 +156,9 @@ export function TaskEditPanel({ task, onClose }: TaskEditPanelProps): React.JSX.
   return (
     <div className="flex h-full flex-col">
       <div className="flex h-12 items-center justify-between px-4">
-        <span className="text-xs text-zinc-500">Task</span>
+        <span className="text-xs text-app-text-muted">Task</span>
         <button
-          className="flex h-6 w-6 items-center justify-center rounded text-zinc-500 hover:bg-white/[0.04] hover:text-zinc-200"
+          className="flex h-6 w-6 items-center justify-center rounded text-app-text-muted hover:bg-app-hover hover:text-app-text-secondary"
           onClick={onClose}
           type="button"
         >
@@ -185,7 +185,7 @@ export function TaskEditPanel({ task, onClose }: TaskEditPanelProps): React.JSX.
           value={description}
         />
 
-        <Separator className="bg-white/[0.06]" />
+        <Separator className="bg-app-border" />
 
         <TaskFormFields
           dueDate={task.dueDate}
@@ -203,13 +203,13 @@ export function TaskEditPanel({ task, onClose }: TaskEditPanelProps): React.JSX.
           status={task.status}
         />
 
-        <Separator className="bg-white/[0.06]" />
+        <Separator className="bg-app-border" />
         <div>
-          <div className="mb-2 text-xs text-zinc-500">Sessions</div>
+          <div className="mb-2 text-xs text-app-text-muted">Sessions</div>
           <SessionStats stats={stats} />
         </div>
 
-        <Separator className="bg-white/[0.06]" />
+        <Separator className="bg-app-border" />
         <SubtaskList
           taskId={task.id}
           subTasks={task.subTasks}
@@ -223,7 +223,7 @@ export function TaskEditPanel({ task, onClose }: TaskEditPanelProps): React.JSX.
 
       <div className="flex items-center justify-end px-4 py-3">
         <Button
-          className="h-7 bg-transparent px-2 text-xs text-zinc-500 hover:bg-white/[0.04] hover:text-red-400"
+          className="h-7 bg-transparent px-2 text-xs text-app-text-muted hover:bg-app-hover hover:text-red-400"
           onClick={handleDelete}
           type="button"
           variant="ghost"

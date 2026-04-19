@@ -1,5 +1,44 @@
-export type Priority = 'p1' | 'p2' | 'p3' | 'p4'
-export type TaskStatus = 'todo' | 'in_progress' | 'done'
+import {
+  type AppState as SharedAppState,
+  type Label,
+  type MedicationLog,
+  type Priority,
+  type Project,
+  type SubTask,
+  type SyncMode,
+  type SyncSettings,
+  type SyncStatus,
+  type Task,
+  type TaskSession,
+  type TaskStatus,
+  type TimeBlock,
+  type UiScale,
+  type WindowState
+} from '../../../shared/types'
+import {
+  DEFAULT_SYNC_SETTINGS,
+  DEFAULT_WORKSPACE_ID,
+  UI_SCALE_OPTIONS
+} from '../../../shared/defaults'
+
+export { UI_SCALE_OPTIONS }
+export { DEFAULT_SYNC_SETTINGS }
+export type {
+  Label,
+  MedicationLog,
+  Priority,
+  Project,
+  SubTask,
+  SyncMode,
+  SyncSettings,
+  SyncStatus,
+  Task,
+  TaskSession,
+  TaskStatus,
+  TimeBlock,
+  UiScale,
+  WindowState
+}
 
 export const TASK_STATUSES: TaskStatus[] = ['todo', 'in_progress', 'done']
 export type TaskSort = 'priority' | 'due_date' | 'created_at'
@@ -12,92 +51,11 @@ export type ViewName =
   | 'settings'
   | 'health'
 export type ProjectTab = 'list' | 'kanban'
-export const UI_SCALE_OPTIONS = [100, 110, 125, 150, 175] as const
-export type UiScale = (typeof UI_SCALE_OPTIONS)[number]
-export type SyncMode = 'local' | 'supabase'
-
-export interface SyncSettings {
-  mode: SyncMode
-  supabaseUrl: string
-  supabaseAnonKey: string
-  workspaceId: string
-}
-
-export const DEFAULT_SYNC_SETTINGS: SyncSettings = {
-  mode: 'local',
-  supabaseUrl: '',
-  supabaseAnonKey: '',
-  workspaceId: 'default'
-}
-
-export interface SubTask {
-  id: string
-  title: string
-  completed: boolean
-}
-
-export interface Task {
-  id: string
-  title: string
-  description?: string
-  priority: Priority
-  dueDate?: string
-  projectId?: string
-  labels: string[]
-  completed: boolean
-  status: TaskStatus
-  createdAt: string
-  updatedAt: string
-  order: number
-  subTasks: SubTask[]
-}
-
-export interface Project {
-  id: string
-  name: string
-  color: string
-  emoji?: string
-  description?: string
-  createdAt: string
-}
-
-export interface Label {
-  id: string
-  name: string
-  color: string
-}
-
-export interface TaskSession {
-  id: string
-  taskId: string
-  projectId: string
-  startAt: string
-  endAt: string
-  createdAt: string
-  updatedAt: string
-}
 
 export interface TaskSessionStats {
   count: number
   totalMs: number
   lastEndAt?: string
-}
-
-export interface TimeBlock {
-  id: string
-  label: string
-  startAt: string
-  endAt: string
-  createdAt: string
-}
-
-export interface MedicationLog {
-  id: string
-  medId: string
-  medName: string
-  dose: number
-  takenAt: string
-  createdAt: string
 }
 
 export interface PkSettings {
@@ -122,20 +80,6 @@ export const DEFAULT_PK_SETTINGS: PkSettings = {
   mec: 0.3,
   mtc: 0.85,
   crashThreshold: -0.04
-}
-
-export interface AppState {
-  tasks: Task[]
-  projects: Project[]
-  labels: Label[]
-  sessions: TaskSession[]
-  timeBlocks: TimeBlock[]
-  medications: MedicationLog[]
-  pkSettings?: PkSettings
-  uiScale?: UiScale
-  isSidebarCollapsed?: boolean
-  appearance?: AppearanceSettings
-  sync?: SyncSettings
 }
 
 export interface CreateTaskInput {
@@ -560,6 +504,12 @@ export const DEFAULT_APPEARANCE: AppearanceSettings = {
   customTokens: {}
 }
 
+export type AppState = Omit<SharedAppState, 'pkSettings' | 'appearance' | 'medications'> & {
+  medications: MedicationLog[]
+  pkSettings?: PkSettings
+  appearance?: AppearanceSettings
+}
+
 export function normalizeAppearance(raw: unknown): AppearanceSettings {
   if (!raw || typeof raw !== 'object') return DEFAULT_APPEARANCE
   const obj = raw as Record<string, unknown>
@@ -592,7 +542,7 @@ export function normalizeSyncSettings(raw: unknown): SyncSettings {
   const workspaceId =
     typeof obj.workspaceId === 'string' && obj.workspaceId.trim()
       ? obj.workspaceId.trim()
-      : 'default'
+      : DEFAULT_WORKSPACE_ID
   return { mode, supabaseUrl, supabaseAnonKey, workspaceId }
 }
 

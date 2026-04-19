@@ -1,7 +1,11 @@
 import { useEffect, useState } from 'react'
 import { TitleBar, Sidebar, SearchSortBar, ThemeProvider } from '@renderer/components/layout'
 import { TaskDetailPanel } from '@renderer/components/task-panel'
-import { LabelManagerModal, ShortcutsHelpModal, ProjectPickerModal } from '@renderer/components/modals'
+import {
+  LabelManagerModal,
+  ShortcutsHelpModal,
+  ProjectPickerModal
+} from '@renderer/components/modals'
 import InboxPage from '@renderer/pages/InboxPage'
 import TodayPage from '@renderer/pages/TodayPage'
 import ActivityPage from '@renderer/pages/ActivityPage'
@@ -104,7 +108,7 @@ function App(): React.JSX.Element {
     return (
       <div className="flex h-full flex-col overflow-hidden rounded-xl bg-[#070708] px-[2px] pb-[2px] ring-1 ring-white/5">
         <TitleBar />
-        <div className="flex flex-1 items-center justify-center overflow-hidden rounded-b-[10px] bg-app-bg text-sm text-zinc-500">
+        <div className="flex flex-1 items-center justify-center overflow-hidden rounded-b-[10px] bg-app-bg text-sm text-app-text-muted">
           Loading workspace...
         </div>
       </div>
@@ -122,10 +126,14 @@ function App(): React.JSX.Element {
         />
 
         <div className="relative flex min-w-0 flex-1 flex-col overflow-hidden bg-app-content">
-          {selectedView !== 'sessions' && selectedView !== 'settings' && selectedView !== 'health' && <SearchSortBar />}
+          {selectedView !== 'sessions' &&
+            selectedView !== 'settings' &&
+            selectedView !== 'health' && <SearchSortBar />}
           <div
             className={
-              selectedView === 'sessions' || selectedView === 'settings' || selectedView === 'health'
+              selectedView === 'sessions' ||
+              selectedView === 'settings' ||
+              selectedView === 'health'
                 ? 'min-h-0 flex-1 overflow-y-auto'
                 : 'min-h-0 flex-1 mt-4'
             }

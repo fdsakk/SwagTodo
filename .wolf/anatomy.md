@@ -1,27 +1,28 @@
 # anatomy.md
 
-> Auto-maintained by OpenWolf. Last scanned: 2026-04-19T15:39:31.372Z
-> Files: 117 tracked | Anatomy hits: 0 | Misses: 0
+> Auto-maintained by OpenWolf. Last scanned: 2026-04-19T16:01:44.618Z
+> Files: 118 tracked | Anatomy hits: 0 | Misses: 0
 
 ## ./
 
 - `.editorconfig` — Editor configuration (~42 tok)
+- `.eslintcache` (~160191 tok)
 - `.gitignore` — Git ignore rules (~14 tok)
 - `.prettierignore` (~18 tok)
 - `.prettierrc.yaml` (~19 tok)
-- `CLAUDE.md` — OpenWolf (~2010 tok)
+- `CLAUDE.md` — OpenWolf (~1984 tok)
 - `components.json` (~173 tok)
 - `electron-builder.yml` (~398 tok)
 - `electron.vite.config.ts` (~90 tok)
-- `eslint.config.mjs` — ESLint flat configuration (~258 tok)
+- `eslint.config.mjs` — ESLint flat configuration (~262 tok)
 - `medi.md` — Plan: Medication Tracking (Health/Meds) (~1244 tok)
-- `package-lock.json` — npm lock file (~128638 tok)
-- `package.json` — Node.js package manifest (~826 tok)
+- `package-lock.json` — npm lock file (~132737 tok)
+- `package.json` — Node.js package manifest (~838 tok)
 - `postcss.config.cjs` — PostCSS configuration (~22 tok)
-- `README.md` — Project documentation (~246 tok)
+- `README.md` — Project documentation (~354 tok)
 - `tailwind.config.ts` — Tailwind CSS configuration (~713 tok)
 - `tsconfig.json` — TypeScript configuration (~31 tok)
-- `tsconfig.node.json` — /*", "src/preload/**/*"], (~66 tok)
+- `tsconfig.node.json` — /_", "src/preload/\*\*/_"], (~66 tok)
 - `tsconfig.web.json` (~109 tok)
 - `tsconfig.web.tsbuildinfo` (~42821 tok)
 
@@ -35,11 +36,11 @@
 
 ## out/main/
 
-- `index.js` — API routes: GET (4 endpoints) (~3933 tok)
+- `index.js` — Declares electron (~8903 tok)
 
 ## out/preload/
 
-- `index.js` — Declares electron (~441 tok)
+- `index.js` — Declares electron (~438 tok)
 
 ## out/renderer/
 
@@ -47,16 +48,21 @@
 
 ## out/renderer/assets/
 
-- `index-CYcpOboQ.css` — Styles: 21 rules, 103 vars (~17560 tok)
+- `index-UkYvfQdR.css` — Styles: 21 rules, 103 vars (~17510 tok)
 
 ## src/main/
 
-- `index.ts` — API routes: GET (1 endpoints) (~4702 tok)
+- `index.ts` — Declares IpcMainInvokeEvent (~10629 tok)
 
 ## src/preload/
 
-- `index.d.ts` — Declares Priority (~728 tok)
-- `index.ts` — Declares Priority (~997 tok)
+- `index.d.ts` — Declares global Window.api bridge typings (~205 tok)
+- `index.ts` — Exposes typed IPC bridge via contextBridge (~367 tok)
+
+## src/shared/
+
+- `defaults.ts` — Shared app defaults (ui scale, sync/workspace defaults) (~87 tok)
+- `types.ts` — Shared domain/IPC types for main, preload, renderer (~494 tok)
 
 ## src/renderer/
 
@@ -64,7 +70,7 @@
 
 ## src/renderer/src/
 
-- `App.tsx` — App (~1872 tok)
+- `App.tsx` — App — uses useState, useEffect (~1830 tok)
 - `env.d.ts` — / <reference types="vite/client" /> (~11 tok)
 - `main.tsx` (~97 tok)
 
@@ -84,41 +90,41 @@
 
 ## src/renderer/src/components/layout/
 
-- `index.tsx` (~64 tok)
+- `index.tsx` (~49 tok)
 - `SearchSortBar.tsx` — SearchSortBar — uses useEffect (~909 tok)
-- `Sidebar.tsx` — Sidebar (~1345 tok)
+- `Sidebar.tsx` — Sidebar — uses useMemo (~1346 tok)
 - `ThemeProvider.tsx` — ThemeProvider — uses useEffect (~142 tok)
 - `TitleBar.tsx` — isMac — uses useState, useEffect (~827 tok)
 
 ## src/renderer/src/components/modals/
 
 - `index.tsx` (~50 tok)
-- `LabelManagerModal.tsx` — LabelManagerModal — renders modal — uses useState (~1086 tok)
-- `ProjectPickerModal.tsx` — ProjectPickerModal — uses useEffect (~1150 tok)
-- `ShortcutsHelpModal.tsx` — SHORTCUTS (~942 tok)
+- `LabelManagerModal.tsx` — LabelManagerModal — renders modal — uses useState (~1092 tok)
+- `ProjectPickerModal.tsx` — ProjectPickerModal — uses useEffect (~1162 tok)
+- `ShortcutsHelpModal.tsx` — SHORTCUTS (~947 tok)
 
 ## src/renderer/src/components/project/
 
 - `color-selector.tsx` — sizeClass (~387 tok)
-- `custom-color-input.tsx` — HEX_RE — uses useState, useEffect (~573 tok)
-- `emoji-picker.tsx` — EMOJI_GROUPS — uses useState, useEffect (~995 tok)
+- `custom-color-input.tsx` — HEX_RE — uses useState, useEffect (~576 tok)
+- `emoji-picker.tsx` — EMOJI_GROUPS — uses useState, useEffect (~994 tok)
 - `index.tsx` (~56 tok)
-- `ProjectPanel.tsx` — ProjectPanel — renders form (~1552 tok)
+- `ProjectPanel.tsx` — ProjectPanel — renders form (~1563 tok)
 
 ## src/renderer/src/components/sessions-calendar/
 
-- `DraftGhost.tsx` — DraftGhost (~212 tok)
+- `DraftGhost.tsx` — DraftGhost (~216 tok)
 - `index.tsx` (~60 tok)
-- `SessionBlockView.tsx` — SessionBlockView (~676 tok)
+- `SessionBlockView.tsx` — SessionBlockView (~681 tok)
 - `SessionsCalendar.tsx` — WEEKDAYS — uses useMemo, useEffect, useCallback (~5052 tok)
-- `TimeBlockView.tsx` — TimeBlockView (~566 tok)
+- `TimeBlockView.tsx` — TimeBlockView (~575 tok)
 - `types.ts` — Exports DAY_MS, SessionBlock, TimeBlockDisplayBlock, DraftCreate + 8 more (~1057 tok)
 
 ## src/renderer/src/components/settings/
 
 - `CustomizeSection.tsx` — TOKEN_LABELS — uses useState (~1307 tok)
-- `index.tsx` (~70 tok)
-- `SyncSection.tsx` — formatSyncAt (~1763 tok)
+- `index.tsx` (~54 tok)
+- `SyncSection.tsx` — formatSyncAt — uses useState (~1763 tok)
 - `ThemeSection.tsx` — ThemeSection (~841 tok)
 - `ThemeSwatch.tsx` — ThemeSwatch (~402 tok)
 
@@ -132,8 +138,8 @@
 ## src/renderer/src/components/task-edit/
 
 - `index.tsx` (~26 tok)
-- `SessionStats.tsx` — SessionStats (~335 tok)
-- `SubtaskList.tsx` — SubtaskList (~600 tok)
+- `SessionStats.tsx` — SessionStats (~345 tok)
+- `SubtaskList.tsx` — SubtaskList (~615 tok)
 
 ## src/renderer/src/components/task-list/
 
@@ -146,11 +152,11 @@
 ## src/renderer/src/components/task-panel/
 
 - `index.tsx` (~70 tok)
-- `panel-field.tsx` — Field (~91 tok)
-- `task-form-fields.tsx` — INBOX_VALUE — uses useCallback (~2277 tok)
-- `TaskCreatePanel.tsx` — INITIAL_STATE — renders form — uses useCallback (~1368 tok)
+- `panel-field.tsx` — Field (~93 tok)
+- `task-form-fields.tsx` — INBOX_VALUE — uses useCallback (~2300 tok)
+- `TaskCreatePanel.tsx` — INITIAL_STATE — renders form — uses useCallback (~1376 tok)
 - `TaskDetailPanel.tsx` — TaskDetailPanel (~852 tok)
-- `TaskEditPanel.tsx` — TEXT_COMMIT_DEBOUNCE_MS — uses useMemo, useState, useEffect, useCallback (~2153 tok)
+- `TaskEditPanel.tsx` — TEXT_COMMIT_DEBOUNCE_MS — uses useMemo, useState, useEffect, useCallback (~2159 tok)
 
 ## src/renderer/src/components/ui/
 
@@ -178,12 +184,12 @@
 ## src/renderer/src/pages/
 
 - `ActivityPage.tsx` — buildEvents — uses useMemo (~1495 tok)
-- `HealthPage.tsx` — today (~5312 tok)
-- `InboxPage.tsx` — InboxPage (~446 tok)
+- `HealthPage.tsx` — today — renders chart — uses useState, useCallback, useMemo (~5312 tok)
+- `InboxPage.tsx` — InboxPage (~460 tok)
 - `ProjectPage.tsx` — ProjectPage — uses useMemo (~1197 tok)
 - `SessionsPage.tsx` — DAY_OPTIONS — uses useEffect, useMemo, useCallback (~2987 tok)
-- `SettingsPage.tsx` — SettingsPage (~1126 tok)
-- `TodayPage.tsx` — TodayPage (~408 tok)
+- `SettingsPage.tsx` — SettingsPage — uses useState, useCallback, useEffect (~1126 tok)
+- `TodayPage.tsx` — TodayPage (~411 tok)
 
 ## src/renderer/src/pages/sessions/
 
@@ -192,7 +198,7 @@
 
 ## src/renderer/src/store/
 
-- `useAppStore.ts` — Exports SessionCreateInput, SessionUpdateInput, SessionResult, SessionUpdateResult + 4 more (~6972 tok)
+- `useAppStore.ts` — Exports SessionCreateInput, SessionUpdateInput, SessionResult, SessionUpdateResult + 4 more (~6933 tok)
 
 ## src/renderer/src/types/
 
@@ -208,4 +214,4 @@
 
 ## supabase/
 
-- `schema.sql` — SQL schema for Supabase sync tables (no JSONB) (~260 tok)
+- `schema.sql` — Database schema (~804 tok)

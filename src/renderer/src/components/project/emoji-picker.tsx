@@ -56,7 +56,7 @@ export function EmojiPicker({ value, onSelect, className }: EmojiPickerProps): R
       <button
         aria-haspopup="dialog"
         aria-expanded={open}
-        className="flex h-9 w-9 items-center justify-center rounded-md border border-white/[0.08] bg-white/[0.03] text-lg transition-colors hover:bg-white/[0.06] focus:outline-none focus:ring-1 focus:ring-white/20"
+        className="flex h-9 w-9 items-center justify-center rounded-md border border-app-border bg-app-hover text-lg transition-colors hover:bg-app-active focus:outline-none focus:ring-1 focus:ring-app-border"
         onClick={() => setOpen((v) => !v)}
         type="button"
       >
@@ -65,13 +65,13 @@ export function EmojiPicker({ value, onSelect, className }: EmojiPickerProps): R
 
       {open && (
         <div
-          className="absolute left-0 top-11 z-50 w-64 rounded-md border border-white/[0.08] bg-app-bg p-2 shadow-xl"
+          className="absolute left-0 top-11 z-50 w-64 rounded-md border border-app-border bg-app-bg p-2 shadow-xl"
           role="dialog"
         >
           <div className="max-h-64 space-y-2 overflow-y-auto pr-1">
             {EMOJI_GROUPS.map((group) => (
               <div key={group.label}>
-                <p className="mb-1 px-1 text-[10px] uppercase tracking-wide text-zinc-500">
+                <p className="mb-1 px-1 text-[10px] uppercase tracking-wide text-app-text-muted">
                   {group.label}
                 </p>
                 <div className="grid grid-cols-6 gap-0.5">
@@ -79,8 +79,8 @@ export function EmojiPicker({ value, onSelect, className }: EmojiPickerProps): R
                     <button
                       aria-label={`Select emoji ${emoji}`}
                       className={cn(
-                        'flex h-8 w-8 items-center justify-center rounded-md text-base transition-colors hover:bg-white/[0.06]',
-                        value === emoji && 'bg-white/[0.08] ring-1 ring-white/20'
+                        'flex h-8 w-8 items-center justify-center rounded-md text-base transition-colors hover:bg-app-hover',
+                        value === emoji && 'bg-app-active ring-1 ring-app-border'
                       )}
                       key={emoji}
                       onClick={() => {

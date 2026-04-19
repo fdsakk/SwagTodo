@@ -73,9 +73,11 @@ export function ProjectPanel({ project, onClose }: ProjectPanelProps): React.JSX
   return (
     <div className="flex h-full flex-col">
       <div className="flex h-12 items-center justify-between px-4">
-        <span className="text-xs text-zinc-500">{isEdit ? 'Edit project' : 'New project'}</span>
+        <span className="text-xs text-app-text-muted">
+          {isEdit ? 'Edit project' : 'New project'}
+        </span>
         <button
-          className="flex h-6 w-6 items-center justify-center rounded text-zinc-500 hover:bg-white/[0.04] hover:text-zinc-200"
+          className="flex h-6 w-6 items-center justify-center rounded text-app-text-muted hover:bg-app-hover hover:text-app-text-secondary"
           onClick={onClose}
           type="button"
         >
@@ -106,9 +108,9 @@ export function ProjectPanel({ project, onClose }: ProjectPanelProps): React.JSX
           value={form.description}
         />
 
-        <Separator className="bg-white/[0.06]" />
+        <Separator className="bg-app-border" />
 
-        <div className="divide-y divide-white/[0.04]">
+        <div className="divide-y divide-app-border">
           <Field label="Emoji">
             <EmojiPicker onSelect={(emoji) => patch({ emoji })} value={form.emoji} />
           </Field>
@@ -121,11 +123,8 @@ export function ProjectPanel({ project, onClose }: ProjectPanelProps): React.JSX
                 value={form.color}
               />
               <div className="space-y-1.5">
-                <p className="text-[10px] uppercase tracking-wide text-zinc-500">Custom</p>
-                <CustomColorInput
-                  onChange={(color) => patch({ color })}
-                  value={form.color}
-                />
+                <p className="text-[10px] uppercase tracking-wide text-app-text-muted">Custom</p>
+                <CustomColorInput onChange={(color) => patch({ color })} value={form.color} />
               </div>
             </div>
           </Field>
@@ -135,7 +134,7 @@ export function ProjectPanel({ project, onClose }: ProjectPanelProps): React.JSX
       <div className="flex items-center justify-between px-4 py-3">
         {isEdit ? (
           <Button
-            className="h-7 bg-transparent px-2 text-xs text-zinc-500 hover:bg-white/[0.04] hover:text-red-400"
+            className="h-7 bg-transparent px-2 text-xs text-app-text-muted hover:bg-app-hover hover:text-red-400"
             onClick={handleDelete}
             type="button"
             variant="ghost"
@@ -148,7 +147,7 @@ export function ProjectPanel({ project, onClose }: ProjectPanelProps): React.JSX
         )}
         <div className="flex items-center gap-2">
           <Button
-            className="h-7 bg-transparent px-3 text-xs text-zinc-400 hover:bg-white/[0.04] hover:text-zinc-200"
+            className="h-7 bg-transparent px-3 text-xs text-app-text-muted hover:bg-app-hover hover:text-app-text-secondary"
             onClick={onClose}
             type="button"
             variant="ghost"

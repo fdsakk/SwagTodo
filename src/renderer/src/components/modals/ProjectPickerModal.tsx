@@ -51,7 +51,7 @@ export function ProjectPickerModal({
           <div className="pointer-events-none fixed left-2 right-2 top-8 bottom-2 z-50 flex items-center justify-center">
             <motion.div
               animate={{ opacity: 1, scale: 1 }}
-              className="pointer-events-auto w-[420px] max-h-[90%] overflow-y-auto rounded-lg border border-white/[0.06] bg-app-bg p-5 shadow-xl"
+              className="pointer-events-auto w-[420px] max-h-[90%] overflow-y-auto rounded-lg border border-app-border bg-app-bg p-5 shadow-xl"
               exit={{ opacity: 0, scale: 0.98 }}
               initial={{ opacity: 0, scale: 0.98 }}
               transition={{ duration: 0.15 }}
@@ -59,7 +59,7 @@ export function ProjectPickerModal({
               <div className="mb-4 flex items-center justify-between">
                 <h2 className="text-sm font-semibold text-zinc-100">Go to project</h2>
                 <button
-                  className="text-xs text-zinc-500 hover:text-zinc-300"
+                  className="text-xs text-app-text-muted hover:text-app-text-secondary"
                   onClick={onClose}
                   type="button"
                 >
@@ -67,20 +67,26 @@ export function ProjectPickerModal({
                 </button>
               </div>
               {projects.length === 0 ? (
-                <p className="text-xs text-zinc-500">No projects yet. Press <kbd className="mx-1 rounded border border-white/[0.08] bg-white/[0.04] px-1.5 py-0.5 font-mono text-[10px] text-zinc-300">o</kbd> to create one.</p>
+                <p className="text-xs text-app-text-muted">
+                  No projects yet. Press{' '}
+                  <kbd className="mx-1 rounded border border-app-border bg-app-hover px-1.5 py-0.5 font-mono text-[10px] text-app-text-secondary">
+                    o
+                  </kbd>{' '}
+                  to create one.
+                </p>
               ) : (
                 <div className="space-y-1">
                   {projects.slice(0, 9).map((project, idx) => (
                     <button
                       key={project.id}
-                      className="flex w-full items-center gap-3 rounded-md px-2 py-1.5 text-left text-sm text-zinc-300 hover:bg-white/[0.04]"
+                      className="flex w-full items-center gap-3 rounded-md px-2 py-1.5 text-left text-sm text-app-text-secondary hover:bg-app-hover"
                       onClick={() => {
                         onSelect(project.id)
                         onClose()
                       }}
                       type="button"
                     >
-                      <kbd className="flex h-5 w-5 shrink-0 items-center justify-center rounded border border-white/[0.08] bg-white/[0.04] font-mono text-[10px] text-zinc-300">
+                      <kbd className="flex h-5 w-5 shrink-0 items-center justify-center rounded border border-app-border bg-app-hover font-mono text-[10px] text-app-text-secondary">
                         {idx + 1}
                       </kbd>
                       <span className="flex h-4 w-4 items-center justify-center text-xs">
@@ -90,7 +96,7 @@ export function ProjectPickerModal({
                     </button>
                   ))}
                   {projects.length > 9 && (
-                    <p className="pt-2 text-[11px] text-zinc-500">
+                    <p className="pt-2 text-[11px] text-app-text-muted">
                       {projects.length - 9} more — click to select.
                     </p>
                   )}

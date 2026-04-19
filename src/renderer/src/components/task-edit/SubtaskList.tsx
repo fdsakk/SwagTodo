@@ -23,7 +23,7 @@ export function SubtaskList({
 }: SubtaskListProps): React.JSX.Element {
   return (
     <div>
-      <div className="mb-2 text-xs text-zinc-500">Subtasks</div>
+      <div className="mb-2 text-xs text-app-text-muted">Subtasks</div>
       <div className="space-y-1">
         {subTasks.map((subTask) => (
           <div
@@ -37,14 +37,14 @@ export function SubtaskList({
             />
             <span
               className={cn(
-                'flex-1 text-sm text-zinc-300',
-                subTask.completed && 'line-through text-zinc-600'
+                'flex-1 text-sm text-app-text-secondary',
+                subTask.completed && 'line-through text-app-text-muted'
               )}
             >
               {subTask.title}
             </span>
             <button
-              className="flex size-5 items-center justify-center rounded text-zinc-600 opacity-0 hover:bg-white/[0.04] hover:text-zinc-300 group-hover:opacity-100"
+              className="flex size-5 items-center justify-center rounded text-app-text-muted opacity-0 hover:bg-app-hover hover:text-app-text-secondary group-hover:opacity-100"
               onClick={() => onDelete(subTask.id)}
               type="button"
             >
@@ -54,7 +54,7 @@ export function SubtaskList({
         ))}
       </div>
       <input
-        className="mt-1 h-7 w-full bg-transparent px-1 text-sm text-zinc-300 placeholder:text-zinc-600 focus:outline-none"
+        className="mt-1 h-7 w-full bg-transparent px-1 text-sm text-app-text-secondary placeholder:text-app-text-muted focus:outline-none"
         onChange={(event) => onNewSubTaskTitleChange(event.target.value)}
         onKeyDown={onAdd}
         placeholder="+ Add subtask"

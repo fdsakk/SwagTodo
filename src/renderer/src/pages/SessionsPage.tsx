@@ -3,12 +3,7 @@ import { ChevronLeft, ChevronRight } from 'lucide-react'
 import { useShallow } from 'zustand/react/shallow'
 import useAppStore from '@renderer/store/useAppStore'
 import { SessionsCalendar } from '@renderer/components/sessions-calendar'
-import {
-  addDays,
-  buildIsoAtMinutes,
-  isSameDay,
-  startOfDay
-} from '@renderer/utils/calendar'
+import { addDays, buildIsoAtMinutes, isSameDay, startOfDay } from '@renderer/utils/calendar'
 import { cn } from '@renderer/utils/cn'
 import { TaskPickerDialog, type DraftCreate } from './sessions/TaskPickerDialog'
 import { GhostBlockDialog } from './sessions/GhostBlockDialog'
