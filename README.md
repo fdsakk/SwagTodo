@@ -20,6 +20,19 @@ $ npm install
 $ npm run dev
 ```
 
+### Optional PostgreSQL sync
+
+1. Open **Settings** in the app.
+2. Paste your PostgreSQL connection URL.
+3. Click **Turn on sync** (or **Turn off sync** to disable).
+
+Behavior:
+
+- Default mode stays local (`electron-store`) until sync is enabled.
+- On first sync, local data is uploaded when DB is empty.
+- If DB already has data, DB state is used as the starting state.
+- Synced data scope: tasks, projects, labels, sessions, time blocks.
+
 ### Build
 
 ```bash

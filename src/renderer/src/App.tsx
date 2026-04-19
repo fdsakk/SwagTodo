@@ -8,6 +8,7 @@ import ActivityPage from '@renderer/pages/ActivityPage'
 import ProjectPage from '@renderer/pages/ProjectPage'
 import SessionsPage from '@renderer/pages/SessionsPage'
 import SettingsPage from '@renderer/pages/SettingsPage'
+import { HealthPage } from '@renderer/pages/HealthPage'
 import useAppStore from '@renderer/store/useAppStore'
 import { useKeyboardShortcuts } from '@renderer/hooks/useKeyboardShortcuts'
 import { useShallow } from 'zustand/react/shallow'
@@ -124,10 +125,10 @@ function App(): React.JSX.Element {
 
         <div className={`relative flex min-w-0 flex-1 flex-col overflow-hidden ${backgroundId === 'none' ? 'bg-app-content' : ''}`}>
           <BackgroundLayer />
-          {selectedView !== 'sessions' && selectedView !== 'settings' && <SearchSortBar />}
+          {selectedView !== 'sessions' && selectedView !== 'settings' && selectedView !== 'health' && <SearchSortBar />}
           <div
             className={
-              selectedView === 'sessions' || selectedView === 'settings'
+              selectedView === 'sessions' || selectedView === 'settings' || selectedView === 'health'
                 ? 'min-h-0 flex-1 overflow-y-auto'
                 : 'min-h-0 flex-1 mt-4'
             }
@@ -137,6 +138,7 @@ function App(): React.JSX.Element {
             {selectedView === 'activity' && <ActivityPage />}
             {selectedView === 'sessions' && <SessionsPage />}
             {selectedView === 'settings' && <SettingsPage />}
+            {selectedView === 'health' && <HealthPage />}
             {selectedView === 'project' && (
               <ProjectPage onEditProject={(project) => openEditProjectPanel(project.id)} />
             )}

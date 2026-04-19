@@ -174,3 +174,79 @@
 
 | Time | Action | File(s) | Outcome | ~Tokens |
 |------|--------|---------|---------|--------|
+| 12:02 | Edited src/renderer/src/types/index.ts | inline fix | ~30 |
+| 12:02 | Edited src/renderer/src/types/index.ts | expanded (+10 lines) | ~118 |
+| 12:02 | Edited src/main/index.ts | expanded (+10 lines) | ~114 |
+| 12:02 | Edited src/preload/index.ts | expanded (+10 lines) | ~114 |
+| 12:02 | Edited src/preload/index.d.ts | expanded (+10 lines) | ~114 |
+| 12:02 | Edited src/main/index.ts | 8→9 lines | ~66 |
+| 12:03 | Edited src/main/index.ts | added 1 condition(s) | ~78 |
+| 12:03 | Edited src/main/index.ts | 8→8 lines | ~45 |
+| 12:03 | Edited src/preload/index.ts | 8→8 lines | ~47 |
+| 12:03 | Edited src/preload/index.d.ts | 8→8 lines | ~47 |
+| 12:03 | Edited src/renderer/src/store/useAppStore.ts | 24→25 lines | ~138 |
+| 12:03 | Edited src/renderer/src/store/useAppStore.ts | 6→9 lines | ~105 |
+| 12:03 | Edited src/renderer/src/store/useAppStore.ts | 30→32 lines | ~290 |
+| 12:03 | Edited src/renderer/src/store/useAppStore.ts | 6→7 lines | ~33 |
+| 12:03 | Edited src/renderer/src/store/useAppStore.ts | added 1 condition(s) | ~187 |
+| 12:04 | Edited src/renderer/src/store/useAppStore.ts | modified if() | ~274 |
+| 12:04 | Created src/renderer/src/utils/pharmacokinetics.ts | — | ~1271 |
+| 12:04 | Created src/renderer/src/pages/HealthPage.tsx | — | ~1783 |
+| 12:04 | Edited src/renderer/src/App.tsx | added 1 import(s) | ~32 |
+| 12:05 | Edited src/renderer/src/App.tsx | CSS: selectHealth | ~49 |
+| 12:05 | Edited src/renderer/src/App.tsx | 4→5 lines | ~26 |
+| 12:05 | Edited src/renderer/src/App.tsx | 17→18 lines | ~258 |
+| 12:05 | Edited src/renderer/src/components/layout/Sidebar.tsx | 2→2 lines | ~39 |
+| 12:05 | Edited src/renderer/src/components/layout/Sidebar.tsx | CSS: selectHealth | ~213 |
+| 12:05 | Edited src/renderer/src/components/layout/Sidebar.tsx | expanded (+7 lines) | ~125 |
+| 12:06 | Edited src/renderer/src/App.tsx | CSS: onGoHealth | ~28 |
+| 12:06 | Edited src/renderer/src/App.tsx | 3→2 lines | ~20 |
+| 12:06 | Edited src/renderer/src/App.tsx | 5→4 lines | ~21 |
+| 12:06 | Edited src/renderer/src/App.tsx | 4→3 lines | ~37 |
+| 12:06 | Edited src/renderer/src/pages/HealthPage.tsx | "Concentration" → "number" | ~27 |
+| 12:12 | Created src/renderer/src/utils/pharmacokinetics.ts | — | ~1545 |
+| 12:13 | Created src/renderer/src/pages/HealthPage.tsx | — | ~1830 |
+| 12:13 | Session end: 32 writes across 7 files (index.ts, index.d.ts, useAppStore.ts, pharmacokinetics.ts, HealthPage.tsx) | 10 reads | ~32446 tok |
+| 12:15 | Edited src/renderer/src/store/useAppStore.ts | 2→3 lines | ~52 |
+| 12:15 | Edited src/renderer/src/store/useAppStore.ts | added 1 condition(s) | ~143 |
+| 12:16 | Created src/renderer/src/pages/HealthPage.tsx | — | ~2253 |
+| 12:16 | Session end: 35 writes across 7 files (index.ts, index.d.ts, useAppStore.ts, pharmacokinetics.ts, HealthPage.tsx) | 10 reads | ~34936 tok |
+| 12:19 | Session end: 35 writes across 7 files (index.ts, index.d.ts, useAppStore.ts, pharmacokinetics.ts, HealthPage.tsx) | 10 reads | ~34936 tok |
+| 12:20 | Edited src/renderer/src/types/index.ts | expanded (+23 lines) | ~214 |
+| 12:21 | Edited src/renderer/src/types/index.ts | 12→13 lines | ~86 |
+| 12:21 | Edited src/renderer/src/store/useAppStore.ts | 24→27 lines | ~153 |
+| 12:21 | Edited src/renderer/src/store/useAppStore.ts | 5→7 lines | ~96 |
+| 12:21 | Edited src/renderer/src/store/useAppStore.ts | 3→4 lines | ~32 |
+| 12:21 | Edited src/renderer/src/store/useAppStore.ts | 30→35 lines | ~333 |
+| 12:21 | Edited src/renderer/src/store/useAppStore.ts | 2→3 lines | ~21 |
+| 12:21 | Edited src/renderer/src/store/useAppStore.ts | added nullish coalescing | ~238 |
+| 12:21 | Edited src/renderer/src/store/useAppStore.ts | 2→3 lines | ~37 |
+| 12:22 | Edited src/renderer/src/store/useAppStore.ts | 8→9 lines | ~35 |
+| 12:22 | Edited src/renderer/src/store/useAppStore.ts | 8→9 lines | ~47 |
+| 12:22 | Created src/renderer/src/utils/pharmacokinetics.ts | — | ~1877 |
+| 12:23 | Created src/renderer/src/pages/HealthPage.tsx | — | ~3489 |
+| 12:24 | Edited src/preload/index.ts | 8→9 lines | ~58 |
+| 12:24 | Edited src/preload/index.d.ts | 8→9 lines | ~58 |
+| 12:24 | Edited src/main/index.ts | 2→3 lines | ~22 |
+| 12:27 | Edited src/renderer/src/pages/HealthPage.tsx | modified for() | ~132 |
+| 12:27 | Edited src/renderer/src/pages/HealthPage.tsx | modified String() | ~99 |
+| 12:28 | Session end: 53 writes across 7 files (index.ts, index.d.ts, useAppStore.ts, pharmacokinetics.ts, HealthPage.tsx) | 10 reads | ~44740 tok |
+
+## Session: 2026-04-19 12:28
+
+| Time | Action | File(s) | Outcome | ~Tokens |
+|------|--------|---------|---------|--------|
+| 12:29 | Edited src/renderer/src/pages/HealthPage.tsx | 2→2 lines | ~33 |
+| 12:29 | Session end: 1 writes across 1 files (HealthPage.tsx) | 1 reads | ~3637 tok |
+| 12:32 | Edited src/renderer/src/utils/pharmacokinetics.ts | 13→13 lines | ~87 |
+| 12:32 | Session end: 2 writes across 2 files (HealthPage.tsx, pharmacokinetics.ts) | 2 reads | ~5601 tok |
+| 12:34 | Edited src/renderer/src/pages/HealthPage.tsx | expanded (+7 lines) | ~67 |
+| 12:34 | Edited src/renderer/src/pages/HealthPage.tsx | 3→2 lines | ~36 |
+| 12:34 | Edited src/renderer/src/pages/HealthPage.tsx | added nullish coalescing | ~1090 |
+| 12:35 | Edited src/renderer/src/pages/HealthPage.tsx | — | ~0 |
+| 12:37 | Session end: 6 writes across 2 files (HealthPage.tsx, pharmacokinetics.ts) | 3 reads | ~7897 tok |
+
+## Session: 2026-04-19 12:38
+
+| Time | Action | File(s) | Outcome | ~Tokens |
+|------|--------|---------|---------|--------|

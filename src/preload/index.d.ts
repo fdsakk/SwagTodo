@@ -3,6 +3,7 @@ import { ElectronAPI } from '@electron-toolkit/preload'
 type Priority = 'p1' | 'p2' | 'p3' | 'p4'
 type TaskStatus = 'todo' | 'in_progress' | 'done'
 type UiScale = 100 | 110 | 125 | 150 | 175
+type SyncMode = 'local' | 'postgres'
 
 interface SubTask {
   id: string
@@ -65,15 +66,39 @@ interface AppearanceSettings {
   backgroundId: string
 }
 
+interface SyncSettings {
+  mode: SyncMode
+  postgresUrl: string
+}
+
+interface SyncStatus {
+  mode: SyncMode
+  connected: boolean
+  lastSyncAt?: string
+  lastError?: string
+}
+
+interface MedicationLog {
+  id: string
+  medId: string
+  medName: string
+  dose: number
+  takenAt: string
+  createdAt: string
+}
+
 interface AppState {
   tasks: Task[]
   projects: Project[]
   labels: Label[]
   sessions: TaskSession[]
   timeBlocks: TimeBlock[]
+  medications?: MedicationLog[]
+  pkSettings?: unknown
   uiScale?: UiScale
   isSidebarCollapsed?: boolean
   appearance?: AppearanceSettings
+  sync?: SyncSettings
 }
 
 interface WindowState {
@@ -89,6 +114,11 @@ interface RendererApi {
   ui: {
     getZoomFactor: () => Promise<number>
     setZoomFactor: (factor: number) => Promise<void>
+  }
+  sync: {
+    turnOn: (postgresUrl: string) => Promise<void>
+    turnOff: () => Promise<void>
+    getStatus: () => Promise<SyncStatus>
   }
   window: {
     minimize: () => Promise<void>

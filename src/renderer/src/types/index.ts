@@ -3,10 +3,21 @@ export type TaskStatus = 'todo' | 'in_progress' | 'done'
 
 export const TASK_STATUSES: TaskStatus[] = ['todo', 'in_progress', 'done']
 export type TaskSort = 'priority' | 'due_date' | 'created_at'
-export type ViewName = 'inbox' | 'today' | 'project' | 'activity' | 'sessions' | 'settings'
+export type ViewName = 'inbox' | 'today' | 'project' | 'activity' | 'sessions' | 'settings' | 'health'
 export type ProjectTab = 'list' | 'kanban'
 export const UI_SCALE_OPTIONS = [100, 110, 125, 150, 175] as const
 export type UiScale = (typeof UI_SCALE_OPTIONS)[number]
+export type SyncMode = 'local' | 'postgres'
+
+export interface SyncSettings {
+  mode: SyncMode
+  postgresUrl: string
+}
+
+export const DEFAULT_SYNC_SETTINGS: SyncSettings = {
+  mode: 'local',
+  postgresUrl: ''
+}
 
 export interface SubTask {
   id: string
@@ -69,15 +80,50 @@ export interface TimeBlock {
   createdAt: string
 }
 
+export interface MedicationLog {
+  id: string
+  medId: string
+  medName: string
+  dose: number
+  takenAt: string
+  createdAt: string
+}
+
+export interface MedPkSettings {
+  /** Effect-site equilibration rate [1/h]. Higher = faster onset AND faster offset. Default 1.0 */
+  ke0: number
+  /** Multiplies the drug's base duration. <1 shorter, >1 longer. Default 1.0 */
+  durationScale: number
+  /** Scales peak effect height (EC50 inverse). Higher = more sensitive. Default 1.0 */
+  sensitivity: number
+}
+
+export const DEFAULT_MED_PK_SETTINGS: MedPkSettings = {
+  ke0: 1.0,
+  durationScale: 1.0,
+  sensitivity: 1.0
+}
+
+export interface PkSettings {
+  perMed: Record<string, MedPkSettings>
+}
+
+export const DEFAULT_PK_SETTINGS: PkSettings = {
+  perMed: {}
+}
+
 export interface AppState {
   tasks: Task[]
   projects: Project[]
   labels: Label[]
   sessions: TaskSession[]
   timeBlocks: TimeBlock[]
+  medications: MedicationLog[]
+  pkSettings?: PkSettings
   uiScale?: UiScale
   isSidebarCollapsed?: boolean
   appearance?: AppearanceSettings
+  sync?: SyncSettings
 }
 
 export interface CreateTaskInput {
@@ -413,6 +459,14 @@ export function normalizeAppearance(raw: unknown): AppearanceSettings {
 export function getResolvedTokens(settings: AppearanceSettings): ThemeTokens {
   const preset = THEME_PRESETS.find((p) => p.id === settings.themeId) ?? THEME_PRESETS[0]
   return { ...preset.tokens, ...(settings.customTokens ?? {}) }
+}
+
+export function normalizeSyncSettings(raw: unknown): SyncSettings {
+  if (!raw || typeof raw !== 'object') return DEFAULT_SYNC_SETTINGS
+  const obj = raw as Record<string, unknown>
+  const mode: SyncMode = obj.mode === 'postgres' ? 'postgres' : 'local'
+  const postgresUrl = typeof obj.postgresUrl === 'string' ? obj.postgresUrl : ''
+  return { mode, postgresUrl }
 }
 
 export interface TaskGroup {

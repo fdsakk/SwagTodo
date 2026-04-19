@@ -4,13 +4,20 @@ import {
   TASK_STATUSES,
   UI_SCALE_OPTIONS,
   DEFAULT_APPEARANCE,
+  DEFAULT_SYNC_SETTINGS,
+  DEFAULT_PK_SETTINGS,
   normalizeAppearance,
+  normalizeSyncSettings,
   type AppearanceSettings,
+  type SyncSettings,
   type ThemeId,
   type ThemeTokens,
   type AppState,
   type CreateTaskInput,
   type Label,
+  type MedPkSettings,
+  type MedicationLog,
+  type PkSettings,
   type Project,
   type ProjectTab,
   type Task,
@@ -80,7 +87,10 @@ interface AppStore extends AppState {
   projectTab: ProjectTab
   searchFocusSignal: number
   appearance: AppearanceSettings
+  sync: SyncSettings
+  pkSettings: PkSettings
   hydrate: () => Promise<void>
+  refreshFromStorage: () => Promise<void>
   selectInbox: () => void
   selectToday: () => void
   selectActivity: () => void
@@ -127,6 +137,13 @@ interface AppStore extends AppState {
   setCustomTokens: (tokens: Partial<ThemeTokens>) => void
   resetCustomTokens: () => void
   setBackgroundId: (id: string) => void
+  setSyncPostgresUrl: (postgresUrl: string) => void
+  selectHealth: () => void
+  addMedicationLog: (input: Omit<MedicationLog, 'id' | 'createdAt'>) => void
+  updateMedicationLog: (id: string, takenAt: string) => void
+  deleteMedicationLog: (id: string) => void
+  updateMedPkSettings: (medId: string, patch: Partial<MedPkSettings>) => void
+  resetMedPkSettings: (medId: string) => void
 }
 
 const UI_SCALE_SET: ReadonlySet<number> = new Set(UI_SCALE_OPTIONS)
@@ -157,12 +174,52 @@ const mapTaskById = (
   return next
 }
 
+const stateFromPersisted = (
+  persisted: unknown
+): Pick<
+  AppStore,
+  | 'tasks'
+  | 'projects'
+  | 'labels'
+  | 'sessions'
+  | 'timeBlocks'
+  | 'medications'
+  | 'pkSettings'
+  | 'uiScale'
+  | 'isSidebarCollapsed'
+  | 'appearance'
+  | 'sync'
+> => {
+  const data =
+    persisted && typeof persisted === 'object'
+      ? (persisted as Partial<AppState> & { appearance?: unknown; sync?: unknown })
+      : {}
+  return {
+    tasks: Array.isArray(data.tasks) ? data.tasks : [],
+    projects: Array.isArray(data.projects) ? data.projects : [],
+    labels: Array.isArray(data.labels) ? data.labels : [],
+    sessions: Array.isArray(data.sessions) ? data.sessions : [],
+    timeBlocks: Array.isArray(data.timeBlocks) ? data.timeBlocks : [],
+    medications: Array.isArray(data.medications) ? data.medications : [],
+    pkSettings:
+      data.pkSettings && typeof data.pkSettings === 'object' && !Array.isArray(data.pkSettings)
+        ? (data.pkSettings as PkSettings)
+        : DEFAULT_PK_SETTINGS,
+    uiScale: isUiScale(data.uiScale) ? data.uiScale : 100,
+    isSidebarCollapsed: data.isSidebarCollapsed ?? false,
+    appearance: normalizeAppearance(data.appearance),
+    sync: normalizeSyncSettings(data.sync)
+  }
+}
+
 const useAppStore = create<AppStore>((set, get) => ({
   tasks: [],
   projects: [],
   labels: [],
   sessions: [],
   timeBlocks: [],
+  medications: [],
+  pkSettings: DEFAULT_PK_SETTINGS,
   hydrated: false,
   selectedView: 'inbox',
   selectedProjectId: undefined,
@@ -173,31 +230,26 @@ const useAppStore = create<AppStore>((set, get) => ({
   showCompleted: false,
   uiScale: 100,
   appearance: DEFAULT_APPEARANCE,
+  sync: DEFAULT_SYNC_SETTINGS,
   projectTab: 'list',
   searchFocusSignal: 0,
+  refreshFromStorage: async () => {
+    if (!window.api?.storage) return
+    try {
+      const persisted = await window.api.storage.loadState()
+      set({ ...stateFromPersisted(persisted), hydrated: true })
+    } catch (err) {
+      console.error('[store] refresh failed', err)
+      set({ hydrated: true })
+    }
+  },
   hydrate: async () => {
     if (get().hydrated) return
     if (!window.api?.storage) {
       set({ hydrated: true })
       return
     }
-    try {
-      const persisted = await window.api.storage.loadState()
-      set({
-        tasks: persisted?.tasks ?? [],
-        projects: persisted?.projects ?? [],
-        labels: persisted?.labels ?? [],
-        sessions: persisted?.sessions ?? [],
-        timeBlocks: persisted?.timeBlocks ?? [],
-        uiScale: isUiScale(persisted?.uiScale) ? persisted.uiScale : 100,
-        isSidebarCollapsed: persisted?.isSidebarCollapsed ?? false,
-        appearance: normalizeAppearance(persisted?.appearance),
-        hydrated: true
-      })
-    } catch (err) {
-      console.error('[store] hydrate failed', err)
-      set({ hydrated: true })
-    }
+    await get().refreshFromStorage()
   },
   selectInbox: () => set({ selectedView: 'inbox', selectedProjectId: undefined }),
   selectToday: () => set({ selectedView: 'today', selectedProjectId: undefined }),
@@ -512,6 +564,49 @@ const useAppStore = create<AppStore>((set, get) => ({
     })),
   resetCustomTokens: () => set((s) => ({ appearance: { ...s.appearance, customTokens: {} } })),
   setBackgroundId: (id) => set((s) => ({ appearance: { ...s.appearance, backgroundId: id } })),
+  setSyncPostgresUrl: (postgresUrl) =>
+    set((s) => ({ sync: { ...s.sync, postgresUrl: postgresUrl.trim() } })),
+  selectHealth: () => set({ selectedView: 'health', selectedProjectId: undefined }),
+  addMedicationLog: (input) => {
+    const log: MedicationLog = { id: uuidv4(), ...input, createdAt: nowIso() }
+    set((s) => ({ medications: [...s.medications, log] }))
+  },
+  updateMedicationLog: (id, takenAt) =>
+    set((s) => {
+      const idx = s.medications.findIndex((m) => m.id === id)
+      if (idx === -1) return s
+      const medications = s.medications.slice()
+      medications[idx] = { ...medications[idx], takenAt }
+      return { medications }
+    }),
+  deleteMedicationLog: (id) =>
+    set((s) => {
+      const idx = s.medications.findIndex((m) => m.id === id)
+      if (idx === -1) return s
+      const medications = s.medications.slice()
+      medications.splice(idx, 1)
+      return { medications }
+    }),
+  updateMedPkSettings: (medId, patch) =>
+    set((s) => {
+      const existing = s.pkSettings.perMed[medId] ?? {
+        ke0: 1.0,
+        durationScale: 1.0,
+        sensitivity: 1.0
+      }
+      return {
+        pkSettings: {
+          ...s.pkSettings,
+          perMed: { ...s.pkSettings.perMed, [medId]: { ...existing, ...patch } }
+        }
+      }
+    }),
+  resetMedPkSettings: (medId) =>
+    set((s) => {
+      const perMed = { ...s.pkSettings.perMed }
+      delete perMed[medId]
+      return { pkSettings: { ...s.pkSettings, perMed } }
+    }),
   applyKanbanOrder: (projectId, columns) => {
     const updatedAt = nowIso()
     const byTaskId = new Map<string, { status: TaskStatus; order: number }>()
@@ -553,16 +648,30 @@ const unsubscribePersist = useAppStore.subscribe((state, prev) => {
     state.labels === prev.labels &&
     state.sessions === prev.sessions &&
     state.timeBlocks === prev.timeBlocks &&
+    state.medications === prev.medications &&
+    state.pkSettings === prev.pkSettings &&
     state.uiScale === prev.uiScale &&
     state.isSidebarCollapsed === prev.isSidebarCollapsed &&
-    state.appearance === prev.appearance
+    state.appearance === prev.appearance &&
+    state.sync === prev.sync
   ) {
     return
   }
 
   if (persistTimer) clearTimeout(persistTimer)
-  const { tasks, projects, labels, sessions, timeBlocks, uiScale, isSidebarCollapsed, appearance } =
-    state
+  const {
+    tasks,
+    projects,
+    labels,
+    sessions,
+    timeBlocks,
+    medications,
+    pkSettings,
+    uiScale,
+    isSidebarCollapsed,
+    appearance,
+    sync
+  } = state
   persistTimer = setTimeout(() => {
     persistTimer = undefined
     window.api.storage
@@ -572,9 +681,12 @@ const unsubscribePersist = useAppStore.subscribe((state, prev) => {
         labels,
         sessions,
         timeBlocks,
+        medications,
+        pkSettings,
         uiScale,
         isSidebarCollapsed,
-        appearance
+        appearance,
+        sync
       })
       .catch((err) => console.error('[store] persist failed', err))
   }, PERSIST_DEBOUNCE_MS)

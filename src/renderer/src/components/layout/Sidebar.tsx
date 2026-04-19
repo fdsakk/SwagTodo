@@ -1,17 +1,8 @@
 import { useMemo } from 'react'
-import {
-  Activity,
-  Calendar,
-  ChevronLeft,
-  ChevronRight,
-  Inbox,
-  Palette,
-  Sun
-} from 'lucide-react'
+import { Activity, Calendar, ChevronLeft, ChevronRight, Inbox, Palette, Pill, Settings, Sun } from 'lucide-react'
 import useAppStore from '@renderer/store/useAppStore'
 import { isTaskDueToday, isTaskInFuture, isTaskOverdue } from '@renderer/utils/task'
 import { cn } from '@renderer/utils/cn'
-import { UI_SCALE_OPTIONS, type UiScale } from '@renderer/types'
 import { useShallow } from 'zustand/react/shallow'
 import { NavItem } from '@renderer/components/sidebar/NavItem'
 import { ProjectList } from '@renderer/components/sidebar/ProjectList'
@@ -30,14 +21,13 @@ export function Sidebar(props: SidebarProps): React.JSX.Element {
     selectedView,
     selectedProjectId,
     isSidebarCollapsed,
-    uiScale,
     selectInbox,
     selectToday,
     selectActivity,
     selectSessions,
     selectSettings,
+    selectHealth,
     selectProject,
-    setUiScale,
     toggleSidebar
   } = useAppStore(
     useShallow((state) => ({
@@ -47,14 +37,13 @@ export function Sidebar(props: SidebarProps): React.JSX.Element {
       selectedView: state.selectedView,
       selectedProjectId: state.selectedProjectId,
       isSidebarCollapsed: state.isSidebarCollapsed,
-      uiScale: state.uiScale,
       selectInbox: state.selectInbox,
       selectToday: state.selectToday,
       selectActivity: state.selectActivity,
       selectSessions: state.selectSessions,
       selectSettings: state.selectSettings,
+      selectHealth: state.selectHealth,
       selectProject: state.selectProject,
-      setUiScale: state.setUiScale,
       toggleSidebar: state.toggleSidebar
     }))
   )
@@ -73,11 +62,6 @@ export function Sidebar(props: SidebarProps): React.JSX.Element {
         .length,
     [tasks]
   )
-
-  const handleScaleChange = (value: string): void => {
-    const nextScale = UI_SCALE_OPTIONS.find((scale): scale is UiScale => String(scale) === value)
-    if (nextScale !== undefined) setUiScale(nextScale)
-  }
 
   return (
     <aside
@@ -136,11 +120,11 @@ export function Sidebar(props: SidebarProps): React.JSX.Element {
           onClick={selectSessions}
         />
         <NavItem
-          active={selectedView === 'settings'}
+          active={selectedView === 'health'}
           collapsed={isSidebarCollapsed}
-          icon={<Palette size={14} />}
-          label="Appearance"
-          onClick={selectSettings}
+          icon={<Pill size={14} />}
+          label="Meds"
+          onClick={selectHealth}
         />
       </div>
 
@@ -153,14 +137,18 @@ export function Sidebar(props: SidebarProps): React.JSX.Element {
         onOpenCreatePanel={props.onOpenProjectPanel}
       />
 
-      {!isSidebarCollapsed && (
-        <SidebarFooter
-          uiScale={uiScale}
-          hasLabels={hasLabels}
-          onScaleChange={handleScaleChange}
-          onOpenLabelModal={props.onOpenLabelModal}
+      <div className="mt-auto px-2 py-2 space-y-0.5">
+        <NavItem
+          active={selectedView === 'settings'}
+          collapsed={isSidebarCollapsed}
+          icon={<Settings size={14} />}
+          label="Settings"
+          onClick={selectSettings}
         />
-      )}
+        {!isSidebarCollapsed && (
+          <SidebarFooter hasLabels={hasLabels} onOpenLabelModal={props.onOpenLabelModal} />
+        )}
+      </div>
     </aside>
   )
 }
