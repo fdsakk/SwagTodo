@@ -1,6 +1,6 @@
 # anatomy.md
 
-> Auto-maintained by OpenWolf. Last scanned: 2026-04-19T15:15:49.950Z
+> Auto-maintained by OpenWolf. Last scanned: 2026-04-19T15:39:31.372Z
 > Files: 117 tracked | Anatomy hits: 0 | Misses: 0
 
 ## ./
@@ -178,7 +178,7 @@
 ## src/renderer/src/pages/
 
 - `ActivityPage.tsx` — buildEvents — uses useMemo (~1495 tok)
-- `HealthPage.tsx` — today (~5290 tok)
+- `HealthPage.tsx` — today (~5312 tok)
 - `InboxPage.tsx` — InboxPage (~446 tok)
 - `ProjectPage.tsx` — ProjectPage — uses useMemo (~1197 tok)
 - `SessionsPage.tsx` — DAY_OPTIONS — uses useEffect, useMemo, useCallback (~2987 tok)
@@ -196,7 +196,7 @@
 
 ## src/renderer/src/types/
 
-- `index.ts` — Vertical scale — subjective sensitivity. 1.0 = one dose peaks at 1.0 on Y. Default 1.0. (~3764 tok)
+- `index.ts` — Vertical scale — subjective sensitivity. 1.0 = one dose peaks at 1.0 on Y. Default 1.0. (~4728 tok)
 
 ## src/renderer/src/utils/
 

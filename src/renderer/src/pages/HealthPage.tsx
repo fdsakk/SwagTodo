@@ -286,17 +286,17 @@ export function HealthPage(): React.JSX.Element {
           <p className="text-xs font-medium text-app-text-muted">
             Estimated effect — therapeutic window model
           </p>
-          <div className="ml-auto flex items-center gap-3 text-[10px] text-app-text-muted">
+          <div className="ml-auto flex items-center gap-3 text-[10px] text-app-text-secondary">
             <span className="flex items-center gap-1">
-              <span className="inline-block h-2 w-3 rounded-sm bg-emerald-500/50" />
+              <span className="inline-block h-2 w-3 rounded-sm bg-emerald-500/70" />
               Therapeutic
             </span>
             <span className="flex items-center gap-1">
-              <span className="inline-block h-2 w-3 rounded-sm bg-red-500/30" />
+              <span className="inline-block h-2 w-3 rounded-sm bg-red-500/60" />
               Crash risk
             </span>
             <span className="flex items-center gap-1">
-              <span className="inline-block h-2 w-3 rounded-sm bg-amber-500/30" />
+              <span className="inline-block h-2 w-3 rounded-sm bg-amber-500/60" />
               Above MTC
             </span>
           </div>
@@ -315,7 +315,7 @@ export function HealthPage(): React.JSX.Element {
             <ReferenceArea
               y1={pkSettings.mec}
               y2={pkSettings.mtc}
-              fill="rgba(52,211,153,0.07)"
+              fill="rgba(16,185,129,0.10)"
               stroke="none"
               ifOverflow="visible"
             />
@@ -326,7 +326,7 @@ export function HealthPage(): React.JSX.Element {
                 key={`${seg.x1}-${seg.x2}`}
                 x1={seg.x1}
                 x2={seg.x2}
-                fill="rgba(239,68,68,0.15)"
+                fill="rgba(220,38,38,0.18)"
                 stroke="none"
                 ifOverflow="visible"
               />
@@ -366,27 +366,27 @@ export function HealthPage(): React.JSX.Element {
             {/* MEC line */}
             <ReferenceLine
               y={pkSettings.mec}
-              stroke="rgba(52,211,153,0.6)"
+              stroke="rgba(16,185,129,0.9)"
               strokeDasharray="3 3"
               strokeWidth={1}
               label={{
                 value: 'MEC',
                 position: 'insideTopRight',
                 fontSize: 9,
-                fill: 'rgba(52,211,153,0.8)'
+                fill: 'rgba(16,185,129,1)'
               }}
             />
             {/* MTC line */}
             <ReferenceLine
               y={pkSettings.mtc}
-              stroke="rgba(251,191,36,0.6)"
+              stroke="rgba(217,119,6,0.9)"
               strokeDasharray="3 3"
               strokeWidth={1}
               label={{
                 value: 'MTC',
                 position: 'insideTopRight',
                 fontSize: 9,
-                fill: 'rgba(251,191,36,0.8)'
+                fill: 'rgba(217,119,6,1)'
               }}
             />
 
@@ -394,14 +394,14 @@ export function HealthPage(): React.JSX.Element {
             {nowLabel && (
               <ReferenceLine
                 x={nowLabel}
-                stroke="rgba(255,255,255,0.35)"
+                stroke="var(--app-text-muted)"
                 strokeWidth={1.5}
                 strokeDasharray="4 3"
                 label={{
                   value: 'now',
                   position: 'insideTopRight',
                   fontSize: 9,
-                  fill: 'rgba(255,255,255,0.5)'
+                  fill: 'var(--app-text-muted)'
                 }}
               />
             )}

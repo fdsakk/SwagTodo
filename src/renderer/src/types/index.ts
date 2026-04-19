@@ -3,7 +3,14 @@ export type TaskStatus = 'todo' | 'in_progress' | 'done'
 
 export const TASK_STATUSES: TaskStatus[] = ['todo', 'in_progress', 'done']
 export type TaskSort = 'priority' | 'due_date' | 'created_at'
-export type ViewName = 'inbox' | 'today' | 'project' | 'activity' | 'sessions' | 'settings' | 'health'
+export type ViewName =
+  | 'inbox'
+  | 'today'
+  | 'project'
+  | 'activity'
+  | 'sessions'
+  | 'settings'
+  | 'health'
 export type ProjectTab = 'list' | 'kanban'
 export const UI_SCALE_OPTIONS = [100, 110, 125, 150, 175] as const
 export type UiScale = (typeof UI_SCALE_OPTIONS)[number]
@@ -179,16 +186,21 @@ export const THEME_TOKEN_KEYS: (keyof ThemeTokens)[] = [
 
 export type ThemeId =
   | 'default'
-  | 'light'
-  | 'retro'
-  | 'cyberpunk'
-  | 'nord'
+  | 'nero'
+  | 'concrete-dark'
   | 'dracula'
+  | 'rose-pine'
+  | 'tokyo-night'
+  | 'kanagawa'
+  | 'nord'
+  | 'everforest'
   | 'gruvbox'
   | 'solarized'
-  | 'rose-pine'
-  | 'nero'
-  | 'everforest'
+  | 'cyberpunk'
+  | 'slate'
+  | 'light'
+  | 'retro'
+  | 'retro-dark'
 
 export interface ThemePreset {
   id: ThemeId
@@ -197,6 +209,7 @@ export interface ThemePreset {
 }
 
 export const THEME_PRESETS: ThemePreset[] = [
+  // ── dark neutral ────────────────────────────────────────────────────────────
   {
     id: 'default',
     name: 'Default',
@@ -216,174 +229,6 @@ export const THEME_PRESETS: ThemePreset[] = [
       '--app-accent-text': '#18181b',
       '--app-scrollbar': '#262626',
       '--app-scrollbar-hover': '#383838'
-    }
-  },
-  {
-    id: 'light',
-    name: 'Light',
-    tokens: {
-      '--app-bg': '#ffffff',
-      '--app-sidebar': '#f4f4f5',
-      '--app-titlebar': '#e4e4e7',
-      '--app-content': '#fcfcfc',
-      '--app-card': '#f9f9fa',
-      '--app-text': '#18181b',
-      '--app-text-secondary': '#52525b',
-      '--app-text-muted': '#a1a1aa',
-      '--app-border': 'rgba(0,0,0,0.08)',
-      '--app-hover': 'rgba(0,0,0,0.04)',
-      '--app-active': 'rgba(0,0,0,0.08)',
-      '--app-accent': '#18181b',
-      '--app-accent-text': '#ffffff',
-      '--app-scrollbar': '#d4d4d8',
-      '--app-scrollbar-hover': '#a1a1aa'
-    }
-  },
-  {
-    id: 'retro',
-    name: 'Retro',
-    tokens: {
-      '--app-bg': '#e8e0d0',
-      '--app-sidebar': '#ddd4c0',
-      '--app-titlebar': '#c8bcaa',
-      '--app-content': '#e8e0d0',
-      '--app-card': '#e0d8c8',
-      '--app-text': '#2e2518',
-      '--app-text-secondary': '#5a4d3c',
-      '--app-text-muted': '#7a6e5e',
-      '--app-border': 'rgba(46,37,24,0.18)',
-      '--app-hover': 'rgba(46,37,24,0.07)',
-      '--app-active': 'rgba(46,37,24,0.13)',
-      '--app-accent': '#5c4a2f',
-      '--app-accent-text': '#f5f0e8',
-      '--app-scrollbar': '#b8ac9a',
-      '--app-scrollbar-hover': '#9e9080'
-    }
-  },
-  {
-    id: 'cyberpunk',
-    name: 'Cyberpunk',
-    tokens: {
-      '--app-bg': '#0a0a12',
-      '--app-sidebar': '#08080f',
-      '--app-titlebar': '#06060c',
-      '--app-content': '#0a0a12',
-      '--app-card': '#0f0f1a',
-      '--app-text': '#e0d4f7',
-      '--app-text-secondary': '#9a8bc2',
-      '--app-text-muted': '#5c4f7a',
-      '--app-border': 'rgba(157,78,221,0.15)',
-      '--app-hover': 'rgba(157,78,221,0.06)',
-      '--app-active': 'rgba(157,78,221,0.12)',
-      '--app-accent': '#c026d3',
-      '--app-accent-text': '#fdf4ff',
-      '--app-scrollbar': '#1a1a2e',
-      '--app-scrollbar-hover': '#2d1f4e'
-    }
-  },
-  {
-    id: 'nord',
-    name: 'Nord',
-    tokens: {
-      '--app-bg': '#2e3440',
-      '--app-sidebar': '#292e39',
-      '--app-titlebar': '#242933',
-      '--app-content': '#2e3440',
-      '--app-card': '#3b4252',
-      '--app-text': '#eceff4',
-      '--app-text-secondary': '#d8dee9',
-      '--app-text-muted': '#7b88a1',
-      '--app-border': 'rgba(216,222,233,0.08)',
-      '--app-hover': 'rgba(216,222,233,0.04)',
-      '--app-active': 'rgba(216,222,233,0.08)',
-      '--app-accent': '#88c0d0',
-      '--app-accent-text': '#2e3440',
-      '--app-scrollbar': '#434c5e',
-      '--app-scrollbar-hover': '#4c566a'
-    }
-  },
-  {
-    id: 'dracula',
-    name: 'Dracula',
-    tokens: {
-      '--app-bg': '#282a36',
-      '--app-sidebar': '#21222c',
-      '--app-titlebar': '#191a21',
-      '--app-content': '#282a36',
-      '--app-card': '#44475a',
-      '--app-text': '#f8f8f2',
-      '--app-text-secondary': '#bd93f9',
-      '--app-text-muted': '#6272a4',
-      '--app-border': 'rgba(98,114,164,0.25)',
-      '--app-hover': 'rgba(98,114,164,0.08)',
-      '--app-active': 'rgba(98,114,164,0.16)',
-      '--app-accent': '#bd93f9',
-      '--app-accent-text': '#282a36',
-      '--app-scrollbar': '#44475a',
-      '--app-scrollbar-hover': '#6272a4'
-    }
-  },
-  {
-    id: 'gruvbox',
-    name: 'Gruvbox',
-    tokens: {
-      '--app-bg': '#282828',
-      '--app-sidebar': '#1d2021',
-      '--app-titlebar': '#181818',
-      '--app-content': '#282828',
-      '--app-card': '#3c3836',
-      '--app-text': '#ebdbb2',
-      '--app-text-secondary': '#d5c4a1',
-      '--app-text-muted': '#928374',
-      '--app-border': 'rgba(235,219,178,0.10)',
-      '--app-hover': 'rgba(235,219,178,0.04)',
-      '--app-active': 'rgba(235,219,178,0.08)',
-      '--app-accent': '#d65d0e',
-      '--app-accent-text': '#fbf1c7',
-      '--app-scrollbar': '#504945',
-      '--app-scrollbar-hover': '#665c54'
-    }
-  },
-  {
-    id: 'solarized',
-    name: 'Solarized',
-    tokens: {
-      '--app-bg': '#002b36',
-      '--app-sidebar': '#00212b',
-      '--app-titlebar': '#001a22',
-      '--app-content': '#002b36',
-      '--app-card': '#073642',
-      '--app-text': '#839496',
-      '--app-text-secondary': '#657b83',
-      '--app-text-muted': '#586e75',
-      '--app-border': 'rgba(131,148,150,0.15)',
-      '--app-hover': 'rgba(131,148,150,0.05)',
-      '--app-active': 'rgba(131,148,150,0.10)',
-      '--app-accent': '#268bd2',
-      '--app-accent-text': '#002b36',
-      '--app-scrollbar': '#073642',
-      '--app-scrollbar-hover': '#094555'
-    }
-  },
-  {
-    id: 'rose-pine',
-    name: 'Rose Pine',
-    tokens: {
-      '--app-bg': '#191724',
-      '--app-sidebar': '#13111e',
-      '--app-titlebar': '#0f0d17',
-      '--app-content': '#191724',
-      '--app-card': '#1f1d2e',
-      '--app-text': '#e0def4',
-      '--app-text-secondary': '#c4c0d9',
-      '--app-text-muted': '#6e6a86',
-      '--app-border': 'rgba(110,106,134,0.20)',
-      '--app-hover': 'rgba(110,106,134,0.07)',
-      '--app-active': 'rgba(110,106,134,0.14)',
-      '--app-accent': '#ebbcba',
-      '--app-accent-text': '#191724',
-      '--app-scrollbar': '#2a2837',
-      '--app-scrollbar-hover': '#3a3750'
     }
   },
   {
@@ -408,6 +253,133 @@ export const THEME_PRESETS: ThemePreset[] = [
     }
   },
   {
+    id: 'concrete-dark',
+    name: 'Concrete Dark',
+    tokens: {
+      '--app-bg': '#2a2826',
+      '--app-sidebar': '#222020',
+      '--app-titlebar': '#1a1918',
+      '--app-content': '#2a2826',
+      '--app-card': '#333130',
+      '--app-text': '#e0dbd5',
+      '--app-text-secondary': '#c2bbb3',
+      '--app-text-muted': '#8a837c',
+      '--app-border': 'rgba(224,219,213,0.13)',
+      '--app-hover': 'rgba(224,219,213,0.05)',
+      '--app-active': 'rgba(224,219,213,0.10)',
+      '--app-accent': '#c4bdb6',
+      '--app-accent-text': '#2a2826',
+      '--app-scrollbar': '#484440',
+      '--app-scrollbar-hover': '#5e5a56'
+    }
+  },
+  // ── dark coloured ────────────────────────────────────────────────────────────
+  {
+    id: 'dracula',
+    name: 'Dracula',
+    tokens: {
+      '--app-bg': '#282a36',
+      '--app-sidebar': '#21222c',
+      '--app-titlebar': '#191a21',
+      '--app-content': '#282a36',
+      '--app-card': '#44475a',
+      '--app-text': '#f8f8f2',
+      '--app-text-secondary': '#bd93f9',
+      '--app-text-muted': '#7383b5',
+      '--app-border': 'rgba(98,114,164,0.30)',
+      '--app-hover': 'rgba(98,114,164,0.08)',
+      '--app-active': 'rgba(98,114,164,0.16)',
+      '--app-accent': '#bd93f9',
+      '--app-accent-text': '#282a36',
+      '--app-scrollbar': '#44475a',
+      '--app-scrollbar-hover': '#6272a4'
+    }
+  },
+  {
+    id: 'rose-pine',
+    name: 'Rose Pine',
+    tokens: {
+      '--app-bg': '#191724',
+      '--app-sidebar': '#13111e',
+      '--app-titlebar': '#0f0d17',
+      '--app-content': '#191724',
+      '--app-card': '#1f1d2e',
+      '--app-text': '#e0def4',
+      '--app-text-secondary': '#c4c0d9',
+      '--app-text-muted': '#837ea0',
+      '--app-border': 'rgba(110,106,134,0.25)',
+      '--app-hover': 'rgba(110,106,134,0.07)',
+      '--app-active': 'rgba(110,106,134,0.14)',
+      '--app-accent': '#ebbcba',
+      '--app-accent-text': '#191724',
+      '--app-scrollbar': '#2a2837',
+      '--app-scrollbar-hover': '#3a3750'
+    }
+  },
+  {
+    id: 'tokyo-night',
+    name: 'Tokyo Night',
+    tokens: {
+      '--app-bg': '#1a1b26',
+      '--app-sidebar': '#16161e',
+      '--app-titlebar': '#13131a',
+      '--app-content': '#1a1b26',
+      '--app-card': '#24283b',
+      '--app-text': '#c0caf5',
+      '--app-text-secondary': '#a9b1d6',
+      '--app-text-muted': '#6870a0',
+      '--app-border': 'rgba(122,162,247,0.16)',
+      '--app-hover': 'rgba(122,162,247,0.05)',
+      '--app-active': 'rgba(122,162,247,0.10)',
+      '--app-accent': '#7aa2f7',
+      '--app-accent-text': '#1a1b26',
+      '--app-scrollbar': '#292e42',
+      '--app-scrollbar-hover': '#3b4261'
+    }
+  },
+  {
+    id: 'kanagawa',
+    name: 'Kanagawa',
+    tokens: {
+      '--app-bg': '#1f1f28',
+      '--app-sidebar': '#16161d',
+      '--app-titlebar': '#12121a',
+      '--app-content': '#1f1f28',
+      '--app-card': '#2a2a37',
+      '--app-text': '#dcd7ba',
+      '--app-text-secondary': '#c8c093',
+      '--app-text-muted': '#8a8880',
+      '--app-border': 'rgba(220,215,186,0.14)',
+      '--app-hover': 'rgba(220,215,186,0.04)',
+      '--app-active': 'rgba(220,215,186,0.08)',
+      '--app-accent': '#e46876',
+      '--app-accent-text': '#1f1f28',
+      '--app-scrollbar': '#363646',
+      '--app-scrollbar-hover': '#54546d'
+    }
+  },
+  {
+    id: 'nord',
+    name: 'Nord',
+    tokens: {
+      '--app-bg': '#2e3440',
+      '--app-sidebar': '#292e39',
+      '--app-titlebar': '#242933',
+      '--app-content': '#2e3440',
+      '--app-card': '#3b4252',
+      '--app-text': '#eceff4',
+      '--app-text-secondary': '#d8dee9',
+      '--app-text-muted': '#8f9db8',
+      '--app-border': 'rgba(216,222,233,0.11)',
+      '--app-hover': 'rgba(216,222,233,0.04)',
+      '--app-active': 'rgba(216,222,233,0.08)',
+      '--app-accent': '#88c0d0',
+      '--app-accent-text': '#2e3440',
+      '--app-scrollbar': '#434c5e',
+      '--app-scrollbar-hover': '#4c566a'
+    }
+  },
+  {
     id: 'everforest',
     name: 'Everforest',
     tokens: {
@@ -418,14 +390,162 @@ export const THEME_PRESETS: ThemePreset[] = [
       '--app-card': '#323d43',
       '--app-text': '#d3c6aa',
       '--app-text-secondary': '#b9a98a',
-      '--app-text-muted': '#7a8478',
-      '--app-border': 'rgba(167,192,128,0.14)',
+      '--app-text-muted': '#8e9a8c',
+      '--app-border': 'rgba(167,192,128,0.18)',
       '--app-hover': 'rgba(167,192,128,0.05)',
       '--app-active': 'rgba(167,192,128,0.10)',
       '--app-accent': '#a7c080',
       '--app-accent-text': '#2b3339',
       '--app-scrollbar': '#404d52',
       '--app-scrollbar-hover': '#516066'
+    }
+  },
+  {
+    id: 'gruvbox',
+    name: 'Gruvbox',
+    tokens: {
+      '--app-bg': '#282828',
+      '--app-sidebar': '#1d2021',
+      '--app-titlebar': '#181818',
+      '--app-content': '#282828',
+      '--app-card': '#3c3836',
+      '--app-text': '#ebdbb2',
+      '--app-text-secondary': '#d5c4a1',
+      '--app-text-muted': '#a89880',
+      '--app-border': 'rgba(235,219,178,0.14)',
+      '--app-hover': 'rgba(235,219,178,0.04)',
+      '--app-active': 'rgba(235,219,178,0.08)',
+      '--app-accent': '#d65d0e',
+      '--app-accent-text': '#fbf1c7',
+      '--app-scrollbar': '#504945',
+      '--app-scrollbar-hover': '#665c54'
+    }
+  },
+  {
+    id: 'solarized',
+    name: 'Solarized',
+    tokens: {
+      '--app-bg': '#002b36',
+      '--app-sidebar': '#00212b',
+      '--app-titlebar': '#001a22',
+      '--app-content': '#002b36',
+      '--app-card': '#073642',
+      '--app-text': '#fdf6e3',
+      '--app-text-secondary': '#eee8d5',
+      '--app-text-muted': '#a8b8b8',
+      '--app-border': 'rgba(131,148,150,0.22)',
+      '--app-hover': 'rgba(131,148,150,0.06)',
+      '--app-active': 'rgba(131,148,150,0.12)',
+      '--app-accent': '#268bd2',
+      '--app-accent-text': '#002b36',
+      '--app-scrollbar': '#073642',
+      '--app-scrollbar-hover': '#094555'
+    }
+  },
+  {
+    id: 'cyberpunk',
+    name: 'Cyberpunk',
+    tokens: {
+      '--app-bg': '#0a0a12',
+      '--app-sidebar': '#08080f',
+      '--app-titlebar': '#06060c',
+      '--app-content': '#0a0a12',
+      '--app-card': '#0f0f1a',
+      '--app-text': '#e8deff',
+      '--app-text-secondary': '#b09fd4',
+      '--app-text-muted': '#8f84b8',
+      '--app-border': 'rgba(157,78,221,0.22)',
+      '--app-hover': 'rgba(157,78,221,0.07)',
+      '--app-active': 'rgba(157,78,221,0.14)',
+      '--app-accent': '#c026d3',
+      '--app-accent-text': '#fdf4ff',
+      '--app-scrollbar': '#1a1a2e',
+      '--app-scrollbar-hover': '#2d1f4e'
+    }
+  },
+  // ── light ────────────────────────────────────────────────────────────────────
+  {
+    id: 'slate',
+    name: 'Concrete',
+    tokens: {
+      '--app-bg': '#a4a09a',
+      '--app-sidebar': '#9c9892',
+      '--app-titlebar': '#837e77',
+      '--app-content': '#a7a4a0',
+      '--app-card': '#b0aca6',
+      '--app-text': '#1a1816',
+      '--app-text-secondary': '#2c2a27',
+      '--app-text-muted': '#625e56',
+      '--app-border': 'rgba(26,24,22,0.24)',
+      '--app-hover': 'rgba(26,24,22,0.08)',
+      '--app-active': 'rgba(26,24,22,0.14)',
+      '--app-accent': '#38342f',
+      '--app-accent-text': '#ece8e2',
+      '--app-scrollbar': '#827e78',
+      '--app-scrollbar-hover': '#6a6660'
+    }
+  },
+  {
+    id: 'light',
+    name: 'Light',
+    tokens: {
+      '--app-bg': '#f0f0f0',
+      '--app-sidebar': '#e8e8e8',
+      '--app-titlebar': '#dcdcdc',
+      '--app-content': '#f0f0f0',
+      '--app-card': '#e8e8e8',
+      '--app-text': '#1a1a1a',
+      '--app-text-secondary': '#3a3a3a',
+      '--app-text-muted': '#6e6e6e',
+      '--app-border': 'rgba(0,0,0,0.12)',
+      '--app-hover': 'rgba(0,0,0,0.05)',
+      '--app-active': 'rgba(0,0,0,0.09)',
+      '--app-accent': '#1a1a1a',
+      '--app-accent-text': '#f0f0f0',
+      '--app-scrollbar': '#c8c8c8',
+      '--app-scrollbar-hover': '#a8a8a8'
+    }
+  },
+  {
+    id: 'retro',
+    name: 'Retro',
+    tokens: {
+      '--app-bg': '#e8e0d0',
+      '--app-sidebar': '#d5cbb3',
+      '--app-titlebar': '#c8bcaa',
+      '--app-content': '#ddd3c0',
+      '--app-card': '#e0d8c8',
+      '--app-text': '#2e2518',
+      '--app-text-secondary': '#5a4d3c',
+      '--app-text-muted': '#7a6e5e',
+      '--app-border': 'rgba(46,37,24,0.18)',
+      '--app-hover': 'rgba(46,37,24,0.07)',
+      '--app-active': 'rgba(46,37,24,0.13)',
+      '--app-accent': '#5c4a2f',
+      '--app-accent-text': '#f5f0e8',
+      '--app-scrollbar': '#b8ac9a',
+      '--app-scrollbar-hover': '#9e9080'
+    }
+  },
+  {
+    id: 'retro-dark',
+    name: 'Retro Dark',
+    tokens: {
+      '--app-bg': '#c8bca0',
+      '--app-sidebar': '#bcb094',
+      '--app-titlebar': '#ada080',
+      '--app-content': '#c8bca0',
+      '--app-card': '#d0c4a8',
+      '--app-text': '#1a0f02',
+      '--app-text-secondary': '#362818',
+      '--app-text-muted': '#5a4c3a',
+      '--app-border': 'rgba(26,15,2,0.22)',
+      '--app-hover': 'rgba(26,15,2,0.08)',
+      '--app-active': 'rgba(26,15,2,0.15)',
+      '--app-accent': '#46321a',
+      '--app-accent-text': '#ede4d4',
+      '--app-scrollbar': '#98887a',
+      '--app-scrollbar-hover': '#806e60'
     }
   }
 ]
@@ -470,7 +590,9 @@ export function normalizeSyncSettings(raw: unknown): SyncSettings {
   const supabaseUrl = typeof obj.supabaseUrl === 'string' ? obj.supabaseUrl : ''
   const supabaseAnonKey = typeof obj.supabaseAnonKey === 'string' ? obj.supabaseAnonKey : ''
   const workspaceId =
-    typeof obj.workspaceId === 'string' && obj.workspaceId.trim() ? obj.workspaceId.trim() : 'default'
+    typeof obj.workspaceId === 'string' && obj.workspaceId.trim()
+      ? obj.workspaceId.trim()
+      : 'default'
   return { mode, supabaseUrl, supabaseAnonKey, workspaceId }
 }
 

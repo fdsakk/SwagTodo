@@ -998,6 +998,54 @@
       "related_bugs": [],
       "occurrences": 2,
       "last_seen": "2026-04-19T15:15:49.958Z"
+    },
+    {
+      "id": "bug-063",
+      "timestamp": "2026-04-19T15:23:45.962Z",
+      "error_message": "CSS fix: fill",
+      "file": "src/renderer/src/pages/HealthPage.tsx",
+      "root_cause": "fill: 'rgba(255,255,255,0.5)' → 'var(--app-text-muted)'",
+      "fix": "Changed fill: 'rgba(255,255,255,0.5)' → 'var(--app-text-muted)'",
+      "tags": [
+        "auto-detected",
+        "style-fix",
+        "tsx"
+      ],
+      "related_bugs": [],
+      "occurrences": 2,
+      "last_seen": "2026-04-19T15:23:54.471Z"
+    },
+    {
+      "id": "bug-064",
+      "timestamp": "2026-04-19T15:24:01.881Z",
+      "error_message": "Incorrect value in code",
+      "file": "src/renderer/src/pages/HealthPage.tsx",
+      "root_cause": "Had \"rgba(239,68,68,0.15)\"",
+      "fix": "Changed to \"rgba(220,38,38,0.18)\"",
+      "tags": [
+        "auto-detected",
+        "wrong-value",
+        "tsx"
+      ],
+      "related_bugs": [],
+      "occurrences": 1,
+      "last_seen": "2026-04-19T15:24:01.881Z"
+    },
+    {
+      "id": "bug-065",
+      "timestamp": "2026-04-19T15:31:16.287Z",
+      "error_message": "Incorrect value in code",
+      "file": "src/renderer/src/types/index.ts",
+      "root_cause": "Had '#6272a4'",
+      "fix": "Changed to '#7383b5'",
+      "tags": [
+        "auto-detected",
+        "wrong-value",
+        "ts"
+      ],
+      "related_bugs": [],
+      "occurrences": 10,
+      "last_seen": "2026-04-19T15:31:54.926Z"
     }
   ]
 }
