@@ -177,7 +177,7 @@ export const THEME_PRESETS: ThemePreset[] = [
   },
   {
     id: 'nero',
-    name: 'Nero',
+    name: 'Black',
     tokens: {
       '--app-bg': '#010101',
       '--app-sidebar': '#080808',

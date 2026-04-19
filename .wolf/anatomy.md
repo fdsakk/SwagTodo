@@ -1,7 +1,7 @@
 # anatomy.md
 
-> Auto-maintained by OpenWolf. Last scanned: 2026-04-19T16:01:44.618Z
-> Files: 118 tracked | Anatomy hits: 0 | Misses: 0
+> Auto-maintained by OpenWolf. Last scanned: 2026-04-19T17:18:37.985Z
+> Files: 120 tracked | Anatomy hits: 0 | Misses: 0
 
 ## ./
 
@@ -59,18 +59,13 @@
 - `index.d.ts` — Declares global Window.api bridge typings (~205 tok)
 - `index.ts` — Exposes typed IPC bridge via contextBridge (~367 tok)
 
-## src/shared/
-
-- `defaults.ts` — Shared app defaults (ui scale, sync/workspace defaults) (~87 tok)
-- `types.ts` — Shared domain/IPC types for main, preload, renderer (~494 tok)
-
 ## src/renderer/
 
 - `index.html` — Swag Todo (~122 tok)
 
 ## src/renderer/src/
 
-- `App.tsx` — App — uses useState, useEffect (~1830 tok)
+- `App.tsx` — App (~1970 tok)
 - `env.d.ts` — / <reference types="vite/client" /> (~11 tok)
 - `main.tsx` (~97 tok)
 
@@ -211,6 +206,11 @@
 - `pharmacokinetics.ts` — Default ke0 for this drug class (effect-site equilibration rate [1/h]). (~2335 tok)
 - `sessions.ts` — Exports sessionsInRange, computeTaskStats, formatDuration (~438 tok)
 - `task.ts` — Exports PROJECT_COLOR_SWATCHES, PRIORITY_META, isTaskDueToday, isTaskOverdue + 5 more (~946 tok)
+
+## src/shared/
+
+- `defaults.ts` — Shared app defaults (ui scale, sync/workspace defaults) (~87 tok)
+- `types.ts` — Shared domain/IPC types for main, preload, renderer (~494 tok)
 
 ## supabase/
 

@@ -2,14 +2,14 @@
   "version": 1,
   "created_at": "2026-04-18T19:20:23.576Z",
   "lifetime": {
-    "total_tokens_estimated": 801831,
-    "total_reads": 327,
-    "total_writes": 689,
-    "total_sessions": 25,
-    "anatomy_hits": 295,
+    "total_tokens_estimated": 804772,
+    "total_reads": 329,
+    "total_writes": 693,
+    "total_sessions": 26,
+    "anatomy_hits": 297,
     "anatomy_misses": 32,
     "repeated_reads_blocked": 138,
-    "estimated_savings_vs_bare_cli": 577242
+    "estimated_savings_vs_bare_cli": 577642
   },
   "sessions": [
     {
@@ -6246,6 +6246,55 @@
         "writes_count": 0,
         "repeated_reads_blocked": 0,
         "anatomy_lookups": 1
+      }
+    },
+    {
+      "id": "session-2026-04-19-1916",
+      "started": "2026-04-19T17:16:39.240Z",
+      "ended": "2026-04-19T17:18:47.525Z",
+      "reads": [
+        {
+          "file": "/home/fenta/Projects/electron-todo/src/renderer/src/components/layout/TitleBar.tsx",
+          "tokens_estimated": 827,
+          "was_repeated": false,
+          "anatomy_had_description": false
+        },
+        {
+          "file": "/home/fenta/Projects/electron-todo/src/renderer/src/App.tsx",
+          "tokens_estimated": 1830,
+          "was_repeated": false,
+          "anatomy_had_description": false
+        }
+      ],
+      "writes": [
+        {
+          "file": "/home/fenta/Projects/electron-todo/src/renderer/src/App.tsx",
+          "tokens_estimated": 115,
+          "action": "edit"
+        },
+        {
+          "file": "/home/fenta/Projects/electron-todo/src/renderer/src/App.tsx",
+          "tokens_estimated": 100,
+          "action": "edit"
+        },
+        {
+          "file": "/home/fenta/Projects/electron-todo/src/renderer/src/App.tsx",
+          "tokens_estimated": 35,
+          "action": "edit"
+        },
+        {
+          "file": "/home/fenta/Projects/electron-todo/src/renderer/src/App.tsx",
+          "tokens_estimated": 34,
+          "action": "edit"
+        }
+      ],
+      "totals": {
+        "input_tokens_estimated": 2657,
+        "output_tokens_estimated": 284,
+        "reads_count": 2,
+        "writes_count": 4,
+        "repeated_reads_blocked": 0,
+        "anatomy_lookups": 2
       }
     }
   ],

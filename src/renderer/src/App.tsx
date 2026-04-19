@@ -18,6 +18,15 @@ import { useKeyboardShortcuts } from '@renderer/hooks/useKeyboardShortcuts'
 import { useShallow } from 'zustand/react/shallow'
 
 function App(): React.JSX.Element {
+  const [isFullScreen, setIsFullScreen] = useState(false)
+
+  useEffect(() => {
+    const windowApi = window.api?.window
+    if (!windowApi) return
+    void windowApi.getState().then((state) => setIsFullScreen(state.isFullScreen))
+    return windowApi.onStateChange((state) => setIsFullScreen(state.isFullScreen))
+  }, [])
+
   const {
     hydrated,
     selectedView,
@@ -106,9 +115,9 @@ function App(): React.JSX.Element {
 
   if (!hydrated) {
     return (
-      <div className="flex h-full flex-col overflow-hidden rounded-xl bg-[#070708] px-[2px] pb-[2px] ring-1 ring-white/5">
+      <div className={`flex h-full flex-col overflow-hidden bg-[#070708] px-[2px] pb-[2px] ring-1 ring-white/5${isFullScreen ? '' : ' rounded-xl'}`}>
         <TitleBar />
-        <div className="flex flex-1 items-center justify-center overflow-hidden rounded-b-[10px] bg-app-bg text-sm text-app-text-muted">
+        <div className={`flex flex-1 items-center justify-center overflow-hidden bg-app-bg text-sm text-app-text-muted${isFullScreen ? '' : ' rounded-b-[10px]'}`}>
           Loading workspace...
         </div>
       </div>
@@ -116,10 +125,10 @@ function App(): React.JSX.Element {
   }
 
   return (
-    <div className="flex h-full flex-col overflow-hidden rounded-xl bg-app-titlebar px-2 pb-2">
+    <div className={`flex h-full flex-col overflow-hidden bg-app-titlebar px-2 pb-2${isFullScreen ? '' : ' rounded-xl'}`}>
       <ThemeProvider />
       <TitleBar />
-      <div className="relative flex min-h-0 flex-1 overflow-hidden rounded-lg bg-app-bg">
+      <div className={`relative flex min-h-0 flex-1 overflow-hidden bg-app-bg${isFullScreen ? '' : ' rounded-lg'}`}>
         <Sidebar
           onOpenLabelModal={() => setLabelModalOpen(true)}
           onOpenProjectPanel={openCreateProjectPanel}

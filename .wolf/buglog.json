@@ -8,7 +8,11 @@
       "file": "src/main/index.ts",
       "root_cause": "Type dedup refactor imported extra shared types into main process that were not referenced.",
       "fix": "Removed unused type imports and cleaned extra newline in renderer types to satisfy lint/prettier.",
-      "tags": ["lint", "type-refactor", "unused-imports"],
+      "tags": [
+        "lint",
+        "type-refactor",
+        "unused-imports"
+      ],
       "related_bugs": [],
       "occurrences": 1,
       "last_seen": "2026-04-19T18:21:00+02:00"
@@ -20,7 +24,11 @@
       "file": "src/main/index.ts",
       "root_cause": "Shared defaults refactor imported DEFAULT_UI_SCALE while old local constant remained.",
       "fix": "Removed local DEFAULT_UI_SCALE constant and kept shared import from src/shared/defaults.ts.",
-      "tags": ["typescript", "shared-defaults", "refactor"],
+      "tags": [
+        "typescript",
+        "shared-defaults",
+        "refactor"
+      ],
       "related_bugs": [],
       "occurrences": 1,
       "last_seen": "2026-04-19T18:28:00+02:00"
@@ -32,10 +40,66 @@
       "file": "src/renderer/src/store/useAppStore.ts",
       "root_cause": "Indexed assignment to Partial<PersistedSlice> via union key was too narrow for TypeScript.",
       "fix": "Switched patch assignment to a generic record cast in the diff loop and revalidated build.",
-      "tags": ["typescript", "zustand", "persist", "partial-patch"],
-      "related_bugs": ["bug-002"],
+      "tags": [
+        "typescript",
+        "zustand",
+        "persist",
+        "partial-patch"
+      ],
+      "related_bugs": [
+        "bug-002"
+      ],
       "occurrences": 1,
       "last_seen": "2026-04-19T18:29:00+02:00"
+    },
+    {
+      "id": "bug-004",
+      "timestamp": "2026-04-19T17:18:26.104Z",
+      "error_message": "Null/undefined access in ",
+      "file": "src/renderer/src/App.tsx",
+      "root_cause": "Property access on potentially null/undefined value",
+      "fix": "Added null safety (optional chaining or null check)",
+      "tags": [
+        "auto-detected",
+        "null-safety",
+        "tsx"
+      ],
+      "related_bugs": [],
+      "occurrences": 1,
+      "last_seen": "2026-04-19T17:18:26.104Z"
+    },
+    {
+      "id": "bug-005",
+      "timestamp": "2026-04-19T17:18:34.558Z",
+      "error_message": "Incorrect value in code",
+      "file": "src/renderer/src/App.tsx",
+      "root_cause": "Had \"flex h-full flex-col overflow-hidden rounded-xl b",
+      "fix": "Changed to `flex h-full flex-col overflow-hidden bg-app-title",
+      "tags": [
+        "auto-detected",
+        "wrong-value",
+        "tsx"
+      ],
+      "related_bugs": [],
+      "occurrences": 2,
+      "last_seen": "2026-04-19T17:18:37.991Z"
+    },
+    {
+      "id": "bug-006",
+      "timestamp": "2026-04-19T19:34:38+02:00",
+      "error_message": "Wykres po dodaniu kolejnych leków tylko się sumuje; peak jest zbyt ostry i spadek zbyt krótki.",
+      "file": "src/renderer/src/utils/pharmacokinetics.ts",
+      "root_cause": "Generator wykresu sumował surowe krzywe dawek liniowo bez kształtowania odpowiedzi układu, więc kumulacja dawała ostre szczyty i zbyt szybki zjazd.",
+      "fix": "Dodano smoothSummedEffect (asymetryczny filtr: szybszy wzrost, wolniejszy spadek) i przełączono slope/band/crash na krzywą wygładzoną.",
+      "tags": [
+        "health-chart",
+        "pharmacokinetics",
+        "smoothing",
+        "medications"
+      ],
+      "related_bugs": [],
+      "occurrences": 1,
+      "last_seen": "2026-04-19T19:34:38+02:00"
     }
   ]
 }

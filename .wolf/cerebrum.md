@@ -22,6 +22,7 @@
 - Shared domain/IPC types now live in `src/shared/types.ts`; main + preload import from it, renderer re-exports those shared types from `@renderer/types`.
 - Shared defaults now live in `src/shared/defaults.ts` (`UI_SCALE_OPTIONS`, `DEFAULT_UI_SCALE`, `DEFAULT_WORKSPACE_ID`, `DEFAULT_SYNC_SETTINGS`) and should be reused across main/renderer.
 - Renderer persistence now uses Zustand `persist` with IPC-backed storage and partial patch saves (`store:savePartial`) instead of manual subscribe+debounce.
+- Health PK chart should shape the summed dose curve with asymmetric smoothing (faster rise, slower fall) so overlapping doses have softer peaks and longer offsets.
 
 ## Do-Not-Repeat
 
@@ -37,3 +38,4 @@
 - [2026-04-19] Refactored Supabase sync to use a debounced, diff-based delta (upsert/delete) driven by a “shadow” slice; IPC `store:save` no longer awaits remote sync to avoid backpressure.
 - [2026-04-19] Consolidated duplicated cross-process types/constants into `src/shared/types.ts` and updated `main`, `preload`, `preload/index.d.ts`, and renderer types to consume/re-export shared definitions.
 - [2026-04-19] Introduced shared defaults module and partial IPC persistence path (`store:savePartial`), then switched renderer persistence to Zustand `persist` with changed-slice patching.
+- [2026-04-19] Updated Health PK generation to apply asymmetric smoothing to summed medication effects (`smoothSummedEffect`) before crash/band analysis to avoid unrealistically sharp additive peaks.

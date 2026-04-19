@@ -196,6 +196,32 @@ interface GenerateChartOptions {
   stepMinutes?: 5 | 10
 }
 
+/**
+ * Shape the summed effect with an asymmetric one-pole filter:
+ * - faster rise → keeps onset responsive
+ * - slower fall → smooths peaks and stretches offset
+ */
+function smoothSummedEffect(rawEffects: number[], stepMinutes: number): number[] {
+  if (rawEffects.length === 0) return []
+
+  const riseTauMin = 22
+  const fallTauMin = 68
+  const riseAlpha = 1 - Math.exp(-stepMinutes / riseTauMin)
+  const fallAlpha = 1 - Math.exp(-stepMinutes / fallTauMin)
+
+  const shaped = new Array<number>(rawEffects.length)
+  shaped[0] = Math.max(0, rawEffects[0])
+
+  for (let i = 1; i < rawEffects.length; i++) {
+    const target = Math.max(0, rawEffects[i])
+    const prev = shaped[i - 1]
+    const alpha = target >= prev ? riseAlpha : fallAlpha
+    shaped[i] = prev + (target - prev) * alpha
+  }
+
+  return shaped
+}
+
 export function generateDailyChartData(
   logs: MedicationLog[],
   date: string,
@@ -236,21 +262,23 @@ export function generateDailyChartData(
       }
     }
 
-    rawEffects.push(Math.max(0, effect))
+    rawEffects.push(effect)
   }
+
+  const shapedEffects = smoothSummedEffect(rawEffects, stepMinutes)
 
   // Smooth slope over ~30 min window to avoid noise-induced split segments
   const SLOPE_WINDOW = Math.max(1, Math.round(15 / stepMinutes))
-  const smoothSlope: number[] = rawEffects.map((_, i) => {
+  const smoothSlope: number[] = shapedEffects.map((_, i) => {
     const lo = Math.max(0, i - SLOPE_WINDOW)
-    const hi = Math.min(rawEffects.length - 1, i + SLOPE_WINDOW)
-    const deltaPerPoint = (rawEffects[hi] - rawEffects[lo]) / (hi - lo)
+    const hi = Math.min(shapedEffects.length - 1, i + SLOPE_WINDOW)
+    const deltaPerPoint = (shapedEffects[hi] - shapedEffects[lo]) / (hi - lo)
     return deltaPerPoint * (5 / stepMinutes)
   })
 
   const points: ChartPoint[] = []
-  for (let i = 0; i < rawEffects.length; i++) {
-    const c = rawEffects[i]
+  for (let i = 0; i < shapedEffects.length; i++) {
+    const c = shapedEffects[i]
     const slope = smoothSlope[i]
     const crashRisk = slope < crashThreshold && c > mec * 0.5
     const band: ChartPoint['band'] = c >= mtc ? 'above' : c >= mec ? 'therapeutic' : 'below'
@@ -276,9 +304,7 @@ export const MED_PRESETS: MedPreset[] = [
   { id: 'medikinet-cr', name: 'Medikinet CR', dose: 20, unit: 'mg' },
   { id: 'medikinet-cr', name: 'Medikinet CR', dose: 30, unit: 'mg' },
   { id: 'concerta', name: 'Concerta', dose: 18, unit: 'mg' },
-  { id: 'concerta', name: 'Concerta', dose: 27, unit: 'mg' },
   { id: 'concerta', name: 'Concerta', dose: 36, unit: 'mg' },
-  { id: 'dexamp', name: 'Dexamphetamine', dose: 5, unit: 'mg' },
   { id: 'elvanse', name: 'Elvanse', dose: 20, unit: 'mg' },
   { id: 'elvanse', name: 'Elvanse', dose: 30, unit: 'mg' },
   { id: 'elvanse', name: 'Elvanse', dose: 40, unit: 'mg' }

@@ -444,3 +444,15 @@
 | ---- | ------ | ------- | ------- | ------- |
 | 18:21 | Punkt 1 z to_fix: unifikacja typów do shared | src/shared/types.ts; src/main/index.ts; src/preload/index.ts; src/preload/index.d.ts; src/renderer/src/types/index.ts; tsconfig.* | Deduplikacja typów + przejście lint/build | ~2600 |
 | 18:33 | Punkty 2-7 z to_fix: persist+slices+partial IPC+PK opt+defaults | src/renderer/src/store/useAppStore.ts; src/main/index.ts; src/preload/*; src/shared/defaults.ts; src/renderer/src/utils/pharmacokinetics.ts; src/renderer/src/pages/HealthPage.tsx; src/renderer/src/types/index.ts | Zrobione punkt po punkcie, lint/build zielone | ~5200 |
+
+## Session: 2026-04-19 19:16
+
+| Time | Action | File(s) | Outcome | ~Tokens |
+|------|--------|---------|---------|--------|
+| 19:18 | Edited src/renderer/src/App.tsx | added optional chaining | ~115 |
+| 19:18 | Edited src/renderer/src/App.tsx | 4→4 lines | ~100 |
+| 19:18 | Edited src/renderer/src/App.tsx | "flex h-full flex-col over" → "flex h-full flex-col over" | ~35 |
+| 19:18 | Edited src/renderer/src/App.tsx | "relative flex min-h-0 fle" → "relative flex min-h-0 fle" | ~34 |
+| 19:18 | remove window roundness in fullscreen | App.tsx | done — isFullScreen state drives rounded-xl/rounded-lg removal | ~150 |
+| 19:35 | wygładzenie i wydłużenie opadania krzywej leków (asymetryczne kształtowanie sumy dawek) | src/renderer/src/utils/pharmacokinetics.ts | peak bardziej miękki, spadek dłuższy przy dokładaniu dawek | ~900 |
+| 19:18 | Session end: 4 writes across 1 files (App.tsx) | 2 reads | ~2941 tok |
