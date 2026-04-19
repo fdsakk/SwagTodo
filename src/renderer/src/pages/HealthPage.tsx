@@ -1,12 +1,5 @@
 import { useMemo, useState, useCallback, useRef } from 'react'
-import { RotateCcw, Settings2, Trash2 } from 'lucide-react'
-import {
-  Dialog,
-  DialogContent,
-  DialogHeader,
-  DialogTitle,
-  DialogTrigger
-} from '@renderer/components/ui/dialog'
+import { Trash2 } from 'lucide-react'
 import {
   ResponsiveContainer,
   AreaChart,
@@ -18,13 +11,7 @@ import {
 } from 'recharts'
 import useAppStore from '@renderer/store/useAppStore'
 import { useShallow } from 'zustand/react/shallow'
-import {
-  generateDailyChartData,
-  MED_PRESETS,
-  MED_IDS,
-  MED_DISPLAY_NAME
-} from '@renderer/utils/pharmacokinetics'
-import { DEFAULT_MED_PK_SETTINGS } from '@renderer/types'
+import { generateDailyChartData, MED_PRESETS } from '@renderer/utils/pharmacokinetics'
 import { cn } from '@renderer/utils/cn'
 
 const today = (): string => new Date().toISOString().slice(0, 10)
@@ -68,7 +55,7 @@ function SliderRow({ label, value, min, max, step, format, onChange }: SliderRow
         onChange={(e) => onChange(Number(e.target.value))}
         className="flex-1 accent-[var(--app-accent)]"
       />
-      <span className="w-10 text-right text-xs tabular-nums text-app-text-muted">{format(value)}</span>
+      <span className="w-12 text-right text-xs tabular-nums text-app-text-muted">{format(value)}</span>
     </div>
   )
 }
@@ -80,8 +67,7 @@ export function HealthPage(): React.JSX.Element {
     addMedicationLog,
     updateMedicationLog,
     deleteMedicationLog,
-    updateMedPkSettings,
-    resetMedPkSettings
+    updateChartSettings
   } = useAppStore(
     useShallow((s) => ({
       medications: s.medications,
@@ -89,8 +75,7 @@ export function HealthPage(): React.JSX.Element {
       addMedicationLog: s.addMedicationLog,
       updateMedicationLog: s.updateMedicationLog,
       deleteMedicationLog: s.deleteMedicationLog,
-      updateMedPkSettings: s.updateMedPkSettings,
-      resetMedPkSettings: s.resetMedPkSettings
+      updateChartSettings: s.updateChartSettings
     }))
   )
 
@@ -118,13 +103,10 @@ export function HealthPage(): React.JSX.Element {
   const xTickInterval = chartWidth < 700 ? 35 : chartWidth < 1000 ? 23 : 11
 
   const { maxConc, yTicks } = useMemo(() => {
-    const max = Math.max(...chartData.map((p) => p.concentration), 0.1)
-    const ceiling = Math.ceil(max * 1.25 * 4) / 4  // round up to nearest 0.25
-    const step = ceiling <= 2 ? 0.5 : ceiling <= 5 ? 1 : 2
+    const max = Math.max(...chartData.map((p) => p.concentration), 1)
+    const ceiling = Math.ceil(max * 1.2)
     const ticks: number[] = []
-    for (let v = 0; v <= ceiling + step / 2; v += step) {
-      ticks.push(Math.round(v * 100) / 100)
-    }
+    for (let v = 0; v <= ceiling; v++) ticks.push(v)
     return { maxConc: ceiling, yTicks: ticks }
   }, [chartData])
 
@@ -150,82 +132,12 @@ export function HealthPage(): React.JSX.Element {
           onChange={(e) => setSelectedDate(e.target.value)}
           className="rounded-md border border-app-border bg-app-card px-2 py-1 text-xs text-app-text focus:outline-none"
         />
-        <Dialog>
-          <DialogTrigger asChild>
-            <button
-              type="button"
-              className="ml-auto flex items-center gap-1.5 rounded-md border border-app-border bg-app-card px-2.5 py-1 text-xs text-app-text-muted hover:text-app-text transition-colors"
-            >
-              <Settings2 size={12} />
-              Model settings
-            </button>
-          </DialogTrigger>
-          <DialogContent className="border-app-border bg-app-bg text-app-text sm:max-w-md">
-            <DialogHeader>
-              <DialogTitle className="text-sm font-semibold text-app-text">Model settings</DialogTitle>
-            </DialogHeader>
-            <p className="text-[11px] text-app-text-muted">
-              Calibrate the effect-site model per medication. <strong className="text-app-text-secondary">Onset speed</strong> — how fast effect catches plasma (higher = faster on/off). <strong className="text-app-text-secondary">Duration</strong> — scale total active time. <strong className="text-app-text-secondary">Sensitivity</strong> — peak height multiplier.
-            </p>
-            <div className="space-y-5">
-              {MED_IDS.map((medId) => {
-                const s = pkSettings.perMed[medId] ?? DEFAULT_MED_PK_SETTINGS
-                const isModified = !!pkSettings.perMed[medId]
-                return (
-                  <div key={medId} className="space-y-2">
-                    <div className="flex items-center justify-between">
-                      <span className="text-xs font-medium text-app-text">{MED_DISPLAY_NAME[medId]}</span>
-                      {isModified && (
-                        <button
-                          type="button"
-                          onClick={() => resetMedPkSettings(medId)}
-                          className="flex items-center gap-1 text-[11px] text-app-text-muted hover:text-app-text transition-colors"
-                          title="Reset to defaults"
-                        >
-                          <RotateCcw size={11} />
-                          Reset
-                        </button>
-                      )}
-                    </div>
-                    <SliderRow
-                      label="Onset speed"
-                      value={s.ke0}
-                      min={0.3}
-                      max={3.0}
-                      step={0.1}
-                      format={(v) => v.toFixed(1)}
-                      onChange={(v) => updateMedPkSettings(medId, { ke0: v })}
-                    />
-                    <SliderRow
-                      label="Duration ×"
-                      value={s.durationScale}
-                      min={0.5}
-                      max={2.0}
-                      step={0.05}
-                      format={(v) => `${v.toFixed(2)}×`}
-                      onChange={(v) => updateMedPkSettings(medId, { durationScale: v })}
-                    />
-                    <SliderRow
-                      label="Sensitivity"
-                      value={s.sensitivity}
-                      min={0.3}
-                      max={2.0}
-                      step={0.05}
-                      format={(v) => v.toFixed(2)}
-                      onChange={(v) => updateMedPkSettings(medId, { sensitivity: v })}
-                    />
-                  </div>
-                )
-              })}
-            </div>
-          </DialogContent>
-        </Dialog>
       </div>
 
       {/* Chart */}
       <div ref={chartContainerRef} className="rounded-xl border border-app-border bg-app-card p-4 [&_*]:outline-none">
         <p className="mb-3 text-xs font-medium text-app-text-muted">Estimated effect (effect-site model)</p>
-        <ResponsiveContainer width="100%" height={200}>
+        <ResponsiveContainer width="100%" height={280}>
           <AreaChart data={chartData} margin={{ top: 8, right: 8, bottom: 0, left: -16 }}>
             <defs>
               <linearGradient id="concGrad" x1="0" y1="0" x2="0" y2="1">
@@ -256,7 +168,7 @@ export function HealthPage(): React.JSX.Element {
               tickLine={false}
               axisLine={false}
               width={32}
-              tickFormatter={(v: number) => Number.isInteger(v) ? String(v) : v.toFixed(1)}
+              tickFormatter={(v: number) => String(v)}
             />
             <Tooltip
               contentStyle={{
@@ -281,6 +193,29 @@ export function HealthPage(): React.JSX.Element {
             />
           </AreaChart>
         </ResponsiveContainer>
+      </div>
+
+      {/* Chart settings card */}
+      <div className="rounded-xl border border-app-border bg-app-card p-4 space-y-3">
+        <p className="text-xs font-medium text-app-text-muted">Chart settings</p>
+        <SliderRow
+          label="Reference dose"
+          value={pkSettings.doseRef}
+          min={5}
+          max={40}
+          step={5}
+          format={(v) => `${v}mg`}
+          onChange={(v) => updateChartSettings({ doseRef: v })}
+        />
+        <SliderRow
+          label="Peak scale"
+          value={pkSettings.peakScale}
+          min={0.5}
+          max={3.0}
+          step={0.1}
+          format={(v) => `${v.toFixed(1)}×`}
+          onChange={(v) => updateChartSettings({ peakScale: v })}
+        />
       </div>
 
       {/* Quick-add buttons */}
@@ -354,7 +289,6 @@ export function HealthPage(): React.JSX.Element {
           </ul>
         )}
       </div>
-
     </div>
   )
 }

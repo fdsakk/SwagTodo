@@ -15,7 +15,6 @@ import {
   type AppState,
   type CreateTaskInput,
   type Label,
-  type MedPkSettings,
   type MedicationLog,
   type PkSettings,
   type Project,
@@ -144,8 +143,7 @@ interface AppStore extends AppState {
   addMedicationLog: (input: Omit<MedicationLog, 'id' | 'createdAt'>) => void
   updateMedicationLog: (id: string, takenAt: string) => void
   deleteMedicationLog: (id: string) => void
-  updateMedPkSettings: (medId: string, patch: Partial<MedPkSettings>) => void
-  resetMedPkSettings: (medId: string) => void
+  updateChartSettings: (patch: Partial<PkSettings>) => void
 }
 
 const UI_SCALE_SET: ReadonlySet<number> = new Set(UI_SCALE_OPTIONS)
@@ -161,6 +159,17 @@ const nextOrder = (tasks: readonly Task[]): number => {
 }
 
 const isUiScale = (v: unknown): v is UiScale => typeof v === 'number' && UI_SCALE_SET.has(v)
+
+const normalizePkSettings = (raw: unknown): PkSettings => {
+  if (raw && typeof raw === 'object' && !Array.isArray(raw)) {
+    const r = raw as Record<string, unknown>
+    return {
+      doseRef: typeof r.doseRef === 'number' ? r.doseRef : DEFAULT_PK_SETTINGS.doseRef,
+      peakScale: typeof r.peakScale === 'number' ? r.peakScale : DEFAULT_PK_SETTINGS.peakScale
+    }
+  }
+  return DEFAULT_PK_SETTINGS
+}
 
 const nowIso = (): string => new Date().toISOString()
 
@@ -203,10 +212,7 @@ const stateFromPersisted = (
     sessions: Array.isArray(data.sessions) ? data.sessions : [],
     timeBlocks: Array.isArray(data.timeBlocks) ? data.timeBlocks : [],
     medications: Array.isArray(data.medications) ? data.medications : [],
-    pkSettings:
-      data.pkSettings && typeof data.pkSettings === 'object' && !Array.isArray(data.pkSettings)
-        ? (data.pkSettings as PkSettings)
-        : DEFAULT_PK_SETTINGS,
+    pkSettings: normalizePkSettings(data.pkSettings),
     uiScale: isUiScale(data.uiScale) ? data.uiScale : 100,
     isSidebarCollapsed: data.isSidebarCollapsed ?? false,
     appearance: normalizeAppearance(data.appearance),
@@ -593,26 +599,8 @@ const useAppStore = create<AppStore>((set, get) => ({
       medications.splice(idx, 1)
       return { medications }
     }),
-  updateMedPkSettings: (medId, patch) =>
-    set((s) => {
-      const existing = s.pkSettings.perMed[medId] ?? {
-        ke0: 1.0,
-        durationScale: 1.0,
-        sensitivity: 1.0
-      }
-      return {
-        pkSettings: {
-          ...s.pkSettings,
-          perMed: { ...s.pkSettings.perMed, [medId]: { ...existing, ...patch } }
-        }
-      }
-    }),
-  resetMedPkSettings: (medId) =>
-    set((s) => {
-      const perMed = { ...s.pkSettings.perMed }
-      delete perMed[medId]
-      return { pkSettings: { ...s.pkSettings, perMed } }
-    }),
+  updateChartSettings: (patch) =>
+    set((s) => ({ pkSettings: { ...s.pkSettings, ...patch } })),
   applyKanbanOrder: (projectId, columns) => {
     const updatedAt = nowIso()
     const byTaskId = new Map<string, { status: TaskStatus; order: number }>()

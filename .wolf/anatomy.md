@@ -1,7 +1,7 @@
 # anatomy.md
 
-> Auto-maintained by OpenWolf. Last scanned: 2026-04-19T10:49:43.191Z
-> Files: 124 tracked | Anatomy hits: 0 | Misses: 0
+> Auto-maintained by OpenWolf. Last scanned: 2026-04-19T13:09:28.431Z
+> Files: 125 tracked | Anatomy hits: 0 | Misses: 0
 
 ## ./
 
@@ -189,7 +189,7 @@
 ## src/renderer/src/pages/
 
 - `ActivityPage.tsx` — buildEvents — uses useMemo (~1495 tok)
-- `HealthPage.tsx` — today — renders modal (~3930 tok)
+- `HealthPage.tsx` — today (~3034 tok)
 - `InboxPage.tsx` — InboxPage (~446 tok)
 - `ProjectPage.tsx` — ProjectPage — uses useMemo (~1197 tok)
 - `SessionsPage.tsx` — DAY_OPTIONS — uses useEffect, useMemo, useCallback (~2987 tok)
@@ -203,17 +203,17 @@
 
 ## src/renderer/src/store/
 
-- `useAppStore.ts` — Exports SessionCreateInput, SessionUpdateInput, SessionResult, SessionUpdateResult + 4 more (~6850 tok)
+- `useAppStore.ts` — Exports SessionCreateInput, SessionUpdateInput, SessionResult, SessionUpdateResult + 4 more (~6889 tok)
 
 ## src/renderer/src/types/
 
-- `index.ts` — Effect-site equilibration rate [1/h]. Higher = faster onset AND faster offset. Default 1.0 (~3610 tok)
+- `index.ts` — Dose treated as "1 unit" on Y axis. Default 10mg. (~3614 tok)
 
 ## src/renderer/src/utils/
 
 - `calendar.ts` — Exports HOUR_PX, SLOT_MIN, PX_PER_MIN, startOfDay + 7 more (~362 tok)
 - `cn.ts` — Exports cn (~50 tok)
-- `pharmacokinetics.ts` — Default ke0 for this drug class (effect-site equilibration rate [1/h]). (~1878 tok)
+- `pharmacokinetics.ts` — Default ke0 for this drug class (effect-site equilibration rate [1/h]). (~1724 tok)
 - `sessions.ts` — Exports sessionsInRange, computeTaskStats, formatDuration (~438 tok)
 - `task.ts` — Exports PROJECT_COLOR_SWATCHES, PRIORITY_META, isTaskDueToday, isTaskOverdue + 5 more (~946 tok)
 

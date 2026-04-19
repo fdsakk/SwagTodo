@@ -93,27 +93,16 @@ export interface MedicationLog {
   createdAt: string
 }
 
-export interface MedPkSettings {
-  /** Effect-site equilibration rate [1/h]. Higher = faster onset AND faster offset. Default 1.0 */
-  ke0: number
-  /** Multiplies the drug's base duration. <1 shorter, >1 longer. Default 1.0 */
-  durationScale: number
-  /** Scales peak effect height (EC50 inverse). Higher = more sensitive. Default 1.0 */
-  sensitivity: number
-}
-
-export const DEFAULT_MED_PK_SETTINGS: MedPkSettings = {
-  ke0: 1.0,
-  durationScale: 1.0,
-  sensitivity: 1.0
-}
-
 export interface PkSettings {
-  perMed: Record<string, MedPkSettings>
+  /** Dose treated as "1 unit" on Y axis. Default 10mg. */
+  doseRef: number
+  /** Vertical scale multiplier for the effect curve. Default 1.0. */
+  peakScale: number
 }
 
 export const DEFAULT_PK_SETTINGS: PkSettings = {
-  perMed: {}
+  doseRef: 10,
+  peakScale: 1.0
 }
 
 export interface AppState {

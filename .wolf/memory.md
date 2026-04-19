@@ -269,3 +269,23 @@
 | 12:49 | Edited src/renderer/src/pages/HealthPage.tsx | added 1 condition(s) | ~173 |
 | 12:49 | Session end: 13 writes across 1 files (HealthPage.tsx) | 2 reads | ~6543 tok |
 | 14:20 | Supabase sync hardening: debounced delta upsert/delete (no full workspace delete), fire-and-forget push; bump task.updatedAt on deleteProject/deleteLabel | src/main/index.ts, src/renderer/src/store/useAppStore.ts, src/renderer/src/components/settings/SyncSection.tsx, README.md, supabase/schema.sql | typecheck+lint ok | ~1200 |
+
+## Session: 2026-04-19 15:00
+
+| Time | Action | File(s) | Outcome | ~Tokens |
+|------|--------|---------|---------|--------|
+| 15:08 | Edited src/renderer/src/types/index.ts | reduced (-11 lines) | ~81 |
+| 15:08 | Edited src/renderer/src/utils/pharmacokinetics.ts | dose() → med() | ~457 |
+| 15:08 | Edited src/renderer/src/store/useAppStore.ts | 3→2 lines | ~18 |
+| 15:08 | Edited src/renderer/src/store/useAppStore.ts | 2→1 lines | ~6 |
+| 15:08 | Edited src/renderer/src/store/useAppStore.ts | isArray() → normalizePkSettings() | ~16 |
+| 15:08 | Edited src/renderer/src/store/useAppStore.ts | added 1 condition(s) | ~143 |
+| 15:08 | Edited src/renderer/src/store/useAppStore.ts | removed 20 lines | ~28 |
+| 15:09 | Created src/renderer/src/pages/HealthPage.tsx | — | ~3034 |
+| 15:09 | Refactored HealthPage: removed per-med PK tuning, added global chart settings (doseRef/peakScale) as inline card; chart height 280, Y ticks every 1; simplified generateDailyChartData to use drug defaults | HealthPage.tsx, pharmacokinetics.ts, types/index.ts, useAppStore.ts | success | ~900 |
+| 15:10 | Session end: 8 writes across 4 files (index.ts, pharmacokinetics.ts, useAppStore.ts, HealthPage.tsx) | 3 reads | ~16173 tok |
+
+## Session: 2026-04-19 15:12
+
+| Time | Action | File(s) | Outcome | ~Tokens |
+|------|--------|---------|---------|--------|

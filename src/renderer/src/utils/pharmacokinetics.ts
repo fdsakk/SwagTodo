@@ -136,60 +136,47 @@ export function generateDailyChartData(
   pkSettings: PkSettings
 ): ChartPoint[] {
   const dayStart = new Date(`${date}T00:00:00`).getTime()
-  const STEP_MIN = 5
-  const STEP_H = STEP_MIN / 60
+  const STEP_H = 5 / 60
   const TOTAL_MIN = 24 * 60
 
-  // Pre-compute effect-site curves for each unique med in today's logs
-  type CurveCache = { curve: Float32Array; durationH: number; sensitivity: number }
-  const curveCache = new Map<string, CurveCache>()
+  // Pre-compute normalized effect-site curve per unique med (using drug defaults)
+  const curveCache = new Map<string, { curve: Float32Array; durationH: number }>()
 
   for (const log of logs) {
-    const cacheKey = log.medId
-    if (curveCache.has(cacheKey)) continue
-
+    if (curveCache.has(log.medId)) continue
     const def = PK_DEFS[log.medId]
     if (!def) continue
-
-    const userSettings = pkSettings.perMed[log.medId]
-    const ke0 = userSettings?.ke0 ?? def.defaultKe0
-    const durationScale = userSettings?.durationScale ?? 1.0
-    const sensitivity = userSettings?.sensitivity ?? 1.0
-
-    const durationH = def.baseDurationH * durationScale
-    // Add 1h buffer so effect-site tail decays naturally
-    const computeH = durationH + 1.5
-
-    const curve = computeEffectSiteCurve(def, computeH, ke0, STEP_H)
-    curveCache.set(cacheKey, { curve, durationH: computeH, sensitivity })
+    const durationH = def.baseDurationH + 1.5
+    curveCache.set(log.medId, {
+      curve: computeEffectSiteCurve(def, durationH, def.defaultKe0, STEP_H),
+      durationH
+    })
   }
 
   const points: ChartPoint[] = []
 
-  for (let minute = 0; minute <= TOTAL_MIN; minute += STEP_MIN) {
+  for (let minute = 0; minute <= TOTAL_MIN; minute += 5) {
     const absMs = dayStart + minute * 60_000
     let effect = 0
 
     for (const log of logs) {
       const cache = curveCache.get(log.medId)
       if (!cache) continue
-
-      const takenMs = new Date(log.takenAt).getTime()
-      const hoursFromIntake = (absMs - takenMs) / 3_600_000
-
+      const hoursFromIntake = (absMs - new Date(log.takenAt).getTime()) / 3_600_000
       if (hoursFromIntake < 0 || hoursFromIntake > cache.durationH) continue
-
       const idx = Math.round(hoursFromIntake / STEP_H)
-      const ceNorm = idx < cache.curve.length ? cache.curve[idx] : 0
-
-      // Scale by dose (relative to 10mg) and user sensitivity
-      effect += ceNorm * (log.dose / 10) * cache.sensitivity
+      if (idx < cache.curve.length) {
+        effect += cache.curve[idx] * (log.dose / pkSettings.doseRef) * pkSettings.peakScale
+      }
     }
 
     const h = Math.floor(minute / 60)
     const m = minute % 60
-    const timeLabel = `${String(h).padStart(2, '0')}:${String(m).padStart(2, '0')}`
-    points.push({ timeLabel, minuteOfDay: minute, concentration: Math.max(0, effect) })
+    points.push({
+      timeLabel: `${String(h).padStart(2, '0')}:${String(m).padStart(2, '0')}`,
+      minuteOfDay: minute,
+      concentration: Math.max(0, effect)
+    })
   }
 
   return points

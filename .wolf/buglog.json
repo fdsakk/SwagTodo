@@ -673,9 +673,59 @@
         "zustand",
         "tasks"
       ],
-      "related_bugs": ["bug-041"],
+      "related_bugs": [
+        "bug-041"
+      ],
       "occurrences": 1,
       "last_seen": "2026-04-19T12:20:26.783Z"
+    },
+    {
+      "id": "bug-043",
+      "timestamp": "2026-04-19T13:08:00.281Z",
+      "error_message": "Type error",
+      "file": "src/renderer/src/types/index.ts",
+      "root_cause": "Missing or incorrect type annotation",
+      "fix": "Added type assertion/annotation",
+      "tags": [
+        "auto-detected",
+        "type-fix",
+        "ts"
+      ],
+      "related_bugs": [],
+      "occurrences": 1,
+      "last_seen": "2026-04-19T13:08:00.281Z"
+    },
+    {
+      "id": "bug-044",
+      "timestamp": "2026-04-19T13:08:26.873Z",
+      "error_message": "Wrong reference: MedPkSettings should be MedicationLog",
+      "file": "src/renderer/src/store/useAppStore.ts",
+      "root_cause": "Used \"MedPkSettings\" instead of \"MedicationLog\"",
+      "fix": "Changed MedPkSettings → MedicationLog",
+      "tags": [
+        "auto-detected",
+        "wrong-reference",
+        "ts"
+      ],
+      "related_bugs": [],
+      "occurrences": 1,
+      "last_seen": "2026-04-19T13:08:26.873Z"
+    },
+    {
+      "id": "bug-045",
+      "timestamp": "2026-04-19T13:08:46.112Z",
+      "error_message": "Type error",
+      "file": "src/renderer/src/store/useAppStore.ts",
+      "root_cause": "Missing or incorrect type annotation",
+      "fix": "Added type assertion/annotation",
+      "tags": [
+        "auto-detected",
+        "type-fix",
+        "ts"
+      ],
+      "related_bugs": [],
+      "occurrences": 1,
+      "last_seen": "2026-04-19T13:08:46.112Z"
     }
   ]
 }
