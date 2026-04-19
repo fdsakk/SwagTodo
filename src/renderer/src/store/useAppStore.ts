@@ -161,14 +161,19 @@ const nextOrder = (tasks: readonly Task[]): number => {
 const isUiScale = (v: unknown): v is UiScale => typeof v === 'number' && UI_SCALE_SET.has(v)
 
 const normalizePkSettings = (raw: unknown): PkSettings => {
+  const d = DEFAULT_PK_SETTINGS
   if (raw && typeof raw === 'object' && !Array.isArray(raw)) {
     const r = raw as Record<string, unknown>
     return {
-      doseRef: typeof r.doseRef === 'number' ? r.doseRef : DEFAULT_PK_SETTINGS.doseRef,
-      peakScale: typeof r.peakScale === 'number' ? r.peakScale : DEFAULT_PK_SETTINGS.peakScale
+      peakScale: typeof r.peakScale === 'number' ? r.peakScale : d.peakScale,
+      tMaxOffsetH: typeof r.tMaxOffsetH === 'number' ? r.tMaxOffsetH : d.tMaxOffsetH,
+      keMultiplier: typeof r.keMultiplier === 'number' ? r.keMultiplier : d.keMultiplier,
+      mec: typeof r.mec === 'number' ? r.mec : d.mec,
+      mtc: typeof r.mtc === 'number' ? r.mtc : d.mtc,
+      crashThreshold: typeof r.crashThreshold === 'number' ? r.crashThreshold : d.crashThreshold
     }
   }
-  return DEFAULT_PK_SETTINGS
+  return d
 }
 
 const nowIso = (): string => new Date().toISOString()

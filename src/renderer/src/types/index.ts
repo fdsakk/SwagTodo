@@ -94,15 +94,27 @@ export interface MedicationLog {
 }
 
 export interface PkSettings {
-  /** Dose treated as "1 unit" on Y axis. Default 10mg. */
-  doseRef: number
-  /** Vertical scale multiplier for the effect curve. Default 1.0. */
+  /** Vertical scale — subjective sensitivity. 1.0 = one dose peaks at 1.0 on Y. Default 1.0. */
   peakScale: number
+  /** Tmax offset in hours — shifts absorption peak (metabolism/gastric speed). Default 0. */
+  tMaxOffsetH: number
+  /** Elimination rate multiplier — 1.0 = average liver/kidney function. Default 1.0. */
+  keMultiplier: number
+  /** MEC: Minimal Effective Concentration (0..1). Default 0.3. */
+  mec: number
+  /** MTC: Maximum Tolerated Concentration (0..1). Default 0.85. */
+  mtc: number
+  /** Crash detection: dC/dt threshold (negative, per 5-min step). Default -0.04. */
+  crashThreshold: number
 }
 
 export const DEFAULT_PK_SETTINGS: PkSettings = {
-  doseRef: 10,
-  peakScale: 1.0
+  peakScale: 1.0,
+  tMaxOffsetH: 0,
+  keMultiplier: 1.0,
+  mec: 0.3,
+  mtc: 0.85,
+  crashThreshold: -0.04
 }
 
 export interface AppState {

@@ -2,12 +2,14 @@ import { useMemo, useState, useCallback, useRef } from 'react'
 import { Trash2 } from 'lucide-react'
 import {
   ResponsiveContainer,
-  AreaChart,
+  ComposedChart,
   Area,
   XAxis,
   YAxis,
   Tooltip,
-  CartesianGrid
+  CartesianGrid,
+  ReferenceLine,
+  ReferenceArea
 } from 'recharts'
 import useAppStore from '@renderer/store/useAppStore'
 import { useShallow } from 'zustand/react/shallow'
@@ -34,6 +36,7 @@ const PRESET_BUTTONS = MED_PRESETS.filter(
 
 interface SliderRowProps {
   label: string
+  hint: string
   value: number
   min: number
   max: number
@@ -42,10 +45,25 @@ interface SliderRowProps {
   onChange: (v: number) => void
 }
 
-function SliderRow({ label, value, min, max, step, format, onChange }: SliderRowProps): React.JSX.Element {
+function SliderRow({
+  label,
+  hint,
+  value,
+  min,
+  max,
+  step,
+  format,
+  onChange
+}: SliderRowProps): React.JSX.Element {
   return (
-    <div className="flex items-center gap-3">
-      <span className="w-32 shrink-0 text-xs text-app-text-secondary">{label}</span>
+    <div className="group grid grid-cols-[1fr_auto] gap-x-4 gap-y-0.5">
+      <div className="flex items-baseline gap-2">
+        <span className="text-xs font-medium text-app-text">{label}</span>
+        <span className="text-[10px] text-app-text-muted">{hint}</span>
+      </div>
+      <span className="tabular-nums text-xs font-medium text-app-accent text-right">
+        {format(value)}
+      </span>
       <input
         type="range"
         min={min}
@@ -53,9 +71,8 @@ function SliderRow({ label, value, min, max, step, format, onChange }: SliderRow
         step={step}
         value={value}
         onChange={(e) => onChange(Number(e.target.value))}
-        className="flex-1 accent-[var(--app-accent)]"
+        className="col-span-2 w-full cursor-pointer accent-[var(--app-accent)]"
       />
-      <span className="w-12 text-right text-xs tabular-nums text-app-text-muted">{format(value)}</span>
     </div>
   )
 }
@@ -81,6 +98,7 @@ export function HealthPage(): React.JSX.Element {
 
   const [selectedDate, setSelectedDate] = useState(today)
   const [editingId, setEditingId] = useState<string | null>(null)
+  const [pkOpen, setPkOpen] = useState(false)
   const [chartWidth, setChartWidth] = useState(600)
   const roRef = useRef<ResizeObserver | null>(null)
   const chartContainerRef = useCallback((node: HTMLDivElement | null) => {
@@ -102,12 +120,45 @@ export function HealthPage(): React.JSX.Element {
 
   const xTickInterval = chartWidth < 700 ? 35 : chartWidth < 1000 ? 23 : 11
 
-  const { maxConc, yTicks } = useMemo(() => {
-    const max = Math.max(...chartData.map((p) => p.concentration), 1)
-    const ceiling = Math.ceil(max * 1.2)
+  const { yDomain, yTicks, crashSegments } = useMemo(() => {
+    let maxEffect = 0
+    for (const pt of chartData) {
+      if (pt.concentration > maxEffect) maxEffect = pt.concentration
+    }
+    // Snap to next integer >= 1; never below 1 so chart isn't flat when empty
+    const ceiling = Math.max(1, Math.ceil(maxEffect))
     const ticks: number[] = []
-    for (let v = 0; v <= ceiling; v++) ticks.push(v)
-    return { maxConc: ceiling, yTicks: ticks }
+    for (let i = 0; i <= ceiling; i++) ticks.push(i)
+
+    const rawSegments: { x1: string; x2: string; i1: number; i2: number }[] = []
+    let segStart: string | null = null
+    let segStartIdx = -1
+    for (let i = 0; i < chartData.length; i++) {
+      const pt = chartData[i]
+      if (pt.crashRisk && !segStart) {
+        segStart = pt.timeLabel
+        segStartIdx = i
+      } else if (!pt.crashRisk && segStart) {
+        rawSegments.push({ x1: segStart, x2: chartData[i - 1].timeLabel, i1: segStartIdx, i2: i - 1 })
+        segStart = null
+        segStartIdx = -1
+      }
+    }
+    if (segStart) rawSegments.push({ x1: segStart, x2: chartData[chartData.length - 1].timeLabel, i1: segStartIdx, i2: chartData.length - 1 })
+
+    // Merge segments separated by ≤6 non-crash points (30 min gap) into one
+    const MERGE_GAP = 6
+    const segments: { x1: string; x2: string }[] = []
+    for (let j = 0; j < rawSegments.length; j++) {
+      let seg = rawSegments[j]
+      while (j + 1 < rawSegments.length && rawSegments[j + 1].i1 - seg.i2 <= MERGE_GAP) {
+        j++
+        seg = { ...seg, x2: rawSegments[j].x2, i2: rawSegments[j].i2 }
+      }
+      segments.push({ x1: seg.x1, x2: seg.x2 })
+    }
+
+    return { yDomain: [0, ceiling] as [number, number], yTicks: ticks, crashSegments: segments }
   }, [chartData])
 
   const handleAdd = (medId: string, medName: string, dose: number): void => {
@@ -122,7 +173,7 @@ export function HealthPage(): React.JSX.Element {
   }
 
   return (
-    <div className="flex min-h-0 flex-1 flex-col gap-6 overflow-y-auto px-6 py-6 overflow-hidden">
+    <div className="flex min-h-0 flex-1 flex-col gap-6 overflow-y-auto px-6 py-6 overflow-hidden max-w-6xl">
       {/* Header */}
       <div className="flex items-center gap-3">
         <h1 className="text-base font-semibold text-app-text">Medications</h1>
@@ -135,24 +186,73 @@ export function HealthPage(): React.JSX.Element {
       </div>
 
       {/* Chart */}
-      <div ref={chartContainerRef} className="rounded-xl border border-app-border bg-app-card p-4 [&_*]:outline-none">
-        <p className="mb-3 text-xs font-medium text-app-text-muted">Estimated effect (effect-site model)</p>
+      <div
+        ref={chartContainerRef}
+        className="rounded-xl border border-app-border bg-app-card p-4 [&_*]:outline-none"
+      >
+        <div className="mb-3 flex items-center gap-4">
+          <p className="text-xs font-medium text-app-text-muted">
+            Estimated effect — therapeutic window model
+          </p>
+          <div className="ml-auto flex items-center gap-3 text-[10px] text-app-text-muted">
+            <span className="flex items-center gap-1">
+              <span className="inline-block h-2 w-3 rounded-sm bg-emerald-500/50" />
+              Therapeutic
+            </span>
+            <span className="flex items-center gap-1">
+              <span className="inline-block h-2 w-3 rounded-sm bg-red-500/30" />
+              Crash risk
+            </span>
+            <span className="flex items-center gap-1">
+              <span className="inline-block h-2 w-3 rounded-sm bg-amber-500/30" />
+              Above MTC
+            </span>
+          </div>
+        </div>
         <ResponsiveContainer width="100%" height={280}>
-          <AreaChart data={chartData} margin={{ top: 8, right: 8, bottom: 0, left: -16 }}>
+          <ComposedChart data={chartData} margin={{ top: 8, right: 8, bottom: 0, left: -16 }}>
             <defs>
               <linearGradient id="concGrad" x1="0" y1="0" x2="0" y2="1">
-                <stop offset="5%" stopColor="var(--app-accent)" stopOpacity={0.3} />
+                <stop offset="5%" stopColor="var(--app-accent)" stopOpacity={0.35} />
                 <stop offset="95%" stopColor="var(--app-accent)" stopOpacity={0} />
               </linearGradient>
             </defs>
             <CartesianGrid strokeDasharray="2 4" stroke="var(--app-border)" vertical={false} />
+
+            {/* Therapeutic window band */}
+            <ReferenceArea
+              y1={pkSettings.mec}
+              y2={pkSettings.mtc}
+              fill="rgba(52,211,153,0.07)"
+              stroke="none"
+              ifOverflow="visible"
+            />
+
+            {/* Crash-risk segments (orange tint behind curve) */}
+            {crashSegments.map((seg) => (
+              <ReferenceArea
+                key={`${seg.x1}-${seg.x2}`}
+                x1={seg.x1}
+                x2={seg.x2}
+                fill="rgba(239,68,68,0.15)"
+                stroke="none"
+                ifOverflow="visible"
+              />
+            ))}
+
             <XAxis
               dataKey="timeLabel"
               tick={({ x, y, payload, index }) => {
                 if (index % (xTickInterval + 1) !== 0) return <g />
                 if (payload.value === '00:00' || payload.value === '24:00') return <g />
                 return (
-                  <text x={x} y={(y as number) + 10} textAnchor="middle" fontSize={10} fill="var(--app-text-muted)">
+                  <text
+                    x={x}
+                    y={(y as number) + 10}
+                    textAnchor="middle"
+                    fontSize={10}
+                    fill="var(--app-text-muted)"
+                  >
                     {payload.value}
                   </text>
                 )
@@ -162,14 +262,42 @@ export function HealthPage(): React.JSX.Element {
               interval={0}
             />
             <YAxis
-              domain={[0, maxConc]}
+              domain={yDomain}
               ticks={yTicks}
               tick={{ fontSize: 10, fill: 'var(--app-text-muted)' }}
               tickLine={false}
               axisLine={false}
-              width={32}
+              width={24}
               tickFormatter={(v: number) => String(v)}
             />
+
+            {/* MEC line */}
+            <ReferenceLine
+              y={pkSettings.mec}
+              stroke="rgba(52,211,153,0.6)"
+              strokeDasharray="3 3"
+              strokeWidth={1}
+              label={{
+                value: 'MEC',
+                position: 'insideTopRight',
+                fontSize: 9,
+                fill: 'rgba(52,211,153,0.8)'
+              }}
+            />
+            {/* MTC line */}
+            <ReferenceLine
+              y={pkSettings.mtc}
+              stroke="rgba(251,191,36,0.6)"
+              strokeDasharray="3 3"
+              strokeWidth={1}
+              label={{
+                value: 'MTC',
+                position: 'insideTopRight',
+                fontSize: 9,
+                fill: 'rgba(251,191,36,0.8)'
+              }}
+            />
+
             <Tooltip
               contentStyle={{
                 background: 'var(--app-card)',
@@ -179,116 +307,192 @@ export function HealthPage(): React.JSX.Element {
                 color: 'var(--app-text)'
               }}
               labelStyle={{ color: 'var(--app-text-secondary)', marginBottom: '2px' }}
-              formatter={(v) => [typeof v === 'number' ? v.toFixed(2) : v, 'Effect']}
+              formatter={(v, name, props) => {
+                if (name !== 'concentration') return [v, name]
+                const val = typeof v === 'number' ? v.toFixed(2) : v
+                const pt = props.payload as { band: string; crashRisk: boolean } | undefined
+                const band = pt?.band ?? 'below'
+                const crash = pt?.crashRisk ? ' ⚠ crash risk' : ''
+                const bandLabel =
+                  band === 'therapeutic' ? ' ✓ therapeutic' : band === 'above' ? ' ↑ above MTC' : ''
+                return [`${val}${bandLabel}${crash}`, 'Effect']
+              }}
             />
             <Area
               type="monotoneX"
               dataKey="concentration"
               stroke="var(--app-accent)"
-              strokeWidth={1.5}
+              strokeWidth={2}
               fill="url(#concGrad)"
               dot={false}
               activeDot={{ r: 3, strokeWidth: 0 }}
               isAnimationActive={false}
             />
-          </AreaChart>
+          </ComposedChart>
         </ResponsiveContainer>
       </div>
 
-      {/* Chart settings card */}
-      <div className="rounded-xl border border-app-border bg-app-card p-4 space-y-3">
-        <p className="text-xs font-medium text-app-text-muted">Chart settings</p>
-        <SliderRow
-          label="Reference dose"
-          value={pkSettings.doseRef}
-          min={5}
-          max={40}
-          step={5}
-          format={(v) => `${v}mg`}
-          onChange={(v) => updateChartSettings({ doseRef: v })}
-        />
-        <SliderRow
-          label="Peak scale"
-          value={pkSettings.peakScale}
-          min={0.5}
-          max={3.0}
-          step={0.1}
-          format={(v) => `${v.toFixed(1)}×`}
-          onChange={(v) => updateChartSettings({ peakScale: v })}
-        />
-      </div>
-
-      {/* Quick-add buttons */}
-      <div>
-        <p className="mb-2 text-xs font-medium text-app-text-muted">Log intake</p>
-        <div className="flex flex-wrap gap-2">
-          {PRESET_BUTTONS.map((p) => (
-            <button
-              key={`${p.id}-${p.dose}`}
-              type="button"
-              onClick={() => handleAdd(p.id, p.name, p.dose)}
-              className={cn(
-                'rounded-lg border border-app-border bg-app-card px-3 py-1.5 text-xs text-app-text',
-                'hover:border-app-accent/40 hover:bg-app-hover transition-colors'
-              )}
+      <section className="max-w-3xl mx-auto space-y-6">
+        {/* Chart settings card */}
+        <div className="rounded-xl border border-app-border bg-app-card p-4">
+          <button
+            type="button"
+            onClick={() => setPkOpen((v) => !v)}
+            className="flex w-full items-center justify-between text-xs font-medium text-app-text-muted uppercase tracking-wider hover:text-app-text transition-colors"
+          >
+            <span>Pharmacokinetic parameters</span>
+            <svg
+              xmlns="http://www.w3.org/2000/svg"
+              width="14"
+              height="14"
+              viewBox="0 0 24 24"
+              fill="none"
+              stroke="currentColor"
+              strokeWidth="2"
+              strokeLinecap="round"
+              strokeLinejoin="round"
+              className={cn('transition-transform duration-200', pkOpen ? 'rotate-180' : '')}
             >
-              {p.name} {p.dose}{p.unit}
-            </button>
-          ))}
+              <polyline points="6 9 12 15 18 9" />
+            </svg>
+          </button>
+          {pkOpen && <div className="mt-4 grid grid-cols-1 gap-5 sm:grid-cols-2">
+            <SliderRow
+              label="Intensity"
+              hint="subjective sensitivity"
+              value={pkSettings.peakScale}
+              min={0.5}
+              max={2.0}
+              step={0.05}
+              format={(v) => `${v.toFixed(2)}×`}
+              onChange={(v) => updateChartSettings({ peakScale: v })}
+            />
+            <SliderRow
+              label="Tmax offset"
+              hint="absorption shift (food / metabolism)"
+              value={pkSettings.tMaxOffsetH}
+              min={-1}
+              max={2}
+              step={0.25}
+              format={(v) => `${v >= 0 ? '+' : ''}${v.toFixed(2)} h`}
+              onChange={(v) => updateChartSettings({ tMaxOffsetH: v })}
+            />
+            <SliderRow
+              label="Elimination rate"
+              hint="liver / kidney speed"
+              value={pkSettings.keMultiplier}
+              min={0.4}
+              max={2.0}
+              step={0.1}
+              format={(v) => `${v.toFixed(1)}×`}
+              onChange={(v) => updateChartSettings({ keMultiplier: v })}
+            />
+            <SliderRow
+              label="Crash sensitivity"
+              hint="slope threshold for crash warning"
+              value={Math.abs(pkSettings.crashThreshold)}
+              min={0.01}
+              max={0.1}
+              step={0.005}
+              format={(v) => v.toFixed(3)}
+              onChange={(v) => updateChartSettings({ crashThreshold: -v })}
+            />
+            <SliderRow
+              label="MEC"
+              hint="min. effective — same units as Y"
+              value={pkSettings.mec}
+              min={0.05}
+              max={1.5}
+              step={0.05}
+              format={(v) => v.toFixed(2)}
+              onChange={(v) => updateChartSettings({ mec: v })}
+            />
+            <SliderRow
+              label="MTC"
+              hint="max. tolerated — same units as Y"
+              value={pkSettings.mtc}
+              min={0.3}
+              max={3.0}
+              step={0.05}
+              format={(v) => v.toFixed(2)}
+              onChange={(v) => updateChartSettings({ mtc: v })}
+            />
+          </div>}
         </div>
-      </div>
 
-      {/* Log list */}
-      <div className="w-1/2">
-        <p className="mb-2 text-xs font-medium text-app-text-muted">
-          Taken {selectedDate === today() ? 'today' : `on ${selectedDate}`}
-        </p>
-        {todayLogs.length === 0 ? (
-          <p className="text-xs text-app-text-muted">No medications logged.</p>
-        ) : (
-          <ul className="space-y-1">
-            {todayLogs.map((log) => (
-              <li
-                key={log.id}
-                className="flex items-center justify-between rounded-lg border border-app-border bg-app-card px-3 py-2"
+        {/* Quick-add buttons */}
+        <div>
+          <p className="mb-2 text-xs font-medium text-app-text-muted">Log intake</p>
+          <div className="flex flex-wrap gap-2">
+            {PRESET_BUTTONS.map((p) => (
+              <button
+                key={`${p.id}-${p.dose}`}
+                type="button"
+                onClick={() => handleAdd(p.id, p.name, p.dose)}
+                className={cn(
+                  'rounded-lg border border-app-border bg-app-card px-3 py-1.5 text-xs text-app-text',
+                  'hover:border-app-accent/40 hover:bg-app-hover transition-colors'
+                )}
               >
-                <span className="text-sm text-app-text">
-                  {log.medName} {log.dose}mg
-                </span>
-                <div className="flex items-center gap-2">
-                  {editingId === log.id ? (
-                    <input
-                      type="time"
-                      autoFocus
-                      defaultValue={isoToTimeInput(log.takenAt)}
-                      onChange={(e) => handleTimeChange(log.id, e.target.value)}
-                      onBlur={() => setEditingId(null)}
-                      className="rounded border border-app-accent/40 bg-app-hover px-1.5 py-0.5 text-xs text-app-text focus:outline-none"
-                    />
-                  ) : (
+                {p.name} {p.dose}
+                {p.unit}
+              </button>
+            ))}
+          </div>
+        </div>
+
+        {/* Log list */}
+        <div className="w-1/2">
+          <p className="mb-2 text-xs font-medium text-app-text-muted">
+            Taken {selectedDate === today() ? 'today' : `on ${selectedDate}`}
+          </p>
+          {todayLogs.length === 0 ? (
+            <p className="text-xs text-app-text-muted">No medications logged.</p>
+          ) : (
+            <ul className="space-y-1">
+              {todayLogs.map((log) => (
+                <li
+                  key={log.id}
+                  className="flex items-center justify-between rounded-lg border border-app-border bg-app-card px-3 py-2"
+                >
+                  <span className="text-sm text-app-text">
+                    {log.medName} {log.dose}mg
+                  </span>
+                  <div className="flex items-center gap-2">
+                    {editingId === log.id ? (
+                      <input
+                        type="time"
+                        autoFocus
+                        defaultValue={isoToTimeInput(log.takenAt)}
+                        onChange={(e) => handleTimeChange(log.id, e.target.value)}
+                        onBlur={() => setEditingId(null)}
+                        className="rounded border border-app-accent/40 bg-app-hover px-1.5 py-0.5 text-xs text-app-text focus:outline-none"
+                      />
+                    ) : (
+                      <button
+                        type="button"
+                        onClick={() => setEditingId(log.id)}
+                        className="rounded px-1.5 py-0.5 text-xs text-app-text-muted hover:bg-app-hover hover:text-app-text transition-colors"
+                        title="Edit time"
+                      >
+                        @ {isoToTimeInput(log.takenAt)}
+                      </button>
+                    )}
                     <button
                       type="button"
-                      onClick={() => setEditingId(log.id)}
-                      className="rounded px-1.5 py-0.5 text-xs text-app-text-muted hover:bg-app-hover hover:text-app-text transition-colors"
-                      title="Edit time"
+                      onClick={() => deleteMedicationLog(log.id)}
+                      className="text-app-text-muted hover:text-red-400 transition-colors"
+                      title="Remove"
                     >
-                      @ {isoToTimeInput(log.takenAt)}
+                      <Trash2 size={13} />
                     </button>
-                  )}
-                  <button
-                    type="button"
-                    onClick={() => deleteMedicationLog(log.id)}
-                    className="text-app-text-muted hover:text-red-400 transition-colors"
-                    title="Remove"
-                  >
-                    <Trash2 size={13} />
-                  </button>
-                </div>
-              </li>
-            ))}
-          </ul>
-        )}
-      </div>
+                  </div>
+                </li>
+              ))}
+            </ul>
+          )}
+        </div>
+      </section>
     </div>
   )
 }

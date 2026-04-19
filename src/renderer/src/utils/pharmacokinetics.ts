@@ -20,17 +20,21 @@ interface PkDef {
    *  Higher = faster onset and faster offset relative to plasma.
    *  MPH ~1.5 (fast CNS penetration), Amph ~1.2, LDX ~0.8 (prodrug delay). */
   defaultKe0: number
+  /** Reference dose in mg. dose/refDoseMg = Y scale factor so 1 ref-dose → peak 1.0. */
+  refDoseMg: number
 }
 
 /**
  * Base PK definitions (plasma compartment only).
  * Sources: MPH t½≈2.5h, Concerta OROS Tmax≈6.8h, Dexamp t½≈10h, LDX active Tmax≈4h t½≈10h.
+ * refDoseMg = lowest commonly prescribed dose for that formulation.
  */
 const PK_DEFS: Record<string, PkDef> = {
   'medikinet-ir': {
     components: [{ fraction: 1.0, ka: 2.0, ke: 0.55 }],
     baseDurationH: 3.5,
-    defaultKe0: 1.5
+    defaultKe0: 1.5,
+    refDoseMg: 10
   },
   'medikinet-cr': {
     components: [
@@ -38,7 +42,8 @@ const PK_DEFS: Record<string, PkDef> = {
       { fraction: 0.5, ka: 0.7, ke: 0.32 }
     ],
     baseDurationH: 5,
-    defaultKe0: 1.5
+    defaultKe0: 1.5,
+    refDoseMg: 20
   },
   concerta: {
     components: [
@@ -46,17 +51,20 @@ const PK_DEFS: Record<string, PkDef> = {
       { fraction: 0.78, ka: 0.28, ke: 0.20 }
     ],
     baseDurationH: 10,
-    defaultKe0: 1.5
+    defaultKe0: 1.5,
+    refDoseMg: 18
   },
   dexamp: {
     components: [{ fraction: 1.0, ka: 0.8, ke: 0.07 }],
     baseDurationH: 5,
-    defaultKe0: 1.2
+    defaultKe0: 1.2,
+    refDoseMg: 5
   },
   elvanse: {
     components: [{ fraction: 1.0, ka: 0.5, ke: 0.07 }],
     baseDurationH: 11,
-    defaultKe0: 0.8
+    defaultKe0: 0.8,
+    refDoseMg: 20
   }
 }
 
@@ -124,37 +132,61 @@ function computeEffectSiteCurve(
 export interface ChartPoint {
   timeLabel: string
   minuteOfDay: number
+  /** Normalized effect 0..N (summed, scaled by dose/doseRef and peakScale). */
   concentration: number
+  /** True if dC/dt < crashThreshold at this point. */
+  crashRisk: boolean
+  /** "below" | "therapeutic" | "above" — position relative to MEC/MTC band. */
+  band: 'below' | 'therapeutic' | 'above'
 }
 
 /** 5-minute resolution → smooth curve. XAxis tick every 12th point = 1 hour. */
 export const CHART_TICK_INTERVAL = 11
+
+/**
+ * Build a per-med PK def with user-overridden keMultiplier and tMaxOffsetH applied.
+ * keMultiplier scales all elimination rates; tMaxOffsetH shifts the effective intake time.
+ */
+function applyUserParams(def: PkDef, keMultiplier: number): PkDef {
+  return {
+    ...def,
+    components: def.components.map((c) => ({
+      ...c,
+      // ke must stay < ka or Bateman equation flips sign — cap at 95% of ka
+      ke: Math.min(c.ke * keMultiplier, c.ka * 0.95)
+    }))
+  }
+}
 
 export function generateDailyChartData(
   logs: MedicationLog[],
   date: string,
   pkSettings: PkSettings
 ): ChartPoint[] {
+  const { peakScale, tMaxOffsetH, keMultiplier, mec, mtc, crashThreshold } = pkSettings
   const dayStart = new Date(`${date}T00:00:00`).getTime()
   const STEP_H = 5 / 60
   const TOTAL_MIN = 24 * 60
 
-  // Pre-compute normalized effect-site curve per unique med (using drug defaults)
-  const curveCache = new Map<string, { curve: Float32Array; durationH: number }>()
+  // Longer tail (3h) so slow meds (Elvanse) decay smoothly rather than cliff-cutting
+  const TAIL_H = 3
+
+  const curveCache = new Map<string, { curve: Float32Array; durationH: number; refDoseMg: number }>()
 
   for (const log of logs) {
     if (curveCache.has(log.medId)) continue
-    const def = PK_DEFS[log.medId]
-    if (!def) continue
-    const durationH = def.baseDurationH + 1.5
+    const baseDef = PK_DEFS[log.medId]
+    if (!baseDef) continue
+    const def = applyUserParams(baseDef, keMultiplier)
+    const durationH = def.baseDurationH + TAIL_H
     curveCache.set(log.medId, {
       curve: computeEffectSiteCurve(def, durationH, def.defaultKe0, STEP_H),
-      durationH
+      durationH,
+      refDoseMg: def.refDoseMg
     })
   }
 
-  const points: ChartPoint[] = []
-
+  const rawEffects: number[] = []
   for (let minute = 0; minute <= TOTAL_MIN; minute += 5) {
     const absMs = dayStart + minute * 60_000
     let effect = 0
@@ -162,20 +194,43 @@ export function generateDailyChartData(
     for (const log of logs) {
       const cache = curveCache.get(log.medId)
       if (!cache) continue
-      const hoursFromIntake = (absMs - new Date(log.takenAt).getTime()) / 3_600_000
+      const effectiveIntakeMs = new Date(log.takenAt).getTime() + tMaxOffsetH * 3_600_000
+      const hoursFromIntake = (absMs - effectiveIntakeMs) / 3_600_000
       if (hoursFromIntake < 0 || hoursFromIntake > cache.durationH) continue
       const idx = Math.round(hoursFromIntake / STEP_H)
       if (idx < cache.curve.length) {
-        effect += cache.curve[idx] * (log.dose / pkSettings.doseRef) * pkSettings.peakScale
+        // Scale by actual dose relative to ref dose, then by peakScale (subjective sensitivity)
+        effect += cache.curve[idx] * (log.dose / cache.refDoseMg) * peakScale
       }
     }
 
+    rawEffects.push(Math.max(0, effect))
+  }
+
+  // Smooth slope over ±3 points (30 min window) to avoid noise-induced split segments
+  const SLOPE_WINDOW = 3
+  const smoothSlope: number[] = rawEffects.map((_, i) => {
+    const lo = Math.max(0, i - SLOPE_WINDOW)
+    const hi = Math.min(rawEffects.length - 1, i + SLOPE_WINDOW)
+    return (rawEffects[hi] - rawEffects[lo]) / (hi - lo)
+  })
+
+  const points: ChartPoint[] = []
+  for (let i = 0; i < rawEffects.length; i++) {
+    const c = rawEffects[i]
+    const slope = smoothSlope[i]
+    const crashRisk = slope < crashThreshold && c > mec * 0.5
+    const band: ChartPoint['band'] = c >= mtc ? 'above' : c >= mec ? 'therapeutic' : 'below'
+
+    const minute = i * 5
     const h = Math.floor(minute / 60)
     const m = minute % 60
     points.push({
       timeLabel: `${String(h).padStart(2, '0')}:${String(m).padStart(2, '0')}`,
       minuteOfDay: minute,
-      concentration: Math.max(0, effect)
+      concentration: c,
+      crashRisk,
+      band
     })
   }
 

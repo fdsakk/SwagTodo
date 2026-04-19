@@ -2,14 +2,14 @@
   "version": 1,
   "created_at": "2026-04-18T19:20:23.576Z",
   "lifetime": {
-    "total_tokens_estimated": 464460,
-    "total_reads": 243,
-    "total_writes": 393,
-    "total_sessions": 14,
-    "anatomy_hits": 211,
+    "total_tokens_estimated": 590878,
+    "total_reads": 268,
+    "total_writes": 458,
+    "total_sessions": 17,
+    "anatomy_hits": 236,
     "anatomy_misses": 32,
-    "repeated_reads_blocked": 64,
-    "estimated_savings_vs_bare_cli": 257837
+    "repeated_reads_blocked": 92,
+    "estimated_savings_vs_bare_cli": 381894
   },
   "sessions": [
     {
@@ -3857,6 +3857,634 @@
         "writes_count": 8,
         "repeated_reads_blocked": 6,
         "anatomy_lookups": 3
+      }
+    },
+    {
+      "id": "session-2026-04-19-1525",
+      "started": "2026-04-19T13:25:27.128Z",
+      "ended": "2026-04-19T13:29:45.702Z",
+      "reads": [
+        {
+          "file": "/home/fenta/Projects/electron-todo/src/renderer/src/utils/pharmacokinetics.ts",
+          "tokens_estimated": 1724,
+          "was_repeated": false,
+          "anatomy_had_description": false
+        },
+        {
+          "file": "/home/fenta/Projects/electron-todo/src/renderer/src/pages/HealthPage.tsx",
+          "tokens_estimated": 3034,
+          "was_repeated": false,
+          "anatomy_had_description": false
+        },
+        {
+          "file": "/home/fenta/Projects/electron-todo/src/renderer/src/types/index.ts",
+          "tokens_estimated": 3614,
+          "was_repeated": false,
+          "anatomy_had_description": false
+        },
+        {
+          "file": "/home/fenta/Projects/electron-todo/src/renderer/src/store/useAppStore.ts",
+          "tokens_estimated": 6889,
+          "was_repeated": true,
+          "anatomy_had_description": false
+        }
+      ],
+      "writes": [
+        {
+          "file": "/home/fenta/Projects/electron-todo/src/renderer/src/types/index.ts",
+          "tokens_estimated": 274,
+          "action": "edit"
+        },
+        {
+          "file": "/home/fenta/Projects/electron-todo/src/renderer/src/utils/pharmacokinetics.ts",
+          "tokens_estimated": 896,
+          "action": "edit"
+        },
+        {
+          "file": "/home/fenta/Projects/electron-todo/src/renderer/src/pages/HealthPage.tsx",
+          "tokens_estimated": 139,
+          "action": "edit"
+        },
+        {
+          "file": "/home/fenta/Projects/electron-todo/src/renderer/src/pages/HealthPage.tsx",
+          "tokens_estimated": 263,
+          "action": "edit"
+        },
+        {
+          "file": "/home/fenta/Projects/electron-todo/src/renderer/src/pages/HealthPage.tsx",
+          "tokens_estimated": 1951,
+          "action": "edit"
+        },
+        {
+          "file": "/home/fenta/Projects/electron-todo/src/renderer/src/store/useAppStore.ts",
+          "tokens_estimated": 219,
+          "action": "edit"
+        }
+      ],
+      "totals": {
+        "input_tokens_estimated": 15261,
+        "output_tokens_estimated": 3742,
+        "reads_count": 4,
+        "writes_count": 6,
+        "repeated_reads_blocked": 1,
+        "anatomy_lookups": 4
+      }
+    },
+    {
+      "id": "session-2026-04-19-1525",
+      "started": "2026-04-19T13:25:27.128Z",
+      "ended": "2026-04-19T13:40:35.973Z",
+      "reads": [
+        {
+          "file": "/home/fenta/Projects/electron-todo/src/renderer/src/utils/pharmacokinetics.ts",
+          "tokens_estimated": 2101,
+          "was_repeated": true,
+          "anatomy_had_description": false
+        },
+        {
+          "file": "/home/fenta/Projects/electron-todo/src/renderer/src/pages/HealthPage.tsx",
+          "tokens_estimated": 4221,
+          "was_repeated": true,
+          "anatomy_had_description": false
+        },
+        {
+          "file": "/home/fenta/Projects/electron-todo/src/renderer/src/types/index.ts",
+          "tokens_estimated": 3614,
+          "was_repeated": false,
+          "anatomy_had_description": false
+        },
+        {
+          "file": "/home/fenta/Projects/electron-todo/src/renderer/src/store/useAppStore.ts",
+          "tokens_estimated": 6889,
+          "was_repeated": true,
+          "anatomy_had_description": false
+        }
+      ],
+      "writes": [
+        {
+          "file": "/home/fenta/Projects/electron-todo/src/renderer/src/types/index.ts",
+          "tokens_estimated": 274,
+          "action": "edit"
+        },
+        {
+          "file": "/home/fenta/Projects/electron-todo/src/renderer/src/utils/pharmacokinetics.ts",
+          "tokens_estimated": 896,
+          "action": "edit"
+        },
+        {
+          "file": "/home/fenta/Projects/electron-todo/src/renderer/src/pages/HealthPage.tsx",
+          "tokens_estimated": 139,
+          "action": "edit"
+        },
+        {
+          "file": "/home/fenta/Projects/electron-todo/src/renderer/src/pages/HealthPage.tsx",
+          "tokens_estimated": 263,
+          "action": "edit"
+        },
+        {
+          "file": "/home/fenta/Projects/electron-todo/src/renderer/src/pages/HealthPage.tsx",
+          "tokens_estimated": 1951,
+          "action": "edit"
+        },
+        {
+          "file": "/home/fenta/Projects/electron-todo/src/renderer/src/store/useAppStore.ts",
+          "tokens_estimated": 219,
+          "action": "edit"
+        },
+        {
+          "file": "/home/fenta/Projects/electron-todo/src/renderer/src/utils/pharmacokinetics.ts",
+          "tokens_estimated": 662,
+          "action": "edit"
+        },
+        {
+          "file": "/home/fenta/Projects/electron-todo/src/renderer/src/types/index.ts",
+          "tokens_estimated": 231,
+          "action": "edit"
+        },
+        {
+          "file": "/home/fenta/Projects/electron-todo/src/renderer/src/store/useAppStore.ts",
+          "tokens_estimated": 199,
+          "action": "edit"
+        },
+        {
+          "file": "/home/fenta/Projects/electron-todo/src/renderer/src/pages/HealthPage.tsx",
+          "tokens_estimated": 279,
+          "action": "edit"
+        },
+        {
+          "file": "/home/fenta/Projects/electron-todo/src/renderer/src/pages/HealthPage.tsx",
+          "tokens_estimated": 177,
+          "action": "edit"
+        },
+        {
+          "file": "/home/fenta/Projects/electron-todo/src/renderer/src/pages/HealthPage.tsx",
+          "tokens_estimated": 88,
+          "action": "edit"
+        },
+        {
+          "file": "/home/fenta/Projects/electron-todo/src/renderer/src/pages/HealthPage.tsx",
+          "tokens_estimated": 673,
+          "action": "edit"
+        }
+      ],
+      "totals": {
+        "input_tokens_estimated": 16825,
+        "output_tokens_estimated": 6051,
+        "reads_count": 4,
+        "writes_count": 13,
+        "repeated_reads_blocked": 3,
+        "anatomy_lookups": 4
+      }
+    },
+    {
+      "id": "session-2026-04-19-1525",
+      "started": "2026-04-19T13:25:27.128Z",
+      "ended": "2026-04-19T13:49:22.334Z",
+      "reads": [
+        {
+          "file": "/home/fenta/Projects/electron-todo/src/renderer/src/utils/pharmacokinetics.ts",
+          "tokens_estimated": 2101,
+          "was_repeated": true,
+          "anatomy_had_description": false
+        },
+        {
+          "file": "/home/fenta/Projects/electron-todo/src/renderer/src/pages/HealthPage.tsx",
+          "tokens_estimated": 4708,
+          "was_repeated": true,
+          "anatomy_had_description": false
+        },
+        {
+          "file": "/home/fenta/Projects/electron-todo/src/renderer/src/types/index.ts",
+          "tokens_estimated": 3614,
+          "was_repeated": false,
+          "anatomy_had_description": false
+        },
+        {
+          "file": "/home/fenta/Projects/electron-todo/src/renderer/src/store/useAppStore.ts",
+          "tokens_estimated": 6889,
+          "was_repeated": true,
+          "anatomy_had_description": false
+        }
+      ],
+      "writes": [
+        {
+          "file": "/home/fenta/Projects/electron-todo/src/renderer/src/types/index.ts",
+          "tokens_estimated": 274,
+          "action": "edit"
+        },
+        {
+          "file": "/home/fenta/Projects/electron-todo/src/renderer/src/utils/pharmacokinetics.ts",
+          "tokens_estimated": 896,
+          "action": "edit"
+        },
+        {
+          "file": "/home/fenta/Projects/electron-todo/src/renderer/src/pages/HealthPage.tsx",
+          "tokens_estimated": 139,
+          "action": "edit"
+        },
+        {
+          "file": "/home/fenta/Projects/electron-todo/src/renderer/src/pages/HealthPage.tsx",
+          "tokens_estimated": 263,
+          "action": "edit"
+        },
+        {
+          "file": "/home/fenta/Projects/electron-todo/src/renderer/src/pages/HealthPage.tsx",
+          "tokens_estimated": 1951,
+          "action": "edit"
+        },
+        {
+          "file": "/home/fenta/Projects/electron-todo/src/renderer/src/store/useAppStore.ts",
+          "tokens_estimated": 219,
+          "action": "edit"
+        },
+        {
+          "file": "/home/fenta/Projects/electron-todo/src/renderer/src/utils/pharmacokinetics.ts",
+          "tokens_estimated": 662,
+          "action": "edit"
+        },
+        {
+          "file": "/home/fenta/Projects/electron-todo/src/renderer/src/types/index.ts",
+          "tokens_estimated": 231,
+          "action": "edit"
+        },
+        {
+          "file": "/home/fenta/Projects/electron-todo/src/renderer/src/store/useAppStore.ts",
+          "tokens_estimated": 199,
+          "action": "edit"
+        },
+        {
+          "file": "/home/fenta/Projects/electron-todo/src/renderer/src/pages/HealthPage.tsx",
+          "tokens_estimated": 279,
+          "action": "edit"
+        },
+        {
+          "file": "/home/fenta/Projects/electron-todo/src/renderer/src/pages/HealthPage.tsx",
+          "tokens_estimated": 177,
+          "action": "edit"
+        },
+        {
+          "file": "/home/fenta/Projects/electron-todo/src/renderer/src/pages/HealthPage.tsx",
+          "tokens_estimated": 88,
+          "action": "edit"
+        },
+        {
+          "file": "/home/fenta/Projects/electron-todo/src/renderer/src/pages/HealthPage.tsx",
+          "tokens_estimated": 673,
+          "action": "edit"
+        },
+        {
+          "file": "/home/fenta/Projects/electron-todo/src/renderer/src/pages/HealthPage.tsx",
+          "tokens_estimated": 292,
+          "action": "edit"
+        },
+        {
+          "file": "/home/fenta/Projects/electron-todo/src/renderer/src/pages/HealthPage.tsx",
+          "tokens_estimated": 87,
+          "action": "edit"
+        },
+        {
+          "file": "/home/fenta/Projects/electron-todo/src/renderer/src/pages/HealthPage.tsx",
+          "tokens_estimated": 192,
+          "action": "edit"
+        }
+      ],
+      "totals": {
+        "input_tokens_estimated": 17312,
+        "output_tokens_estimated": 6622,
+        "reads_count": 4,
+        "writes_count": 16,
+        "repeated_reads_blocked": 6,
+        "anatomy_lookups": 4
+      }
+    },
+    {
+      "id": "session-2026-04-19-1525",
+      "started": "2026-04-19T13:25:27.128Z",
+      "ended": "2026-04-19T13:52:31.295Z",
+      "reads": [
+        {
+          "file": "/home/fenta/Projects/electron-todo/src/renderer/src/utils/pharmacokinetics.ts",
+          "tokens_estimated": 2112,
+          "was_repeated": true,
+          "anatomy_had_description": false
+        },
+        {
+          "file": "/home/fenta/Projects/electron-todo/src/renderer/src/pages/HealthPage.tsx",
+          "tokens_estimated": 4708,
+          "was_repeated": true,
+          "anatomy_had_description": false
+        },
+        {
+          "file": "/home/fenta/Projects/electron-todo/src/renderer/src/types/index.ts",
+          "tokens_estimated": 3764,
+          "was_repeated": true,
+          "anatomy_had_description": false
+        },
+        {
+          "file": "/home/fenta/Projects/electron-todo/src/renderer/src/store/useAppStore.ts",
+          "tokens_estimated": 6889,
+          "was_repeated": true,
+          "anatomy_had_description": false
+        }
+      ],
+      "writes": [
+        {
+          "file": "/home/fenta/Projects/electron-todo/src/renderer/src/types/index.ts",
+          "tokens_estimated": 274,
+          "action": "edit"
+        },
+        {
+          "file": "/home/fenta/Projects/electron-todo/src/renderer/src/utils/pharmacokinetics.ts",
+          "tokens_estimated": 896,
+          "action": "edit"
+        },
+        {
+          "file": "/home/fenta/Projects/electron-todo/src/renderer/src/pages/HealthPage.tsx",
+          "tokens_estimated": 139,
+          "action": "edit"
+        },
+        {
+          "file": "/home/fenta/Projects/electron-todo/src/renderer/src/pages/HealthPage.tsx",
+          "tokens_estimated": 263,
+          "action": "edit"
+        },
+        {
+          "file": "/home/fenta/Projects/electron-todo/src/renderer/src/pages/HealthPage.tsx",
+          "tokens_estimated": 1951,
+          "action": "edit"
+        },
+        {
+          "file": "/home/fenta/Projects/electron-todo/src/renderer/src/store/useAppStore.ts",
+          "tokens_estimated": 219,
+          "action": "edit"
+        },
+        {
+          "file": "/home/fenta/Projects/electron-todo/src/renderer/src/utils/pharmacokinetics.ts",
+          "tokens_estimated": 662,
+          "action": "edit"
+        },
+        {
+          "file": "/home/fenta/Projects/electron-todo/src/renderer/src/types/index.ts",
+          "tokens_estimated": 231,
+          "action": "edit"
+        },
+        {
+          "file": "/home/fenta/Projects/electron-todo/src/renderer/src/store/useAppStore.ts",
+          "tokens_estimated": 199,
+          "action": "edit"
+        },
+        {
+          "file": "/home/fenta/Projects/electron-todo/src/renderer/src/pages/HealthPage.tsx",
+          "tokens_estimated": 279,
+          "action": "edit"
+        },
+        {
+          "file": "/home/fenta/Projects/electron-todo/src/renderer/src/pages/HealthPage.tsx",
+          "tokens_estimated": 177,
+          "action": "edit"
+        },
+        {
+          "file": "/home/fenta/Projects/electron-todo/src/renderer/src/pages/HealthPage.tsx",
+          "tokens_estimated": 88,
+          "action": "edit"
+        },
+        {
+          "file": "/home/fenta/Projects/electron-todo/src/renderer/src/pages/HealthPage.tsx",
+          "tokens_estimated": 673,
+          "action": "edit"
+        },
+        {
+          "file": "/home/fenta/Projects/electron-todo/src/renderer/src/pages/HealthPage.tsx",
+          "tokens_estimated": 292,
+          "action": "edit"
+        },
+        {
+          "file": "/home/fenta/Projects/electron-todo/src/renderer/src/pages/HealthPage.tsx",
+          "tokens_estimated": 87,
+          "action": "edit"
+        },
+        {
+          "file": "/home/fenta/Projects/electron-todo/src/renderer/src/pages/HealthPage.tsx",
+          "tokens_estimated": 192,
+          "action": "edit"
+        },
+        {
+          "file": "/home/fenta/Projects/electron-todo/src/renderer/src/utils/pharmacokinetics.ts",
+          "tokens_estimated": 427,
+          "action": "edit"
+        },
+        {
+          "file": "/home/fenta/Projects/electron-todo/src/renderer/src/utils/pharmacokinetics.ts",
+          "tokens_estimated": 370,
+          "action": "edit"
+        }
+      ],
+      "totals": {
+        "input_tokens_estimated": 17473,
+        "output_tokens_estimated": 7419,
+        "reads_count": 4,
+        "writes_count": 18,
+        "repeated_reads_blocked": 9,
+        "anatomy_lookups": 4
+      }
+    },
+    {
+      "id": "session-2026-04-19-1558",
+      "started": "2026-04-19T13:58:00.268Z",
+      "ended": "2026-04-19T13:59:19.793Z",
+      "reads": [
+        {
+          "file": "/home/fenta/Projects/electron-todo/src/renderer/src/pages/HealthPage.tsx",
+          "tokens_estimated": 4914,
+          "was_repeated": true,
+          "anatomy_had_description": false
+        }
+      ],
+      "writes": [
+        {
+          "file": "/home/fenta/Projects/electron-todo/src/renderer/src/pages/HealthPage.tsx",
+          "tokens_estimated": 296,
+          "action": "edit"
+        },
+        {
+          "file": "/home/fenta/Projects/electron-todo/src/renderer/src/pages/HealthPage.tsx",
+          "tokens_estimated": 24,
+          "action": "edit"
+        },
+        {
+          "file": "/home/fenta/Projects/electron-todo/src/renderer/src/pages/HealthPage.tsx",
+          "tokens_estimated": 49,
+          "action": "edit"
+        }
+      ],
+      "totals": {
+        "input_tokens_estimated": 4914,
+        "output_tokens_estimated": 369,
+        "reads_count": 1,
+        "writes_count": 3,
+        "repeated_reads_blocked": 1,
+        "anatomy_lookups": 1
+      }
+    },
+    {
+      "id": "session-2026-04-19-1600",
+      "started": "2026-04-19T14:00:29.770Z",
+      "ended": "2026-04-19T14:02:08.936Z",
+      "reads": [
+        {
+          "file": "/home/fenta/Projects/electron-todo/src/renderer/src/pages/HealthPage.tsx",
+          "tokens_estimated": 4928,
+          "was_repeated": true,
+          "anatomy_had_description": false
+        },
+        {
+          "file": "/home/fenta/Projects/electron-todo/src/renderer/src/utils/pharmacokinetics.ts",
+          "tokens_estimated": 2216,
+          "was_repeated": false,
+          "anatomy_had_description": false
+        }
+      ],
+      "writes": [
+        {
+          "file": "/home/fenta/Projects/electron-todo/src/renderer/src/pages/HealthPage.tsx",
+          "tokens_estimated": 328,
+          "action": "edit"
+        }
+      ],
+      "totals": {
+        "input_tokens_estimated": 7144,
+        "output_tokens_estimated": 328,
+        "reads_count": 2,
+        "writes_count": 1,
+        "repeated_reads_blocked": 1,
+        "anatomy_lookups": 2
+      }
+    },
+    {
+      "id": "session-2026-04-19-1600",
+      "started": "2026-04-19T14:00:29.770Z",
+      "ended": "2026-04-19T14:04:23.479Z",
+      "reads": [
+        {
+          "file": "/home/fenta/Projects/electron-todo/src/renderer/src/pages/HealthPage.tsx",
+          "tokens_estimated": 4928,
+          "was_repeated": true,
+          "anatomy_had_description": false
+        },
+        {
+          "file": "/home/fenta/Projects/electron-todo/src/renderer/src/utils/pharmacokinetics.ts",
+          "tokens_estimated": 2216,
+          "was_repeated": true,
+          "anatomy_had_description": false
+        }
+      ],
+      "writes": [
+        {
+          "file": "/home/fenta/Projects/electron-todo/src/renderer/src/pages/HealthPage.tsx",
+          "tokens_estimated": 328,
+          "action": "edit"
+        }
+      ],
+      "totals": {
+        "input_tokens_estimated": 7144,
+        "output_tokens_estimated": 328,
+        "reads_count": 2,
+        "writes_count": 1,
+        "repeated_reads_blocked": 2,
+        "anatomy_lookups": 2
+      }
+    },
+    {
+      "id": "session-2026-04-19-1600",
+      "started": "2026-04-19T14:00:29.770Z",
+      "ended": "2026-04-19T14:05:31.433Z",
+      "reads": [
+        {
+          "file": "/home/fenta/Projects/electron-todo/src/renderer/src/pages/HealthPage.tsx",
+          "tokens_estimated": 4928,
+          "was_repeated": true,
+          "anatomy_had_description": false
+        },
+        {
+          "file": "/home/fenta/Projects/electron-todo/src/renderer/src/utils/pharmacokinetics.ts",
+          "tokens_estimated": 2216,
+          "was_repeated": true,
+          "anatomy_had_description": false
+        }
+      ],
+      "writes": [
+        {
+          "file": "/home/fenta/Projects/electron-todo/src/renderer/src/pages/HealthPage.tsx",
+          "tokens_estimated": 328,
+          "action": "edit"
+        },
+        {
+          "file": "/home/fenta/Projects/electron-todo/src/renderer/src/utils/pharmacokinetics.ts",
+          "tokens_estimated": 157,
+          "action": "edit"
+        },
+        {
+          "file": "/home/fenta/Projects/electron-todo/src/renderer/src/pages/HealthPage.tsx",
+          "tokens_estimated": 29,
+          "action": "edit"
+        }
+      ],
+      "totals": {
+        "input_tokens_estimated": 7144,
+        "output_tokens_estimated": 514,
+        "reads_count": 2,
+        "writes_count": 3,
+        "repeated_reads_blocked": 2,
+        "anatomy_lookups": 2
+      }
+    },
+    {
+      "id": "session-2026-04-19-1600",
+      "started": "2026-04-19T14:00:29.770Z",
+      "ended": "2026-04-19T14:11:07.921Z",
+      "reads": [
+        {
+          "file": "/home/fenta/Projects/electron-todo/src/renderer/src/pages/HealthPage.tsx",
+          "tokens_estimated": 4928,
+          "was_repeated": true,
+          "anatomy_had_description": false
+        },
+        {
+          "file": "/home/fenta/Projects/electron-todo/src/renderer/src/utils/pharmacokinetics.ts",
+          "tokens_estimated": 2302,
+          "was_repeated": true,
+          "anatomy_had_description": false
+        }
+      ],
+      "writes": [
+        {
+          "file": "/home/fenta/Projects/electron-todo/src/renderer/src/pages/HealthPage.tsx",
+          "tokens_estimated": 328,
+          "action": "edit"
+        },
+        {
+          "file": "/home/fenta/Projects/electron-todo/src/renderer/src/utils/pharmacokinetics.ts",
+          "tokens_estimated": 157,
+          "action": "edit"
+        },
+        {
+          "file": "/home/fenta/Projects/electron-todo/src/renderer/src/pages/HealthPage.tsx",
+          "tokens_estimated": 29,
+          "action": "edit"
+        },
+        {
+          "file": "/home/fenta/Projects/electron-todo/src/renderer/src/utils/pharmacokinetics.ts",
+          "tokens_estimated": 84,
+          "action": "edit"
+        }
+      ],
+      "totals": {
+        "input_tokens_estimated": 7230,
+        "output_tokens_estimated": 598,
+        "reads_count": 2,
+        "writes_count": 4,
+        "repeated_reads_blocked": 3,
+        "anatomy_lookups": 2
       }
     }
   ],

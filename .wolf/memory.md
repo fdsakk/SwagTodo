@@ -289,3 +289,54 @@
 
 | Time | Action | File(s) | Outcome | ~Tokens |
 |------|--------|---------|---------|--------|
+
+## Session: 2026-04-19 15:25
+
+| Time | Action | File(s) | Outcome | ~Tokens |
+|------|--------|---------|---------|--------|
+| 15:27 | Edited src/renderer/src/types/index.ts | expanded (+15 lines) | ~274 |
+| 15:27 | Edited src/renderer/src/utils/pharmacokinetics.ts | modified with() | ~896 |
+| 15:27 | Edited src/renderer/src/pages/HealthPage.tsx | 15→17 lines | ~139 |
+| 15:27 | Edited src/renderer/src/pages/HealthPage.tsx | added 3 condition(s) | ~263 |
+| 15:28 | Edited src/renderer/src/pages/HealthPage.tsx | added optional chaining | ~1951 |
+| 15:28 | Edited src/renderer/src/store/useAppStore.ts | expanded (+6 lines) | ~219 |
+| 13:29 | Upgraded Meds PK model: MEC/MTC therapeutic window, crash-risk detection (dC/dt), tMaxOffset + keMultiplier + intensity sliders, ReferenceArea overlays in chart | types/index.ts, pharmacokinetics.ts, HealthPage.tsx, useAppStore.ts | ok, typechecks clean | ~4k |
+| 15:29 | Session end: 6 writes across 4 files (index.ts, pharmacokinetics.ts, HealthPage.tsx, useAppStore.ts) | 4 reads | ~19003 tok |
+| 15:36 | Edited src/renderer/src/utils/pharmacokinetics.ts | modified generateDailyChartData() | ~662 |
+| 15:37 | Edited src/renderer/src/types/index.ts | 26→23 lines | ~231 |
+| 15:37 | Edited src/renderer/src/store/useAppStore.ts | 16→15 lines | ~199 |
+| 15:37 | Edited src/renderer/src/pages/HealthPage.tsx | CSS: hint | ~279 |
+| 15:37 | Edited src/renderer/src/pages/HealthPage.tsx | modified for() | ~177 |
+| 15:37 | Edited src/renderer/src/pages/HealthPage.tsx | String() → toFixed() | ~88 |
+| 15:37 | Edited src/renderer/src/pages/HealthPage.tsx | CSS: sm, crashThreshold | ~673 |
+| 13:40 | Removed doseRef (confusing), fixed Y axis 0-1, extended tail 1.5→3h, redesigned sliders (2-col grid, label+hint+accent value), added crashThreshold slider | pharmacokinetics.ts, types/index.ts, useAppStore.ts, HealthPage.tsx | typechecks clean | ~1.5k |
+| 15:40 | Session end: 13 writes across 4 files (index.ts, pharmacokinetics.ts, HealthPage.tsx, useAppStore.ts) | 4 reads | ~22876 tok |
+| 15:47 | Edited src/renderer/src/pages/HealthPage.tsx | added 1 condition(s) | ~292 |
+| 15:47 | Edited src/renderer/src/pages/HealthPage.tsx | toFixed() → String() | ~87 |
+| 15:48 | Edited src/renderer/src/pages/HealthPage.tsx | 20→20 lines | ~192 |
+| 15:49 | Session end: 16 writes across 4 files (index.ts, pharmacokinetics.ts, HealthPage.tsx, useAppStore.ts) | 4 reads | ~23934 tok |
+| 15:51 | Edited src/renderer/src/utils/pharmacokinetics.ts | expanded (+8 lines) | ~427 |
+| 15:51 | Edited src/renderer/src/utils/pharmacokinetics.ts | modified for() | ~370 |
+| 15:52 | Session end: 18 writes across 4 files (index.ts, pharmacokinetics.ts, HealthPage.tsx, useAppStore.ts) | 4 reads | ~24892 tok |
+
+## Session: 2026-04-19 15:58
+
+| Time | Action | File(s) | Outcome | ~Tokens |
+|------|--------|---------|---------|--------|
+| 15:58 | Edited src/renderer/src/pages/HealthPage.tsx | CSS: hover, http | ~296 |
+| 15:58 | Edited src/renderer/src/pages/HealthPage.tsx | 5→5 lines | ~24 |
+| 15:59 | Edited src/renderer/src/pages/HealthPage.tsx | 2→3 lines | ~49 |
+| 15:59 | Session end: 3 writes across 1 files (HealthPage.tsx) | 1 reads | ~5283 tok |
+
+## Session: 2026-04-19 16:00
+
+| Time | Action | File(s) | Outcome | ~Tokens |
+|------|--------|---------|---------|--------|
+| 16:02 | Edited src/renderer/src/pages/HealthPage.tsx | modified for() | ~328 |
+| 16:02 | Session end: 1 writes across 1 files (HealthPage.tsx) | 2 reads | ~7472 tok |
+| 16:04 | Session end: 1 writes across 1 files (HealthPage.tsx) | 2 reads | ~7472 tok |
+| 16:05 | Edited src/renderer/src/utils/pharmacokinetics.ts | modified for() | ~157 |
+| 16:05 | Edited src/renderer/src/pages/HealthPage.tsx | 2→2 lines | ~29 |
+| 16:05 | Session end: 3 writes across 2 files (HealthPage.tsx, pharmacokinetics.ts) | 2 reads | ~7658 tok |
+| 16:11 | Edited src/renderer/src/utils/pharmacokinetics.ts | modified applyUserParams() | ~84 |
+| 16:11 | Session end: 4 writes across 2 files (HealthPage.tsx, pharmacokinetics.ts) | 2 reads | ~7828 tok |

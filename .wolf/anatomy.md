@@ -1,6 +1,6 @@
 # anatomy.md
 
-> Auto-maintained by OpenWolf. Last scanned: 2026-04-19T13:09:28.431Z
+> Auto-maintained by OpenWolf. Last scanned: 2026-04-19T14:11:04.977Z
 > Files: 125 tracked | Anatomy hits: 0 | Misses: 0
 
 ## ./
@@ -189,7 +189,7 @@
 ## src/renderer/src/pages/
 
 - `ActivityPage.tsx` — buildEvents — uses useMemo (~1495 tok)
-- `HealthPage.tsx` — today (~3034 tok)
+- `HealthPage.tsx` — today (~5114 tok)
 - `InboxPage.tsx` — InboxPage (~446 tok)
 - `ProjectPage.tsx` — ProjectPage — uses useMemo (~1197 tok)
 - `SessionsPage.tsx` — DAY_OPTIONS — uses useEffect, useMemo, useCallback (~2987 tok)
@@ -203,17 +203,17 @@
 
 ## src/renderer/src/store/
 
-- `useAppStore.ts` — Exports SessionCreateInput, SessionUpdateInput, SessionResult, SessionUpdateResult + 4 more (~6889 tok)
+- `useAppStore.ts` — Exports SessionCreateInput, SessionUpdateInput, SessionResult, SessionUpdateResult + 4 more (~6972 tok)
 
 ## src/renderer/src/types/
 
-- `index.ts` — Dose treated as "1 unit" on Y axis. Default 10mg. (~3614 tok)
+- `index.ts` — Vertical scale — subjective sensitivity. 1.0 = one dose peaks at 1.0 on Y. Default 1.0. (~3764 tok)
 
 ## src/renderer/src/utils/
 
 - `calendar.ts` — Exports HOUR_PX, SLOT_MIN, PX_PER_MIN, startOfDay + 7 more (~362 tok)
 - `cn.ts` — Exports cn (~50 tok)
-- `pharmacokinetics.ts` — Default ke0 for this drug class (effect-site equilibration rate [1/h]). (~1724 tok)
+- `pharmacokinetics.ts` — Default ke0 for this drug class (effect-site equilibration rate [1/h]). (~2335 tok)
 - `sessions.ts` — Exports sessionsInRange, computeTaskStats, formatDuration (~438 tok)
 - `task.ts` — Exports PROJECT_COLOR_SWATCHES, PRIORITY_META, isTaskDueToday, isTaskOverdue + 5 more (~946 tok)
 
