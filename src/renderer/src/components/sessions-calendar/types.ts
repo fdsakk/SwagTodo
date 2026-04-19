@@ -85,10 +85,10 @@ export const computeBlocks = (
       const dayStart = days[d].getTime()
       const dayEnd = dayStart + DAY_MS
       if (endMs <= dayStart || startMs >= dayEnd) continue
-      const startMin =
-        startMs <= dayStart ? 0 : new Date(startMs).getHours() * 60 + new Date(startMs).getMinutes()
-      const endMin =
-        endMs >= dayEnd ? 24 * 60 : new Date(endMs).getHours() * 60 + new Date(endMs).getMinutes()
+      const sd = startMs <= dayStart ? null : new Date(startMs)
+      const startMin = sd ? sd.getHours() * 60 + sd.getMinutes() : 0
+      const ed = endMs >= dayEnd ? null : new Date(endMs)
+      const endMin = ed ? ed.getHours() * 60 + ed.getMinutes() : 24 * 60
       if (endMin <= startMin) continue
       blocks.push({
         session: s,
@@ -121,10 +121,10 @@ export const computeTimeBlockDisplayBlocks = (
       const dayStart = days[d].getTime()
       const dayEnd = dayStart + DAY_MS
       if (endMs <= dayStart || startMs >= dayEnd) continue
-      const startMin =
-        startMs <= dayStart ? 0 : new Date(startMs).getHours() * 60 + new Date(startMs).getMinutes()
-      const endMin =
-        endMs >= dayEnd ? 24 * 60 : new Date(endMs).getHours() * 60 + new Date(endMs).getMinutes()
+      const sd = startMs <= dayStart ? null : new Date(startMs)
+      const startMin = sd ? sd.getHours() * 60 + sd.getMinutes() : 0
+      const ed = endMs >= dayEnd ? null : new Date(endMs)
+      const endMin = ed ? ed.getHours() * 60 + ed.getMinutes() : 24 * 60
       if (endMin <= startMin) continue
       out.push({ block: b, startMin, endMin, dayIndex: d })
     }

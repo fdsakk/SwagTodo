@@ -24,7 +24,7 @@ function buildEvents(tasks: Task[]): ActivityEvent[] {
       events.push({ id: `${task.id}:edited`, kind: 'edited', at: task.updatedAt, task })
     }
   }
-  return events.sort((a, b) => new Date(b.at).getTime() - new Date(a.at).getTime())
+  return events.sort((a, b) => Date.parse(b.at) - Date.parse(a.at))
 }
 
 function groupByDay(

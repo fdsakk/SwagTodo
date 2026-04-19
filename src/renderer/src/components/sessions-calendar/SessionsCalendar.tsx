@@ -37,6 +37,7 @@ import { DraftGhost } from './DraftGhost'
 
 const WEEKDAYS = ['Sun', 'Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat'] as const
 const DEFAULT_CLICK_MIN = 60
+const HOURS = Array.from({ length: 25 }, (_, i) => i)
 const pad = (n: number): string => (n < 10 ? `0${n}` : String(n))
 
 interface SessionsCalendarProps {
@@ -96,11 +97,32 @@ export default function SessionsCalendar({
     [timeBlocks, days]
   )
 
+  const blocksByDay = useMemo(() => {
+    const m = new Map<number, SessionBlock[]>()
+    for (const b of blocks) {
+      const arr = m.get(b.dayIndex) ?? []
+      arr.push(b)
+      m.set(b.dayIndex, arr)
+    }
+    return m
+  }, [blocks])
+
+  const tbBlocksByDay = useMemo(() => {
+    const m = new Map<number, TimeBlockDisplayBlock[]>()
+    for (const tb of tbBlocks) {
+      const arr = m.get(tb.dayIndex) ?? []
+      arr.push(tb)
+      m.set(tb.dayIndex, arr)
+    }
+    return m
+  }, [tbBlocks])
+
   const daysKey = days.length > 0 ? days[0].toISOString() : ''
   useEffect(() => {
     const el = scrollRef.current
     if (!el) return
-    const nowMinutes = new Date().getHours() * 60 + new Date().getMinutes()
+    const n = new Date()
+    const nowMinutes = n.getHours() * 60 + n.getMinutes()
     const target = Math.max(0, nowMinutes * PX_PER_MIN - el.clientHeight / 2)
     el.scrollTop = target
   }, [daysKey])
@@ -113,52 +135,52 @@ export default function SessionsCalendar({
   )
 
   const handleCreatePointerDown = useCallback(
-    (dayIndex: number) =>
-      (event: ReactPointerEvent<HTMLDivElement>): void => {
-        if (event.button !== 0) return
-        const target = event.target as HTMLElement
-        if (target.closest('[data-session-block]')) return
-        const column = columnRefs.current[dayIndex]
-        if (!column) return
-        event.preventDefault()
-        const startMin = pointToMinutes(event.clientY, column)
-        let current: DraftCreate = {
-          kind: 'create',
-          dayIndex,
-          startMin,
-          endMin: Math.min(24 * 60, startMin + SLOT_MIN)
-        }
-        let moved = false
+    (event: ReactPointerEvent<HTMLDivElement>): void => {
+      if (event.button !== 0) return
+      const target = event.target as HTMLElement
+      if (target.closest('[data-session-block]')) return
+      const dayIndex = Number(event.currentTarget.dataset.dayIndex)
+      const column = columnRefs.current[dayIndex]
+      if (!column) return
+      event.preventDefault()
+      const startMin = pointToMinutes(event.clientY, column)
+      let current: DraftCreate = {
+        kind: 'create',
+        dayIndex,
+        startMin,
+        endMin: Math.min(24 * 60, startMin + SLOT_MIN)
+      }
+      let moved = false
+      setDraft(current)
+      const onMove = (e: PointerEvent): void => {
+        const col = columnRefs.current[dayIndex]
+        if (!col) return
+        const cur = pointToMinutes(e.clientY, col)
+        const endMin =
+          cur <= current.startMin ? Math.min(24 * 60, current.startMin + SLOT_MIN) : cur
+        if (endMin !== current.endMin) moved = true
+        current = { ...current, endMin }
         setDraft(current)
-        const onMove = (e: PointerEvent): void => {
-          const col = columnRefs.current[dayIndex]
-          if (!col) return
-          const cur = pointToMinutes(e.clientY, col)
-          const endMin =
-            cur <= current.startMin ? Math.min(24 * 60, current.startMin + SLOT_MIN) : cur
-          if (endMin !== current.endMin) moved = true
-          current = { ...current, endMin }
-          setDraft(current)
-        }
-        const onUp = (): void => {
-          window.removeEventListener('pointermove', onMove)
-          window.removeEventListener('pointerup', onUp)
-          setDraft(null)
-          let finalStart = current.startMin
-          let finalEnd = current.endMin
-          if (!moved) {
-            finalEnd = Math.min(24 * 60, finalStart + DEFAULT_CLICK_MIN)
-            if (finalEnd - finalStart < DEFAULT_CLICK_MIN) {
-              finalStart = Math.max(0, 24 * 60 - DEFAULT_CLICK_MIN)
-              finalEnd = 24 * 60
-            }
+      }
+      const onUp = (): void => {
+        window.removeEventListener('pointermove', onMove)
+        window.removeEventListener('pointerup', onUp)
+        setDraft(null)
+        let finalStart = current.startMin
+        let finalEnd = current.endMin
+        if (!moved) {
+          finalEnd = Math.min(24 * 60, finalStart + DEFAULT_CLICK_MIN)
+          if (finalEnd - finalStart < DEFAULT_CLICK_MIN) {
+            finalStart = Math.max(0, 24 * 60 - DEFAULT_CLICK_MIN)
+            finalEnd = 24 * 60
           }
-          if (finalEnd <= finalStart) return
-          onCreateDraft(current.dayIndex, finalStart, finalEnd)
         }
-        window.addEventListener('pointermove', onMove)
-        window.addEventListener('pointerup', onUp)
-      },
+        if (finalEnd <= finalStart) return
+        onCreateDraft(current.dayIndex, finalStart, finalEnd)
+      }
+      window.addEventListener('pointermove', onMove)
+      window.addEventListener('pointerup', onUp)
+    },
     [onCreateDraft]
   )
 
@@ -280,12 +302,6 @@ export default function SessionsCalendar({
     [days, onUpdateTimeBlock]
   )
 
-  const hours = useMemo(() => {
-    const out: number[] = []
-    for (let h = 0; h <= 24; h++) out.push(h)
-    return out
-  }, [])
-
   const nowDayIndex = days.findIndex((d) => isSameDay(d, now))
   const nowMin = now.getHours() * 60 + now.getMinutes()
 
@@ -331,7 +347,7 @@ export default function SessionsCalendar({
           }}
         >
           <div className="relative">
-            {hours.slice(0, 24).map((h) => (
+            {HOURS.slice(0, 24).map((h) => (
               <div
                 key={h}
                 className="absolute left-0 right-0 -translate-y-1/2 pr-2 text-right text-[10px] text-app-text-muted"
@@ -344,19 +360,19 @@ export default function SessionsCalendar({
 
           {days.map((day, dayIdx) => {
             const today = isSameDay(day, now)
-            const dayBlocks = blocks.filter((b) => b.dayIndex === dayIdx)
-            const dayTbBlocks = tbBlocks.filter((tb) => tb.dayIndex === dayIdx)
+            const dayBlocks = blocksByDay.get(dayIdx) ?? []
+            const dayTbBlocks = tbBlocksByDay.get(dayIdx) ?? []
 
             return (
               <div
                 key={day.toISOString()}
                 ref={setColumnRef(dayIdx)}
                 data-day-index={dayIdx}
-                onPointerDown={handleCreatePointerDown(dayIdx)}
+                onPointerDown={handleCreatePointerDown}
                 className={cn('relative border-l border-app-border', today && 'bg-black/[0.025]')}
                 style={{ height: 24 * HOUR_PX, touchAction: 'none' }}
               >
-                {hours.map((h) => (
+                {HOURS.map((h) => (
                   <div
                     key={h}
                     className="pointer-events-none absolute left-0 right-0 border-t border-app-border"
@@ -416,12 +432,12 @@ export default function SessionsCalendar({
                 })}
 
                 {draft && draft.kind === 'tb_move' && draft.dayIndex === dayIdx &&
-                  !tbBlocks.some((tb) => tb.block.id === draft.blockId && tb.dayIndex === dayIdx) && (
+                  !(tbBlocksByDay.get(dayIdx) ?? []).some((tb) => tb.block.id === (draft as { blockId: string }).blockId) && (
                     <DraftGhost startMin={draft.startMin} endMin={draft.endMin} label="Moving..." />
                   )}
 
                 {draft && draft.kind === 'move' && draft.dayIndex === dayIdx &&
-                  !blocks.some((b) => b.session.id === draft.sessionId && b.dayIndex === dayIdx) && (
+                  !(blocksByDay.get(dayIdx) ?? []).some((b) => b.session.id === (draft as { sessionId: string }).sessionId) && (
                     <DraftGhost startMin={draft.startMin} endMin={draft.endMin} label="Moving..." />
                   )}
 

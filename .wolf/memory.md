@@ -3,6 +3,8 @@
 > Chronological action log. Hooks and AI append to this file automatically.
 > Old sessions are consolidated by the daemon weekly.
 
+| 20:56 | perf audit + fixes: pre-grouped blocks by day map, stable pointerDown handler, cached HOURS constant, single Date ctor per block, Date.parse in sort, Sidebar hasLabels bool selector | SessionsCalendar.tsx, types.ts, ActivityPage.tsx, Sidebar.tsx | ok ~2000 tok |
+
 | 21:37 | Added 6 new themes (Dracula, Gruvbox, Solarized, Rose Pine, Midnight, Everforest) | src/renderer/src/types/index.ts | success | ~300 tok |
 
 ## Session: 2026-04-18 21:24
@@ -62,3 +64,42 @@
 | 21:46 | Redesign Appearance page — compact max-w-lg wrapper, bigger typography, theme swatches with dot indicator, background tiles with SVG icons, customize section table layout | SettingsPage.tsx, ThemeSection.tsx, ThemeSwatch.tsx, BackgroundSection.tsx, CustomizeSection.tsx | success | ~4k |
 | 21:46 | Session end: 5 writes across 5 files (SettingsPage.tsx, ThemeSection.tsx, ThemeSwatch.tsx, BackgroundSection.tsx, CustomizeSection.tsx) | 6 reads | ~8137 tok |
 | 22:02 | Session end: 5 writes across 5 files (SettingsPage.tsx, ThemeSection.tsx, ThemeSwatch.tsx, BackgroundSection.tsx, CustomizeSection.tsx) | 6 reads | ~8137 tok |
+
+## Session: 2026-04-18 22:08
+
+| Time | Action | File(s) | Outcome | ~Tokens |
+|------|--------|---------|---------|--------|
+| 22:10 | Created src/renderer/src/hooks/useThemeColors.ts | — | ~196 |
+| 22:10 | Created src/renderer/src/components/BackgroundLayer.tsx | — | ~523 |
+| 22:11 | Created src/renderer/src/components/settings/BackgroundSection.tsx | — | ~1406 |
+| 22:12 | Integrated 5 animated backgrounds (Plasma/Aurora/SoftAurora/PixelSnow/PixelBlast) into BackgroundLayer.tsx; added useThemeColors hook for theme-adaptive colors; updated BackgroundSection with 6 options in grid-cols-3 | BackgroundLayer.tsx, BackgroundSection.tsx, useThemeColors.ts | typecheck pass | ~500 |
+| 22:12 | Session end: 3 writes across 3 files (useThemeColors.ts, BackgroundLayer.tsx, BackgroundSection.tsx) | 12 reads | ~8473 tok |
+| 22:27 | Edited src/renderer/src/App.tsx | 4→4 lines | ~46 |
+| 22:27 | Edited src/renderer/src/components/BackgroundLayer.tsx | "pointer-events-none fixed" → "pointer-events-none absol" | ~23 |
+| 22:28 | Edited src/renderer/src/App.tsx | CSS: backgroundId | ~44 |
+| 22:28 | Edited src/renderer/src/App.tsx | 3→4 lines | ~17 |
+| 22:28 | Edited src/renderer/src/App.tsx | 8→8 lines | ~121 |
+| 22:29 | Edited src/renderer/src/App.tsx | 8→8 lines | ~102 |
+| 22:29 | Edited src/renderer/src/App.tsx | 2→2 lines | ~47 |
+| 22:29 | Session end: 10 writes across 4 files (useThemeColors.ts, BackgroundLayer.tsx, BackgroundSection.tsx, App.tsx) | 13 reads | ~10790 tok |
+| 22:31 | Edited src/renderer/src/components/BackgroundLayer.tsx | 48→48 lines | ~367 |
+| 22:31 | Session end: 11 writes across 4 files (useThemeColors.ts, BackgroundLayer.tsx, BackgroundSection.tsx, App.tsx) | 13 reads | ~11555 tok |
+| 22:33 | Edited src/renderer/src/components/BackgroundLayer.tsx | CSS: maskImage, WebkitMaskImage | ~74 |
+| 22:33 | Session end: 12 writes across 4 files (useThemeColors.ts, BackgroundLayer.tsx, BackgroundSection.tsx, App.tsx) | 13 reads | ~11629 tok |
+
+## Session: 2026-04-18 22:50
+
+| Time | Action | File(s) | Outcome | ~Tokens |
+|------|--------|---------|---------|--------|
+| 22:52 | Edited src/renderer/src/components/sessions-calendar/SessionsCalendar.tsx | CSS: length | ~64 |
+| 22:52 | Edited src/renderer/src/components/sessions-calendar/SessionsCalendar.tsx | added nullish coalescing | ~311 |
+| 22:52 | Edited src/renderer/src/components/sessions-calendar/SessionsCalendar.tsx | modified useCallback() | ~534 |
+| 22:52 | Edited src/renderer/src/components/sessions-calendar/SessionsCalendar.tsx | reduced (-6 lines) | ~18 |
+| 22:53 | Edited src/renderer/src/components/sessions-calendar/SessionsCalendar.tsx | added nullish coalescing | ~1257 |
+| 22:53 | Edited src/renderer/src/components/sessions-calendar/types.ts | modified getMinutes() | ~92 |
+| 22:53 | Edited src/renderer/src/components/sessions-calendar/types.ts | modified getMinutes() | ~104 |
+| 22:53 | Edited src/renderer/src/pages/ActivityPage.tsx | inline fix | ~20 |
+| 22:53 | Edited src/renderer/src/components/Sidebar.tsx | inline fix | ~4 |
+| 22:53 | Edited src/renderer/src/components/Sidebar.tsx | inline fix | ~12 |
+| 22:54 | Edited src/renderer/src/components/Sidebar.tsx | inline fix | ~9 |
+| 22:56 | Session end: 11 writes across 4 files (SessionsCalendar.tsx, types.ts, ActivityPage.tsx, Sidebar.tsx) | 12 reads | ~33713 tok |

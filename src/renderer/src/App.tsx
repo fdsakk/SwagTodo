@@ -22,6 +22,7 @@ function App(): React.JSX.Element {
   const {
     hydrated,
     selectedView,
+    backgroundId,
     hydrate,
     closeTaskPanel,
     openCreatePanelForCurrentView,
@@ -46,6 +47,7 @@ function App(): React.JSX.Element {
     useShallow((state) => ({
       hydrated: state.hydrated,
       selectedView: state.selectedView,
+      backgroundId: state.appearance.backgroundId,
       hydrate: state.hydrate,
       closeTaskPanel: state.closeTaskPanel,
       openCreatePanelForCurrentView: state.openCreatePanelForCurrentView,
@@ -119,7 +121,6 @@ function App(): React.JSX.Element {
   return (
     <div className="flex h-full flex-col overflow-hidden rounded-xl bg-app-titlebar px-2 pb-2">
       <ThemeProvider />
-      <BackgroundLayer />
       <TitleBar />
       <div className="relative flex min-h-0 flex-1 overflow-hidden rounded-lg bg-app-bg">
         <Sidebar
@@ -127,7 +128,8 @@ function App(): React.JSX.Element {
           onOpenProjectPanel={openCreateProjectPanel}
         />
 
-        <div className="flex min-w-0 flex-1 flex-col overflow-hidden bg-app-content">
+        <div className={`relative flex min-w-0 flex-1 flex-col overflow-hidden ${backgroundId === 'none' ? 'bg-app-content' : ''}`}>
+          <BackgroundLayer />
           {selectedView !== 'sessions' && selectedView !== 'settings' && <SearchSortBar />}
           <div
             className={

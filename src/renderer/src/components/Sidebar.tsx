@@ -26,7 +26,7 @@ export default function Sidebar(props: SidebarProps): React.JSX.Element {
   const {
     tasks,
     projects,
-    labels,
+    hasLabels,
     selectedView,
     selectedProjectId,
     isSidebarCollapsed,
@@ -43,7 +43,7 @@ export default function Sidebar(props: SidebarProps): React.JSX.Element {
     useShallow((state) => ({
       tasks: state.tasks,
       projects: state.projects,
-      labels: state.labels,
+      hasLabels: state.labels.length > 0,
       selectedView: state.selectedView,
       selectedProjectId: state.selectedProjectId,
       isSidebarCollapsed: state.isSidebarCollapsed,
@@ -156,7 +156,7 @@ export default function Sidebar(props: SidebarProps): React.JSX.Element {
       {!isSidebarCollapsed && (
         <SidebarFooter
           uiScale={uiScale}
-          hasLabels={labels.length > 0}
+          hasLabels={hasLabels}
           onScaleChange={handleScaleChange}
           onOpenLabelModal={props.onOpenLabelModal}
         />
