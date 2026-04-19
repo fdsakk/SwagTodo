@@ -135,7 +135,6 @@ interface AppStore extends AppState {
   setThemeId: (id: ThemeId) => void
   setCustomTokens: (tokens: Partial<ThemeTokens>) => void
   resetCustomTokens: () => void
-  setBackgroundId: (id: string) => void
   setSyncSupabaseUrl: (supabaseUrl: string) => void
   setSyncSupabaseAnonKey: (supabaseAnonKey: string) => void
   setSyncWorkspaceId: (workspaceId: string) => void
@@ -576,7 +575,6 @@ const useAppStore = create<AppStore>((set, get) => ({
       appearance: { ...s.appearance, customTokens: { ...s.appearance.customTokens, ...tokens } }
     })),
   resetCustomTokens: () => set((s) => ({ appearance: { ...s.appearance, customTokens: {} } })),
-  setBackgroundId: (id) => set((s) => ({ appearance: { ...s.appearance, backgroundId: id } })),
   setSyncSupabaseUrl: (supabaseUrl) =>
     set((s) => ({ sync: { ...s.sync, supabaseUrl: supabaseUrl.trim() } })),
   setSyncSupabaseAnonKey: (supabaseAnonKey) =>

@@ -63,7 +63,6 @@ interface TimeBlock {
 interface AppearanceSettings {
   themeId: string
   customTokens: Record<string, string>
-  backgroundId: string
 }
 
 interface SyncSettings {

@@ -1,4 +1,6 @@
+import { useState } from 'react'
 import { v4 as uuidv4 } from 'uuid'
+import { cn } from '@renderer/utils/cn'
 
 interface SyncSectionStatus {
   connected: boolean
@@ -38,6 +40,7 @@ export function SyncSection({
   onWorkspaceIdChange,
   onToggleSync
 }: SyncSectionProps): React.JSX.Element {
+  const [open, setOpen] = useState(false)
   const isEnabled = mode === 'supabase'
   const urlOk = supabaseUrl.trim().length > 0
   const keyOk = supabaseAnonKey.trim().length > 0
@@ -46,13 +49,28 @@ export function SyncSection({
 
   return (
     <section className="space-y-3">
-      <div>
-        <h2 className="text-sm font-semibold text-app-text">Sync</h2>
-        <p className="mt-0.5 text-xs text-app-text-muted">
-          Connect Supabase to keep tasks in sync across devices.
-        </p>
+      <div className="flex items-center justify-between">
+        <div>
+          <h2 className="text-sm font-semibold text-app-text">Sync</h2>
+          <p className="mt-0.5 text-xs text-app-text-muted">
+            Connect Supabase to keep tasks in sync across devices.
+          </p>
+        </div>
+        <button
+          type="button"
+          onClick={() => setOpen((v) => !v)}
+          className={cn(
+            'rounded-lg border px-2.5 py-1 text-xs font-medium transition-colors',
+            open
+              ? 'border-app-accent bg-app-accent/10 text-app-text'
+              : 'border-app-border text-app-text-muted hover:text-app-text-secondary'
+          )}
+        >
+          {open ? 'Hide' : 'Configure'}
+        </button>
       </div>
 
+      {open && (
       <div className="rounded-xl border border-app-border bg-app-card p-3 space-y-3">
         <div className="space-y-3">
           <div className="space-y-1.5">
@@ -138,6 +156,7 @@ export function SyncSection({
           {status.lastError && <p className="text-red-400">Error: {status.lastError}</p>}
         </div>
       </div>
+      )}
     </section>
   )
 }

@@ -36,7 +36,6 @@ const PRESET_BUTTONS = MED_PRESETS.filter(
 
 interface SliderRowProps {
   label: string
-  hint: string
   value: number
   min: number
   max: number
@@ -47,7 +46,6 @@ interface SliderRowProps {
 
 function SliderRow({
   label,
-  hint,
   value,
   min,
   max,
@@ -59,7 +57,6 @@ function SliderRow({
     <div className="group grid grid-cols-[1fr_auto] gap-x-4 gap-y-0.5">
       <div className="flex items-baseline gap-2">
         <span className="text-xs font-medium text-app-text">{label}</span>
-        <span className="text-[10px] text-app-text-muted">{hint}</span>
       </div>
       <span className="tabular-nums text-xs font-medium text-app-accent text-right">
         {format(value)}
@@ -120,6 +117,15 @@ export function HealthPage(): React.JSX.Element {
 
   const xTickInterval = chartWidth < 700 ? 35 : chartWidth < 1000 ? 23 : 11
 
+  const nowLabel = useMemo(() => {
+    if (selectedDate !== today()) return null
+    const n = new Date()
+    const roundedMin = Math.round(n.getMinutes() / 5) * 5
+    const h = roundedMin === 60 ? n.getHours() + 1 : n.getHours()
+    const m = roundedMin === 60 ? 0 : roundedMin
+    return `${String(h).padStart(2, '0')}:${String(m).padStart(2, '0')}`
+  }, [selectedDate])
+
   const { yDomain, yTicks, crashSegments } = useMemo(() => {
     let maxEffect = 0
     for (const pt of chartData) {
@@ -139,12 +145,23 @@ export function HealthPage(): React.JSX.Element {
         segStart = pt.timeLabel
         segStartIdx = i
       } else if (!pt.crashRisk && segStart) {
-        rawSegments.push({ x1: segStart, x2: chartData[i - 1].timeLabel, i1: segStartIdx, i2: i - 1 })
+        rawSegments.push({
+          x1: segStart,
+          x2: chartData[i - 1].timeLabel,
+          i1: segStartIdx,
+          i2: i - 1
+        })
         segStart = null
         segStartIdx = -1
       }
     }
-    if (segStart) rawSegments.push({ x1: segStart, x2: chartData[chartData.length - 1].timeLabel, i1: segStartIdx, i2: chartData.length - 1 })
+    if (segStart)
+      rawSegments.push({
+        x1: segStart,
+        x2: chartData[chartData.length - 1].timeLabel,
+        i1: segStartIdx,
+        i2: chartData.length - 1
+      })
 
     // Merge segments separated by ≤6 non-crash points (30 min gap) into one
     const MERGE_GAP = 6
@@ -173,7 +190,7 @@ export function HealthPage(): React.JSX.Element {
   }
 
   return (
-    <div className="flex min-h-0 flex-1 flex-col gap-6 overflow-y-auto px-6 py-6 overflow-hidden max-w-6xl">
+    <div className="flex min-h-0 flex-1 flex-col gap-6 overflow-y-auto px-6 py-6 overflow-hidden max-w-5xl">
       {/* Header */}
       <div className="flex items-center gap-3">
         <h1 className="text-base font-semibold text-app-text">Medications</h1>
@@ -184,6 +201,81 @@ export function HealthPage(): React.JSX.Element {
           className="rounded-md border border-app-border bg-app-card px-2 py-1 text-xs text-app-text focus:outline-none"
         />
       </div>
+
+      <section className="max-w-3xl space-y-6">
+        {/* Quick-add buttons */}
+        <div>
+          <p className="mb-2 text-xs font-medium text-app-text-muted">Log intake</p>
+          <div className="flex flex-wrap gap-2">
+            {PRESET_BUTTONS.map((p) => (
+              <button
+                key={`${p.id}-${p.dose}`}
+                type="button"
+                onClick={() => handleAdd(p.id, p.name, p.dose)}
+                className={cn(
+                  'rounded-lg border border-app-border bg-app-card px-3 py-1.5 text-xs text-app-text',
+                  'hover:border-app-accent/40 hover:bg-app-hover transition-colors'
+                )}
+              >
+                {p.name} {p.dose}
+                {p.unit}
+              </button>
+            ))}
+          </div>
+        </div>
+
+        {/* Log list */}
+        <div className="w-1/2">
+          <p className="mb-2 text-xs font-medium text-app-text-muted">
+            Taken {selectedDate === today() ? 'today' : `on ${selectedDate}`}
+          </p>
+          {todayLogs.length === 0 ? (
+            <p className="text-xs text-app-text-muted">No medications logged.</p>
+          ) : (
+            <ul className="space-y-1">
+              {todayLogs.map((log) => (
+                <li
+                  key={log.id}
+                  className="flex items-center justify-between rounded-lg border border-app-border bg-app-card px-3 py-2"
+                >
+                  <span className="text-sm text-app-text">
+                    {log.medName} {log.dose}mg
+                  </span>
+                  <div className="flex items-center gap-2">
+                    {editingId === log.id ? (
+                      <input
+                        type="time"
+                        autoFocus
+                        defaultValue={isoToTimeInput(log.takenAt)}
+                        onChange={(e) => handleTimeChange(log.id, e.target.value)}
+                        onBlur={() => setEditingId(null)}
+                        className="rounded border border-app-accent/40 bg-app-hover px-1.5 py-0.5 text-xs text-app-text focus:outline-none"
+                      />
+                    ) : (
+                      <button
+                        type="button"
+                        onClick={() => setEditingId(log.id)}
+                        className="rounded px-1.5 py-0.5 text-xs text-app-text-muted hover:bg-app-hover hover:text-app-text transition-colors"
+                        title="Edit time"
+                      >
+                        @ {isoToTimeInput(log.takenAt)}
+                      </button>
+                    )}
+                    <button
+                      type="button"
+                      onClick={() => deleteMedicationLog(log.id)}
+                      className="text-app-text-muted hover:text-red-400 transition-colors"
+                      title="Remove"
+                    >
+                      <Trash2 size={13} />
+                    </button>
+                  </div>
+                </li>
+              ))}
+            </ul>
+          )}
+        </div>
+      </section>
 
       {/* Chart */}
       <div
@@ -298,6 +390,22 @@ export function HealthPage(): React.JSX.Element {
               }}
             />
 
+            {/* Current time line */}
+            {nowLabel && (
+              <ReferenceLine
+                x={nowLabel}
+                stroke="rgba(255,255,255,0.35)"
+                strokeWidth={1.5}
+                strokeDasharray="4 3"
+                label={{
+                  value: 'now',
+                  position: 'insideTopRight',
+                  fontSize: 9,
+                  fill: 'rgba(255,255,255,0.5)'
+                }}
+              />
+            )}
+
             <Tooltip
               contentStyle={{
                 background: 'var(--app-card)',
@@ -330,11 +438,9 @@ export function HealthPage(): React.JSX.Element {
             />
           </ComposedChart>
         </ResponsiveContainer>
-      </div>
 
-      <section className="max-w-3xl mx-auto space-y-6">
-        {/* Chart settings card */}
-        <div className="rounded-xl border border-app-border bg-app-card p-4">
+        {/* PK params — flush against chart bottom */}
+        <div className="mt-3 -mx-4 border-t border-app-border px-4 pt-4">
           <button
             type="button"
             onClick={() => setPkOpen((v) => !v)}
@@ -356,143 +462,66 @@ export function HealthPage(): React.JSX.Element {
               <polyline points="6 9 12 15 18 9" />
             </svg>
           </button>
-          {pkOpen && <div className="mt-4 grid grid-cols-1 gap-5 sm:grid-cols-2">
-            <SliderRow
-              label="Intensity"
-              hint="subjective sensitivity"
-              value={pkSettings.peakScale}
-              min={0.5}
-              max={2.0}
-              step={0.05}
-              format={(v) => `${v.toFixed(2)}×`}
-              onChange={(v) => updateChartSettings({ peakScale: v })}
-            />
-            <SliderRow
-              label="Tmax offset"
-              hint="absorption shift (food / metabolism)"
-              value={pkSettings.tMaxOffsetH}
-              min={-1}
-              max={2}
-              step={0.25}
-              format={(v) => `${v >= 0 ? '+' : ''}${v.toFixed(2)} h`}
-              onChange={(v) => updateChartSettings({ tMaxOffsetH: v })}
-            />
-            <SliderRow
-              label="Elimination rate"
-              hint="liver / kidney speed"
-              value={pkSettings.keMultiplier}
-              min={0.4}
-              max={2.0}
-              step={0.1}
-              format={(v) => `${v.toFixed(1)}×`}
-              onChange={(v) => updateChartSettings({ keMultiplier: v })}
-            />
-            <SliderRow
-              label="Crash sensitivity"
-              hint="slope threshold for crash warning"
-              value={Math.abs(pkSettings.crashThreshold)}
-              min={0.01}
-              max={0.1}
-              step={0.005}
-              format={(v) => v.toFixed(3)}
-              onChange={(v) => updateChartSettings({ crashThreshold: -v })}
-            />
-            <SliderRow
-              label="MEC"
-              hint="min. effective — same units as Y"
-              value={pkSettings.mec}
-              min={0.05}
-              max={1.5}
-              step={0.05}
-              format={(v) => v.toFixed(2)}
-              onChange={(v) => updateChartSettings({ mec: v })}
-            />
-            <SliderRow
-              label="MTC"
-              hint="max. tolerated — same units as Y"
-              value={pkSettings.mtc}
-              min={0.3}
-              max={3.0}
-              step={0.05}
-              format={(v) => v.toFixed(2)}
-              onChange={(v) => updateChartSettings({ mtc: v })}
-            />
-          </div>}
-        </div>
-
-        {/* Quick-add buttons */}
-        <div>
-          <p className="mb-2 text-xs font-medium text-app-text-muted">Log intake</p>
-          <div className="flex flex-wrap gap-2">
-            {PRESET_BUTTONS.map((p) => (
-              <button
-                key={`${p.id}-${p.dose}`}
-                type="button"
-                onClick={() => handleAdd(p.id, p.name, p.dose)}
-                className={cn(
-                  'rounded-lg border border-app-border bg-app-card px-3 py-1.5 text-xs text-app-text',
-                  'hover:border-app-accent/40 hover:bg-app-hover transition-colors'
-                )}
-              >
-                {p.name} {p.dose}
-                {p.unit}
-              </button>
-            ))}
-          </div>
-        </div>
-
-        {/* Log list */}
-        <div className="w-1/2">
-          <p className="mb-2 text-xs font-medium text-app-text-muted">
-            Taken {selectedDate === today() ? 'today' : `on ${selectedDate}`}
-          </p>
-          {todayLogs.length === 0 ? (
-            <p className="text-xs text-app-text-muted">No medications logged.</p>
-          ) : (
-            <ul className="space-y-1">
-              {todayLogs.map((log) => (
-                <li
-                  key={log.id}
-                  className="flex items-center justify-between rounded-lg border border-app-border bg-app-card px-3 py-2"
-                >
-                  <span className="text-sm text-app-text">
-                    {log.medName} {log.dose}mg
-                  </span>
-                  <div className="flex items-center gap-2">
-                    {editingId === log.id ? (
-                      <input
-                        type="time"
-                        autoFocus
-                        defaultValue={isoToTimeInput(log.takenAt)}
-                        onChange={(e) => handleTimeChange(log.id, e.target.value)}
-                        onBlur={() => setEditingId(null)}
-                        className="rounded border border-app-accent/40 bg-app-hover px-1.5 py-0.5 text-xs text-app-text focus:outline-none"
-                      />
-                    ) : (
-                      <button
-                        type="button"
-                        onClick={() => setEditingId(log.id)}
-                        className="rounded px-1.5 py-0.5 text-xs text-app-text-muted hover:bg-app-hover hover:text-app-text transition-colors"
-                        title="Edit time"
-                      >
-                        @ {isoToTimeInput(log.takenAt)}
-                      </button>
-                    )}
-                    <button
-                      type="button"
-                      onClick={() => deleteMedicationLog(log.id)}
-                      className="text-app-text-muted hover:text-red-400 transition-colors"
-                      title="Remove"
-                    >
-                      <Trash2 size={13} />
-                    </button>
-                  </div>
-                </li>
-              ))}
-            </ul>
+          {pkOpen && (
+            <div className="mt-4 grid grid-cols-1 gap-5 sm:grid-cols-2 lg:grid-cols-3">
+              <SliderRow
+                label="Intensity"
+                value={pkSettings.peakScale}
+                min={0.5}
+                max={2.0}
+                step={0.05}
+                format={(v) => `${v.toFixed(2)}×`}
+                onChange={(v) => updateChartSettings({ peakScale: v })}
+              />
+              <SliderRow
+                label="Tmax offset"
+                value={pkSettings.tMaxOffsetH}
+                min={-1}
+                max={2}
+                step={0.25}
+                format={(v) => `${v >= 0 ? '+' : ''}${v.toFixed(2)} h`}
+                onChange={(v) => updateChartSettings({ tMaxOffsetH: v })}
+              />
+              <SliderRow
+                label="Elimination rate"
+                value={pkSettings.keMultiplier}
+                min={0.4}
+                max={2.0}
+                step={0.1}
+                format={(v) => `${v.toFixed(1)}×`}
+                onChange={(v) => updateChartSettings({ keMultiplier: v })}
+              />
+              <SliderRow
+                label="Crash sensitivity"
+                value={Math.abs(pkSettings.crashThreshold)}
+                min={0.01}
+                max={0.1}
+                step={0.005}
+                format={(v) => v.toFixed(3)}
+                onChange={(v) => updateChartSettings({ crashThreshold: -v })}
+              />
+              <SliderRow
+                label="MEC"
+                value={pkSettings.mec}
+                min={0.05}
+                max={1.5}
+                step={0.05}
+                format={(v) => v.toFixed(2)}
+                onChange={(v) => updateChartSettings({ mec: v })}
+              />
+              <SliderRow
+                label="MTC"
+                value={pkSettings.mtc}
+                min={0.3}
+                max={3.0}
+                step={0.05}
+                format={(v) => v.toFixed(2)}
+                onChange={(v) => updateChartSettings({ mtc: v })}
+              />
+            </div>
           )}
         </div>
-      </section>
+      </div>
     </div>
   )
 }

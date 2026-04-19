@@ -1,4 +1,3 @@
-export { BackgroundSection } from './BackgroundSection'
 export { CustomizeSection } from './CustomizeSection'
 export { SyncSection } from './SyncSection'
 export { ThemeSection } from './ThemeSection'

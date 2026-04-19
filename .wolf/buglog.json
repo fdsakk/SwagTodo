@@ -918,6 +918,86 @@
       "related_bugs": [],
       "occurrences": 1,
       "last_seen": "2026-04-19T14:05:18.920Z"
+    },
+    {
+      "id": "bug-058",
+      "timestamp": "2026-04-19T15:03:46.963Z",
+      "error_message": "Type error",
+      "file": "src/renderer/src/pages/HealthPage.tsx",
+      "root_cause": "Missing or incorrect type annotation",
+      "fix": "Added type assertion/annotation",
+      "tags": [
+        "auto-detected",
+        "type-fix",
+        "tsx"
+      ],
+      "related_bugs": [],
+      "occurrences": 1,
+      "last_seen": "2026-04-19T15:03:46.963Z"
+    },
+    {
+      "id": "bug-059",
+      "timestamp": "2026-04-19T15:04:11.499Z",
+      "error_message": "CSS fix: sm",
+      "file": "src/renderer/src/pages/HealthPage.tsx",
+      "root_cause": "sm: grid-cols-2\"> → grid-cols-2 lg:grid-cols-3\">",
+      "fix": "Changed sm: grid-cols-2\"> → grid-cols-2 lg:grid-cols-3\">",
+      "tags": [
+        "auto-detected",
+        "style-fix",
+        "tsx"
+      ],
+      "related_bugs": [],
+      "occurrences": 1,
+      "last_seen": "2026-04-19T15:04:11.499Z"
+    },
+    {
+      "id": "bug-060",
+      "timestamp": "2026-04-19T15:06:20.445Z",
+      "error_message": "Incorrect value in code",
+      "file": "src/renderer/src/pages/HealthPage.tsx",
+      "root_cause": "Had \"border-t border-app-border pt-4\"",
+      "fix": "Changed to \"-mx-4 border-t border-app-border px-4 pt-4\"",
+      "tags": [
+        "auto-detected",
+        "wrong-value",
+        "tsx"
+      ],
+      "related_bugs": [],
+      "occurrences": 1,
+      "last_seen": "2026-04-19T15:06:20.445Z"
+    },
+    {
+      "id": "bug-061",
+      "timestamp": "2026-04-19T15:15:33.145Z",
+      "error_message": "Null/undefined access in ",
+      "file": "src/renderer/src/components/settings/ThemeSection.tsx",
+      "root_cause": "Property access on potentially null/undefined value",
+      "fix": "Added null safety (optional chaining or null check)",
+      "tags": [
+        "auto-detected",
+        "null-safety",
+        "tsx"
+      ],
+      "related_bugs": [],
+      "occurrences": 1,
+      "last_seen": "2026-04-19T15:15:33.145Z"
+    },
+    {
+      "id": "bug-062",
+      "timestamp": "2026-04-19T15:15:40.119Z",
+      "error_message": "Significant refactor of ",
+      "file": "src/renderer/src/pages/SettingsPage.tsx",
+      "root_cause": "8 lines replaced/restructured",
+      "fix": "Rewrote 14→6 lines (8 removed) | Also: const handleScaleChange = (value: string): void =>; const nextScale = UI_SCALE_OPTIONS.find((scale): s",
+      "tags": [
+        "auto-detected",
+        "refactor",
+        "tsx"
+      ],
+      "related_bugs": [],
+      "occurrences": 2,
+      "last_seen": "2026-04-19T15:15:49.958Z"
     }
   ]
 }

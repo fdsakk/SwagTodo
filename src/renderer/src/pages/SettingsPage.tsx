@@ -3,16 +3,7 @@ import useAppStore from '@renderer/store/useAppStore'
 import { useShallow } from 'zustand/react/shallow'
 import { ThemeSection } from '@renderer/components/settings/ThemeSection'
 import { CustomizeSection } from '@renderer/components/settings/CustomizeSection'
-import { BackgroundSection } from '@renderer/components/settings/BackgroundSection'
 import { SyncSection } from '@renderer/components/settings/SyncSection'
-import {
-  Select,
-  SelectContent,
-  SelectItem,
-  SelectTrigger,
-  SelectValue
-} from '@renderer/components/ui/select'
-import { UI_SCALE_OPTIONS, type UiScale } from '@renderer/types'
 
 interface SyncStatusState {
   connected: boolean
@@ -27,7 +18,6 @@ export default function SettingsPage(): React.JSX.Element {
     setThemeId,
     setCustomTokens,
     resetCustomTokens,
-    setBackgroundId,
     uiScale,
     setUiScale,
     setSyncSupabaseUrl,
@@ -41,7 +31,6 @@ export default function SettingsPage(): React.JSX.Element {
       setThemeId: s.setThemeId,
       setCustomTokens: s.setCustomTokens,
       resetCustomTokens: s.resetCustomTokens,
-      setBackgroundId: s.setBackgroundId,
       uiScale: s.uiScale,
       setUiScale: s.setUiScale,
       setSyncSupabaseUrl: s.setSyncSupabaseUrl,
@@ -102,11 +91,6 @@ export default function SettingsPage(): React.JSX.Element {
     }
   }
 
-  const handleScaleChange = (value: string): void => {
-    const nextScale = UI_SCALE_OPTIONS.find((scale): scale is UiScale => String(scale) === value)
-    if (nextScale !== undefined) setUiScale(nextScale)
-  }
-
   return (
     <div className="px-6 pb-8 pt-5 max-w-2xl">
       <h1 className="mb-6 text-lg font-semibold tracking-tight text-app-text">Settings</h1>
@@ -124,34 +108,18 @@ export default function SettingsPage(): React.JSX.Element {
           onToggleSync={handleToggleSync}
         />
         <div className="h-px bg-app-border" />
-        <section className="space-y-3">
-          <div>
-            <h2 className="text-sm font-semibold text-app-text">UI scale</h2>
-            <p className="mt-0.5 text-xs text-app-text-muted">Adjust app zoom level</p>
-          </div>
-          <Select onValueChange={handleScaleChange} value={String(uiScale)}>
-            <SelectTrigger className="h-9 w-28 border-app-border bg-app-card px-3 text-sm text-app-text">
-              <SelectValue />
-            </SelectTrigger>
-            <SelectContent>
-              {UI_SCALE_OPTIONS.map((scale) => (
-                <SelectItem key={scale} value={String(scale)}>
-                  {scale}%
-                </SelectItem>
-              ))}
-            </SelectContent>
-          </Select>
-        </section>
-        <div className="h-px bg-app-border" />
-        <ThemeSection appearance={appearance} onSetThemeId={setThemeId} />
+        <ThemeSection
+          appearance={appearance}
+          onSetThemeId={setThemeId}
+          uiScale={uiScale}
+          onSetUiScale={setUiScale}
+        />
         <div className="h-px bg-app-border" />
         <CustomizeSection
           appearance={appearance}
           onSetCustomTokens={setCustomTokens}
           onResetCustomTokens={resetCustomTokens}
         />
-        <div className="h-px bg-app-border" />
-        <BackgroundSection appearance={appearance} onSetBackgroundId={setBackgroundId} />
       </div>
     </div>
   )

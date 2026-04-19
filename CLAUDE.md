@@ -62,16 +62,15 @@ All components live in `src/renderer/src/components/` subfolders — no loose fi
 
 | Subfolder | Contents |
 |-----------|----------|
-| `layout/` | `TitleBar`, `Sidebar`, `BackgroundLayer`, `ThemeProvider`, `SearchSortBar` |
+| `layout/` | `TitleBar`, `Sidebar`, `ThemeProvider`, `SearchSortBar` |
 | `task-panel/` | `TaskDetailPanel`, `TaskCreatePanel`, `TaskEditPanel`, `TaskFormFields`, `Field` |
 | `task-list/` | `TaskList`, `TaskRow`, `AnimatedCheckbox`, `SubtaskProgressRing` |
 | `modals/` | `LabelManagerModal`, `ShortcutsHelpModal`, `ProjectPickerModal` |
 | `project/` | `ProjectPanel`, `ColorSelector`, `CustomColorInput`, `EmojiPicker` |
 | `sidebar/` | `NavItem`, `ProjectList`, `SidebarFooter` |
-| `settings/` | `BackgroundSection`, `CustomizeSection`, `ThemeSection`, `ThemeSwatch` |
+| `settings/` | `SyncSection`, `CustomizeSection`, `ThemeSection`, `ThemeSwatch` |
 | `task-edit/` | `SessionStats`, `SubtaskList` |
 | `kanban/` | `KanbanBoard`, `KanbanCard`, `KanbanCardPreview`, `KanbanColumn` |
-| `backgrounds/` | `Aurora`, `Plasma`, `PixelSnow`, `PixelBlast`, `SoftAurora` |
 | `sessions-calendar/` | `SessionsCalendar`, `SessionBlockView`, `TimeBlockView`, `DraftGhost` |
 | `ui/` | shadcn/ui primitives |
 

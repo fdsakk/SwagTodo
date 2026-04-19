@@ -16,7 +16,7 @@
 - **Project:** swag-todo
 - **Description:** An Electron application with React and TypeScript
 - Settings/Appearance page should follow the same container rhythm used by list pages (`px-4` outer, `px-2` inner alignment) for consistent layout.
-- Component subfolders: `layout/`, `task-panel/`, `task-list/`, `modals/`, `project/`, `sidebar/`, `settings/`, `task-edit/`, `kanban/`, `backgrounds/`, `sessions-calendar/`, `ui/`. See CLAUDE.md component table for full mapping.
+- Component subfolders: `layout/`, `task-panel/`, `task-list/`, `modals/`, `project/`, `sidebar/`, `settings/`, `task-edit/`, `kanban/`, `sessions-calendar/`, `ui/`. See CLAUDE.md component table for full mapping.
 - `SubtaskList` (`task-edit/`) imports `AnimatedCheckbox` from `task-list/animated-checkbox` — not from root.
 - `KanbanCard` (`kanban/`) imports `SubtaskProgressRing` from `task-list/subtask-progress-ring` — not from root.
 - `ProjectPanel` (`project/`) imports `Field` from `task-panel/panel-field` — shared primitive across folders.

@@ -1,5 +1,4 @@
 export { TitleBar } from './TitleBar'
 export { Sidebar } from './Sidebar'
-export { BackgroundLayer } from './BackgroundLayer'
 export { ThemeProvider } from './ThemeProvider'
 export { SearchSortBar } from './SearchSortBar'

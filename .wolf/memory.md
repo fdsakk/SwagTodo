@@ -340,3 +340,30 @@
 | 16:05 | Session end: 3 writes across 2 files (HealthPage.tsx, pharmacokinetics.ts) | 2 reads | ~7658 tok |
 | 16:11 | Edited src/renderer/src/utils/pharmacokinetics.ts | modified applyUserParams() | ~84 |
 | 16:11 | Session end: 4 writes across 2 files (HealthPage.tsx, pharmacokinetics.ts) | 2 reads | ~7828 tok |
+
+## Session: 2026-04-19 16:55
+
+| Time | Action | File(s) | Outcome | ~Tokens |
+|------|--------|---------|---------|--------|
+| 16:55 | Removed custom backgrounds feature (shader overlays + settings) | App.tsx, SettingsPage.tsx, useAppStore.ts, types/index.ts, main/index.ts, preload/index.* + deleted components/backgrounds/* | done | ~0 |
+| 17:03 | Edited src/renderer/src/pages/HealthPage.tsx | modified SliderRow() | ~146 |
+| 17:03 | Edited src/renderer/src/pages/HealthPage.tsx | added 1 condition(s) | ~92 |
+| 17:03 | Edited src/renderer/src/pages/HealthPage.tsx | expanded (+16 lines) | ~142 |
+| 17:04 | Edited src/renderer/src/pages/HealthPage.tsx | CSS: lg | ~906 |
+| 17:04 | Session end: 8 writes across 2 files (HealthPage.tsx, pharmacokinetics.ts) | 2 reads | ~9428 tok |
+| 17:06 | Edited src/renderer/src/pages/HealthPage.tsx | 2→2 lines | ~36 |
+| 17:06 | Session end: 9 writes across 2 files (HealthPage.tsx, pharmacokinetics.ts) | 2 reads | ~9464 tok |
+| 17:10 | Edited src/renderer/src/pages/HealthPage.tsx | CSS: 1, 0 | ~107 |
+| 17:10 | Session end: 10 writes across 2 files (HealthPage.tsx, pharmacokinetics.ts) | 2 reads | ~9604 tok |
+
+## Session: 2026-04-19 17:13
+
+| Time | Action | File(s) | Outcome | ~Tokens |
+|------|--------|---------|---------|--------|
+| 17:15 | Edited src/renderer/src/components/settings/SyncSection.tsx | CSS: hover | ~628 |
+| 17:15 | Edited src/renderer/src/components/settings/SyncSection.tsx | 6→7 lines | ~42 |
+| 17:15 | Edited src/renderer/src/components/settings/ThemeSection.tsx | added 1 condition(s) | ~505 |
+| 17:15 | Edited src/renderer/src/pages/SettingsPage.tsx | reduced (-8 lines) | ~112 |
+| 17:15 | Edited src/renderer/src/pages/SettingsPage.tsx | reduced (-19 lines) | ~257 |
+| 15:15 | Refactored SettingsPage: SyncSection collapsible toggle, UI scale moved into ThemeSection header | SyncSection.tsx, ThemeSection.tsx, SettingsPage.tsx | ok | ~800 |
+| 17:16 | Session end: 5 writes across 3 files (SyncSection.tsx, ThemeSection.tsx, SettingsPage.tsx) | 4 reads | ~6487 tok |

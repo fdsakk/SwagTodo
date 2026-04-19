@@ -88,7 +88,6 @@ interface TimeBlock {
 interface AppearanceSettings {
   themeId: string
   customTokens: Record<string, string>
-  backgroundId: string
 }
 
 interface SyncSettings {
@@ -194,7 +193,6 @@ const isAppState = (v: unknown): v is AppState => {
     const a = d.appearance as Partial<AppearanceSettings>
     if (typeof a.themeId !== 'string') return false
     if (a.customTokens !== undefined && !isStringRecord(a.customTokens)) return false
-    if (a.backgroundId !== undefined && typeof a.backgroundId !== 'string') return false
   }
   if (d.sync !== undefined) {
     const s = d.sync as Partial<SyncSettings>

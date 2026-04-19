@@ -1,5 +1,0 @@
-export { default as Aurora } from './Aurora'
-export { default as Plasma } from './Plasma'
-export { default as PixelSnow } from './Pixels'
-export { default as PixelBlast } from './PixelBlast'
-export { default as SoftAurora } from './SoftAurora'

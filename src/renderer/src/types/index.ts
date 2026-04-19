@@ -433,13 +433,11 @@ export const THEME_PRESETS: ThemePreset[] = [
 export interface AppearanceSettings {
   themeId: ThemeId
   customTokens: Partial<ThemeTokens>
-  backgroundId: string
 }
 
 export const DEFAULT_APPEARANCE: AppearanceSettings = {
   themeId: 'default',
-  customTokens: {},
-  backgroundId: 'none'
+  customTokens: {}
 }
 
 export function normalizeAppearance(raw: unknown): AppearanceSettings {
@@ -457,8 +455,7 @@ export function normalizeAppearance(raw: unknown): AppearanceSettings {
       if (typeof v === 'string') customTokens[key] = v
     }
   }
-  const backgroundId = typeof obj.backgroundId === 'string' ? obj.backgroundId : 'none'
-  return { themeId, customTokens, backgroundId }
+  return { themeId, customTokens }
 }
 
 export function getResolvedTokens(settings: AppearanceSettings): ThemeTokens {

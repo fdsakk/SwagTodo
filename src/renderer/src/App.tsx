@@ -1,5 +1,5 @@
 import { useEffect, useState } from 'react'
-import { TitleBar, Sidebar, SearchSortBar, ThemeProvider, BackgroundLayer } from '@renderer/components/layout'
+import { TitleBar, Sidebar, SearchSortBar, ThemeProvider } from '@renderer/components/layout'
 import { TaskDetailPanel } from '@renderer/components/task-panel'
 import { LabelManagerModal, ShortcutsHelpModal, ProjectPickerModal } from '@renderer/components/modals'
 import InboxPage from '@renderer/pages/InboxPage'
@@ -17,7 +17,6 @@ function App(): React.JSX.Element {
   const {
     hydrated,
     selectedView,
-    backgroundId,
     hydrate,
     closeTaskPanel,
     openCreatePanelForCurrentView,
@@ -42,7 +41,6 @@ function App(): React.JSX.Element {
     useShallow((state) => ({
       hydrated: state.hydrated,
       selectedView: state.selectedView,
-      backgroundId: state.appearance.backgroundId,
       hydrate: state.hydrate,
       closeTaskPanel: state.closeTaskPanel,
       openCreatePanelForCurrentView: state.openCreatePanelForCurrentView,
@@ -123,8 +121,7 @@ function App(): React.JSX.Element {
           onOpenProjectPanel={openCreateProjectPanel}
         />
 
-        <div className={`relative flex min-w-0 flex-1 flex-col overflow-hidden ${backgroundId === 'none' ? 'bg-app-content' : ''}`}>
-          <BackgroundLayer />
+        <div className="relative flex min-w-0 flex-1 flex-col overflow-hidden bg-app-content">
           {selectedView !== 'sessions' && selectedView !== 'settings' && selectedView !== 'health' && <SearchSortBar />}
           <div
             className={

@@ -1,7 +1,7 @@
 # anatomy.md
 
-> Auto-maintained by OpenWolf. Last scanned: 2026-04-19T14:11:04.977Z
-> Files: 125 tracked | Anatomy hits: 0 | Misses: 0
+> Auto-maintained by OpenWolf. Last scanned: 2026-04-19T15:15:49.950Z
+> Files: 117 tracked | Anatomy hits: 0 | Misses: 0
 
 ## ./
 
@@ -73,15 +73,6 @@
 - `base.css` — Styles: 22 vars (~400 tok)
 - `main.css` — Styles: 5 rules, 20 vars, 2 layers (~372 tok)
 
-## src/renderer/src/components/backgrounds/
-
-- `Aurora.tsx` — VERT — uses useEffect (~1661 tok)
-- `index.tsx` (~70 tok)
-- `PixelBlast.tsx` — createTouchTexture — uses useRef, useEffect (~6568 tok)
-- `Pixels.tsx` — vertexShader — uses useRef, useMemo, useCallback, useEffect (~3240 tok)
-- `Plasma.tsx` — hexToRgb — uses useRef, useEffect (~1811 tok)
-- `SoftAurora.tsx` — hexToVec3 — uses useEffect (~2441 tok)
-
 ## src/renderer/src/components/kanban/
 
 - `index.tsx` (~88 tok)
@@ -93,7 +84,6 @@
 
 ## src/renderer/src/components/layout/
 
-- `BackgroundLayer.tsx` — BackgroundLayer (~599 tok)
 - `index.tsx` (~64 tok)
 - `SearchSortBar.tsx` — SearchSortBar — uses useEffect (~909 tok)
 - `Sidebar.tsx` — Sidebar (~1345 tok)
@@ -126,11 +116,10 @@
 
 ## src/renderer/src/components/settings/
 
-- `BackgroundSection.tsx` — BACKGROUND_OPTIONS (~1406 tok)
 - `CustomizeSection.tsx` — TOKEN_LABELS — uses useState (~1307 tok)
 - `index.tsx` (~70 tok)
-- `SyncSection.tsx` — formatSyncAt (~870 tok)
-- `ThemeSection.tsx` — ThemeSection (~508 tok)
+- `SyncSection.tsx` — formatSyncAt (~1763 tok)
+- `ThemeSection.tsx` — ThemeSection (~841 tok)
 - `ThemeSwatch.tsx` — ThemeSwatch (~402 tok)
 
 ## src/renderer/src/components/sidebar/
@@ -189,11 +178,11 @@
 ## src/renderer/src/pages/
 
 - `ActivityPage.tsx` — buildEvents — uses useMemo (~1495 tok)
-- `HealthPage.tsx` — today (~5114 tok)
+- `HealthPage.tsx` — today (~5290 tok)
 - `InboxPage.tsx` — InboxPage (~446 tok)
 - `ProjectPage.tsx` — ProjectPage — uses useMemo (~1197 tok)
 - `SessionsPage.tsx` — DAY_OPTIONS — uses useEffect, useMemo, useCallback (~2987 tok)
-- `SettingsPage.tsx` — SettingsPage — uses useState, useCallback, useEffect (~1368 tok)
+- `SettingsPage.tsx` — SettingsPage (~1126 tok)
 - `TodayPage.tsx` — TodayPage (~408 tok)
 
 ## src/renderer/src/pages/sessions/
