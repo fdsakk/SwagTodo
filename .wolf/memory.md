@@ -8,6 +8,7 @@
 | 20:56 | perf audit + fixes: pre-grouped blocks by day map, stable pointerDown handler, cached HOURS constant, single Date ctor per block, Date.parse in sort, Sidebar hasLabels bool selector | SessionsCalendar.tsx, types.ts, ActivityPage.tsx, Sidebar.tsx | ok ~2000 tok |
 
 | 21:37 | Added 6 new themes (Dracula, Gruvbox, Solarized, Rose Pine, Midnight, Everforest) | src/renderer/src/types/index.ts | success | ~300 tok |
+| 10:55 | Replace pg JSONB sync with Supabase normalized tables (workspace_id), update preload+renderer settings UI and IPC, add schema.sql | src/main/index.ts, src/preload/index.ts, src/preload/index.d.ts, src/renderer/src/types/index.ts, src/renderer/src/store/useAppStore.ts, src/renderer/src/pages/SettingsPage.tsx, src/renderer/src/components/settings/SyncSection.tsx, supabase/schema.sql | wip (needs typecheck/lint) | ~3500 |
 
 ## Session: 2026-04-18 21:24
 
@@ -267,3 +268,4 @@
 | 12:48 | Session end: 12 writes across 1 files (HealthPage.tsx) | 1 reads | ~2458 tok |
 | 12:49 | Edited src/renderer/src/pages/HealthPage.tsx | added 1 condition(s) | ~173 |
 | 12:49 | Session end: 13 writes across 1 files (HealthPage.tsx) | 2 reads | ~6543 tok |
+| 14:20 | Supabase sync hardening: debounced delta upsert/delete (no full workspace delete), fire-and-forget push; bump task.updatedAt on deleteProject/deleteLabel | src/main/index.ts, src/renderer/src/store/useAppStore.ts, src/renderer/src/components/settings/SyncSection.tsx, README.md, supabase/schema.sql | typecheck+lint ok | ~1200 |

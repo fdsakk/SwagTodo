@@ -20,13 +20,16 @@
 - `SubtaskList` (`task-edit/`) imports `AnimatedCheckbox` from `task-list/animated-checkbox` — not from root.
 - `KanbanCard` (`kanban/`) imports `SubtaskProgressRing` from `task-list/subtask-progress-ring` — not from root.
 - `ProjectPanel` (`project/`) imports `Field` from `task-panel/panel-field` — shared primitive across folders.
+- Supabase sync should be **delta-based** (upsert/delete) with main-process debouncing; avoid delete+reinsert of whole workspace and don’t await remote push inside `store:save` IPC.
 
 ## Do-Not-Repeat
 
 <!-- Format: [YYYY-MM-DD] Description of what went wrong and what to do instead. -->
 - [2026-04-19] Do NOT place new components as loose files in `components/` root. Always put in appropriate subfolder + export from its `index.tsx`.
 - [2026-04-19] Do NOT use default exports for new components. Use named exports throughout.
+- [2026-04-19] Do NOT implement destructive sync (delete-all then insert-all) for Supabase workspaces — it’s slow and can wipe remote data on partial failure.
 
 ## Decision Log
 
 - [2026-04-19] Moved all 23 loose `components/` root files into domain subfolders with `index.tsx` barrels. Rationale: reduce import noise, enforce discoverability, eliminate root clutter. Named exports chosen over default so barrel re-exports work without aliasing.
+- [2026-04-19] Refactored Supabase sync to use a debounced, diff-based delta (upsert/delete) driven by a “shadow” slice; IPC `store:save` no longer awaits remote sync to avoid backpressure.

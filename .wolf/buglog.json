@@ -640,6 +640,42 @@
       "related_bugs": [],
       "occurrences": 1,
       "last_seen": "2026-04-19T10:44:38.368Z"
+    },
+    {
+      "id": "bug-041",
+      "timestamp": "2026-04-19T12:20:26.783Z",
+      "error_message": "Supabase push deleted full workspace snapshot on every save (slow + data-loss risk)",
+      "file": "src/main/index.ts",
+      "root_cause": "Sync strategy performed delete-all then insert-all per workspace on each persisted save, and IPC awaited the push, causing backpressure and potential remote wipe on partial failure",
+      "fix": "Replaced destructive snapshot writes with debounced delta-based upsert/delete driven by a shadow slice; made store:save fire-and-forget for remote push",
+      "tags": [
+        "supabase",
+        "sync",
+        "performance",
+        "data-loss",
+        "debounce",
+        "upsert"
+      ],
+      "related_bugs": [],
+      "occurrences": 1,
+      "last_seen": "2026-04-19T12:20:26.783Z"
+    },
+    {
+      "id": "bug-042",
+      "timestamp": "2026-04-19T12:20:26.783Z",
+      "error_message": "Deleting project/label did not bump task.updatedAt, so remote sync could miss changes",
+      "file": "src/renderer/src/store/useAppStore.ts",
+      "root_cause": "deleteProject/deleteLabel mutated tasks (projectId/labels) without updating updatedAt; delta sync relies on updatedAt (and field diffs) to decide upserts",
+      "fix": "Set updatedAt on tasks affected by deleteProject and deleteLabel",
+      "tags": [
+        "sync",
+        "updatedAt",
+        "zustand",
+        "tasks"
+      ],
+      "related_bugs": ["bug-041"],
+      "occurrences": 1,
+      "last_seen": "2026-04-19T12:20:26.783Z"
     }
   ]
 }

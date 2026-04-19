@@ -30,7 +30,9 @@ export default function SettingsPage(): React.JSX.Element {
     setBackgroundId,
     uiScale,
     setUiScale,
-    setSyncPostgresUrl,
+    setSyncSupabaseUrl,
+    setSyncSupabaseAnonKey,
+    setSyncWorkspaceId,
     refreshFromStorage
   } = useAppStore(
     useShallow((s) => ({
@@ -42,7 +44,9 @@ export default function SettingsPage(): React.JSX.Element {
       setBackgroundId: s.setBackgroundId,
       uiScale: s.uiScale,
       setUiScale: s.setUiScale,
-      setSyncPostgresUrl: s.setSyncPostgresUrl,
+      setSyncSupabaseUrl: s.setSyncSupabaseUrl,
+      setSyncSupabaseAnonKey: s.setSyncSupabaseAnonKey,
+      setSyncWorkspaceId: s.setSyncWorkspaceId,
       refreshFromStorage: s.refreshFromStorage
     }))
   )
@@ -73,15 +77,17 @@ export default function SettingsPage(): React.JSX.Element {
 
   const handleToggleSync = async (): Promise<void> => {
     if (!window.api?.sync) return
-    const isEnabled = sync.mode === 'postgres'
-    const url = sync.postgresUrl.trim()
-    if (!isEnabled && !url) return
+    const isEnabled = sync.mode === 'supabase'
+    const supabaseUrl = sync.supabaseUrl.trim()
+    const supabaseAnonKey = sync.supabaseAnonKey.trim()
+    const workspaceId = sync.workspaceId.trim()
+    if (!isEnabled && (!supabaseUrl || !supabaseAnonKey || !workspaceId)) return
     setSyncLoading(true)
     try {
       if (isEnabled) {
         await window.api.sync.turnOff()
       } else {
-        await window.api.sync.turnOn(url)
+        await window.api.sync.turnOn({ supabaseUrl, supabaseAnonKey, workspaceId })
       }
       await refreshFromStorage()
       await refreshSyncStatus()
@@ -106,11 +112,15 @@ export default function SettingsPage(): React.JSX.Element {
       <h1 className="mb-6 text-lg font-semibold tracking-tight text-app-text">Settings</h1>
       <div className="space-y-8">
         <SyncSection
-          postgresUrl={sync.postgresUrl}
+          supabaseUrl={sync.supabaseUrl}
+          supabaseAnonKey={sync.supabaseAnonKey}
+          workspaceId={sync.workspaceId}
           mode={sync.mode}
           loading={syncLoading}
           status={syncStatus}
-          onPostgresUrlChange={setSyncPostgresUrl}
+          onSupabaseUrlChange={setSyncSupabaseUrl}
+          onSupabaseAnonKeyChange={setSyncSupabaseAnonKey}
+          onWorkspaceIdChange={setSyncWorkspaceId}
           onToggleSync={handleToggleSync}
         />
         <div className="h-px bg-app-border" />

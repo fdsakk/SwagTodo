@@ -20,18 +20,23 @@ $ npm install
 $ npm run dev
 ```
 
-### Optional PostgreSQL sync
+### Optional Supabase sync
 
-1. Open **Settings** in the app.
-2. Paste your PostgreSQL connection URL.
-3. Click **Turn on sync** (or **Turn off sync** to disable).
+1. Create tables in Supabase using `supabase/schema.sql`.
+2. Open **Settings** in the app.
+3. Paste your Supabase **Project URL** and **anon key**.
+4. (Optional) Set **Workspace ID** (default: `default`).
+5. Click **Turn on sync** (or **Turn off sync** to disable).
 
 Behavior:
 
 - Default mode stays local (`electron-store`) until sync is enabled.
-- On first sync, local data is uploaded when DB is empty.
-- If DB already has data, DB state is used as the starting state.
-- Synced data scope: tasks, projects, labels, sessions, time blocks.
+- Security: Supabase **anon key is not a secret**. If this project is exposed publicly, you must configure
+  **Supabase Auth + RLS** policies, otherwise anyone can read/write your data.
+- Workspace ID is a partition key; avoid `default` for anything shared — use a long random value.
+- On first sync, local data is uploaded when remote workspace is empty.
+- If remote workspace already has data, remote state becomes starting state.
+- Synced scope: tasks, projects, labels, sessions, time blocks.
 
 ### Build
 

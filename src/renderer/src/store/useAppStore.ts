@@ -137,7 +137,9 @@ interface AppStore extends AppState {
   setCustomTokens: (tokens: Partial<ThemeTokens>) => void
   resetCustomTokens: () => void
   setBackgroundId: (id: string) => void
-  setSyncPostgresUrl: (postgresUrl: string) => void
+  setSyncSupabaseUrl: (supabaseUrl: string) => void
+  setSyncSupabaseAnonKey: (supabaseAnonKey: string) => void
+  setSyncWorkspaceId: (workspaceId: string) => void
   selectHealth: () => void
   addMedicationLog: (input: Omit<MedicationLog, 'id' | 'createdAt'>) => void
   updateMedicationLog: (id: string, takenAt: string) => void
@@ -415,7 +417,7 @@ const useAppStore = create<AppStore>((set, get) => ({
       const tasks = state.tasks.map((t) => {
         if (t.projectId !== projectId) return t
         tasksChanged = true
-        return { ...t, projectId: undefined }
+        return { ...t, projectId: undefined, updatedAt: nowIso() }
       })
       const sessions = state.sessions.filter((s) => s.projectId !== projectId)
       const wasSelected = state.selectedProjectId === projectId
@@ -452,7 +454,7 @@ const useAppStore = create<AppStore>((set, get) => ({
       const tasks = state.tasks.map((t) => {
         if (!t.labels.includes(labelId)) return t
         tasksChanged = true
-        return { ...t, labels: t.labels.filter((id) => id !== labelId) }
+        return { ...t, labels: t.labels.filter((id) => id !== labelId), updatedAt: nowIso() }
       })
       return { labels, tasks: tasksChanged ? tasks : state.tasks }
     }),
@@ -564,8 +566,12 @@ const useAppStore = create<AppStore>((set, get) => ({
     })),
   resetCustomTokens: () => set((s) => ({ appearance: { ...s.appearance, customTokens: {} } })),
   setBackgroundId: (id) => set((s) => ({ appearance: { ...s.appearance, backgroundId: id } })),
-  setSyncPostgresUrl: (postgresUrl) =>
-    set((s) => ({ sync: { ...s.sync, postgresUrl: postgresUrl.trim() } })),
+  setSyncSupabaseUrl: (supabaseUrl) =>
+    set((s) => ({ sync: { ...s.sync, supabaseUrl: supabaseUrl.trim() } })),
+  setSyncSupabaseAnonKey: (supabaseAnonKey) =>
+    set((s) => ({ sync: { ...s.sync, supabaseAnonKey: supabaseAnonKey.trim() } })),
+  setSyncWorkspaceId: (workspaceId) =>
+    set((s) => ({ sync: { ...s.sync, workspaceId: workspaceId.trim() } })),
   selectHealth: () => set({ selectedView: 'health', selectedProjectId: undefined }),
   addMedicationLog: (input) => {
     const log: MedicationLog = { id: uuidv4(), ...input, createdAt: nowIso() }

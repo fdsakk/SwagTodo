@@ -3,7 +3,7 @@ import { ElectronAPI } from '@electron-toolkit/preload'
 type Priority = 'p1' | 'p2' | 'p3' | 'p4'
 type TaskStatus = 'todo' | 'in_progress' | 'done'
 type UiScale = 100 | 110 | 125 | 150 | 175
-type SyncMode = 'local' | 'postgres'
+type SyncMode = 'local' | 'supabase'
 
 interface SubTask {
   id: string
@@ -68,7 +68,9 @@ interface AppearanceSettings {
 
 interface SyncSettings {
   mode: SyncMode
-  postgresUrl: string
+  supabaseUrl: string
+  supabaseAnonKey: string
+  workspaceId: string
 }
 
 interface SyncStatus {
@@ -116,7 +118,7 @@ interface RendererApi {
     setZoomFactor: (factor: number) => Promise<void>
   }
   sync: {
-    turnOn: (postgresUrl: string) => Promise<void>
+    turnOn: (params: Pick<SyncSettings, 'supabaseUrl' | 'supabaseAnonKey' | 'workspaceId'>) => Promise<void>
     turnOff: () => Promise<void>
     getStatus: () => Promise<SyncStatus>
   }

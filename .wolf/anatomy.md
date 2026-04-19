@@ -216,3 +216,7 @@
 - `pharmacokinetics.ts` — Default ke0 for this drug class (effect-site equilibration rate [1/h]). (~1878 tok)
 - `sessions.ts` — Exports sessionsInRange, computeTaskStats, formatDuration (~438 tok)
 - `task.ts` — Exports PROJECT_COLOR_SWATCHES, PRIORITY_META, isTaskDueToday, isTaskOverdue + 5 more (~946 tok)
+
+## supabase/
+
+- `schema.sql` — SQL schema for Supabase sync tables (no JSONB) (~260 tok)

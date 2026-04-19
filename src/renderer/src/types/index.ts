@@ -7,16 +7,20 @@ export type ViewName = 'inbox' | 'today' | 'project' | 'activity' | 'sessions' |
 export type ProjectTab = 'list' | 'kanban'
 export const UI_SCALE_OPTIONS = [100, 110, 125, 150, 175] as const
 export type UiScale = (typeof UI_SCALE_OPTIONS)[number]
-export type SyncMode = 'local' | 'postgres'
+export type SyncMode = 'local' | 'supabase'
 
 export interface SyncSettings {
   mode: SyncMode
-  postgresUrl: string
+  supabaseUrl: string
+  supabaseAnonKey: string
+  workspaceId: string
 }
 
 export const DEFAULT_SYNC_SETTINGS: SyncSettings = {
   mode: 'local',
-  postgresUrl: ''
+  supabaseUrl: '',
+  supabaseAnonKey: '',
+  workspaceId: 'default'
 }
 
 export interface SubTask {
@@ -464,9 +468,12 @@ export function getResolvedTokens(settings: AppearanceSettings): ThemeTokens {
 export function normalizeSyncSettings(raw: unknown): SyncSettings {
   if (!raw || typeof raw !== 'object') return DEFAULT_SYNC_SETTINGS
   const obj = raw as Record<string, unknown>
-  const mode: SyncMode = obj.mode === 'postgres' ? 'postgres' : 'local'
-  const postgresUrl = typeof obj.postgresUrl === 'string' ? obj.postgresUrl : ''
-  return { mode, postgresUrl }
+  const mode: SyncMode = obj.mode === 'supabase' ? 'supabase' : 'local'
+  const supabaseUrl = typeof obj.supabaseUrl === 'string' ? obj.supabaseUrl : ''
+  const supabaseAnonKey = typeof obj.supabaseAnonKey === 'string' ? obj.supabaseAnonKey : ''
+  const workspaceId =
+    typeof obj.workspaceId === 'string' && obj.workspaceId.trim() ? obj.workspaceId.trim() : 'default'
+  return { mode, supabaseUrl, supabaseAnonKey, workspaceId }
 }
 
 export interface TaskGroup {
