@@ -11,11 +11,15 @@ interface KeyboardShortcutOptions {
   onGoInbox: () => void
   onGoToday: () => void
   onGoActivity: () => void
+  onGoHealth: () => void
   onGoSessions: () => void
   onGoSettings: () => void
   onGoProjects: () => void
   onProjectTabList: () => void
   onProjectTabKanban: () => void
+  onZoomIn: () => void
+  onZoomOut: () => void
+  onZoomReset: () => void
 }
 
 function isInputLikeElement(element: Element | null): boolean {
@@ -40,6 +44,7 @@ const KEY_BINDINGS: Record<string, HandlerKey> = {
   i: 'onGoInbox',
   t: 'onGoToday',
   a: 'onGoActivity',
+  h: 'onGoHealth',
   s: 'onGoSessions',
   ',': 'onGoSettings',
   '/': 'onFocusSearch',
@@ -69,6 +74,25 @@ export function useKeyboardShortcuts(options: KeyboardShortcutOptions): void {
       }
 
       if (isInputLikeElement(activeElement)) return
+
+      if (event.ctrlKey || event.metaKey) {
+        if (event.key === '=' || event.key === '+') {
+          event.preventDefault()
+          o.onZoomIn()
+          return
+        }
+        if (event.key === '-') {
+          event.preventDefault()
+          o.onZoomOut()
+          return
+        }
+        if (event.key === '0') {
+          event.preventDefault()
+          o.onZoomReset()
+          return
+        }
+      }
+
       if (event.ctrlKey || event.metaKey || event.altKey) return
 
       const handlerKey = KEY_BINDINGS[event.key]

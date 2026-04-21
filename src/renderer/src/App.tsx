@@ -16,6 +16,7 @@ import { HealthPage } from '@renderer/pages/HealthPage'
 import useAppStore from '@renderer/store/useAppStore'
 import { useKeyboardShortcuts } from '@renderer/hooks/useKeyboardShortcuts'
 import { useShallow } from 'zustand/react/shallow'
+import { UI_SCALE_OPTIONS } from '@renderer/types'
 
 function App(): React.JSX.Element {
   const [isFullScreen, setIsFullScreen] = useState(false)
@@ -46,10 +47,12 @@ function App(): React.JSX.Element {
     selectActivity,
     selectSessions,
     selectSettings,
+    selectHealth,
     selectProject,
     projects,
     toggleSidebar,
-    setProjectTab
+    setProjectTab,
+    setUiScale
   } = useAppStore(
     useShallow((state) => ({
       hydrated: state.hydrated,
@@ -70,10 +73,12 @@ function App(): React.JSX.Element {
       selectActivity: state.selectActivity,
       selectSessions: state.selectSessions,
       selectSettings: state.selectSettings,
+      selectHealth: state.selectHealth,
       selectProject: state.selectProject,
       projects: state.projects,
       toggleSidebar: state.toggleSidebar,
-      setProjectTab: state.setProjectTab
+      setProjectTab: state.setProjectTab,
+      setUiScale: state.setUiScale
     }))
   )
 
@@ -106,11 +111,21 @@ function App(): React.JSX.Element {
     onGoInbox: selectInbox,
     onGoToday: selectToday,
     onGoActivity: selectActivity,
+    onGoHealth: selectHealth,
     onGoSessions: selectSessions,
     onGoSettings: selectSettings,
     onGoProjects: () => setProjectPickerOpen(true),
     onProjectTabList: () => setProjectTab('list'),
-    onProjectTabKanban: () => setProjectTab('kanban')
+    onProjectTabKanban: () => setProjectTab('kanban'),
+    onZoomIn: () => {
+      const idx = UI_SCALE_OPTIONS.indexOf(uiScale)
+      if (idx < UI_SCALE_OPTIONS.length - 1) setUiScale(UI_SCALE_OPTIONS[idx + 1])
+    },
+    onZoomOut: () => {
+      const idx = UI_SCALE_OPTIONS.indexOf(uiScale)
+      if (idx > 0) setUiScale(UI_SCALE_OPTIONS[idx - 1])
+    },
+    onZoomReset: () => setUiScale(100)
   })
 
   if (!hydrated) {

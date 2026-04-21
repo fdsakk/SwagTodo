@@ -456,3 +456,14 @@
 | 19:18 | remove window roundness in fullscreen | App.tsx | done — isFullScreen state drives rounded-xl/rounded-lg removal | ~150 |
 | 19:35 | wygładzenie i wydłużenie opadania krzywej leków (asymetryczne kształtowanie sumy dawek) | src/renderer/src/utils/pharmacokinetics.ts | peak bardziej miękki, spadek dłuższy przy dokładaniu dawek | ~900 |
 | 19:18 | Session end: 4 writes across 1 files (App.tsx) | 2 reads | ~2941 tok |
+
+## Session: 2026-04-21 16:29
+
+| Time | Action | File(s) | Outcome | ~Tokens |
+|------|--------|---------|---------|--------|
+| 16:32 | Created src/renderer/src/components/settings/CustomizeSection.tsx | — | ~1801 |
+| 16:32 | redesign CustomizeSection: 2-col grid, big swatch previews, hover edit overlay, reset-per-token | settings/CustomizeSection.tsx | done | ~800 |
+| 16:32 | Session end: 1 writes across 1 files (CustomizeSection.tsx) | 1 reads | ~3108 tok |
+| 16:33 | Session end: 1 writes across 1 files (CustomizeSection.tsx) | 2 reads | ~4178 tok |
+| 16:34 | Created src/renderer/src/components/settings/CustomizeSection.tsx | — | ~2449 |
+| 16:39 | Session end: 2 writes across 1 files (CustomizeSection.tsx) | 3 reads | ~6995 tok |

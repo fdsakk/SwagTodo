@@ -1,6 +1,6 @@
 # anatomy.md
 
-> Auto-maintained by OpenWolf. Last scanned: 2026-04-19T17:18:37.985Z
+> Auto-maintained by OpenWolf. Last scanned: 2026-04-21T14:34:52.938Z
 > Files: 120 tracked | Anatomy hits: 0 | Misses: 0
 
 ## ./
@@ -117,7 +117,7 @@
 
 ## src/renderer/src/components/settings/
 
-- `CustomizeSection.tsx` — TOKEN_LABELS — uses useState (~1307 tok)
+- `CustomizeSection.tsx` — TOKEN_LABELS (~2449 tok)
 - `index.tsx` (~54 tok)
 - `SyncSection.tsx` — formatSyncAt — uses useState (~1763 tok)
 - `ThemeSection.tsx` — ThemeSection (~841 tok)
