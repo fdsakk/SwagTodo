@@ -57,20 +57,18 @@ export function Sidebar(props: SidebarProps): React.JSX.Element {
     }))
   )
 
-  const inboxCount = useMemo(
-    () =>
-      tasks.filter(
-        (task) => !task.projectId && !task.completed && (!task.dueDate || isTaskInFuture(task))
-      ).length,
-    [tasks]
-  )
+  const { inboxCount, todayCount } = useMemo(() => {
+    let inboxCount = 0
+    let todayCount = 0
 
-  const todayCount = useMemo(
-    () =>
-      tasks.filter((task) => !task.completed && (isTaskDueToday(task) || isTaskOverdue(task)))
-        .length,
-    [tasks]
-  )
+    for (const task of tasks) {
+      if (task.completed) continue
+      if (!task.projectId && (!task.dueDate || isTaskInFuture(task))) inboxCount += 1
+      if (isTaskDueToday(task) || isTaskOverdue(task)) todayCount += 1
+    }
+
+    return { inboxCount, todayCount }
+  }, [tasks])
 
   return (
     <aside

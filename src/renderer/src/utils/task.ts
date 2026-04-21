@@ -40,17 +40,24 @@ export const PRIORITY_META: Record<Priority, { label: string; color: string }> =
 
 const PRIORITY_WEIGHT: Record<Priority, number> = { p1: 1, p2: 2, p3: 3, p4: 4 }
 
+function getDueDateMs(task: Task): number | null {
+  return task.dueDate ? parseISO(task.dueDate).getTime() : null
+}
+
 export function isTaskDueToday(task: Task): boolean {
-  return Boolean(task.dueDate) && isToday(parseISO(task.dueDate!))
+  const dueDateMs = getDueDateMs(task)
+  return dueDateMs !== null && isToday(dueDateMs)
 }
 
 export function isTaskOverdue(task: Task): boolean {
   if (!task.dueDate || task.completed) return false
-  return isBefore(parseISO(task.dueDate), startOfToday())
+  const dueDateMs = getDueDateMs(task)
+  return dueDateMs !== null && isBefore(dueDateMs, startOfToday())
 }
 
 export function isTaskInFuture(task: Task): boolean {
-  return Boolean(task.dueDate) && isAfter(parseISO(task.dueDate!), endOfToday())
+  const dueDateMs = getDueDateMs(task)
+  return dueDateMs !== null && isAfter(dueDateMs, endOfToday())
 }
 
 export function formatDueDate(date?: string): string {
@@ -68,26 +75,32 @@ function sortByPriority(a: Task, b: Task): number {
   return diff !== 0 ? diff : a.order - b.order
 }
 
-function sortByDueDate(a: Task, b: Task): number {
-  if (!a.dueDate && !b.dueDate) return a.order - b.order
-  if (!a.dueDate) return 1
-  if (!b.dueDate) return -1
-  const diff = parseISO(a.dueDate).getTime() - parseISO(b.dueDate).getTime()
-  return diff !== 0 ? diff : sortByPriority(a, b)
-}
-
-function sortByCreatedAt(a: Task, b: Task): number {
-  return new Date(b.createdAt).getTime() - new Date(a.createdAt).getTime()
-}
-
-const SORT_FN: Record<TaskSort, (a: Task, b: Task) => number> = {
-  priority: sortByPriority,
-  due_date: sortByDueDate,
-  created_at: sortByCreatedAt
-}
-
 export function sortTasks(tasks: Task[], sortMode: TaskSort): Task[] {
-  return [...tasks].sort(SORT_FN[sortMode])
+  const dueDateMs = new Map<string, number | null>()
+  const createdAtMs = new Map<string, number>()
+
+  for (const task of tasks) {
+    dueDateMs.set(task.id, getDueDateMs(task))
+    createdAtMs.set(task.id, new Date(task.createdAt).getTime())
+  }
+
+  return [...tasks].sort((a, b) => {
+    if (sortMode === 'priority') return sortByPriority(a, b)
+
+    if (sortMode === 'created_at') {
+      return (createdAtMs.get(b.id) ?? 0) - (createdAtMs.get(a.id) ?? 0)
+    }
+
+    const aDueDateMs = dueDateMs.get(a.id) ?? null
+    const bDueDateMs = dueDateMs.get(b.id) ?? null
+
+    if (aDueDateMs === null && bDueDateMs === null) return a.order - b.order
+    if (aDueDateMs === null) return 1
+    if (bDueDateMs === null) return -1
+
+    const diff = aDueDateMs - bDueDateMs
+    return diff !== 0 ? diff : sortByPriority(a, b)
+  })
 }
 
 export function useVisibleTasks(): Task[] {

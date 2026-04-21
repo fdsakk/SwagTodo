@@ -18,9 +18,10 @@ function buildEvents(tasks: Task[]): ActivityEvent[] {
   const events: ActivityEvent[] = []
   for (const task of tasks) {
     events.push({ id: `${task.id}:created`, kind: 'created', at: task.createdAt, task })
-    if (task.completed) {
-      events.push({ id: `${task.id}:completed`, kind: 'completed', at: task.updatedAt, task })
-    } else if (task.updatedAt !== task.createdAt) {
+    if (task.completedAt) {
+      events.push({ id: `${task.id}:completed`, kind: 'completed', at: task.completedAt, task })
+    }
+    if (task.updatedAt !== task.createdAt && task.updatedAt !== task.completedAt) {
       events.push({ id: `${task.id}:edited`, kind: 'edited', at: task.updatedAt, task })
     }
   }

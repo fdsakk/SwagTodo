@@ -68,7 +68,7 @@ All components live in `src/renderer/src/components/` subfolders — no loose fi
 | `modals/`            | `LabelManagerModal`, `ShortcutsHelpModal`, `ProjectPickerModal`                  |
 | `project/`           | `ProjectPanel`, `ColorSelector`, `CustomColorInput`, `EmojiPicker`               |
 | `sidebar/`           | `NavItem`, `ProjectList`, `SidebarFooter`                                        |
-| `settings/`          | `SyncSection`, `CustomizeSection`, `ThemeSection`, `ThemeSwatch`                 |
+| `settings/`          | `CustomizeSection`, `ThemeSection`, `ThemeSwatch`                                |
 | `task-edit/`         | `SessionStats`, `SubtaskList`                                                    |
 | `kanban/`            | `KanbanBoard`, `KanbanCard`, `KanbanCardPreview`, `KanbanColumn`                 |
 | `sessions-calendar/` | `SessionsCalendar`, `SessionBlockView`, `TimeBlockView`, `DraftGhost`            |

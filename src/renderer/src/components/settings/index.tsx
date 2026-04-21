@@ -1,4 +1,3 @@
 export { CustomizeSection } from './CustomizeSection'
-export { SyncSection } from './SyncSection'
 export { ThemeSection } from './ThemeSection'
 export { ThemeSwatch } from './ThemeSwatch'

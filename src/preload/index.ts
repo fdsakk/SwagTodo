@@ -1,6 +1,6 @@
 import { contextBridge, ipcRenderer } from 'electron'
 import { electronAPI } from '@electron-toolkit/preload'
-import type { AppState, SyncSettings, SyncStatus, WindowState } from '../shared/types'
+import type { AppState, WindowState } from '../shared/types'
 
 const api = {
   storage: {
@@ -12,13 +12,6 @@ const api = {
   ui: {
     getZoomFactor: (): Promise<number> => ipcRenderer.invoke('ui:getZoomFactor'),
     setZoomFactor: (factor: number): Promise<void> => ipcRenderer.invoke('ui:setZoomFactor', factor)
-  },
-  sync: {
-    turnOn: (
-      params: Pick<SyncSettings, 'supabaseUrl' | 'supabaseAnonKey' | 'workspaceId'>
-    ): Promise<void> => ipcRenderer.invoke('sync:turnOn', params),
-    turnOff: (): Promise<void> => ipcRenderer.invoke('sync:turnOff'),
-    getStatus: (): Promise<SyncStatus> => ipcRenderer.invoke('sync:getStatus')
   },
   window: {
     minimize: (): Promise<void> => ipcRenderer.invoke('window:minimize'),

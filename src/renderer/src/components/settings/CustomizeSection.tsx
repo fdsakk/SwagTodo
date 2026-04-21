@@ -1,7 +1,8 @@
-import { useState, useEffect } from 'react'
+import { useEffect, useState } from 'react'
+import { ChevronDown, ChevronUp, RotateCcw } from 'lucide-react'
 import { HexColorPicker } from 'react-colorful'
 import {
-  THEME_TOKEN_KEYS,
+  THEME_PRESETS,
   getResolvedTokens,
   type AppearanceSettings,
   type ThemeTokens
@@ -27,6 +28,36 @@ const TOKEN_LABELS: Record<keyof ThemeTokens, string> = {
   '--app-scrollbar-hover': 'Scrollbar Hover'
 }
 
+const TOKEN_GROUPS = [
+  {
+    id: 'layout',
+    title: 'Layout',
+    keys: ['--app-bg', '--app-sidebar', '--app-titlebar', '--app-content', '--app-card']
+  },
+  {
+    id: 'text',
+    title: 'Text',
+    keys: ['--app-text', '--app-text-secondary', '--app-text-muted']
+  },
+  {
+    id: 'interaction',
+    title: 'Interaction',
+    keys: [
+      '--app-border',
+      '--app-hover',
+      '--app-active',
+      '--app-accent',
+      '--app-accent-text',
+      '--app-scrollbar',
+      '--app-scrollbar-hover'
+    ]
+  }
+] as const satisfies ReadonlyArray<{
+  id: string
+  title: string
+  keys: readonly (keyof ThemeTokens)[]
+}>
+
 const HEX_RE = /^#([0-9a-fA-F]{6})$/
 
 function colorToHex(value: string): string {
@@ -43,21 +74,21 @@ function colorToHex(value: string): string {
 }
 
 interface ColorPickerPopoverProps {
-  hex: string
   label: string
+  hex: string
   onChange: (value: string) => void
 }
 
-function ColorPickerPopover({ hex, label, onChange }: ColorPickerPopoverProps): React.JSX.Element {
+function ColorPickerPopover({ label, hex, onChange }: ColorPickerPopoverProps): React.JSX.Element {
   const [draft, setDraft] = useState(hex)
 
   useEffect(() => {
     setDraft(hex)
   }, [hex])
 
-  const commitDraft = (raw: string): void => {
-    const val = raw.startsWith('#') ? raw : `#${raw}`
-    if (HEX_RE.test(val)) onChange(val.toLowerCase())
+  const commit = (raw: string): void => {
+    const next = raw.startsWith('#') ? raw : `#${raw}`
+    if (HEX_RE.test(next)) onChange(next.toLowerCase())
   }
 
   return (
@@ -65,54 +96,43 @@ function ColorPickerPopover({ hex, label, onChange }: ColorPickerPopoverProps): 
       <PopoverTrigger asChild>
         <button
           type="button"
-          className="group relative h-14 w-full rounded-lg border border-app-border/60 overflow-hidden cursor-pointer focus:outline-none focus-visible:ring-2 focus-visible:ring-app-accent transition-transform active:scale-95"
+          className="h-10 w-full rounded-md border border-app-border/80 transition-colors hover:border-app-accent/40 focus:outline-none focus-visible:ring-2 focus-visible:ring-app-accent"
           style={{ backgroundColor: hex }}
           aria-label={`Pick color for ${label}`}
-        >
-          <span className="absolute inset-0 flex items-center justify-center opacity-0 group-hover:opacity-100 transition-opacity">
-            <span className="rounded-md bg-black/40 px-2 py-0.5 text-[10px] font-medium text-white backdrop-blur-sm">
-              Edit
-            </span>
-          </span>
-        </button>
+        />
       </PopoverTrigger>
-
       <PopoverContent
-        className="w-auto p-0 border-app-border bg-app-card shadow-xl"
+        className="w-[244px] border-app-border bg-app-card p-3 shadow-lg"
         align="center"
-        sideOffset={8}
       >
-        <div className="flex flex-col gap-0">
-          {/* react-colorful picker — override its CSS vars to match app theme */}
-          <div className="p-3 [&_.react-colorful]:w-full [&_.react-colorful]:rounded-none [&_.react-colorful__saturation]:rounded-t-md [&_.react-colorful__last-control]:rounded-b-none [&_.react-colorful__hue]:rounded-none [&_.react-colorful__pointer]:w-4 [&_.react-colorful__pointer]:h-4 [&_.react-colorful__pointer]:border-2 [&_.react-colorful__pointer]:border-white [&_.react-colorful__pointer]:shadow-md">
-            <HexColorPicker
-              color={hex}
-              onChange={onChange}
-              style={{ width: '200px' }}
-            />
-          </div>
-
-          {/* Hex input + current swatch */}
-          <div className="flex items-center gap-2 border-t border-app-border px-3 py-2">
+        <div className="space-y-3">
+          <HexColorPicker
+            color={hex}
+            onChange={onChange}
+            style={{ width: '100%' }}
+            className="[&_.react-colorful__saturation]:rounded-t-md [&_.react-colorful__hue]:rounded-b-md"
+          />
+          <div className="flex items-center gap-2">
             <div
-              className="h-6 w-6 shrink-0 rounded border border-app-border/60"
+              className="size-7 shrink-0 rounded-md border border-app-border/70"
               style={{ backgroundColor: hex }}
             />
             <input
-              className="h-7 flex-1 rounded-md border border-app-border bg-app-hover px-2 font-mono text-xs text-app-text-secondary placeholder:text-app-text-muted focus:border-app-accent focus:outline-none transition-colors"
+              className="h-8 flex-1 rounded-md border border-app-border bg-app-hover px-2 text-xs text-app-text-secondary placeholder:text-app-text-muted focus:border-app-accent focus:outline-none"
               maxLength={7}
               value={draft}
               placeholder="#000000"
               onChange={(e) => {
-                setDraft(e.target.value)
-                const val = e.target.value.startsWith('#') ? e.target.value : `#${e.target.value}`
+                const next = e.target.value
+                setDraft(next)
+                const val = next.startsWith('#') ? next : `#${next}`
                 if (HEX_RE.test(val)) onChange(val.toLowerCase())
               }}
-              onBlur={() => commitDraft(draft)}
+              onBlur={() => commit(draft)}
               onKeyDown={(e) => {
                 if (e.key === 'Enter') {
                   e.preventDefault()
-                  commitDraft(draft)
+                  commit(draft)
                 }
               }}
             />
@@ -123,7 +143,7 @@ function ColorPickerPopover({ hex, label, onChange }: ColorPickerPopoverProps): 
   )
 }
 
-interface ColorSwatchProps {
+interface ColorTokenCardProps {
   tokenKey: keyof ThemeTokens
   label: string
   hex: string
@@ -132,30 +152,36 @@ interface ColorSwatchProps {
   onReset: () => void
 }
 
-function ColorSwatch({ label, hex, isCustom, onChange, onReset }: ColorSwatchProps): React.JSX.Element {
+function ColorTokenCard({
+  tokenKey,
+  label,
+  hex,
+  isCustom,
+  onChange,
+  onReset
+}: ColorTokenCardProps): React.JSX.Element {
   return (
-    <div className="group relative flex flex-col gap-2 rounded-xl border border-app-border bg-app-bg p-3 hover:border-app-accent/40 transition-colors">
-      <ColorPickerPopover hex={hex} label={label} onChange={onChange} />
-
-      {isCustom && (
-        <span className="absolute right-4 top-4 h-2 w-2 rounded-full bg-app-accent ring-1 ring-app-bg pointer-events-none" />
-      )}
-
-      <div className="flex items-center justify-between gap-1 min-w-0">
-        <span className="text-xs font-medium text-app-text-secondary truncate">{label}</span>
-        {isCustom && (
-          <button
-            type="button"
-            onClick={onReset}
-            className="shrink-0 text-[10px] text-app-text-muted hover:text-app-text transition-colors leading-none"
-            aria-label={`Reset ${label}`}
-          >
-            Reset
-          </button>
-        )}
+    <div className="rounded-lg border border-app-border bg-app-card p-3">
+      <ColorPickerPopover label={label} hex={hex} onChange={onChange} />
+      <div className="mt-2.5 flex items-center justify-between gap-2">
+        <div className="min-w-0">
+          <p className="truncate text-xs font-medium text-app-text">{label}</p>
+          <p className="mt-0.5 truncate text-[11px] text-app-text-muted">{tokenKey}</p>
+        </div>
+        <div className="flex items-center gap-2">
+          <span className="text-xs text-app-text-secondary">{hex}</span>
+          {isCustom && (
+            <button
+              type="button"
+              onClick={onReset}
+              className="rounded-md border border-app-border px-2 py-1 text-[11px] text-app-text-secondary hover:text-app-text transition-colors"
+              aria-label={`Reset ${label}`}
+            >
+              Reset
+            </button>
+          )}
+        </div>
       </div>
-
-      <span className="font-mono text-[10px] text-app-text-muted leading-none">{hex}</span>
     </div>
   )
 }
@@ -171,25 +197,38 @@ export function CustomizeSection({
   onSetCustomTokens,
   onResetCustomTokens
 }: CustomizeSectionProps): React.JSX.Element {
-  const [showCustomize, setShowCustomize] = useState(false)
+  const [showCustomize, setShowCustomize] = useState(true)
   const resolved = getResolvedTokens(appearance)
   const customTokens = appearance.customTokens ?? {}
-  const hasCustom = Object.keys(customTokens).length > 0
+  const customCount = Object.keys(customTokens).length
+  const hasCustom = customCount > 0
+  const activeThemeName =
+    THEME_PRESETS.find((preset) => preset.id === appearance.themeId)?.name ?? 'Custom'
+
+  const handleResetToken = (tokenKey: keyof ThemeTokens): void => {
+    const next = { ...customTokens }
+    delete next[tokenKey]
+    onResetCustomTokens()
+    if (Object.keys(next).length > 0) onSetCustomTokens(next)
+  }
 
   return (
-    <section className="space-y-3">
-      <div className="flex items-center justify-between">
+    <section className="space-y-4">
+      <div className="flex flex-col gap-3 sm:flex-row sm:items-end sm:justify-between">
         <div>
           <h2 className="text-sm font-semibold text-app-text">Customize Colors</h2>
-          <p className="mt-0.5 text-xs text-app-text-muted">Override individual tokens</p>
+          <p className="mt-0.5 text-xs text-app-text-muted">
+            Theme: {activeThemeName} · Custom tokens: {customCount}
+          </p>
         </div>
-        <div className="flex gap-1.5">
+        <div className="flex items-center gap-2">
           {hasCustom && (
             <button
               type="button"
               onClick={onResetCustomTokens}
-              className="rounded-lg border border-app-border px-2.5 py-1 text-xs text-app-text-muted hover:text-app-text-secondary transition-colors"
+              className="inline-flex items-center gap-1.5 rounded-lg border border-app-border px-2.5 py-1.5 text-xs text-app-text-secondary transition-colors hover:text-app-text"
             >
+              <RotateCcw className="size-3.5" />
               Reset all
             </button>
           )}
@@ -197,39 +236,48 @@ export function CustomizeSection({
             type="button"
             onClick={() => setShowCustomize((v) => !v)}
             className={cn(
-              'rounded-lg border px-2.5 py-1 text-xs font-medium transition-colors',
+              'inline-flex items-center gap-1.5 rounded-lg border px-2.5 py-1.5 text-xs font-medium transition-colors',
               showCustomize
                 ? 'border-app-accent bg-app-accent/10 text-app-text'
-                : 'border-app-border text-app-text-muted hover:text-app-text-secondary'
+                : 'border-app-border text-app-text-secondary hover:text-app-text'
             )}
           >
-            {showCustomize ? 'Hide' : 'Fine-tune…'}
+            {showCustomize ? (
+              <ChevronUp className="size-3.5" />
+            ) : (
+              <ChevronDown className="size-3.5" />
+            )}
+            {showCustomize ? 'Hide' : 'Customize'}
           </button>
         </div>
       </div>
 
       {showCustomize && (
-        <div className="grid grid-cols-3 gap-2">
-          {THEME_TOKEN_KEYS.map((key) => {
-            const hex = colorToHex(resolved[key])
-            const isCustom = Boolean(customTokens[key])
-            return (
-              <ColorSwatch
-                key={key}
-                tokenKey={key}
-                label={TOKEN_LABELS[key]}
-                hex={hex}
-                isCustom={isCustom}
-                onChange={(val) => onSetCustomTokens({ [key]: val })}
-                onReset={() => {
-                  const next = { ...customTokens }
-                  delete next[key]
-                  onResetCustomTokens()
-                  if (Object.keys(next).length > 0) onSetCustomTokens(next)
-                }}
-              />
-            )
-          })}
+        <div className="space-y-4">
+          {TOKEN_GROUPS.map(({ id, title, keys }) => (
+            <div key={id} className="space-y-2">
+              <h3 className="text-xs font-semibold uppercase tracking-wide text-app-text-secondary">
+                {title}
+              </h3>
+              <div className="grid gap-2 grid-cols-2 lg:grid-cols-3 xl:grid-cols-5">
+                {keys.map((key) => {
+                  const hex = colorToHex(resolved[key])
+                  const isCustom = Boolean(customTokens[key])
+                  return (
+                    <ColorTokenCard
+                      key={key}
+                      tokenKey={key}
+                      label={TOKEN_LABELS[key]}
+                      hex={hex}
+                      isCustom={isCustom}
+                      onChange={(value) => onSetCustomTokens({ [key]: value })}
+                      onReset={() => handleResetToken(key)}
+                    />
+                  )
+                })}
+              </div>
+            </div>
+          ))}
         </div>
       )}
     </section>

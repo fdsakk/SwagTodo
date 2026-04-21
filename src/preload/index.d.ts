@@ -1,5 +1,5 @@
 import { ElectronAPI } from '@electron-toolkit/preload'
-import type { AppState, SyncSettings, SyncStatus, WindowState } from '../shared/types'
+import type { AppState, WindowState } from '../shared/types'
 
 interface RendererApi {
   storage: {
@@ -10,13 +10,6 @@ interface RendererApi {
   ui: {
     getZoomFactor: () => Promise<number>
     setZoomFactor: (factor: number) => Promise<void>
-  }
-  sync: {
-    turnOn: (
-      params: Pick<SyncSettings, 'supabaseUrl' | 'supabaseAnonKey' | 'workspaceId'>
-    ) => Promise<void>
-    turnOff: () => Promise<void>
-    getStatus: () => Promise<SyncStatus>
   }
   window: {
     minimize: () => Promise<void>

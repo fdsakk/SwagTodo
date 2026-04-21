@@ -2,15 +2,20 @@ import { create, type StoreApi } from 'zustand'
 import { persist, type PersistStorage } from 'zustand/middleware'
 import { v4 as uuidv4 } from 'uuid'
 import {
+  normalizeLabelInput,
+  normalizeLabelPatch,
+  normalizeProjectInput,
+  normalizeProjectPatch,
+  normalizeStoredTask,
+  normalizeTaskPatch
+} from './entity-normalizers'
+import {
   TASK_STATUSES,
   UI_SCALE_OPTIONS,
   DEFAULT_APPEARANCE,
-  DEFAULT_SYNC_SETTINGS,
   DEFAULT_PK_SETTINGS,
   normalizeAppearance,
-  normalizeSyncSettings,
   type AppearanceSettings,
-  type SyncSettings,
   type ThemeId,
   type ThemeTokens,
   type AppState,
@@ -87,7 +92,6 @@ interface AppStore extends AppState {
   projectTab: ProjectTab
   searchFocusSignal: number
   appearance: AppearanceSettings
-  sync: SyncSettings
   pkSettings: PkSettings
   hydrate: () => Promise<void>
   refreshFromStorage: () => Promise<void>
@@ -136,9 +140,6 @@ interface AppStore extends AppState {
   setThemeId: (id: ThemeId) => void
   setCustomTokens: (tokens: Partial<ThemeTokens>) => void
   resetCustomTokens: () => void
-  setSyncSupabaseUrl: (supabaseUrl: string) => void
-  setSyncSupabaseAnonKey: (supabaseAnonKey: string) => void
-  setSyncWorkspaceId: (workspaceId: string) => void
   selectHealth: () => void
   addMedicationLog: (input: Omit<MedicationLog, 'id' | 'createdAt'>) => void
   updateMedicationLog: (id: string, takenAt: string) => void
@@ -160,7 +161,6 @@ type PersistedSlice = Pick<
   | 'uiScale'
   | 'isSidebarCollapsed'
   | 'appearance'
-  | 'sync'
 >
 
 const PERSISTED_KEYS: (keyof PersistedSlice)[] = [
@@ -173,8 +173,7 @@ const PERSISTED_KEYS: (keyof PersistedSlice)[] = [
   'pkSettings',
   'uiScale',
   'isSidebarCollapsed',
-  'appearance',
-  'sync'
+  'appearance'
 ]
 
 const nextOrder = (tasks: readonly Task[]): number => {
@@ -232,14 +231,13 @@ const stateFromPersisted = (
   | 'uiScale'
   | 'isSidebarCollapsed'
   | 'appearance'
-  | 'sync'
 > => {
   const data =
     persisted && typeof persisted === 'object'
-      ? (persisted as Partial<AppState> & { appearance?: unknown; sync?: unknown })
+      ? (persisted as Partial<AppState> & { appearance?: unknown })
       : {}
   return {
-    tasks: Array.isArray(data.tasks) ? data.tasks : [],
+    tasks: Array.isArray(data.tasks) ? data.tasks.map((task) => normalizeStoredTask(task)) : [],
     projects: Array.isArray(data.projects) ? data.projects : [],
     labels: Array.isArray(data.labels) ? data.labels : [],
     sessions: Array.isArray(data.sessions) ? data.sessions : [],
@@ -248,8 +246,7 @@ const stateFromPersisted = (
     pkSettings: normalizePkSettings(data.pkSettings),
     uiScale: isUiScale(data.uiScale) ? data.uiScale : UI_SCALE_OPTIONS[0],
     isSidebarCollapsed: data.isSidebarCollapsed ?? false,
-    appearance: normalizeAppearance(data.appearance),
-    sync: normalizeSyncSettings(data.sync)
+    appearance: normalizeAppearance(data.appearance)
   }
 }
 
@@ -263,8 +260,7 @@ const pickPersistedSlice = (state: AppStore): PersistedSlice => ({
   pkSettings: state.pkSettings,
   uiScale: state.uiScale,
   isSidebarCollapsed: state.isSidebarCollapsed,
-  appearance: state.appearance,
-  sync: state.sync
+  appearance: state.appearance
 })
 
 let lastPersistedSlice: PersistedSlice | undefined
@@ -315,7 +311,6 @@ const createLegacyStore = (set: AppStoreSet, get: AppStoreGet): AppStore => ({
   showCompleted: false,
   uiScale: UI_SCALE_OPTIONS[0],
   appearance: DEFAULT_APPEARANCE,
-  sync: DEFAULT_SYNC_SETTINGS,
   projectTab: 'list',
   searchFocusSignal: 0,
   refreshFromStorage: async () => {
@@ -367,10 +362,11 @@ const createLegacyStore = (set: AppStoreSet, get: AppStoreGet): AppStore => ({
   openEditPanel: (taskId) => set({ taskPanel: { open: true, mode: 'edit', taskId } }),
   closeTaskPanel: () => set({ taskPanel: { open: false } }),
   addTask: (input) => {
-    const title = input.title.trim()
-    if (!title) return
     const timestamp = nowIso()
     const status = input.status ?? 'todo'
+    const completed = status === 'done'
+    const title = input.title.trim()
+    if (!title) return
     const task: Task = {
       id: uuidv4(),
       title,
@@ -379,8 +375,9 @@ const createLegacyStore = (set: AppStoreSet, get: AppStoreGet): AppStore => ({
       dueDate: input.dueDate,
       projectId: input.projectId,
       labels: input.labels ?? [],
-      completed: status === 'done',
+      completed,
       status,
+      completedAt: completed ? timestamp : undefined,
       createdAt: timestamp,
       updatedAt: timestamp,
       order: nextOrder(get().tasks),
@@ -391,26 +388,16 @@ const createLegacyStore = (set: AppStoreSet, get: AppStoreGet): AppStore => ({
   updateTask: (taskId, updates) => {
     set((state) => ({
       tasks: mapTaskById(state.tasks, taskId, (task) => {
-        const patch: Partial<Task> = { ...updates }
-        if (patch.status !== undefined) {
-          patch.completed = patch.status === 'done'
-        } else if (typeof patch.completed === 'boolean') {
-          patch.status = patch.completed ? 'done' : 'todo'
-        }
-        return { ...task, ...patch, updatedAt: nowIso() }
+        const patch = normalizeTaskPatch(task, updates, nowIso())
+        return patch ? { ...task, ...patch } : task
       })
     }))
   },
   toggleTaskComplete: (taskId) => {
     set((state) => ({
       tasks: mapTaskById(state.tasks, taskId, (task) => {
-        const completed = !task.completed
-        return {
-          ...task,
-          completed,
-          status: completed ? 'done' : 'todo',
-          updatedAt: nowIso()
-        }
+        const patch = normalizeTaskPatch(task, { completed: !task.completed }, nowIso())
+        return patch ? { ...task, ...patch } : task
       })
     }))
   },
@@ -468,14 +455,11 @@ const createLegacyStore = (set: AppStoreSet, get: AppStoreGet): AppStore => ({
     }))
   },
   addProject: (input) => {
-    const name = input.name.trim()
-    if (!name) return ''
+    const normalized = normalizeProjectInput(input)
+    if (!normalized) return ''
     const project: Project = {
       id: uuidv4(),
-      name,
-      color: input.color,
-      emoji: input.emoji?.trim() || undefined,
-      description: input.description?.trim() || undefined,
+      ...normalized,
       createdAt: nowIso()
     }
     set((state) => ({ projects: [...state.projects, project] }))
@@ -487,7 +471,9 @@ const createLegacyStore = (set: AppStoreSet, get: AppStoreGet): AppStore => ({
       if (idx === -1) return state
       const projects = state.projects.slice()
       const current = state.projects[idx]
-      projects[idx] = { ...current, ...updates, name: updates.name?.trim() ?? current.name }
+      const patch = normalizeProjectPatch(current, updates)
+      if (!patch) return state
+      projects[idx] = { ...current, ...patch }
       return { projects }
     }),
   deleteProject: (projectId) =>
@@ -513,9 +499,9 @@ const createLegacyStore = (set: AppStoreSet, get: AppStoreGet): AppStore => ({
       }
     }),
   addLabel: (input) => {
-    const name = input.name.trim()
-    if (!name) return ''
-    const label: Label = { id: uuidv4(), name, color: input.color }
+    const normalized = normalizeLabelInput(input)
+    if (!normalized) return ''
+    const label: Label = { id: uuidv4(), ...normalized }
     set((state) => ({ labels: [...state.labels, label] }))
     return label.id
   },
@@ -524,7 +510,10 @@ const createLegacyStore = (set: AppStoreSet, get: AppStoreGet): AppStore => ({
       const idx = state.labels.findIndex((l) => l.id === labelId)
       if (idx === -1) return state
       const labels = state.labels.slice()
-      labels[idx] = { ...state.labels[idx], ...updates }
+      const current = state.labels[idx]
+      const patch = normalizeLabelPatch(current, updates)
+      if (!patch) return state
+      labels[idx] = { ...current, ...patch }
       return { labels }
     }),
   deleteLabel: (labelId) =>
@@ -648,12 +637,6 @@ const createLegacyStore = (set: AppStoreSet, get: AppStoreGet): AppStore => ({
       appearance: { ...s.appearance, customTokens: { ...s.appearance.customTokens, ...tokens } }
     })),
   resetCustomTokens: () => set((s) => ({ appearance: { ...s.appearance, customTokens: {} } })),
-  setSyncSupabaseUrl: (supabaseUrl) =>
-    set((s) => ({ sync: { ...s.sync, supabaseUrl: supabaseUrl.trim() } })),
-  setSyncSupabaseAnonKey: (supabaseAnonKey) =>
-    set((s) => ({ sync: { ...s.sync, supabaseAnonKey: supabaseAnonKey.trim() } })),
-  setSyncWorkspaceId: (workspaceId) =>
-    set((s) => ({ sync: { ...s.sync, workspaceId: workspaceId.trim() } })),
   selectHealth: () => set({ selectedView: 'health', selectedProjectId: undefined }),
   addMedicationLog: (input) => {
     const log: MedicationLog = { id: uuidv4(), ...input, createdAt: nowIso() }
@@ -694,13 +677,14 @@ const createLegacyStore = (set: AppStoreSet, get: AppStoreGet): AppStore => ({
         if (!next) return t
         if (t.status === next.status && t.order === next.order) return t
         changed = true
-        return {
-          ...t,
-          status: next.status,
-          completed: next.status === 'done',
-          order: next.order,
+        const patch = normalizeTaskPatch(
+          t,
+          { status: next.status, completed: next.status === 'done' },
           updatedAt
-        }
+        )
+        return patch
+          ? { ...t, ...patch, order: next.order }
+          : { ...t, order: next.order, updatedAt }
       })
       return changed ? { tasks } : state
     })
@@ -784,14 +768,10 @@ const SESSION_SLICE_KEYS = [
 const SETTINGS_SLICE_KEYS = [
   'uiScale',
   'appearance',
-  'sync',
   'setUiScale',
   'setThemeId',
   'setCustomTokens',
-  'resetCustomTokens',
-  'setSyncSupabaseUrl',
-  'setSyncSupabaseAnonKey',
-  'setSyncWorkspaceId'
+  'resetCustomTokens'
 ] as const satisfies readonly (keyof AppStore)[]
 
 const HEALTH_SLICE_KEYS = [

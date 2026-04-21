@@ -130,9 +130,13 @@ function App(): React.JSX.Element {
 
   if (!hydrated) {
     return (
-      <div className={`flex h-full flex-col overflow-hidden bg-[#070708] px-[2px] pb-[2px] ring-1 ring-white/5${isFullScreen ? '' : ' rounded-xl'}`}>
+      <div
+        className={`flex h-full flex-col overflow-hidden bg-[#070708] px-[2px] pb-[2px] ring-1 ring-white/5${isFullScreen ? '' : ' rounded-xl'}`}
+      >
         <TitleBar />
-        <div className={`flex flex-1 items-center justify-center overflow-hidden bg-app-bg text-sm text-app-text-muted${isFullScreen ? '' : ' rounded-b-[10px]'}`}>
+        <div
+          className={`flex flex-1 items-center justify-center overflow-hidden bg-app-bg text-sm text-app-text-muted${isFullScreen ? '' : ' rounded-b-[10px]'}`}
+        >
           Loading workspace...
         </div>
       </div>
@@ -140,10 +144,14 @@ function App(): React.JSX.Element {
   }
 
   return (
-    <div className={`flex h-full flex-col overflow-hidden bg-app-titlebar px-2 pb-2${isFullScreen ? '' : ' rounded-xl'}`}>
+    <div
+      className={`flex h-full flex-col overflow-hidden bg-app-titlebar px-2 pb-2${isFullScreen ? '' : ' rounded-xl'}`}
+    >
       <ThemeProvider />
       <TitleBar />
-      <div className={`relative flex min-h-0 flex-1 overflow-hidden bg-app-bg${isFullScreen ? '' : ' rounded-lg'}`}>
+      <div
+        className={`relative flex min-h-0 flex-1 overflow-hidden bg-app-bg${isFullScreen ? '' : ' rounded-lg'}`}
+      >
         <Sidebar
           onOpenLabelModal={() => setLabelModalOpen(true)}
           onOpenProjectPanel={openCreateProjectPanel}

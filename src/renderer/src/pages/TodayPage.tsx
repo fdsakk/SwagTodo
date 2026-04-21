@@ -19,15 +19,22 @@ export default function TodayPage(): React.JSX.Element {
   const tasks = useVisibleTasks()
 
   const groupedTasks = useMemo<TaskGroup[]>(() => {
-    const todayTasks = tasks.filter((t) => isTaskDueToday(t) || isTaskOverdue(t))
+    const overdue: typeof tasks = []
+    const today: typeof tasks = []
+
+    for (const task of tasks) {
+      if (isTaskOverdue(task)) overdue.push(task)
+      else if (isTaskDueToday(task)) today.push(task)
+    }
+
     return [
       {
         id: 'overdue',
         title: 'Overdue',
         accentClass: 'text-app-text-secondary',
-        tasks: todayTasks.filter(isTaskOverdue)
+        tasks: overdue
       },
-      { id: 'today', title: 'Today', tasks: todayTasks.filter(isTaskDueToday) }
+      { id: 'today', title: 'Today', tasks: today }
     ]
   }, [tasks])
 

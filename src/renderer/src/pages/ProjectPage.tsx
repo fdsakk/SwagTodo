@@ -35,18 +35,23 @@ export default function ProjectPage(props: ProjectPageProps): React.JSX.Element 
     [tasks, selectedProjectId]
   )
 
-  const groupedTasks = useMemo<TaskGroup[]>(
-    () => [
-      { id: 'todo', title: 'To Do', tasks: projectTasks.filter((t) => t.status === 'todo') },
-      {
-        id: 'in-progress',
-        title: 'In Progress',
-        tasks: projectTasks.filter((t) => t.status === 'in_progress')
-      },
-      { id: 'done', title: 'Done', tasks: projectTasks.filter((t) => t.status === 'done') }
-    ],
-    [projectTasks]
-  )
+  const groupedTasks = useMemo<TaskGroup[]>(() => {
+    const todo: typeof projectTasks = []
+    const inProgress: typeof projectTasks = []
+    const done: typeof projectTasks = []
+
+    for (const task of projectTasks) {
+      if (task.status === 'todo') todo.push(task)
+      else if (task.status === 'in_progress') inProgress.push(task)
+      else done.push(task)
+    }
+
+    return [
+      { id: 'todo', title: 'To Do', tasks: todo },
+      { id: 'in-progress', title: 'In Progress', tasks: inProgress },
+      { id: 'done', title: 'Done', tasks: done }
+    ]
+  }, [projectTasks])
 
   if (!project) {
     return (

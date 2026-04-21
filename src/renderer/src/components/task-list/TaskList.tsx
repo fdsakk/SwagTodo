@@ -1,3 +1,4 @@
+import { useMemo } from 'react'
 import type { Label, Project, TaskGroup } from '@renderer/types'
 import { TaskRow } from './TaskRow'
 
@@ -13,6 +14,14 @@ interface TaskListProps {
 
 export function TaskList(props: TaskListProps): React.JSX.Element {
   const hasTasks = props.groups.some((group) => group.tasks.length > 0)
+  const projectById = useMemo(
+    () => new Map(props.projects.map((project) => [project.id, project])),
+    [props.projects]
+  )
+  const labelById = useMemo(
+    () => new Map(props.labels.map((label) => [label.id, label])),
+    [props.labels]
+  )
 
   if (!hasTasks) {
     return (
@@ -23,28 +32,29 @@ export function TaskList(props: TaskListProps): React.JSX.Element {
     )
   }
 
+  let rowIndex = 0
+
   return (
     <div className="h-full overflow-y-auto px-4 pb-6">
       <div className="space-y-6">
-        {props.groups.map((group, groupIndex) =>
+        {props.groups.map((group) =>
           group.tasks.length > 0 ? (
             <section key={group.id}>
               <h3 className="mb-1 px-2 text-xs font-medium text-app-text-muted">{group.title}</h3>
               <ul>
-                {group.tasks.map((task, taskIndex) => {
-                  const index =
-                    taskIndex +
-                    props.groups
-                      .slice(0, groupIndex)
-                      .reduce((sum, currentGroup) => sum + currentGroup.tasks.length, 0)
+                {group.tasks.map((task) => {
+                  const index = rowIndex++
+                  const labels = task.labels
+                    .map((labelId) => labelById.get(labelId))
+                    .filter((label): label is Label => Boolean(label))
                   return (
                     <TaskRow
                       index={index}
                       key={task.id}
-                      labels={props.labels.filter((label) => task.labels.includes(label.id))}
+                      labels={labels}
                       onOpen={props.onOpenTask}
                       onToggleComplete={props.onToggleComplete}
-                      project={props.projects.find((project) => project.id === task.projectId)}
+                      project={task.projectId ? projectById.get(task.projectId) : undefined}
                       task={task}
                     />
                   )

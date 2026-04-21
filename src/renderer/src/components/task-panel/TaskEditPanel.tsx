@@ -42,19 +42,12 @@ export function TaskEditPanel({ task, onClose }: TaskEditPanelProps): React.JSX.
 
   const stats = useMemo(() => computeTaskStats(sessions, task.id), [sessions, task.id])
 
-  const [lastTaskId, setLastTaskId] = useState(task.id)
   const [title, setTitle] = useState(task.title)
   const [description, setDescription] = useState(task.description ?? '')
   const [newSubTaskTitle, setNewSubTaskTitle] = useState('')
 
   const titleTimerRef = useRef<ReturnType<typeof setTimeout> | null>(null)
   const descTimerRef = useRef<ReturnType<typeof setTimeout> | null>(null)
-
-  if (lastTaskId !== task.id) {
-    setLastTaskId(task.id)
-    setTitle(task.title)
-    setDescription(task.description ?? '')
-  }
 
   useEffect(() => {
     return () => {
@@ -114,9 +107,10 @@ export function TaskEditPanel({ task, onClose }: TaskEditPanelProps): React.JSX.
     if (titleTimerRef.current) {
       clearTimeout(titleTimerRef.current)
       titleTimerRef.current = null
-      updateTask(task.id, { title })
+      if (title.trim()) updateTask(task.id, { title })
+      else setTitle(task.title)
     }
-  }, [task.id, title, updateTask])
+  }, [task.id, task.title, title, updateTask])
 
   const flushDescription = useCallback(() => {
     if (descTimerRef.current) {

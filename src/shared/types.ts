@@ -2,7 +2,6 @@ export type Priority = 'p1' | 'p2' | 'p3' | 'p4'
 export type TaskStatus = 'todo' | 'in_progress' | 'done'
 export const UI_SCALE_OPTIONS = [100, 110, 125, 150, 175] as const
 export type UiScale = (typeof UI_SCALE_OPTIONS)[number]
-export type SyncMode = 'local' | 'supabase'
 
 export interface SubTask {
   id: string
@@ -20,6 +19,7 @@ export interface Task {
   labels: string[]
   completed: boolean
   status: TaskStatus
+  completedAt?: string
   createdAt: string
   updatedAt: string
   order: number
@@ -64,20 +64,6 @@ export interface AppearanceSettings {
   customTokens: Record<string, string>
 }
 
-export interface SyncSettings {
-  mode: SyncMode
-  supabaseUrl: string
-  supabaseAnonKey: string
-  workspaceId: string
-}
-
-export interface SyncStatus {
-  mode: SyncMode
-  connected: boolean
-  lastSyncAt?: string
-  lastError?: string
-}
-
 export interface MedicationLog {
   id: string
   medId: string
@@ -98,7 +84,6 @@ export interface AppState {
   uiScale?: UiScale
   isSidebarCollapsed?: boolean
   appearance?: AppearanceSettings
-  sync?: SyncSettings
 }
 
 export interface WindowState {

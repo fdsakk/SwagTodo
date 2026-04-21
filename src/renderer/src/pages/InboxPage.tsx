@@ -24,17 +24,29 @@ export default function InboxPage(): React.JSX.Element {
   const tasks = useVisibleTasks()
 
   const groupedTasks = useMemo<TaskGroup[]>(() => {
-    const inbox = tasks.filter((t) => !t.projectId)
+    const overdue: typeof tasks = []
+    const noDate: typeof tasks = []
+    const today: typeof tasks = []
+    const future: typeof tasks = []
+
+    for (const task of tasks) {
+      if (task.projectId) continue
+      if (isTaskOverdue(task)) overdue.push(task)
+      else if (!task.dueDate) noDate.push(task)
+      else if (isTaskDueToday(task)) today.push(task)
+      else if (isTaskInFuture(task)) future.push(task)
+    }
+
     return [
       {
         id: 'overdue',
         title: 'Overdue',
         accentClass: 'text-app-text-secondary',
-        tasks: inbox.filter(isTaskOverdue)
+        tasks: overdue
       },
-      { id: 'no-date', title: 'No date', tasks: inbox.filter((t) => !t.dueDate) },
-      { id: 'today', title: 'Today', tasks: inbox.filter(isTaskDueToday) },
-      { id: 'future', title: 'Future', tasks: inbox.filter(isTaskInFuture) }
+      { id: 'no-date', title: 'No date', tasks: noDate },
+      { id: 'today', title: 'Today', tasks: today },
+      { id: 'future', title: 'Future', tasks: future }
     ]
   }, [tasks])
 

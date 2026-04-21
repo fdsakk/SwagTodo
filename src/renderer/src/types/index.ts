@@ -5,9 +5,6 @@ import {
   type Priority,
   type Project,
   type SubTask,
-  type SyncMode,
-  type SyncSettings,
-  type SyncStatus,
   type Task,
   type TaskSession,
   type TaskStatus,
@@ -15,23 +12,15 @@ import {
   type UiScale,
   type WindowState
 } from '../../../shared/types'
-import {
-  DEFAULT_SYNC_SETTINGS,
-  DEFAULT_WORKSPACE_ID,
-  UI_SCALE_OPTIONS
-} from '../../../shared/defaults'
+import { UI_SCALE_OPTIONS } from '../../../shared/defaults'
 
 export { UI_SCALE_OPTIONS }
-export { DEFAULT_SYNC_SETTINGS }
 export type {
   Label,
   MedicationLog,
   Priority,
   Project,
   SubTask,
-  SyncMode,
-  SyncSettings,
-  SyncStatus,
   Task,
   TaskSession,
   TaskStatus,
@@ -531,19 +520,6 @@ export function normalizeAppearance(raw: unknown): AppearanceSettings {
 export function getResolvedTokens(settings: AppearanceSettings): ThemeTokens {
   const preset = THEME_PRESETS.find((p) => p.id === settings.themeId) ?? THEME_PRESETS[0]
   return { ...preset.tokens, ...(settings.customTokens ?? {}) }
-}
-
-export function normalizeSyncSettings(raw: unknown): SyncSettings {
-  if (!raw || typeof raw !== 'object') return DEFAULT_SYNC_SETTINGS
-  const obj = raw as Record<string, unknown>
-  const mode: SyncMode = obj.mode === 'supabase' ? 'supabase' : 'local'
-  const supabaseUrl = typeof obj.supabaseUrl === 'string' ? obj.supabaseUrl : ''
-  const supabaseAnonKey = typeof obj.supabaseAnonKey === 'string' ? obj.supabaseAnonKey : ''
-  const workspaceId =
-    typeof obj.workspaceId === 'string' && obj.workspaceId.trim()
-      ? obj.workspaceId.trim()
-      : DEFAULT_WORKSPACE_ID
-  return { mode, supabaseUrl, supabaseAnonKey, workspaceId }
 }
 
 export interface TaskGroup {
