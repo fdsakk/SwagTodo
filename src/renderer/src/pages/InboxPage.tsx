@@ -1,7 +1,6 @@
 import { useMemo } from 'react'
 import { TaskList } from '@renderer/components/task-list'
 import { selectInboxTaskGroups, useDomainStore, useUiStore } from '@renderer/store'
-import { useVisibleTasks } from '@renderer/utils/task'
 import { useShallow } from 'zustand/react/shallow'
 import { useTaskComplete } from '@renderer/hooks/useTaskComplete'
 
@@ -17,13 +16,14 @@ export default function InboxPage(): React.JSX.Element {
     useShallow((state) => ({
       searchQuery: state.searchQuery,
       sortMode: state.sortMode,
-      showCompleted: state.showCompleted,
-      selectedView: state.selectedView
+      inboxStatusFilter: state.inboxStatusFilter,
+      inboxProjectFilter: state.inboxProjectFilter,
+      inboxPriorityFilter: state.inboxPriorityFilter
     }))
   )
   const toggleTaskComplete = useTaskComplete()
 
-  const tasks = useVisibleTasks()
+  const tasks = useDomainStore((state) => state.tasks)
   const groupedTasks = useMemo(
     () => selectInboxTaskGroups({ tasks }, visibleInput),
     [tasks, visibleInput]
@@ -38,6 +38,7 @@ export default function InboxPage(): React.JSX.Element {
       onOpenTask={openEditPanel}
       onToggleComplete={toggleTaskComplete}
       projects={projects}
+      showProjectContext
     />
   )
 }

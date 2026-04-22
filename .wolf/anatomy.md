@@ -1,6 +1,6 @@
 # anatomy.md
 
-> Auto-maintained by OpenWolf. Last scanned: 2026-04-21T14:34:52.938Z
+> Auto-maintained by OpenWolf. Last scanned: 2026-04-22T13:42:35.127Z
 > Files: 120 tracked | Anatomy hits: 0 | Misses: 0
 
 ## ./
@@ -104,7 +104,7 @@
 - `custom-color-input.tsx` — HEX_RE — uses useState, useEffect (~576 tok)
 - `emoji-picker.tsx` — EMOJI_GROUPS — uses useState, useEffect (~994 tok)
 - `index.tsx` (~56 tok)
-- `ProjectPanel.tsx` — ProjectPanel — renders form (~1563 tok)
+- `ProjectPanel.tsx` — ProjectPanel — renders form (~1620 tok)
 
 ## src/renderer/src/components/sessions-calendar/
 
@@ -149,9 +149,9 @@
 - `index.tsx` (~70 tok)
 - `panel-field.tsx` — Field (~93 tok)
 - `task-form-fields.tsx` — INBOX_VALUE — uses useCallback (~2300 tok)
-- `TaskCreatePanel.tsx` — INITIAL_STATE — renders form — uses useCallback (~1376 tok)
-- `TaskDetailPanel.tsx` — TaskDetailPanel (~852 tok)
-- `TaskEditPanel.tsx` — TEXT_COMMIT_DEBOUNCE_MS — uses useMemo, useState, useEffect, useCallback (~2159 tok)
+- `TaskCreatePanel.tsx` — INITIAL_STATE — renders form (~1442 tok)
+- `TaskDetailPanel.tsx` — TaskDetailPanel (~1091 tok)
+- `TaskEditPanel.tsx` — TEXT_COMMIT_DEBOUNCE_MS (~2351 tok)
 
 ## src/renderer/src/components/ui/
 
@@ -215,3 +215,8 @@
 ## supabase/
 
 - `schema.sql` — Database schema (~804 tok)
+
+## Recent Updates
+
+- 2026-04-22: Kanban drag overlay sizing preserves source card width and height; preview now reuses same shell classes as sortable card. Files: `src/renderer/src/components/kanban/KanbanBoard.tsx`, `src/renderer/src/components/kanban/KanbanCard.tsx`, `src/renderer/src/components/kanban/KanbanCardPreview.tsx`.
+- 2026-04-22: Kanban cross-column drag now uses live draft column ids in `onDragOver`, so target columns preview insertion and final drop index follows hover position instead of snapping to start. File: `src/renderer/src/components/kanban/KanbanBoard.tsx`.

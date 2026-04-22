@@ -148,74 +148,90 @@ export function TaskEditPanel({ task, onClose }: TaskEditPanelProps): React.JSX.
   }, [deleteTask, onClose, task.id])
 
   return (
-    <div className="flex h-full flex-col">
-      <div className="flex h-12 items-center justify-between px-4">
-        <span className="text-xs text-app-text-muted">Task</span>
+    <div className="flex flex-col" style={{ maxHeight: 'calc(100vh - 80px)' }}>
+      {/* Header */}
+      <div className="flex items-center justify-between border-b border-app-border px-6 py-2.5">
+        <span className="text-[11px] font-medium tracking-widest text-app-text-muted">
+          Task
+        </span>
         <button
-          className="flex h-6 w-6 items-center justify-center rounded text-app-text-muted hover:bg-app-hover hover:text-app-text-secondary"
+          className="flex h-7 w-7 items-center justify-center rounded-md text-app-text-muted hover:bg-app-hover hover:text-app-text-secondary"
           onClick={onClose}
           type="button"
         >
-          <X size={14} />
+          <X size={15} />
         </button>
       </div>
 
-      <div className="flex-1 space-y-4 overflow-y-auto px-4 pb-4">
-        <input
-          autoFocus
-          className="w-full bg-transparent text-base font-semibold text-zinc-100 placeholder:text-zinc-600 focus:outline-none"
-          onBlur={flushTitle}
-          onChange={handleTitleChange}
-          onKeyDown={handleTitleKeyDown}
-          placeholder="Task name"
-          value={title}
-        />
+      {/* Body — two columns */}
+      <div className="grid grid-cols-8">
+        {/* Left: title, description, subtasks */}
+        <div className="col-span-5 overflow-y-auto px-6 py-5">
+          <input
+            autoFocus
+            className="mb-3 w-full bg-transparent text-xl font-semibold text-zinc-100 placeholder:text-zinc-600 focus:outline-none"
+            onBlur={flushTitle}
+            onChange={handleTitleChange}
+            onKeyDown={handleTitleKeyDown}
+            placeholder="Task name"
+            value={title}
+          />
 
-        <textarea
-          className="h-24 w-full resize-none bg-transparent text-sm text-zinc-400 placeholder:text-zinc-600 focus:outline-none"
-          onBlur={flushDescription}
-          onChange={handleDescriptionChange}
-          placeholder="Add description..."
-          value={description}
-        />
+          <textarea
+            className="mb-5 min-h-[120px] w-full resize-none bg-transparent text-sm leading-relaxed text-zinc-400 placeholder:text-zinc-600 focus:outline-none"
+            onBlur={flushDescription}
+            onChange={handleDescriptionChange}
+            placeholder="Add description..."
+            value={description}
+          />
 
-        <Separator className="bg-app-border" />
+          <Separator className="mb-5 bg-app-border" />
 
-        <TaskFormFields
-          dueDate={task.dueDate}
-          emptyLabelsMessage="No labels selected."
-          labels={labels}
-          onDueDateChange={(v) => updateTask(task.id, { dueDate: v ?? undefined })}
-          onPriorityChange={(v: Priority) => updateTask(task.id, { priority: v })}
-          onProjectChange={(v) => updateTask(task.id, { projectId: v ?? undefined })}
-          onStatusChange={(v: TaskStatus) => updateTask(task.id, { status: v })}
-          onToggleLabel={toggleLabel}
-          priority={task.priority}
-          projectId={task.projectId}
-          projects={projects}
-          selectedLabelIds={task.labels}
-          status={task.status}
-        />
+          <SubtaskList
+            taskId={task.id}
+            subTasks={task.subTasks}
+            newSubTaskTitle={newSubTaskTitle}
+            onNewSubTaskTitleChange={setNewSubTaskTitle}
+            onToggle={(subTaskId) => toggleSubTask(task.id, subTaskId)}
+            onDelete={(subTaskId) => deleteSubTask(task.id, subTaskId)}
+            onAdd={handleAddSubTask}
+          />
 
-        <Separator className="bg-app-border" />
-        <div>
-          <div className="mb-2 text-xs text-app-text-muted">Sessions</div>
-          <SessionStats stats={stats} />
+          <Separator className="my-5 bg-app-border" />
+
+          <div>
+            <div className="mb-3 text-[11px] font-medium text-app-text-muted">
+              Sessions
+            </div>
+            <SessionStats stats={stats} />
+          </div>
         </div>
 
-        <Separator className="bg-app-border" />
-        <SubtaskList
-          taskId={task.id}
-          subTasks={task.subTasks}
-          newSubTaskTitle={newSubTaskTitle}
-          onNewSubTaskTitleChange={setNewSubTaskTitle}
-          onToggle={(subTaskId) => toggleSubTask(task.id, subTaskId)}
-          onDelete={(subTaskId) => deleteSubTask(task.id, subTaskId)}
-          onAdd={handleAddSubTask}
-        />
+        {/* Right: metadata */}
+        <div className="col-span-3  border-l border-app-border bg-app-titlebar/30 px-4 py-5">
+          <div className="mb-3 text-[11px] font-medium text-app-text-muted">
+            Details
+          </div>
+          <TaskFormFields
+            dueDate={task.dueDate}
+            emptyLabelsMessage="No labels selected."
+            labels={labels}
+            onDueDateChange={(v) => updateTask(task.id, { dueDate: v ?? undefined })}
+            onPriorityChange={(v: Priority) => updateTask(task.id, { priority: v })}
+            onProjectChange={(v) => updateTask(task.id, { projectId: v ?? undefined })}
+            onStatusChange={(v: TaskStatus) => updateTask(task.id, { status: v })}
+            onToggleLabel={toggleLabel}
+            priority={task.priority}
+            projectId={task.projectId}
+            projects={projects}
+            selectedLabelIds={task.labels}
+            status={task.status}
+          />
+        </div>
       </div>
 
-      <div className="flex items-center justify-end px-4 py-3">
+      {/* Footer */}
+      <div className="flex items-center border-t border-app-border px-4 py-2.5">
         <Button
           className="h-7 bg-transparent px-2 text-xs text-app-text-muted hover:bg-app-hover hover:text-red-400"
           onClick={handleDelete}

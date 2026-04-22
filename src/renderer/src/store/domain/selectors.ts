@@ -1,4 +1,4 @@
-import { endOfToday, isAfter, isBefore, isToday, parseISO, startOfToday } from 'date-fns'
+import { endOfToday, format, isAfter, isBefore, isToday, parseISO, startOfToday } from 'date-fns'
 import type { Project, Task, TaskGroup } from '@renderer/types'
 import type { DomainState, UiState } from '../shared/types'
 
@@ -66,6 +66,32 @@ export type VisibleTasksInput = Pick<
   'searchQuery' | 'sortMode' | 'showCompleted' | 'selectedView'
 >
 
+export type InboxTasksInput = Pick<
+  UiState,
+  'searchQuery' | 'sortMode' | 'inboxStatusFilter' | 'inboxProjectFilter' | 'inboxPriorityFilter'
+>
+
+const filterInboxTasks = (tasks: readonly Task[], input: InboxTasksInput): Task[] =>
+  tasks.filter((task) => {
+    if (input.inboxStatusFilter === 'active' && task.completed) return false
+    if (input.inboxStatusFilter === 'done' && !task.completed) return false
+
+    if (input.inboxProjectFilter === 'no_project' && task.projectId) return false
+    if (
+      input.inboxProjectFilter !== 'all' &&
+      input.inboxProjectFilter !== 'no_project' &&
+      task.projectId !== input.inboxProjectFilter
+    ) {
+      return false
+    }
+
+    if (input.inboxPriorityFilter !== 'all' && task.priority !== input.inboxPriorityFilter) {
+      return false
+    }
+
+    return true
+  })
+
 export const selectTaskById = (
   state: Pick<DomainState, 'tasks'>,
   taskId?: string
@@ -100,28 +126,39 @@ export const selectTasksForProject = (
 
 export const selectInboxTaskGroups = (
   state: Pick<DomainState, 'tasks'>,
-  input: VisibleTasksInput
+  input: InboxTasksInput
 ): TaskGroup[] => {
-  const tasks = selectVisibleTasks(state, input)
-  const overdue: Task[] = []
-  const noDate: Task[] = []
-  const today: Task[] = []
-  const future: Task[] = []
+  const tasks = filterInboxTasks(filterBySearch(state.tasks, input.searchQuery), input)
+  const noDate = sortTasks(
+    tasks.filter((task) => !task.dueDate),
+    input.sortMode
+  )
+  const groupedByDate = new Map<string, { timestamp: number; tasks: Task[] }>()
 
   for (const task of tasks) {
-    if (task.projectId) continue
-    if (isTaskOverdue(task)) overdue.push(task)
-    else if (!task.dueDate) noDate.push(task)
-    else if (isTaskDueToday(task)) today.push(task)
-    else if (isTaskInFuture(task)) future.push(task)
+    if (!task.dueDate) continue
+    const current = groupedByDate.get(task.dueDate)
+    if (current) {
+      current.tasks.push(task)
+      continue
+    }
+    groupedByDate.set(task.dueDate, {
+      timestamp: parseISO(task.dueDate).getTime(),
+      tasks: [task]
+    })
   }
 
-  return [
-    { id: 'overdue', title: 'Overdue', accentClass: 'text-app-text-secondary', tasks: overdue },
-    { id: 'no-date', title: 'No date', tasks: noDate },
-    { id: 'today', title: 'Today', tasks: today },
-    { id: 'future', title: 'Future', tasks: future }
-  ]
+  const dateGroups = [...groupedByDate.entries()]
+    .sort((a, b) => a[1].timestamp - b[1].timestamp)
+    .map(([dueDate, group]): TaskGroup => {
+      return {
+        id: `date-${dueDate}`,
+        title: format(parseISO(dueDate), 'MMM d, yyyy'),
+        tasks: sortTasks(group.tasks, input.sortMode)
+      }
+    })
+
+  return [{ id: 'no-date', title: 'No date', tasks: noDate }, ...dateGroups]
 }
 
 export const selectTodayTaskGroups = (
@@ -177,7 +214,7 @@ export const selectInboxCounts = (
 
   for (const task of state.tasks) {
     if (task.completed) continue
-    if (!task.projectId && (!task.dueDate || isTaskInFuture(task))) inboxCount += 1
+    inboxCount += 1
     if (isTaskDueToday(task) || isTaskOverdue(task)) todayCount += 1
   }
 

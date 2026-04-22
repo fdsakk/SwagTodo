@@ -6,6 +6,7 @@ interface TaskListProps {
   groups: TaskGroup[]
   projects: Project[]
   labels: Label[]
+  showProjectContext?: boolean
   emptyStateTitle: string
   emptyStateDescription: string
   onToggleComplete: (taskId: string) => void
@@ -55,6 +56,7 @@ export function TaskList(props: TaskListProps): React.JSX.Element {
                       onOpen={props.onOpenTask}
                       onToggleComplete={props.onToggleComplete}
                       project={task.projectId ? projectById.get(task.projectId) : undefined}
+                      showProjectContext={props.showProjectContext}
                       task={task}
                     />
                   )

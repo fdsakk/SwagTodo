@@ -467,3 +467,17 @@
 | 16:33 | Session end: 1 writes across 1 files (CustomizeSection.tsx) | 2 reads | ~4178 tok |
 | 16:34 | Created src/renderer/src/components/settings/CustomizeSection.tsx | — | ~2449 |
 | 16:39 | Session end: 2 writes across 1 files (CustomizeSection.tsx) | 3 reads | ~6995 tok |
+
+## Session: 2026-04-22 15:37
+
+| Time | Action | File(s) | Outcome | ~Tokens |
+|------|--------|---------|---------|--------|
+| 15:41 | Created src/renderer/src/components/task-panel/TaskDetailPanel.tsx | — | ~1091 |
+| 15:41 | Created src/renderer/src/components/task-panel/TaskEditPanel.tsx | — | ~2414 |
+| 15:41 | Created src/renderer/src/components/task-panel/TaskCreatePanel.tsx | — | ~1442 |
+| 15:42 | Created src/renderer/src/components/project/ProjectPanel.tsx | — | ~1620 |
+| 15:42 | Edited src/renderer/src/components/task-panel/TaskEditPanel.tsx | 14→11 lines | ~108 |
+| 15:42 | Redesigned all panels (TaskEditPanel, TaskCreatePanel, ProjectPanel, TaskDetailPanel) from right-side slide to centered modal cards | task-panel/, project/ProjectPanel.tsx | success | ~3000 |
+| 15:42 | Session end: 5 writes across 4 files (TaskDetailPanel.tsx, TaskEditPanel.tsx, TaskCreatePanel.tsx, ProjectPanel.tsx) | 9 reads | ~17855 tok |
+| 15:58 | Fixed kanban drag card size snap by freezing overlay width+height from source rect and reusing identical card shell styles in preview; logged mandatory `.wolf` preference | `.wolf/cerebrum.md`, `.wolf/anatomy.md`, `.wolf/buglog.json`, `src/renderer/src/components/kanban/KanbanBoard.tsx`, `src/renderer/src/components/kanban/KanbanCard.tsx`, `src/renderer/src/components/kanban/KanbanCardPreview.tsx` | success, typecheck clean | ~1200 |
+| 16:08 | Fixed kanban cross-column drag preview by keeping live draft task ids per column in `onDragOver`; target columns now animate insertion and drop index follows hover midpoint instead of defaulting near top | `.wolf/cerebrum.md`, `.wolf/anatomy.md`, `.wolf/buglog.json`, `src/renderer/src/components/kanban/KanbanBoard.tsx` | success, typecheck clean | ~1500 |

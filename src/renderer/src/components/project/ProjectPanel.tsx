@@ -71,24 +71,26 @@ export function ProjectPanel({ project, onClose }: ProjectPanelProps): React.JSX
   }
 
   return (
-    <div className="flex h-full flex-col">
-      <div className="flex h-12 items-center justify-between px-4">
-        <span className="text-xs text-app-text-muted">
+    <div className="flex flex-col" style={{ maxHeight: 'calc(100vh - 80px)' }}>
+      {/* Header */}
+      <div className="flex items-center justify-between border-b border-app-border px-6 py-2.5">
+        <span className="text-[11px] font-medium text-app-text-muted">
           {isEdit ? 'Edit project' : 'New project'}
         </span>
         <button
-          className="flex h-6 w-6 items-center justify-center rounded text-app-text-muted hover:bg-app-hover hover:text-app-text-secondary"
+          className="flex h-7 w-7 items-center justify-center rounded-md text-app-text-muted hover:bg-app-hover hover:text-app-text-secondary"
           onClick={onClose}
           type="button"
         >
-          <X size={14} />
+          <X size={15} />
         </button>
       </div>
 
-      <div className="flex-1 space-y-4 overflow-y-auto px-4 pb-4">
+      {/* Body */}
+      <div className="flex-1 overflow-y-auto px-6 py-5 space-y-4">
         <input
           autoFocus
-          className="w-full bg-transparent text-base font-semibold text-zinc-100 placeholder:text-zinc-600 focus:outline-none"
+          className="w-full bg-transparent text-xl font-semibold text-zinc-100 placeholder:text-zinc-600 focus:outline-none"
           onChange={(event) => patch({ name: event.target.value })}
           onKeyDown={(event) => {
             if (event.key === 'Enter') {
@@ -102,7 +104,7 @@ export function ProjectPanel({ project, onClose }: ProjectPanelProps): React.JSX
         />
 
         <textarea
-          className="h-24 w-full resize-none bg-transparent text-sm text-zinc-400 placeholder:text-zinc-600 focus:outline-none"
+          className="h-20 w-full resize-none bg-transparent text-sm leading-relaxed text-zinc-400 placeholder:text-zinc-600 focus:outline-none"
           onChange={(event) => patch({ description: event.target.value })}
           placeholder="Add description..."
           value={form.description}
@@ -123,7 +125,7 @@ export function ProjectPanel({ project, onClose }: ProjectPanelProps): React.JSX
                 value={form.color}
               />
               <div className="space-y-1.5">
-                <p className="text-[10px] uppercase tracking-wide text-app-text-muted">Custom</p>
+                <p className="text-[10px] ext-app-text-muted">Custom</p>
                 <CustomColorInput onChange={(color) => patch({ color })} value={form.color} />
               </div>
             </div>
@@ -131,7 +133,8 @@ export function ProjectPanel({ project, onClose }: ProjectPanelProps): React.JSX
         </div>
       </div>
 
-      <div className="flex items-center justify-between px-4 py-3">
+      {/* Footer */}
+      <div className="flex items-center justify-between border-t border-app-border px-6 py-2.5">
         {isEdit ? (
           <Button
             className="h-7 bg-transparent px-2 text-xs text-app-text-muted hover:bg-app-hover hover:text-red-400"
@@ -155,7 +158,7 @@ export function ProjectPanel({ project, onClose }: ProjectPanelProps): React.JSX
             Cancel
           </Button>
           <Button
-            className="h-7 px-3 text-xs"
+            className="h-7 px-4 text-xs"
             disabled={!form.name.trim()}
             onClick={handleSave}
             type="button"

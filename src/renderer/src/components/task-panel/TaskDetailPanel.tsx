@@ -51,44 +51,51 @@ export function TaskDetailPanel({ onClose }: TaskDetailPanelProps): React.JSX.El
           ? `create-${taskPanel.defaults.projectId ?? 'inbox'}`
           : 'create-project'
 
+  const isTaskEdit = taskPanel.open && taskPanel.mode === 'edit' && task
+
   return (
     <AnimatePresence>
       {visible && (
         <>
           <motion.div
             animate={{ opacity: 1 }}
-            className="fixed left-2 right-2 top-8 bottom-2 z-20 rounded-lg bg-black/40"
+            className="fixed inset-0 z-20 bg-black/50 backdrop-blur-sm"
             exit={{ opacity: 0 }}
             initial={{ opacity: 0 }}
             onClick={onClose}
-            transition={{ duration: 0.18 }}
+            transition={{ duration: 0.15 }}
           />
-          <motion.aside
-            animate={{ opacity: 1 }}
-            className="fixed right-2 top-8 bottom-2 z-30 w-auto rounded-r-lg border-l-8 border-app-titlebar bg-app-bg"
-            exit={{ opacity: 0 }}
-            initial={{ opacity: 0 }}
+          <motion.div
+            animate={{ opacity: 1, scale: 1, y: 0 }}
+            className={`fixed inset-0 z-30 flex items-center justify-center p-6 pointer-events-none`}
+            exit={{ opacity: 0, scale: 0.97, y: 8 }}
+            initial={{ opacity: 0, scale: 0.97, y: 8 }}
             key={panelKey}
             transition={{ duration: 0.18, ease: 'easeOut' }}
           >
-            {taskPanel.open && taskPanel.mode === 'edit' && task && (
-              <TaskEditPanel onClose={onClose} task={task} />
-            )}
-            {taskPanel.open && taskPanel.mode === 'create' && (
-              <TaskCreatePanel
-                defaultDueDate={taskPanel.defaults.dueDate}
-                defaultProjectId={taskPanel.defaults.projectId}
-                defaultStatus={taskPanel.defaults.status}
-                onClose={onClose}
-              />
-            )}
-            {taskPanel.open && taskPanel.mode === 'create_project' && (
-              <ProjectPanel onClose={onClose} />
-            )}
-            {taskPanel.open && taskPanel.mode === 'edit_project' && editingProject && (
-              <ProjectPanel onClose={onClose} project={editingProject} />
-            )}
-          </motion.aside>
+            <div
+              className={`pointer-events-auto w-full overflow-hidden rounded-xl border border-app-border bg-app-bg shadow-2xl ${isTaskEdit ? 'max-w-4xl' : 'max-w-xl'}`}
+              style={{ maxHeight: 'calc(100vh - 80px)' }}
+            >
+              {taskPanel.open && taskPanel.mode === 'edit' && task && (
+                <TaskEditPanel onClose={onClose} task={task} />
+              )}
+              {taskPanel.open && taskPanel.mode === 'create' && (
+                <TaskCreatePanel
+                  defaultDueDate={taskPanel.defaults.dueDate}
+                  defaultProjectId={taskPanel.defaults.projectId}
+                  defaultStatus={taskPanel.defaults.status}
+                  onClose={onClose}
+                />
+              )}
+              {taskPanel.open && taskPanel.mode === 'create_project' && (
+                <ProjectPanel onClose={onClose} />
+              )}
+              {taskPanel.open && taskPanel.mode === 'edit_project' && editingProject && (
+                <ProjectPanel onClose={onClose} project={editingProject} />
+              )}
+            </div>
+          </motion.div>
         </>
       )}
     </AnimatePresence>

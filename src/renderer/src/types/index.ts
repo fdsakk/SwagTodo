@@ -31,6 +31,9 @@ export type {
 
 export const TASK_STATUSES: TaskStatus[] = ['todo', 'in_progress', 'done']
 export type TaskSort = 'priority' | 'due_date' | 'created_at'
+export type InboxStatusFilter = 'all' | 'active' | 'done'
+export type InboxProjectFilter = 'all' | 'no_project' | string
+export type InboxPriorityFilter = 'all' | Priority
 export type ViewName =
   | 'inbox'
   | 'today'

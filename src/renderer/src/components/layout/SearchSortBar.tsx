@@ -9,8 +9,9 @@ import {
   SelectValue
 } from '@renderer/components/ui/select'
 import { AnimatedCheckbox } from '@renderer/components/task-list/animated-checkbox'
+import { useDomainStore, useUiStore } from '@renderer/store'
+import { PRIORITY_META } from '@renderer/utils/task'
 import { useShallow } from 'zustand/react/shallow'
-import { useUiStore } from '@renderer/store'
 
 export function SearchSortBar(): React.JSX.Element {
   const inputRef = useRef<HTMLInputElement>(null)
@@ -21,6 +22,12 @@ export function SearchSortBar(): React.JSX.Element {
     setSortMode,
     showCompleted,
     setShowCompleted,
+    inboxStatusFilter,
+    setInboxStatusFilter,
+    inboxProjectFilter,
+    setInboxProjectFilter,
+    inboxPriorityFilter,
+    setInboxPriorityFilter,
     searchFocusSignal,
     openCreatePanelForCurrentView,
     selectedView
@@ -32,11 +39,19 @@ export function SearchSortBar(): React.JSX.Element {
       setSortMode: state.setSortMode,
       showCompleted: state.showCompleted,
       setShowCompleted: state.setShowCompleted,
+      inboxStatusFilter: state.inboxStatusFilter,
+      setInboxStatusFilter: state.setInboxStatusFilter,
+      inboxProjectFilter: state.inboxProjectFilter,
+      setInboxProjectFilter: state.setInboxProjectFilter,
+      inboxPriorityFilter: state.inboxPriorityFilter,
+      setInboxPriorityFilter: state.setInboxPriorityFilter,
       searchFocusSignal: state.searchFocusSignal,
       openCreatePanelForCurrentView: state.openCreatePanelForCurrentView,
       selectedView: state.selectedView
     }))
   )
+  const projects = useDomainStore((state) => state.projects)
+  const showInboxFilters = selectedView === 'inbox'
 
   useEffect(() => {
     if (searchFocusSignal > 0) inputRef.current?.focus()
@@ -69,7 +84,62 @@ export function SearchSortBar(): React.JSX.Element {
           </SelectGroup>
         </SelectContent>
       </Select>
-      {selectedView !== 'project' && (
+      {showInboxFilters && (
+        <>
+          <Select
+            onValueChange={(value) => setInboxStatusFilter(value as typeof inboxStatusFilter)}
+            value={inboxStatusFilter}
+          >
+            <SelectTrigger className="h-8 w-auto gap-1 border-0 bg-transparent px-2 text-xs text-app-text-muted shadow-none hover:text-app-text-secondary focus:ring-0">
+              <SelectValue />
+            </SelectTrigger>
+            <SelectContent>
+              <SelectGroup>
+                <SelectItem value="all">All statuses</SelectItem>
+                <SelectItem value="active">Active</SelectItem>
+                <SelectItem value="done">Done</SelectItem>
+              </SelectGroup>
+            </SelectContent>
+          </Select>
+          <Select
+            onValueChange={(value) => setInboxProjectFilter(value)}
+            value={inboxProjectFilter}
+          >
+            <SelectTrigger className="h-8 w-auto max-w-[180px] gap-1 border-0 bg-transparent px-2 text-xs text-app-text-muted shadow-none hover:text-app-text-secondary focus:ring-0">
+              <SelectValue />
+            </SelectTrigger>
+            <SelectContent>
+              <SelectGroup>
+                <SelectItem value="all">All projects</SelectItem>
+                <SelectItem value="no_project">Inbox only</SelectItem>
+                {projects.map((project) => (
+                  <SelectItem key={project.id} value={project.id}>
+                    {project.emoji ? `${project.emoji} ${project.name}` : project.name}
+                  </SelectItem>
+                ))}
+              </SelectGroup>
+            </SelectContent>
+          </Select>
+          <Select
+            onValueChange={(value) => setInboxPriorityFilter(value as typeof inboxPriorityFilter)}
+            value={inboxPriorityFilter}
+          >
+            <SelectTrigger className="h-8 w-auto gap-1 border-0 bg-transparent px-2 text-xs text-app-text-muted shadow-none hover:text-app-text-secondary focus:ring-0">
+              <SelectValue />
+            </SelectTrigger>
+            <SelectContent>
+              <SelectGroup>
+                <SelectItem value="all">All priorities</SelectItem>
+                <SelectItem value="p1">{PRIORITY_META.p1.label}</SelectItem>
+                <SelectItem value="p2">{PRIORITY_META.p2.label}</SelectItem>
+                <SelectItem value="p3">{PRIORITY_META.p3.label}</SelectItem>
+                <SelectItem value="p4">{PRIORITY_META.p4.label}</SelectItem>
+              </SelectGroup>
+            </SelectContent>
+          </Select>
+        </>
+      )}
+      {!showInboxFilters && selectedView !== 'project' && (
         <label className="flex cursor-pointer items-center gap-2 px-2 text-xs text-app-text-muted hover:text-app-text-secondary">
           <AnimatedCheckbox
             checked={showCompleted}

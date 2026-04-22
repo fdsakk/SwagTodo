@@ -7,6 +7,9 @@ export const createInitialUiState = (): UiState => ({
   searchQuery: '',
   sortMode: 'priority',
   showCompleted: false,
+  inboxStatusFilter: 'all',
+  inboxProjectFilter: 'all',
+  inboxPriorityFilter: 'all',
   projectTab: 'list',
   searchFocusSignal: 0
 })

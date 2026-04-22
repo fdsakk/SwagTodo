@@ -1,6 +1,6 @@
 import type { CSSProperties } from 'react'
 import type { Label, Task } from '@renderer/types'
-import { CardBody } from './KanbanCard'
+import { CardBody, KANBAN_CARD_CLASSNAME } from './KanbanCard'
 
 interface KanbanCardPreviewProps {
   task: Task
@@ -14,10 +14,7 @@ export function KanbanCardPreview({
   style
 }: KanbanCardPreviewProps): React.JSX.Element {
   return (
-    <div
-      className="rounded-md border border-white/[0.1] bg-zinc-900/95 p-3 shadow-xl"
-      style={style}
-    >
+    <div className={KANBAN_CARD_CLASSNAME} style={style}>
       <CardBody task={task} labels={labels} />
     </div>
   )

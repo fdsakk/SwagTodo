@@ -6,6 +6,9 @@ import { PRIORITY_META, formatDueDate } from '@renderer/utils/task'
 import { cn } from '@renderer/utils/cn'
 import { SubtaskProgressRing } from '@renderer/components/task-list/subtask-progress-ring'
 
+export const KANBAN_CARD_CLASSNAME =
+  'cursor-pointer rounded-md border border-app-border bg-app-hover p-2 transition-colors hover:border-app-active'
+
 interface CardBodyProps {
   task: Task
   labels: Label[]
@@ -23,11 +26,7 @@ export const CardBody = memo(function CardBody({ task, labels }: CardBodyProps):
         <span className="size-2 shrink-0 rounded-full" style={{ background: meta.color }} />
         <p className="flex-1 text-sm text-app-text">{task.title}</p>
         {subTaskTotal > 0 && (
-          <SubtaskProgressRing
-            className="text-app-text-secondary mr-0.5"
-            completed={subTaskDone}
-            total={subTaskTotal}
-          />
+          <SubtaskProgressRing className="" completed={subTaskDone} total={subTaskTotal} />
         )}
       </div>
       {hasMeta && (
@@ -64,10 +63,7 @@ export const SortableCard = memo(function SortableCard({
 
   return (
     <div
-      className={cn(
-        'cursor-pointer rounded-md border border-app-border bg-app-hover p-2 transition-colors hover:border-app-active',
-        isDragging && 'opacity-50'
-      )}
+      className={cn(KANBAN_CARD_CLASSNAME, isDragging && 'opacity-50')}
       ref={setNodeRef}
       style={style}
       onClick={handleClick}

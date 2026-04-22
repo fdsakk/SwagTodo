@@ -100,6 +100,59 @@
       "related_bugs": [],
       "occurrences": 1,
       "last_seen": "2026-04-19T19:34:38+02:00"
+    },
+    {
+      "id": "bug-007",
+      "timestamp": "2026-04-22T13:42:35.134Z",
+      "error_message": "Significant refactor of ",
+      "file": "src/renderer/src/components/task-panel/TaskEditPanel.tsx",
+      "root_cause": "4 lines replaced/restructured",
+      "fix": "Rewrote 14→11 lines (4 removed)",
+      "tags": [
+        "auto-detected",
+        "refactor",
+        "tsx"
+      ],
+      "related_bugs": [],
+      "occurrences": 1,
+      "last_seen": "2026-04-22T13:42:35.134Z"
+    },
+    {
+      "id": "bug-008",
+      "timestamp": "2026-04-22T15:58:00+02:00",
+      "error_message": "Kanban task card height snaps to a fixed size during drag-and-drop instead of preserving each card's natural height.",
+      "file": "src/renderer/src/components/kanban/KanbanBoard.tsx",
+      "root_cause": "Drag overlay used a different preview shell than the sortable card and only preserved width, so overlay height was recalculated instead of matching the source card.",
+      "fix": "Captured both width and height from the dragged element's initial rect and reused the exact same card shell classes in `KanbanCardPreview` as in `SortableCard`.",
+      "tags": [
+        "kanban",
+        "drag-drop",
+        "dnd-kit",
+        "ui-sizing"
+      ],
+      "related_bugs": [],
+      "occurrences": 1,
+      "last_seen": "2026-04-22T15:58:00+02:00"
+    },
+    {
+      "id": "bug-009",
+      "timestamp": "2026-04-22T16:08:00+02:00",
+      "error_message": "Dragging task into another kanban section shows no live drop preview and often inserts near the top instead of where the card is released.",
+      "file": "src/renderer/src/components/kanban/KanbanBoard.tsx",
+      "root_cause": "Board computed cross-column reorder only on drop, so target `SortableContext` never received temporary item positions during hover. Without live draft order, collision often resolved against early items and insertion index skewed toward the top.",
+      "fix": "Added draft column task ids updated in `onDragOver`, rendered columns from that draft during drag, and computed insert-before/after using hovered card midpoint so cross-column preview and final drop position match pointer location.",
+      "tags": [
+        "kanban",
+        "drag-drop",
+        "dnd-kit",
+        "cross-column",
+        "drop-preview"
+      ],
+      "related_bugs": [
+        "bug-008"
+      ],
+      "occurrences": 1,
+      "last_seen": "2026-04-22T16:08:00+02:00"
     }
   ]
 }

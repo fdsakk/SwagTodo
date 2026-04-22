@@ -12,8 +12,8 @@ interface SubtaskProgressRingProps {
 function SubtaskProgressRingBase({
   completed,
   total,
-  size = 18,
-  strokeWidth = 2.5,
+  size = 20,
+  strokeWidth = 3,
   className
 }: SubtaskProgressRingProps): React.JSX.Element | null {
   if (total <= 0) return null
@@ -21,18 +21,13 @@ function SubtaskProgressRingBase({
   const radius = (size - strokeWidth) / 2
   const circumference = 2 * Math.PI * radius
   const dashOffset = circumference * (1 - ratio)
-
-  // white until ~40%, then fade to green
-  const greenStart = 0.2
-  const t = ratio < greenStart ? 0 : (ratio - greenStart) / (1 - greenStart)
-  const sat = Math.round(t * 60)
-  const lit = Math.round(85 - t * 33)
-  const progressColor = `hsl(145, ${sat}%, ${lit}%)`
+  const progressTone =
+    ratio >= 1 ? 'text-green-400' : ratio >= 0.5 ? 'text-app-text' : 'text-app-text-secondary'
 
   return (
     <div
       aria-label={`${completed} of ${total} subtasks done`}
-      className={cn('inline-flex shrink-0 items-center justify-center', className)}
+      className={cn('inline-flex items-center justify-center', progressTone, className)}
       role="img"
       title={`${completed}/${total} subtasks`}
     >
@@ -43,7 +38,7 @@ function SubtaskProgressRingBase({
           r={radius}
           fill="none"
           stroke="currentColor"
-          strokeOpacity={0.15}
+          strokeOpacity={0.18}
           strokeWidth={strokeWidth}
         />
         <circle
@@ -51,7 +46,7 @@ function SubtaskProgressRingBase({
           cy={size / 2}
           r={radius}
           fill="none"
-          stroke={progressColor}
+          stroke="currentColor"
           strokeOpacity={1}
           strokeWidth={strokeWidth}
           strokeDasharray={circumference}

@@ -8,7 +8,7 @@ import { createProjectActions } from '../domain/actions/projects'
 import { createSessionActions } from '../domain/actions/sessions'
 import { createSettingsActions } from '../domain/actions/settings'
 import { createTaskActions } from '../domain/actions/tasks'
-import { selectInboxCounts, selectVisibleTasks } from '../domain/selectors'
+import { selectInboxCounts, selectInboxTaskGroups, selectVisibleTasks } from '../domain/selectors'
 import { createInitialDomainState } from '../domain/state'
 
 const createTask = (
@@ -247,16 +247,78 @@ test('selectVisibleTasks keeps business ordering for priority, due date, and cre
 test('selectInboxCounts preserves inbox and today business rules', () => {
   const tasks = [
     createTask({ id: 'inbox', dueDate: undefined, projectId: undefined }),
-    createTask({ id: 'future', dueDate: '2099-01-01', projectId: undefined, order: 2 }),
+    createTask({ id: 'project-active', projectId: 'project-1', order: 2 }),
+    createTask({ id: 'future', dueDate: '2099-01-01', projectId: undefined, order: 3 }),
     createTask({ id: 'today', dueDate: new Date().toISOString().slice(0, 10), order: 3 }),
     createTask({
       id: 'done',
       dueDate: new Date().toISOString().slice(0, 10),
       completed: true,
       status: 'done',
-      order: 4
+      order: 5
     })
   ]
 
-  assert.deepEqual(selectInboxCounts({ tasks }), { inboxCount: 2, todayCount: 1 })
+  assert.deepEqual(selectInboxCounts({ tasks }), { inboxCount: 4, todayCount: 1 })
+})
+
+test('selectInboxTaskGroups groups all tasks by due date and keeps no date first', () => {
+  const tasks = [
+    createTask({ id: 'no-date-project', projectId: 'project-1' }),
+    createTask({ id: 'with-date-2', dueDate: '2026-04-23', order: 2 }),
+    createTask({ id: 'with-date-1', dueDate: '2026-04-22', order: 3 }),
+    createTask({ id: 'no-date-inbox', projectId: undefined, order: 4 })
+  ]
+
+  const groups = selectInboxTaskGroups(
+    { tasks },
+    {
+      searchQuery: '',
+      sortMode: 'priority',
+      inboxStatusFilter: 'all',
+      inboxProjectFilter: 'all',
+      inboxPriorityFilter: 'all'
+    }
+  )
+
+  assert.equal(groups[0].id, 'no-date')
+  assert.deepEqual(
+    groups[0].tasks.map((task) => task.id),
+    ['no-date-project', 'no-date-inbox']
+  )
+  assert.deepEqual(
+    groups.slice(1).map((group) => group.id),
+    ['date-2026-04-22', 'date-2026-04-23']
+  )
+})
+
+test('selectInboxTaskGroups applies inbox filters for status, project, and priority', () => {
+  const tasks = [
+    createTask({ id: 'active-p1-project', priority: 'p1', projectId: 'project-1' }),
+    createTask({ id: 'active-p2-inbox', priority: 'p2', projectId: undefined, order: 2 }),
+    createTask({
+      id: 'done-p1-project',
+      priority: 'p1',
+      projectId: 'project-1',
+      completed: true,
+      status: 'done',
+      order: 3
+    })
+  ]
+
+  const groups = selectInboxTaskGroups(
+    { tasks },
+    {
+      searchQuery: '',
+      sortMode: 'priority',
+      inboxStatusFilter: 'active',
+      inboxProjectFilter: 'project-1',
+      inboxPriorityFilter: 'p1'
+    }
+  )
+
+  assert.deepEqual(
+    groups.flatMap((group) => group.tasks.map((task) => task.id)),
+    ['active-p1-project']
+  )
 })

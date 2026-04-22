@@ -24,6 +24,16 @@ export const createUiActions = (set: UiStoreSet, get: UiStoreGet): UiActions => 
   setSortMode: (sortMode) => set((state) => (state.sortMode === sortMode ? state : { sortMode })),
   setShowCompleted: (showCompleted) =>
     set((state) => (state.showCompleted === showCompleted ? state : { showCompleted })),
+  setInboxStatusFilter: (inboxStatusFilter) =>
+    set((state) => (state.inboxStatusFilter === inboxStatusFilter ? state : { inboxStatusFilter })),
+  setInboxProjectFilter: (inboxProjectFilter) =>
+    set((state) =>
+      state.inboxProjectFilter === inboxProjectFilter ? state : { inboxProjectFilter }
+    ),
+  setInboxPriorityFilter: (inboxPriorityFilter) =>
+    set((state) =>
+      state.inboxPriorityFilter === inboxPriorityFilter ? state : { inboxPriorityFilter }
+    ),
   triggerSearchFocus: () => set((state) => ({ searchFocusSignal: state.searchFocusSignal + 1 })),
   openCreatePanel: (defaults = {}) => set({ taskPanel: { open: true, mode: 'create', defaults } }),
   openCreatePanelForCurrentView: () => {

@@ -1,4 +1,4 @@
-import { memo } from 'react'
+import { Fragment, memo } from 'react'
 import { Flag } from 'lucide-react'
 import { AnimatedCheckbox } from './animated-checkbox'
 import { SubtaskProgressRing } from './subtask-progress-ring'
@@ -11,6 +11,7 @@ interface TaskRowProps {
   task: Task
   project?: Project
   labels: Label[]
+  showProjectContext?: boolean
   index: number
   onOpen: (taskId: string) => void
   onToggleComplete: (taskId: string) => void
@@ -22,7 +23,32 @@ function TaskRowBase(props: TaskRowProps): React.JSX.Element {
   const showFlag = props.task.priority !== 'p4'
   const subTaskTotal = props.task.subTasks.length
   const subTaskDone = subTaskTotal > 0 ? props.task.subTasks.filter((s) => s.completed).length : 0
-  const hasMeta = props.task.dueDate || props.project || props.labels.length > 0 || subTaskTotal > 0
+  const projectContext = props.showProjectContext ? (props.project?.name ?? 'Inbox') : undefined
+  const metaParts: React.JSX.Element[] = []
+
+  if (props.task.dueDate) {
+    metaParts.push(
+      <span className={cn(overdue && 'text-red-400/80')} key="due-date">
+        {formatDueDate(props.task.dueDate)}
+      </span>
+    )
+  }
+
+  if (projectContext) {
+    metaParts.push(<span key="project">{projectContext}</span>)
+  }
+
+  for (const label of props.labels) {
+    metaParts.push(<span key={`label-${label.id}`}>#{label.name}</span>)
+  }
+
+  if (subTaskTotal > 0) {
+    metaParts.push(
+      <span key="subtasks">
+        {subTaskDone}/{subTaskTotal}
+      </span>
+    )
+  }
 
   return (
     <li
@@ -49,24 +75,14 @@ function TaskRowBase(props: TaskRowProps): React.JSX.Element {
           {props.task.title}
         </div>
 
-        {hasMeta && (
+        {metaParts.length > 0 && (
           <div className="mt-1 flex flex-wrap items-center gap-x-1.5 gap-y-1 text-xs text-app-text-muted">
-            {props.task.dueDate && (
-              <span className={cn(overdue && 'text-red-400/80')}>
-                {formatDueDate(props.task.dueDate)}
-              </span>
-            )}
-            {props.task.dueDate && subTaskTotal > 0 && <span>·</span>}
-            {props.labels.map((label) => (
-              <span key={label.id}>#{label.name}</span>
+            {metaParts.map((part, index) => (
+              <Fragment key={index}>
+                {index > 0 && <span>·</span>}
+                {part}
+              </Fragment>
             ))}
-            {subTaskTotal > 0 && (
-              <>
-                <span>
-                  {subTaskDone}/{subTaskTotal}
-                </span>
-              </>
-            )}
           </div>
         )}
       </div>

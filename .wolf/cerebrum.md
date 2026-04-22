@@ -6,6 +6,7 @@
 
 ## User Preferences
 
+- Read and follow `.wolf` protocol before touching project files; treat `.wolf` as mandatory project instructions.
 - Keep page padding and content alignment visually consistent across views (especially matching Activity/Today spacing).
 - Components must be organized in subfolders — no loose files at `components/` root.
 - All component exports are **named** (not default). Default exports only in legacy shadcn/ui primitives under `components/ui/`.
@@ -13,6 +14,7 @@
 
 ## Key Learnings
 
+- Kanban cross-column DnD needs live draft column state updated in `onDragOver`; computing reorder only in `onDragEnd` leaves target column frozen and can misplace drop index.
 - Settings/Appearance page should follow the same container rhythm used by list pages (`px-4` outer, `px-2` inner alignment) for consistent layout.
 - Component subfolders: `layout/`, `task-panel/`, `task-list/`, `modals/`, `project/`, `sidebar/`, `settings/`, `task-edit/`, `kanban/`, `sessions-calendar/`, `ui/`. See CLAUDE.md component table for full mapping.
 - `SubtaskList` (`task-edit/`) imports `AnimatedCheckbox` from `task-list/animated-checkbox` — not from root.

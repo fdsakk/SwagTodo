@@ -4,6 +4,9 @@ import type {
   CreateTaskInput,
   Label,
   MedicationLog,
+  InboxPriorityFilter,
+  InboxProjectFilter,
+  InboxStatusFilter,
   PkSettings,
   Project,
   ProjectTab,
@@ -124,6 +127,9 @@ export interface UiState {
   searchQuery: string
   sortMode: TaskSort
   showCompleted: boolean
+  inboxStatusFilter: InboxStatusFilter
+  inboxProjectFilter: InboxProjectFilter
+  inboxPriorityFilter: InboxPriorityFilter
   projectTab: ProjectTab
   searchFocusSignal: number
 }
@@ -140,6 +146,9 @@ export interface UiActions {
   setSearchQuery: (query: string) => void
   setSortMode: (mode: TaskSort) => void
   setShowCompleted: (value: boolean) => void
+  setInboxStatusFilter: (filter: InboxStatusFilter) => void
+  setInboxProjectFilter: (filter: InboxProjectFilter) => void
+  setInboxPriorityFilter: (filter: InboxPriorityFilter) => void
   triggerSearchFocus: () => void
   openCreatePanel: (defaults?: TaskCreateDefaults) => void
   openCreatePanelForCurrentView: () => void
