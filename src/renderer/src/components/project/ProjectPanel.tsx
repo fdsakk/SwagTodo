@@ -2,7 +2,6 @@ import { useState } from 'react'
 import { Trash2, X } from 'lucide-react'
 import { Button } from '@renderer/components/ui/button'
 import { Separator } from '@renderer/components/ui/separator'
-import useAppStore from '@renderer/store/useAppStore'
 import type { Project } from '@renderer/types'
 import { PROJECT_COLOR_SWATCHES } from '@renderer/utils/task'
 import { Field } from '@renderer/components/task-panel/panel-field'
@@ -10,6 +9,7 @@ import { ColorSelector } from './color-selector'
 import { CustomColorInput } from './custom-color-input'
 import { EmojiPicker } from './emoji-picker'
 import { useShallow } from 'zustand/react/shallow'
+import { useDomainStore, useUiStore } from '@renderer/store'
 
 interface FormState {
   name: string
@@ -24,14 +24,14 @@ interface ProjectPanelProps {
 }
 
 export function ProjectPanel({ project, onClose }: ProjectPanelProps): React.JSX.Element {
-  const { addProject, updateProject, deleteProject, selectProject } = useAppStore(
+  const { addProject, updateProject, deleteProject } = useDomainStore(
     useShallow((state) => ({
       addProject: state.addProject,
       updateProject: state.updateProject,
-      deleteProject: state.deleteProject,
-      selectProject: state.selectProject
+      deleteProject: state.deleteProject
     }))
   )
+  const selectProject = useUiStore((state) => state.selectProject)
 
   const [form, setForm] = useState<FormState>({
     name: project?.name ?? '',

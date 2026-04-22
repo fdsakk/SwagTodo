@@ -1,25 +1,38 @@
+import { useEffect } from 'react'
 import { AnimatePresence, motion } from 'framer-motion'
-import useAppStore from '@renderer/store/useAppStore'
 import { TaskEditPanel } from './TaskEditPanel'
 import { TaskCreatePanel } from './TaskCreatePanel'
 import { ProjectPanel } from '@renderer/components/project/ProjectPanel'
+import {
+  selectEditingProjectById,
+  selectTaskById,
+  useDomainStore,
+  useUiStore
+} from '@renderer/store'
 
 interface TaskDetailPanelProps {
   onClose: () => void
 }
 
 export function TaskDetailPanel({ onClose }: TaskDetailPanelProps): React.JSX.Element {
-  const taskPanel = useAppStore((state) => state.taskPanel)
-  const task = useAppStore((state) =>
+  const taskPanel = useUiStore((state) => state.taskPanel)
+  const closeTaskPanel = useUiStore((state) => state.closeTaskPanel)
+  const task = useDomainStore((state) =>
     taskPanel.open && taskPanel.mode === 'edit'
-      ? state.tasks.find((t) => t.id === taskPanel.taskId)
+      ? selectTaskById(state, taskPanel.taskId)
       : undefined
   )
-  const editingProject = useAppStore((state) =>
+  const editingProject = useDomainStore((state) =>
     taskPanel.open && taskPanel.mode === 'edit_project'
-      ? state.projects.find((p) => p.id === taskPanel.projectId)
+      ? selectEditingProjectById(state, taskPanel.projectId)
       : undefined
   )
+
+  useEffect(() => {
+    if (!taskPanel.open) return
+    if (taskPanel.mode === 'edit' && !task) closeTaskPanel()
+    if (taskPanel.mode === 'edit_project' && !editingProject) closeTaskPanel()
+  }, [closeTaskPanel, editingProject, task, taskPanel])
 
   const visible =
     taskPanel.open &&
@@ -35,7 +48,7 @@ export function TaskDetailPanel({ onClose }: TaskDetailPanelProps): React.JSX.El
       : taskPanel.mode === 'edit_project'
         ? `edit-project-${taskPanel.projectId}`
         : taskPanel.mode === 'create'
-          ? `create-${taskPanel.projectId ?? 'inbox'}`
+          ? `create-${taskPanel.defaults.projectId ?? 'inbox'}`
           : 'create-project'
 
   return (
@@ -63,9 +76,9 @@ export function TaskDetailPanel({ onClose }: TaskDetailPanelProps): React.JSX.El
             )}
             {taskPanel.open && taskPanel.mode === 'create' && (
               <TaskCreatePanel
-                defaultDueDate={taskPanel.dueDate}
-                defaultProjectId={taskPanel.projectId}
-                defaultStatus={taskPanel.status}
+                defaultDueDate={taskPanel.defaults.dueDate}
+                defaultProjectId={taskPanel.defaults.projectId}
+                defaultStatus={taskPanel.defaults.status}
                 onClose={onClose}
               />
             )}

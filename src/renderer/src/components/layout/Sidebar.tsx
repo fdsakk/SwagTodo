@@ -1,4 +1,3 @@
-import { useMemo } from 'react'
 import {
   Activity,
   Calendar,
@@ -9,13 +8,12 @@ import {
   Settings,
   Sun
 } from 'lucide-react'
-import useAppStore from '@renderer/store/useAppStore'
-import { isTaskDueToday, isTaskInFuture, isTaskOverdue } from '@renderer/utils/task'
 import { cn } from '@renderer/utils/cn'
 import { useShallow } from 'zustand/react/shallow'
 import { NavItem } from '@renderer/components/sidebar/NavItem'
 import { ProjectList } from '@renderer/components/sidebar/ProjectList'
 import { SidebarFooter } from '@renderer/components/sidebar/SidebarFooter'
+import { selectInboxCounts, useDomainStore, useUiStore } from '@renderer/store'
 
 interface SidebarProps {
   onOpenProjectPanel: () => void
@@ -23,52 +21,38 @@ interface SidebarProps {
 }
 
 export function Sidebar(props: SidebarProps): React.JSX.Element {
+  const { projects, hasLabels, isSidebarCollapsed, toggleSidebar } = useDomainStore(
+    useShallow((state) => ({
+      projects: state.projects,
+      hasLabels: state.labels.length > 0,
+      isSidebarCollapsed: state.isSidebarCollapsed,
+      toggleSidebar: state.toggleSidebar
+    }))
+  )
+  const { inboxCount, todayCount } = useDomainStore(useShallow(selectInboxCounts))
   const {
-    tasks,
-    projects,
-    hasLabels,
     selectedView,
     selectedProjectId,
-    isSidebarCollapsed,
     selectInbox,
     selectToday,
     selectActivity,
     selectSessions,
     selectSettings,
     selectHealth,
-    selectProject,
-    toggleSidebar
-  } = useAppStore(
+    selectProject
+  } = useUiStore(
     useShallow((state) => ({
-      tasks: state.tasks,
-      projects: state.projects,
-      hasLabels: state.labels.length > 0,
       selectedView: state.selectedView,
       selectedProjectId: state.selectedProjectId,
-      isSidebarCollapsed: state.isSidebarCollapsed,
       selectInbox: state.selectInbox,
       selectToday: state.selectToday,
       selectActivity: state.selectActivity,
       selectSessions: state.selectSessions,
       selectSettings: state.selectSettings,
       selectHealth: state.selectHealth,
-      selectProject: state.selectProject,
-      toggleSidebar: state.toggleSidebar
+      selectProject: state.selectProject
     }))
   )
-
-  const { inboxCount, todayCount } = useMemo(() => {
-    let inboxCount = 0
-    let todayCount = 0
-
-    for (const task of tasks) {
-      if (task.completed) continue
-      if (!task.projectId && (!task.dueDate || isTaskInFuture(task))) inboxCount += 1
-      if (isTaskDueToday(task) || isTaskOverdue(task)) todayCount += 1
-    }
-
-    return { inboxCount, todayCount }
-  }, [tasks])
 
   return (
     <aside

@@ -2,13 +2,13 @@ import { useCallback, useEffect, useMemo, useRef, useState } from 'react'
 import { Trash2, X } from 'lucide-react'
 import { Button } from '@renderer/components/ui/button'
 import { Separator } from '@renderer/components/ui/separator'
-import useAppStore from '@renderer/store/useAppStore'
 import type { Priority, Task, TaskStatus } from '@renderer/types'
 import { TaskFormFields } from './task-form-fields'
 import { useShallow } from 'zustand/react/shallow'
 import { computeTaskStats } from '@renderer/utils/sessions'
 import { SessionStats } from '@renderer/components/task-edit/SessionStats'
 import { SubtaskList } from '@renderer/components/task-edit/SubtaskList'
+import { useDomainStore } from '@renderer/store'
 
 interface TaskEditPanelProps {
   task: Task
@@ -27,7 +27,7 @@ export function TaskEditPanel({ task, onClose }: TaskEditPanelProps): React.JSX.
     toggleSubTask,
     deleteSubTask,
     deleteTask
-  } = useAppStore(
+  } = useDomainStore(
     useShallow((state) => ({
       projects: state.projects,
       labels: state.labels,

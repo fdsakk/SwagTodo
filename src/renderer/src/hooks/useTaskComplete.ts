@@ -1,6 +1,6 @@
 import confetti from 'canvas-confetti'
-import useAppStore from '@renderer/store/useAppStore'
 import { useCallback } from 'react'
+import { useDomainStore } from '@renderer/store'
 
 let confettiInstance: confetti.CreateTypes | null = null
 
@@ -19,8 +19,8 @@ function getConfetti(): confetti.CreateTypes {
 }
 
 export function useTaskComplete(): (taskId: string) => void {
-  const tasks = useAppStore((state) => state.tasks)
-  const toggleTaskComplete = useAppStore((state) => state.toggleTaskComplete)
+  const tasks = useDomainStore((state) => state.tasks)
+  const toggleTaskComplete = useDomainStore((state) => state.toggleTaskComplete)
 
   return useCallback(
     (taskId: string) => {

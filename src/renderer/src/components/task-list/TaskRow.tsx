@@ -3,7 +3,8 @@ import { Flag } from 'lucide-react'
 import { AnimatedCheckbox } from './animated-checkbox'
 import { SubtaskProgressRing } from './subtask-progress-ring'
 import type { Label, Project, Task } from '@renderer/types'
-import { PRIORITY_META, formatDueDate, isTaskOverdue } from '@renderer/utils/task'
+import { isTaskOverdue } from '@renderer/store'
+import { PRIORITY_META, formatDueDate } from '@renderer/utils/task'
 import { cn } from '@renderer/utils/cn'
 
 interface TaskRowProps {

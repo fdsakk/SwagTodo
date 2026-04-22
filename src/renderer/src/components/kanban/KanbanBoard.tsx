@@ -10,12 +10,12 @@ import {
   type DragEndEvent
 } from '@dnd-kit/core'
 import { arrayMove } from '@dnd-kit/sortable'
-import useAppStore from '@renderer/store/useAppStore'
 import type { Label, Task, TaskStatus } from '@renderer/types'
 import { useShallow } from 'zustand/react/shallow'
 import { KanbanColumn } from './KanbanColumn'
 import { KanbanCardPreview } from './KanbanCardPreview'
 import { COLUMNS, COLUMN_PREFIX, EMPTY_LABELS, byOrderAsc, resolveTaskLabels } from './types'
+import { useDomainStore } from '@renderer/store'
 
 interface KanbanBoardProps {
   projectId: string
@@ -25,7 +25,7 @@ interface KanbanBoardProps {
 }
 
 export default function KanbanBoard(props: KanbanBoardProps): React.JSX.Element {
-  const { addTask, applyKanbanOrder } = useAppStore(
+  const { addTask, applyKanbanOrder } = useDomainStore(
     useShallow((state) => ({
       addTask: state.addTask,
       applyKanbanOrder: state.applyKanbanOrder

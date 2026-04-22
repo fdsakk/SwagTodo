@@ -2,10 +2,10 @@ import { useCallback, useState } from 'react'
 import { X } from 'lucide-react'
 import { Button } from '@renderer/components/ui/button'
 import { Separator } from '@renderer/components/ui/separator'
-import useAppStore from '@renderer/store/useAppStore'
 import type { Priority, TaskStatus } from '@renderer/types'
 import { TaskFormFields } from './task-form-fields'
 import { useShallow } from 'zustand/react/shallow'
+import { useDomainStore } from '@renderer/store'
 
 interface FormState {
   title: string
@@ -35,7 +35,7 @@ const INITIAL_STATE = (props: TaskCreatePanelProps): FormState => ({
 })
 
 export function TaskCreatePanel(props: TaskCreatePanelProps): React.JSX.Element {
-  const { projects, labels, addTask } = useAppStore(
+  const { projects, labels, addTask } = useDomainStore(
     useShallow((state) => ({
       projects: state.projects,
       labels: state.labels,

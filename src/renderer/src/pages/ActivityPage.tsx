@@ -1,9 +1,9 @@
 import { useMemo } from 'react'
 import { Check, Pencil, Plus } from 'lucide-react'
 import { format, formatDistanceToNow, isToday, isYesterday, parseISO } from 'date-fns'
-import useAppStore from '@renderer/store/useAppStore'
 import type { Project, Task } from '@renderer/types'
 import { useShallow } from 'zustand/react/shallow'
+import { useDomainStore, useUiStore } from '@renderer/store'
 
 type ActivityKind = 'created' | 'edited' | 'completed'
 
@@ -102,13 +102,13 @@ function ActivityRow({
 }
 
 export default function ActivityPage(): React.JSX.Element {
-  const { tasks, projects, openEditPanel } = useAppStore(
+  const { tasks, projects } = useDomainStore(
     useShallow((state) => ({
       tasks: state.tasks,
-      projects: state.projects,
-      openEditPanel: state.openEditPanel
+      projects: state.projects
     }))
   )
+  const openEditPanel = useUiStore((state) => state.openEditPanel)
 
   const days = useMemo(() => groupByDay(buildEvents(tasks)), [tasks])
   const projectById = useMemo(() => new Map(projects.map((p) => [p.id, p])), [projects])

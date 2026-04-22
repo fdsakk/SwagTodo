@@ -13,13 +13,15 @@ import ProjectPage from '@renderer/pages/ProjectPage'
 import SessionsPage from '@renderer/pages/SessionsPage'
 import SettingsPage from '@renderer/pages/SettingsPage'
 import { HealthPage } from '@renderer/pages/HealthPage'
-import useAppStore from '@renderer/store/useAppStore'
 import { useKeyboardShortcuts } from '@renderer/hooks/useKeyboardShortcuts'
 import { useShallow } from 'zustand/react/shallow'
 import { UI_SCALE_OPTIONS } from '@renderer/types'
+import { useDomainStore, useUiStore } from '@renderer/store'
+import { hydrateDomainStore } from '@renderer/store/bootstrap'
 
 function App(): React.JSX.Element {
   const [isFullScreen, setIsFullScreen] = useState(false)
+  const [hydrated, setHydrated] = useState(() => useDomainStore.persist.hasHydrated())
 
   useEffect(() => {
     const windowApi = window.api?.window
@@ -29,19 +31,12 @@ function App(): React.JSX.Element {
   }, [])
 
   const {
-    hydrated,
     selectedView,
-    hydrate,
     closeTaskPanel,
     openCreatePanelForCurrentView,
     openCreateProjectPanel,
     openEditProjectPanel,
     triggerSearchFocus,
-    uiScale,
-    labels,
-    addLabel,
-    updateLabel,
-    deleteLabel,
     selectInbox,
     selectToday,
     selectActivity,
@@ -49,25 +44,15 @@ function App(): React.JSX.Element {
     selectSettings,
     selectHealth,
     selectProject,
-    projects,
-    toggleSidebar,
-    setProjectTab,
-    setUiScale
-  } = useAppStore(
+    setProjectTab
+  } = useUiStore(
     useShallow((state) => ({
-      hydrated: state.hydrated,
       selectedView: state.selectedView,
-      hydrate: state.hydrate,
       closeTaskPanel: state.closeTaskPanel,
       openCreatePanelForCurrentView: state.openCreatePanelForCurrentView,
       openCreateProjectPanel: state.openCreateProjectPanel,
       openEditProjectPanel: state.openEditProjectPanel,
       triggerSearchFocus: state.triggerSearchFocus,
-      uiScale: state.uiScale,
-      labels: state.labels,
-      addLabel: state.addLabel,
-      updateLabel: state.updateLabel,
-      deleteLabel: state.deleteLabel,
       selectInbox: state.selectInbox,
       selectToday: state.selectToday,
       selectActivity: state.selectActivity,
@@ -75,9 +60,27 @@ function App(): React.JSX.Element {
       selectSettings: state.selectSettings,
       selectHealth: state.selectHealth,
       selectProject: state.selectProject,
+      setProjectTab: state.setProjectTab
+    }))
+  )
+  const {
+    uiScale,
+    labels,
+    addLabel,
+    updateLabel,
+    deleteLabel,
+    projects,
+    toggleSidebar,
+    setUiScale
+  } = useDomainStore(
+    useShallow((state) => ({
+      uiScale: state.uiScale,
+      labels: state.labels,
+      addLabel: state.addLabel,
+      updateLabel: state.updateLabel,
+      deleteLabel: state.deleteLabel,
       projects: state.projects,
       toggleSidebar: state.toggleSidebar,
-      setProjectTab: state.setProjectTab,
       setUiScale: state.setUiScale
     }))
   )
@@ -87,8 +90,14 @@ function App(): React.JSX.Element {
   const [projectPickerOpen, setProjectPickerOpen] = useState(false)
 
   useEffect(() => {
-    void hydrate()
-  }, [hydrate])
+    let cancelled = false
+    void hydrateDomainStore().finally(() => {
+      if (!cancelled) setHydrated(true)
+    })
+    return () => {
+      cancelled = true
+    }
+  }, [])
 
   useEffect(() => {
     if (!hydrated || !window.api?.ui) return
@@ -167,7 +176,7 @@ function App(): React.JSX.Element {
               selectedView === 'settings' ||
               selectedView === 'health'
                 ? 'min-h-0 flex-1 overflow-y-auto'
-                : 'min-h-0 flex-1 mt-4'
+                : 'min-h-0 flex-1 mt-4 '
             }
           >
             {selectedView === 'inbox' && <InboxPage />}

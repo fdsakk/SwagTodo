@@ -11,10 +11,10 @@ import {
   ReferenceLine,
   ReferenceArea
 } from 'recharts'
-import useAppStore from '@renderer/store/useAppStore'
 import { useShallow } from 'zustand/react/shallow'
 import { generateDailyChartData, MED_PRESETS } from '@renderer/utils/pharmacokinetics'
 import { cn } from '@renderer/utils/cn'
+import { useDomainStore } from '@renderer/store'
 
 const today = (): string => new Date().toISOString().slice(0, 10)
 
@@ -82,7 +82,7 @@ export function HealthPage(): React.JSX.Element {
     updateMedicationLog,
     deleteMedicationLog,
     updateChartSettings
-  } = useAppStore(
+  } = useDomainStore(
     useShallow((s) => ({
       medications: s.medications,
       pkSettings: s.pkSettings,

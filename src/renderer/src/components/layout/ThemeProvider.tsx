@@ -1,9 +1,9 @@
 import { useEffect } from 'react'
-import useAppStore from '@renderer/store/useAppStore'
 import { getResolvedTokens, THEME_TOKEN_KEYS } from '@renderer/types'
+import { useDomainStore } from '@renderer/store'
 
 export function ThemeProvider(): null {
-  const appearance = useAppStore((s) => s.appearance)
+  const appearance = useDomainStore((s) => s.appearance)
 
   useEffect(() => {
     const tokens = getResolvedTokens(appearance)

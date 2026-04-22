@@ -197,7 +197,7 @@ export function CustomizeSection({
   onSetCustomTokens,
   onResetCustomTokens
 }: CustomizeSectionProps): React.JSX.Element {
-  const [showCustomize, setShowCustomize] = useState(true)
+  const [showCustomize, setShowCustomize] = useState(false)
   const resolved = getResolvedTokens(appearance)
   const customTokens = appearance.customTokens ?? {}
   const customCount = Object.keys(customTokens).length

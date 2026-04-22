@@ -1,54 +1,33 @@
 import { useMemo } from 'react'
 import { TaskList } from '@renderer/components/task-list'
-import useAppStore from '@renderer/store/useAppStore'
-import {
-  isTaskDueToday,
-  isTaskInFuture,
-  isTaskOverdue,
-  useVisibleTasks
-} from '@renderer/utils/task'
-import type { TaskGroup } from '@renderer/types'
+import { selectInboxTaskGroups, useDomainStore, useUiStore } from '@renderer/store'
+import { useVisibleTasks } from '@renderer/utils/task'
 import { useShallow } from 'zustand/react/shallow'
 import { useTaskComplete } from '@renderer/hooks/useTaskComplete'
 
 export default function InboxPage(): React.JSX.Element {
-  const { projects, labels, openEditPanel } = useAppStore(
+  const { projects, labels } = useDomainStore(
     useShallow((state) => ({
       projects: state.projects,
-      labels: state.labels,
-      openEditPanel: state.openEditPanel
+      labels: state.labels
+    }))
+  )
+  const openEditPanel = useUiStore((state) => state.openEditPanel)
+  const visibleInput = useUiStore(
+    useShallow((state) => ({
+      searchQuery: state.searchQuery,
+      sortMode: state.sortMode,
+      showCompleted: state.showCompleted,
+      selectedView: state.selectedView
     }))
   )
   const toggleTaskComplete = useTaskComplete()
 
   const tasks = useVisibleTasks()
-
-  const groupedTasks = useMemo<TaskGroup[]>(() => {
-    const overdue: typeof tasks = []
-    const noDate: typeof tasks = []
-    const today: typeof tasks = []
-    const future: typeof tasks = []
-
-    for (const task of tasks) {
-      if (task.projectId) continue
-      if (isTaskOverdue(task)) overdue.push(task)
-      else if (!task.dueDate) noDate.push(task)
-      else if (isTaskDueToday(task)) today.push(task)
-      else if (isTaskInFuture(task)) future.push(task)
-    }
-
-    return [
-      {
-        id: 'overdue',
-        title: 'Overdue',
-        accentClass: 'text-app-text-secondary',
-        tasks: overdue
-      },
-      { id: 'no-date', title: 'No date', tasks: noDate },
-      { id: 'today', title: 'Today', tasks: today },
-      { id: 'future', title: 'Future', tasks: future }
-    ]
-  }, [tasks])
+  const groupedTasks = useMemo(
+    () => selectInboxTaskGroups({ tasks }, visibleInput),
+    [tasks, visibleInput]
+  )
 
   return (
     <TaskList

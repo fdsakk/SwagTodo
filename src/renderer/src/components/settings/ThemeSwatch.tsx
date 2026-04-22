@@ -31,11 +31,10 @@ export function ThemeSwatch({ themeId }: ThemeSwatchProps): React.JSX.Element {
         <div className="flex gap-1 flex-1">
           <div className="flex-1 rounded-md p-1" style={{ background: t['--app-card'] }}>
             <div
-              className="h-1 w-3/4 rounded-full"
+              className="h-1 w-1/3 rounded-full"
               style={{ background: t['--app-text'], opacity: 0.4 }}
             />
           </div>
-          <div className="flex-1 rounded-md" style={{ background: t['--app-hover'] }} />
         </div>
       </div>
     </div>

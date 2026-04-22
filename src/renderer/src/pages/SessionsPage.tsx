@@ -1,12 +1,12 @@
 import { useCallback, useEffect, useMemo, useState } from 'react'
 import { ChevronLeft, ChevronRight } from 'lucide-react'
 import { useShallow } from 'zustand/react/shallow'
-import useAppStore from '@renderer/store/useAppStore'
 import { SessionsCalendar } from '@renderer/components/sessions-calendar'
 import { addDays, buildIsoAtMinutes, isSameDay, startOfDay } from '@renderer/utils/calendar'
 import { cn } from '@renderer/utils/cn'
 import { TaskPickerDialog, type DraftCreate } from './sessions/TaskPickerDialog'
 import { GhostBlockDialog } from './sessions/GhostBlockDialog'
+import { useDomainStore, useUiStore } from '@renderer/store'
 
 type DayCount = 1 | 3 | 5 | 7
 const DAY_OPTIONS: readonly DayCount[] = [1, 3, 5, 7] as const
@@ -23,9 +23,8 @@ export default function SessionsPage(): React.JSX.Element {
     deleteSession,
     addTimeBlock,
     updateTimeBlock,
-    deleteTimeBlock,
-    openEditPanel
-  } = useAppStore(
+    deleteTimeBlock
+  } = useDomainStore(
     useShallow((state) => ({
       sessions: state.sessions,
       tasks: state.tasks,
@@ -36,10 +35,10 @@ export default function SessionsPage(): React.JSX.Element {
       deleteSession: state.deleteSession,
       addTimeBlock: state.addTimeBlock,
       updateTimeBlock: state.updateTimeBlock,
-      deleteTimeBlock: state.deleteTimeBlock,
-      openEditPanel: state.openEditPanel
+      deleteTimeBlock: state.deleteTimeBlock
     }))
   )
+  const openEditPanel = useUiStore((state) => state.openEditPanel)
 
   const [dayCount, setDayCount] = useState<DayCount>(5)
   const [anchor, setAnchor] = useState<Date>(() => startOfDay(new Date()))

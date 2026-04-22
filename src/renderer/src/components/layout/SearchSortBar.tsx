@@ -9,8 +9,8 @@ import {
   SelectValue
 } from '@renderer/components/ui/select'
 import { AnimatedCheckbox } from '@renderer/components/task-list/animated-checkbox'
-import useAppStore from '@renderer/store/useAppStore'
 import { useShallow } from 'zustand/react/shallow'
+import { useUiStore } from '@renderer/store'
 
 export function SearchSortBar(): React.JSX.Element {
   const inputRef = useRef<HTMLInputElement>(null)
@@ -24,7 +24,7 @@ export function SearchSortBar(): React.JSX.Element {
     searchFocusSignal,
     openCreatePanelForCurrentView,
     selectedView
-  } = useAppStore(
+  } = useUiStore(
     useShallow((state) => ({
       searchQuery: state.searchQuery,
       setSearchQuery: state.setSearchQuery,

@@ -1,57 +1,85 @@
-import { useMemo } from 'react'
+import { useEffect, useMemo } from 'react'
 import { Pencil } from 'lucide-react'
-import useAppStore from '@renderer/store/useAppStore'
 import { KanbanBoard } from '@renderer/components/kanban'
 import { TaskList } from '@renderer/components/task-list'
-import { useVisibleTasks } from '@renderer/utils/task'
-import type { Project, TaskGroup } from '@renderer/types'
+import type { Project } from '@renderer/types'
 import { cn } from '@renderer/utils/cn'
 import { useShallow } from 'zustand/react/shallow'
 import { useTaskComplete } from '@renderer/hooks/useTaskComplete'
+import {
+  selectProjectById,
+  selectProjectTaskGroups,
+  selectTasksForProject,
+  useDomainStore,
+  useUiStore
+} from '@renderer/store'
 
 interface ProjectPageProps {
   onEditProject: (project: Project) => void
 }
 
 export default function ProjectPage(props: ProjectPageProps): React.JSX.Element {
-  const { projects, labels, selectedProjectId, projectTab, setProjectTab, openEditPanel } =
-    useAppStore(
-      useShallow((state) => ({
-        projects: state.projects,
-        labels: state.labels,
-        selectedProjectId: state.selectedProjectId,
-        projectTab: state.projectTab,
-        setProjectTab: state.setProjectTab,
-        openEditPanel: state.openEditPanel
-      }))
-    )
+  const { tasks, projects, labels } = useDomainStore(
+    useShallow((state) => ({
+      tasks: state.tasks,
+      projects: state.projects,
+      labels: state.labels
+    }))
+  )
+  const {
+    selectedProjectId,
+    projectTab,
+    setProjectTab,
+    openEditPanel,
+    selectInbox,
+    searchQuery,
+    sortMode,
+    showCompleted,
+    selectedView
+  } = useUiStore(
+    useShallow((state) => ({
+      selectedProjectId: state.selectedProjectId,
+      projectTab: state.projectTab,
+      setProjectTab: state.setProjectTab,
+      openEditPanel: state.openEditPanel,
+      selectInbox: state.selectInbox,
+      searchQuery: state.searchQuery,
+      sortMode: state.sortMode,
+      showCompleted: state.showCompleted,
+      selectedView: state.selectedView
+    }))
+  )
   const toggleTaskComplete = useTaskComplete()
 
-  const project = projects.find((p) => p.id === selectedProjectId)
-  const tasks = useVisibleTasks()
+  const project = useDomainStore((state) => selectProjectById(state, selectedProjectId))
 
   const projectTasks = useMemo(
-    () => tasks.filter((t) => t.projectId === selectedProjectId),
-    [tasks, selectedProjectId]
+    () =>
+      selectTasksForProject({ tasks }, selectedProjectId, {
+        searchQuery,
+        sortMode,
+        showCompleted,
+        selectedView
+      }),
+    [tasks, searchQuery, selectedProjectId, selectedView, showCompleted, sortMode]
   )
 
-  const groupedTasks = useMemo<TaskGroup[]>(() => {
-    const todo: typeof projectTasks = []
-    const inProgress: typeof projectTasks = []
-    const done: typeof projectTasks = []
+  useEffect(() => {
+    if (selectedProjectId && !project) selectInbox()
+  }, [project, selectInbox, selectedProjectId])
 
-    for (const task of projectTasks) {
-      if (task.status === 'todo') todo.push(task)
-      else if (task.status === 'in_progress') inProgress.push(task)
-      else done.push(task)
-    }
-
-    return [
-      { id: 'todo', title: 'To Do', tasks: todo },
-      { id: 'in-progress', title: 'In Progress', tasks: inProgress },
-      { id: 'done', title: 'Done', tasks: done }
-    ]
-  }, [projectTasks])
+  const groupedTasks = useMemo(
+    () =>
+      selectedProjectId
+        ? selectProjectTaskGroups({ tasks }, selectedProjectId, {
+            searchQuery,
+            sortMode,
+            showCompleted,
+            selectedView
+          })
+        : [],
+    [tasks, searchQuery, selectedProjectId, selectedView, showCompleted, sortMode]
+  )
 
   if (!project) {
     return (
