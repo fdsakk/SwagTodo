@@ -489,11 +489,13 @@ export const THEME_PRESETS: ThemePreset[] = [
 export interface AppearanceSettings {
   themeId: ThemeId
   customTokens: Partial<ThemeTokens>
+  customTokensByTheme: Partial<Record<ThemeId, Partial<ThemeTokens>>>
 }
 
 export const DEFAULT_APPEARANCE: AppearanceSettings = {
   themeId: 'default',
-  customTokens: {}
+  customTokens: {},
+  customTokensByTheme: {}
 }
 
 export type AppState = Omit<SharedAppState, 'pkSettings' | 'appearance' | 'medications'> & {
@@ -509,15 +511,33 @@ export function normalizeAppearance(raw: unknown): AppearanceSettings {
     typeof obj.themeId === 'string' && THEME_PRESETS.some((p) => p.id === obj.themeId)
       ? (obj.themeId as ThemeId)
       : 'default'
-  const customTokens: Partial<ThemeTokens> = {}
-  if (obj.customTokens && typeof obj.customTokens === 'object') {
-    const raw = obj.customTokens as Record<string, unknown>
-    for (const key of THEME_TOKEN_KEYS) {
-      const v = raw[key]
-      if (typeof v === 'string') customTokens[key] = v
+  const customTokensByTheme: Partial<Record<ThemeId, Partial<ThemeTokens>>> = {}
+  if (obj.customTokensByTheme && typeof obj.customTokensByTheme === 'object') {
+    const rawByTheme = obj.customTokensByTheme as Record<string, unknown>
+    for (const preset of THEME_PRESETS) {
+      const rawTokens = rawByTheme[preset.id]
+      if (!rawTokens || typeof rawTokens !== 'object') continue
+      const themeTokens: Partial<ThemeTokens> = {}
+      for (const key of THEME_TOKEN_KEYS) {
+        const value = (rawTokens as Record<string, unknown>)[key]
+        if (typeof value === 'string') themeTokens[key] = value
+      }
+      if (Object.keys(themeTokens).length > 0) customTokensByTheme[preset.id] = themeTokens
     }
   }
-  return { themeId, customTokens }
+
+  if (Object.keys(customTokensByTheme).length === 0 && obj.customTokens && typeof obj.customTokens === 'object') {
+    const legacyTokens: Partial<ThemeTokens> = {}
+    const rawTokens = obj.customTokens as Record<string, unknown>
+    for (const key of THEME_TOKEN_KEYS) {
+      const value = rawTokens[key]
+      if (typeof value === 'string') legacyTokens[key] = value
+    }
+    if (Object.keys(legacyTokens).length > 0) customTokensByTheme[themeId] = legacyTokens
+  }
+
+  const customTokens = customTokensByTheme[themeId] ?? {}
+  return { themeId, customTokens, customTokensByTheme }
 }
 
 export function getResolvedTokens(settings: AppearanceSettings): ThemeTokens {

@@ -32,6 +32,7 @@
 - Shared types in `src/shared/types.ts`; shared defaults (`UI_SCALE_OPTIONS`, `DEFAULT_UI_SCALE`, etc.) in `src/shared/defaults.ts`. Main + preload import directly; renderer re-exports from `@renderer/types`.
 - Shared schema validation now lives in `src/shared/stateSchema.ts` with Zod; renderer persist and main app-state normalization should reuse it instead of reintroducing scattered manual type guards.
 - Health PK chart: apply asymmetric smoothing (`smoothSummedEffect` — faster rise, slower fall) to summed dose curve before crash/band analysis to avoid sharp additive peaks.
+- Theme appearance persistence now keeps `customTokensByTheme`; switching presets must restore that preset's saved token overrides, while old payloads with flat `customTokens` migrate into active theme bucket.
 
 ## Do-Not-Repeat
 
@@ -39,6 +40,7 @@
 - [2026-04-23] Do NOT implement `savePartial` by reloading the full SQLite snapshot; keep normalized cache, merge patches in memory.
 - [2026-04-23] Do NOT run `better-sqlite3` storage tests under plain Node runtime after Electron rebuild; test serialization layer instead.
 - [2026-04-23] Do NOT enable auto-hydration for renderer Zustand stores in Node/test environment; guard with `typeof window === 'undefined'` or tests will throw unhandled `window is not defined`.
+- [2026-04-23] Do NOT keep theme customization in one flat `appearance.customTokens` map if preset switching should preserve per-theme edits; use per-theme buckets and migrate legacy flat payloads.
 - [2026-04-19] Do NOT place new components as loose files in `components/` root. Always use appropriate subfolder + `index.tsx` barrel.
 - [2026-04-19] Do NOT use default exports for new components.
 - [2026-04-19] Do NOT implement destructive sync (delete-all then insert-all) for Supabase — slow, risks data loss on partial failure.

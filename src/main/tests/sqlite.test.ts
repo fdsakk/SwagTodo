@@ -80,7 +80,11 @@ const createFixtureState = (): AppState => ({
   isSidebarCollapsed: true,
   appearance: {
     themeId: 'retro',
-    customTokens: { '--app-bg': '#101010' }
+    customTokens: { '--app-bg': '#101010' },
+    customTokensByTheme: {
+      retro: { '--app-bg': '#101010' },
+      default: { '--app-accent': '#222222' }
+    }
   }
 })
 
@@ -226,4 +230,5 @@ test('settings: uiScale and appearance serialize to settings rows', () => {
   assert.equal(JSON.parse(uiScaleRow.value), 125)
   assert.ok(appearanceRow)
   assert.equal(JSON.parse(appearanceRow.value).themeId, 'retro')
+  assert.equal(JSON.parse(appearanceRow.value).customTokensByTheme.retro['--app-bg'], '#101010')
 })

@@ -47,6 +47,18 @@ test('stateFromPersisted normalizes incomplete persisted payloads', () => {
   assert.deepEqual(persisted.projects, [])
 })
 
+test('stateFromPersisted migrates legacy appearance custom tokens into active theme bucket', () => {
+  const persisted = stateFromPersisted({
+    appearance: {
+      themeId: 'retro',
+      customTokens: { '--app-bg': '#111111' }
+    }
+  })
+
+  assert.deepEqual(persisted.appearance.customTokens, { '--app-bg': '#111111' })
+  assert.deepEqual(persisted.appearance.customTokensByTheme.retro, { '--app-bg': '#111111' })
+})
+
 test('persistedStorage only saves changed persisted keys', async () => {
   let savedPatch: Record<string, unknown> | undefined
   ;(globalThis as { window?: Window }).window = {

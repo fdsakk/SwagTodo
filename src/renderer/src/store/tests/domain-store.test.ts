@@ -85,6 +85,24 @@ test('toggleSubTask and deleteSubTask preserve references on no-op', () => {
   assert.equal(store.getState().tasks, beforeTasks)
 })
 
+test('theme custom tokens survive switching away and back', () => {
+  const store = createDomainTestStore()
+
+  store.getState().setThemeId('retro')
+  store.getState().setCustomTokens({ '--app-bg': '#111111' })
+  store.getState().setThemeId('default')
+  store.getState().setCustomTokens({ '--app-accent': '#222222' })
+  store.getState().setThemeId('retro')
+
+  assert.deepEqual(store.getState().appearance.customTokens, { '--app-bg': '#111111' })
+  assert.deepEqual(store.getState().appearance.customTokensByTheme.retro, {
+    '--app-bg': '#111111'
+  })
+  assert.deepEqual(store.getState().appearance.customTokensByTheme.default, {
+    '--app-accent': '#222222'
+  })
+})
+
 test('deleteTask removes only related sessions', () => {
   const taskA = createTask({ id: 'task-a', projectId: 'project-1' })
   const taskB = createTask({ id: 'task-b', projectId: 'project-1', order: 2 })

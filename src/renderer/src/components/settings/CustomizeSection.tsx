@@ -196,7 +196,7 @@ export function CustomizeSection({
 }: CustomizeSectionProps): React.JSX.Element {
   const [showCustomize, setShowCustomize] = useState(false)
   const resolved = getResolvedTokens(appearance)
-  const customTokens = appearance.customTokens ?? {}
+  const customTokens = appearance.customTokensByTheme[appearance.themeId] ?? appearance.customTokens ?? {}
   const customCount = Object.keys(customTokens).length
   const hasCustom = customCount > 0
   const activeThemeName =

@@ -62,6 +62,7 @@ export interface TimeBlock {
 export interface AppearanceSettings {
   themeId: string
   customTokens: Record<string, string>
+  customTokensByTheme?: Record<string, Record<string, string>>
 }
 
 export interface MedicationLog {

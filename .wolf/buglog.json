@@ -348,6 +348,18 @@
       "related_bugs": [],
       "occurrences": 1,
       "last_seen": "2026-04-23T22:32:12+02:00"
+    },
+    {
+      "id": "bug-030",
+      "timestamp": "2026-04-23T23:42:18+02:00",
+      "error_message": "Zmodyfikowane theme nie zapisują się między przełączaniem na inne theme; po restarcie aplikacji obecny stan się zapisuje.",
+      "file": "src/renderer/src/store/domain/actions/settings.ts",
+      "root_cause": "Appearance state trzymał tylko jeden globalny `customTokens` map i `setThemeId()` zerował go przy każdej zmianie theme, więc customizacje znikały przy przełączaniu presetów.",
+      "fix": "Dodałem `customTokensByTheme`, migrację legacy payloadu do aktywnego bucketu, przełączanie theme z przywracaniem bucketu danego presetu oraz testy store/persist/SQLite dla tego przepływu.",
+      "tags": ["theme", "appearance", "persist", "zustand", "settings"],
+      "related_bugs": [],
+      "occurrences": 1,
+      "last_seen": "2026-04-23T23:42:18+02:00"
     }
   ]
 }
