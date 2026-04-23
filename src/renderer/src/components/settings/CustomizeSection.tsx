@@ -144,7 +144,6 @@ function ColorPickerPopover({ label, hex, onChange }: ColorPickerPopoverProps): 
 }
 
 interface ColorTokenCardProps {
-  tokenKey: keyof ThemeTokens
   label: string
   hex: string
   isCustom: boolean
@@ -153,7 +152,6 @@ interface ColorTokenCardProps {
 }
 
 function ColorTokenCard({
-  tokenKey,
   label,
   hex,
   isCustom,
@@ -167,7 +165,6 @@ function ColorTokenCard({
         <div className="min-w-0">
           <p className="truncate text-xs font-medium text-app-text">{label}</p>
           <p className="text-xs text-app-text-muted">{hex}</p>
-          
         </div>
         <div className="flex items-center gap-2">
           {isCustom && (
@@ -256,9 +253,7 @@ export function CustomizeSection({
         <div className="space-y-4">
           {TOKEN_GROUPS.map(({ id, title, keys }) => (
             <div key={id} className="space-y-2">
-              <h3 className="text-xs font-semibold text-app-text-secondary">
-                {title}
-              </h3>
+              <h3 className="text-xs font-semibold text-app-text-secondary">{title}</h3>
               <div className="grid gap-2 grid-cols-5 xl:grid-cols-7">
                 {keys.map((key) => {
                   const hex = colorToHex(resolved[key])
@@ -266,7 +261,6 @@ export function CustomizeSection({
                   return (
                     <ColorTokenCard
                       key={key}
-                      tokenKey={key}
                       label={TOKEN_LABELS[key]}
                       hex={hex}
                       isCustom={isCustom}
