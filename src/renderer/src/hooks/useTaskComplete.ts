@@ -4,6 +4,10 @@ import { useDomainStore } from '@renderer/store'
 
 let confettiInstance: confetti.CreateTypes | null = null
 
+interface ToggleTaskCompleteOptions {
+  delayMs?: number
+}
+
 function getConfetti(): confetti.CreateTypes {
   if (confettiInstance) return confettiInstance
   const canvas = document.createElement('canvas')
@@ -23,11 +27,10 @@ export function useTaskComplete(): (taskId: string) => void {
   const toggleTaskComplete = useDomainStore((state) => state.toggleTaskComplete)
 
   return useCallback(
-    (taskId: string) => {
+    (taskId: string, options?: ToggleTaskCompleteOptions) => {
       const task = tasks.find((t) => t.id === taskId)
       const wasCompleted = task?.completed ?? true
-
-      toggleTaskComplete(taskId)
+      const runToggle = () => toggleTaskComplete(taskId)
 
       if (!wasCompleted) {
         const fire = getConfetti()
@@ -42,6 +45,14 @@ export function useTaskComplete(): (taskId: string) => void {
           colors: ['#a855f7', '#ec4899', '#f59e0b', '#10b981', '#3b82f6']
         })
       }
+
+      const delayMs = !wasCompleted ? (options?.delayMs ?? 0) : 0
+      if (delayMs > 0) {
+        window.setTimeout(runToggle, delayMs)
+        return
+      }
+
+      runToggle()
     },
     [tasks, toggleTaskComplete]
   )

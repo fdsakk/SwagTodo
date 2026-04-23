@@ -526,7 +526,11 @@ export function normalizeAppearance(raw: unknown): AppearanceSettings {
     }
   }
 
-  if (Object.keys(customTokensByTheme).length === 0 && obj.customTokens && typeof obj.customTokens === 'object') {
+  if (
+    Object.keys(customTokensByTheme).length === 0 &&
+    obj.customTokens &&
+    typeof obj.customTokens === 'object'
+  ) {
     const legacyTokens: Partial<ThemeTokens> = {}
     const rawTokens = obj.customTokens as Record<string, unknown>
     for (const key of THEME_TOKEN_KEYS) {

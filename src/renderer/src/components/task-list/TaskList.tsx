@@ -8,9 +8,10 @@ interface TaskListProps {
   projects: Project[]
   labels: Label[]
   showProjectContext?: boolean
+  delayCompleteAnimation?: boolean
   emptyStateTitle: string
   emptyStateDescription: string
-  onToggleComplete: (taskId: string) => void
+  onToggleComplete: (taskId: string, options?: { delayMs?: number }) => void
   onOpenTask: (taskId: string) => void
 }
 
@@ -59,6 +60,7 @@ export function TaskList(props: TaskListProps): React.JSX.Element {
                       onOpen={props.onOpenTask}
                       onToggleComplete={props.onToggleComplete}
                       project={task.projectId ? projectById.get(task.projectId) : undefined}
+                      delayCompleteAnimation={props.delayCompleteAnimation}
                       showProjectContext={props.showProjectContext}
                       task={task}
                     />

@@ -33,6 +33,7 @@ export default function InboxPage(): React.JSX.Element {
     <TaskList
       emptyStateDescription="Use the + button above to create your first inbox task."
       emptyStateTitle="Inbox is empty"
+      delayCompleteAnimation
       groups={groupedTasks}
       labels={labels}
       onOpenTask={openEditPanel}

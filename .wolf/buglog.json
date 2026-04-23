@@ -360,6 +360,18 @@
       "related_bugs": [],
       "occurrences": 1,
       "last_seen": "2026-04-23T23:42:18+02:00"
+    },
+    {
+      "id": "bug-031",
+      "timestamp": "2026-04-23T23:57:00+02:00",
+      "error_message": "W InboxPage kliknięcie checkboxa od razu usuwa task z listy, zamiast poczekać aż skończy się animacja checkboxa i confetti.",
+      "file": "src/renderer/src/components/task-list/TaskRow.tsx",
+      "root_cause": "Flow completion przełączał `task.completed` natychmiast w store, a Inbox filtruje aktywne taski bezpośrednio po tym polu, więc wiersz znikał zanim UI skończyło animację.",
+      "fix": "Dodałem opóźnione `toggleTaskComplete` z natychmiastowym confetti, lokalny stan `isCompleting`/`isFadingOut` w `TaskRow` oraz włączyłem ten tryb dla `InboxPage`, żeby task znikał dopiero po animacji z fade-outem.",
+      "tags": ["inbox", "task-list", "animation", "confetti", "completion"],
+      "related_bugs": [],
+      "occurrences": 1,
+      "last_seen": "2026-04-23T23:57:00+02:00"
     }
   ]
 }

@@ -1,4 +1,4 @@
-import { Fragment, memo } from 'react'
+import { Fragment, memo, useEffect, useRef, useState } from 'react'
 import { Flag } from 'lucide-react'
 import { AnimatedCheckbox } from './animated-checkbox'
 import { SubtaskProgressRing } from './subtask-progress-ring'
@@ -13,19 +13,50 @@ interface TaskRowProps {
   project?: Project
   labels: Label[]
   showProjectContext?: boolean
+  delayCompleteAnimation?: boolean
   index: number
   onOpen: (taskId: string) => void
-  onToggleComplete: (taskId: string) => void
+  onToggleComplete: (taskId: string, options?: { delayMs?: number }) => void
 }
 
+const COMPLETE_TOGGLE_DELAY_MS = 1500
+
 function TaskRowBase(props: TaskRowProps): React.JSX.Element {
+  const [isCompleting, setIsCompleting] = useState(false)
+  const resetTimerRef = useRef<number | null>(null)
   const overdue = isTaskOverdue(props.task)
   const priorityMeta = PRIORITY_META[props.task.priority]
   const showFlag = props.task.priority !== 'p4'
   const subTaskTotal = props.task.subTasks.length
   const subTaskDone = subTaskTotal > 0 ? props.task.subTasks.filter((s) => s.completed).length : 0
   const projectContext = props.showProjectContext ? (props.project?.name ?? 'Inbox') : undefined
+  const isVisuallyCompleted = props.task.completed || isCompleting
   const metaParts: React.JSX.Element[] = []
+
+  useEffect(() => {
+    return () => {
+      if (resetTimerRef.current !== null) {
+        window.clearTimeout(resetTimerRef.current)
+        resetTimerRef.current = null
+      }
+    }
+  }, [])
+
+  const handleToggleComplete = () => {
+    if (isCompleting) return
+
+    if (!props.task.completed && props.delayCompleteAnimation) {
+      setIsCompleting(true)
+      resetTimerRef.current = window.setTimeout(() => {
+        setIsCompleting(false)
+        resetTimerRef.current = null
+      }, COMPLETE_TOGGLE_DELAY_MS)
+      props.onToggleComplete(props.task.id, { delayMs: COMPLETE_TOGGLE_DELAY_MS })
+      return
+    }
+
+    props.onToggleComplete(props.task.id)
+  }
 
   if (props.task.dueDate) {
     metaParts.push(
@@ -56,23 +87,23 @@ function TaskRowBase(props: TaskRowProps): React.JSX.Element {
       <Item
         className={cn(
           'group flex cursor-pointer items-center gap-3.5 px-3.5 py-2.5',
-          props.task.completed && 'opacity-40'
+          isVisuallyCompleted && 'opacity-40'
         )}
-        onClick={() => props.onOpen(props.task.id)}
+        onClick={() => {
+          if (isCompleting) return
+          props.onOpen(props.task.id)
+        }}
         variant="muted"
       >
         <div onClick={(e) => e.stopPropagation()}>
-          <AnimatedCheckbox
-            checked={props.task.completed}
-            onCheckedChange={() => props.onToggleComplete(props.task.id)}
-          />
+          <AnimatedCheckbox checked={isVisuallyCompleted} onCheckedChange={handleToggleComplete} />
         </div>
 
         <div className="min-w-0 flex-1">
           <div
             className={cn(
               'truncate text-sm leading-snug text-app-text',
-              props.task.completed && 'line-through text-app-text-muted'
+              isVisuallyCompleted && 'line-through text-app-text-muted'
             )}
           >
             {props.task.title}

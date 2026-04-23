@@ -18,10 +18,12 @@
 - For theme polish, keep existing vibe and nudge colors toward better harmony instead of full redesign.
 - Inbox page should render task entries as shadcn-style `Item` cards instead of flat border-separated rows, and group date labels should use `Badge`.
 - `ui/badge` and `ui/item` should use app theme color variables (`app-*`) so they adapt to customized color tokens.
+- For task completion UX, prefer delayed `done` mutation without a row exit/fade animation.
 
 ## Key Learnings
 
 - SQLite persistence: main-process `better-sqlite3` behind `window.api.storage` IPC. First run imports legacy `todoist-clone.json` into `swag-todo.db`. In-memory normalized cache avoids reload before every `store:savePartial`. Node tests must not open the native DB directly — test serialization helpers only.
+- Filtered task lists like Inbox should delay the actual `completed` store update until exit animations finish; otherwise selector-driven removal cuts off checkbox/confetti feedback immediately.
 - Renderer crash guard lives at root: wrap `App` in layout-level `GlobalErrorBoundary` and also listen for `window.error` + `unhandledrejection` so runtime faults show fallback UI instead of blank/crashed window.
 - In renderer global `window.error` handling, ignore resource-load errors (`event.target !== window`) or missing font/img/script can falsely trip full-app fallback.
 - Renderer Zustand is live state source; `persist` sends changed-slice patches via `store:savePartial`. UI filters still use `localStorage`.
@@ -47,6 +49,7 @@
 
 ## Decision Log
 
+- [2026-04-23] Inbox completion UX: delayed the real `toggleTaskComplete` mutation behind a short local completion state in `TaskRow`; after follow-up UX correction this keeps checkbox/confetti feedback but does not animate the row out.
 - [2026-04-23] Runtime crash guard: main process now installs global `uncaughtException` / `unhandledRejection` handlers with `dialog.showErrorBox`; renderer root wrapped in `GlobalErrorBoundary` to keep app open and offer reload after React/window/promise failures.
 - [2026-04-23] Lint workflow: removed ESLint cache from repo script because cached prettier diagnostics produced false positives after formatting; correctness of signal beats small speed gain here.
 - [2026-04-23] SQLite migration: replaced `electron-store` with `better-sqlite3`. Delta writes via `writeDeltaTx` (JSON-stringify diff, `changedTaskIds()`); only changed tasks get `INSERT OR REPLACE`, child rows rebuilt per-task. Other collections use `INSERT OR REPLACE` + `DELETE WHERE id NOT IN (json_each(?))`. In-memory cache avoids read-before-write. `writeSnapshotTx` kept for legacy migration only. Indices on `task_subtasks(task_id)` and `task_labels(task_id)`.

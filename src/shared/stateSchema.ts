@@ -116,10 +116,7 @@ export const sharedAppearanceSchema = z
   .object({
     themeId: z.string(),
     customTokens: z.record(z.string(), z.string()).optional().catch({}),
-    customTokensByTheme: z
-      .record(z.string(), z.record(z.string(), z.string()))
-      .optional()
-      .catch({})
+    customTokensByTheme: z.record(z.string(), z.record(z.string(), z.string())).optional().catch({})
   })
   .passthrough()
   .transform<AppearanceSettings>((appearance) => ({
