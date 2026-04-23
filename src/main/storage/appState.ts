@@ -118,7 +118,11 @@ export const isAppStatePatch = (v: unknown): v is Partial<AppState> => {
   for (const key of arrayKeys) {
     if (key in patch && !isValidEntityArray(patch[key])) return false
   }
-  if ('medications' in patch && patch.medications !== undefined && !isValidEntityArray(patch.medications)) {
+  if (
+    'medications' in patch &&
+    patch.medications !== undefined &&
+    !isValidEntityArray(patch.medications)
+  ) {
     return false
   }
   if ('uiScale' in patch && patch.uiScale !== undefined && !isUiScale(patch.uiScale)) return false

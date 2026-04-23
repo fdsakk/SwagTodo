@@ -5,7 +5,7 @@
     "total_tokens_estimated": 959925,
     "total_reads": 381,
     "total_writes": 763,
-    "total_sessions": 32,
+    "total_sessions": 35,
     "anatomy_hits": 338,
     "anatomy_misses": 43,
     "repeated_reads_blocked": 175,
@@ -7133,65 +7133,97 @@
   "waste_flags": [
     {
       "pattern": "memory_bloat",
-      "description": "memory.md is ~8472 tokens",
-      "tokens_wasted": 3472,
+      "description": "memory.md is ~23640 tokens",
+      "tokens_wasted": 18640,
       "suggestion": "memory.md is growing large. Consolidation should run more frequently.",
-      "detected_at": "2026-04-19T16:01:13.488Z"
+      "detected_at": "2026-04-23T15:47:37.330Z"
     },
     {
       "pattern": "anatomy_miss_rate",
       "description": "40% of file lookups missed anatomy in session session-2026-04-18-2136",
       "tokens_wasted": 0,
       "suggestion": "Run openwolf scan to refresh anatomy.md.",
-      "detected_at": "2026-04-19T16:01:13.488Z"
+      "detected_at": "2026-04-23T15:47:37.330Z"
     },
     {
       "pattern": "anatomy_miss_rate",
       "description": "67% of file lookups missed anatomy in session session-2026-04-18-2143",
       "tokens_wasted": 0,
       "suggestion": "Run openwolf scan to refresh anatomy.md.",
-      "detected_at": "2026-04-19T16:01:13.488Z"
+      "detected_at": "2026-04-23T15:47:37.330Z"
     },
     {
       "pattern": "anatomy_miss_rate",
       "description": "67% of file lookups missed anatomy in session session-2026-04-18-2143",
       "tokens_wasted": 0,
       "suggestion": "Run openwolf scan to refresh anatomy.md.",
-      "detected_at": "2026-04-19T16:01:13.488Z"
+      "detected_at": "2026-04-23T15:47:37.330Z"
     },
     {
       "pattern": "anatomy_miss_rate",
       "description": "42% of file lookups missed anatomy in session session-2026-04-18-2208",
       "tokens_wasted": 0,
       "suggestion": "Run openwolf scan to refresh anatomy.md.",
-      "detected_at": "2026-04-19T16:01:13.488Z"
+      "detected_at": "2026-04-23T15:47:37.330Z"
     },
     {
       "pattern": "anatomy_miss_rate",
       "description": "38% of file lookups missed anatomy in session session-2026-04-18-2208",
       "tokens_wasted": 0,
       "suggestion": "Run openwolf scan to refresh anatomy.md.",
-      "detected_at": "2026-04-19T16:01:13.488Z"
+      "detected_at": "2026-04-23T15:47:37.330Z"
     },
     {
       "pattern": "anatomy_miss_rate",
       "description": "38% of file lookups missed anatomy in session session-2026-04-18-2208",
       "tokens_wasted": 0,
       "suggestion": "Run openwolf scan to refresh anatomy.md.",
-      "detected_at": "2026-04-19T16:01:13.488Z"
+      "detected_at": "2026-04-23T15:47:37.330Z"
     },
     {
       "pattern": "anatomy_miss_rate",
       "description": "38% of file lookups missed anatomy in session session-2026-04-18-2208",
       "tokens_wasted": 0,
       "suggestion": "Run openwolf scan to refresh anatomy.md.",
-      "detected_at": "2026-04-19T16:01:13.488Z"
+      "detected_at": "2026-04-23T15:47:37.330Z"
+    },
+    {
+      "pattern": "anatomy_miss_rate",
+      "description": "33% of file lookups missed anatomy in session session-2026-04-23-1605",
+      "tokens_wasted": 0,
+      "suggestion": "Run openwolf scan to refresh anatomy.md.",
+      "detected_at": "2026-04-23T15:47:37.330Z"
+    },
+    {
+      "pattern": "anatomy_miss_rate",
+      "description": "29% of file lookups missed anatomy in session session-2026-04-23-1605",
+      "tokens_wasted": 0,
+      "suggestion": "Run openwolf scan to refresh anatomy.md.",
+      "detected_at": "2026-04-23T15:47:37.330Z"
+    },
+    {
+      "pattern": "anatomy_miss_rate",
+      "description": "38% of file lookups missed anatomy in session session-2026-04-23-1605",
+      "tokens_wasted": 0,
+      "suggestion": "Run openwolf scan to refresh anatomy.md.",
+      "detected_at": "2026-04-23T15:47:37.330Z"
+    },
+    {
+      "pattern": "anatomy_miss_rate",
+      "description": "38% of file lookups missed anatomy in session session-2026-04-23-1605",
+      "tokens_wasted": 0,
+      "suggestion": "Run openwolf scan to refresh anatomy.md.",
+      "detected_at": "2026-04-23T15:47:37.330Z"
     }
   ],
   "optimization_report": {
-    "last_generated": "2026-04-19T16:01:13.489Z",
+    "last_generated": "2026-04-23T15:47:37.331Z",
     "patterns": [
       "memory_bloat",
+      "anatomy_miss_rate",
+      "anatomy_miss_rate",
+      "anatomy_miss_rate",
+      "anatomy_miss_rate",
       "anatomy_miss_rate",
       "anatomy_miss_rate",
       "anatomy_miss_rate",

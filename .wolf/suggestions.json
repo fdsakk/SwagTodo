@@ -1,15 +1,35 @@
 {
-  "generated_at": "2026-04-19T16:06:57.176Z",
+  "generated_at": "2026-04-23T15:47:05.830Z",
   "achievements": [
-    "Component reorganization: 23 loose files moved into 9 domain subfolders (task-panel, task-list, modals, project, layout, sidebar, settings, task-edit, kanban) with index.tsx barrels and named exports",
-    "Health/Meds page: full PK model (MEC/MTC therapeutic window, crash-risk dC/dt detection, tMaxOffset+keMultiplier sliders, ReferenceArea chart overlays) in pharmacokinetics.ts + HealthPage.tsx",
-    "Theme expansion: 11 new themes added (Dracula, Gruvbox, Solarized, Rose Pine, Midnight, Everforest, Catppuccin, Tokyo Night, Kanagawa, Monokai, Slate) with contrast fixes on existing themes",
-    "Supabase sync hardened: delta upsert/delete (no full-workspace wipe), fire-and-forget push, debounced in main process",
-    "SessionsCalendar perf: pre-grouped day map, stable pointerDown handler, Date.parse sort, cached constants",
-    "Removed custom animated backgrounds feature (cleanup)",
-    "Settings refactor: SyncSection collapsible, UI scale moved into ThemeSection header"
+    "SQLite backend replaces electron-store: delta write (writeDeltaTx), in-memory cache, legacy todoist-clone.json import on first run — 25/25 tests green",
+    "O(n²)→Set in persist.ts, UUID IPC validation, snapshot cache, delta guards in collections — storage perf hardened",
+    "All 23 loose components reorganized into domain subfolders (task-panel, task-list, modals, project, layout, etc.) with index.tsx barrels + named exports",
+    "Health/Meds PK page shipped: asymmetric smoothing, MEC/MTC therapeutic window, crash-risk detection, Recharts chart",
+    "Kanban DnD fixed: cross-column drag preview via live draft state in onDragOver, frozen card size via source rect",
+    "11 themes added (Dracula, Gruvbox, Catppuccin, Tokyo Night, Kanagawa, etc.) + hardcoded zinc/white tokens replaced with app-* CSS vars across all views",
+    "Shared types/defaults extracted to src/shared/ — single source across main, preload, renderer",
+    "Panels (TaskEdit, TaskCreate, ProjectPanel) redesigned from right-side slide to centered modal cards"
   ],
-  "improvements": [],
-  "next_tasks": [],
-  "risks": []
+  "improvements": [
+    "useAppStore.ts (~7k tok) — candidate for slice split; domain actions mixed with UI actions and PK settings in one file",
+    "persist.ts PERSISTED_KEYS and stateFromPersisted — verify these stay in sync with shared/types.ts after each new field; currently manual",
+    "SessionsCalendar.tsx (~5k tok) — high-complexity component; extract DraftGhost logic and time-block layout into smaller hooks",
+    "HealthPage.tsx (~5.3k tok) — SliderRow + chart data generation inline; extract pharmacokinetics controls to sub-component",
+    "supabase/schema.sql present but Supabase sync code still lives in renderer store — if sync is being kept, move push logic to main process to avoid IPC backpressure"
+  ],
+  "next_tasks": [
+    "Run bun run typecheck + bun run lint — confirm dev branch is clean after the 2026-04-23 SQLite sessions",
+    "Merge dev → main (last main commit was 2d2defc perf/storage); current dev has significant unreleased work",
+    "Persist new fields introduced this week (pkSettings, healthEntries) through the full save path: shared/types.ts → appState.ts → sqlite.ts schema → persist.ts",
+    "Add SQLite schema migration path — currently a fresh DB or legacy import; no version column means future field additions are fragile",
+    "Test HealthPage with real data: add a med entry, reload app, verify persistence round-trip through SQLite",
+    "Keyboard shortcuts: 'h' for Health page not yet wired in useKeyboardShortcuts.ts"
+  ],
+  "risks": [
+    "PERSISTED_KEYS in persist.ts and APP_STATE_KEYS in appState.ts must stay manually synchronized — no compile-time enforcement; a missed key silently drops data on save",
+    "better-sqlite3 must be rebuilt for Electron runtime; CI or a fresh bun install will break if rebuild step is missing from package.json scripts",
+    "No SQLite schema version/migration table — adding a column in the future requires manual ALTER TABLE or a full drop+recreate path",
+    "Supabase sync (SyncSection, schema.sql) is partially implemented but removed from main flow per 2026-04-19 refactor; dead code risk if not cleaned up or re-integrated intentionally",
+    "HealthPage PK state (pkSettings) not confirmed to survive app restart — verify it is included in PERSISTED_KEYS and SQLite serialization"
+  ]
 }

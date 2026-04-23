@@ -11,46 +11,35 @@
 - Components must be organized in subfolders — no loose files at `components/` root.
 - All component exports are **named** (not default). Default exports only in legacy shadcn/ui primitives under `components/ui/`.
 - Each component subfolder has an `index.tsx` barrel that re-exports everything from that folder.
-- This repo's current public app name is `Swag Todo`; use that in docs and UI-facing product metadata.
-- Bun is the repository package manager and script runner; prefer `bun install` / `bun run <script>` in docs and scripts.
+- Public app name is `Swag Todo`; use in docs and UI-facing metadata. Bun is the package manager; use `bun install` / `bun run <script>`.
 
 ## Key Learnings
 
-- SQLite backend migration here must preserve prior `electron-store` data by importing the legacy `todoist-clone.json` payload on first creation of `swag-todo.db`.
-- Main-process SQLite storage should keep a normalized in-memory cache so `store:savePartial` does not reload the full database before every patch and simple reads like `uiScale` stay O(1).
-- `better-sqlite3` in this Electron app should be rebuilt for Electron runtime; Node-based tests should avoid opening the native DB directly and instead cover pure serialization/deserialization helpers.
-- Local persistence now lives in main-process SQLite (`better-sqlite3`) behind the existing `window.api.storage` IPC surface, while renderer Zustand remains the live state source and UI filters still persist in `localStorage`.
-- Kanban cross-column DnD needs live draft column state updated in `onDragOver`; computing reorder only in `onDragEnd` leaves target column frozen and can misplace drop index.
-- Settings/Appearance page should follow the same container rhythm used by list pages (`px-4` outer, `px-2` inner alignment) for consistent layout.
-- Component subfolders: `layout/`, `task-panel/`, `task-list/`, `modals/`, `project/`, `sidebar/`, `settings/`, `task-edit/`, `kanban/`, `sessions-calendar/`, `ui/`. See CLAUDE.md component table for full mapping.
-- `SubtaskList` (`task-edit/`) imports `AnimatedCheckbox` from `task-list/animated-checkbox` — not from root.
-- `KanbanCard` (`kanban/`) imports `SubtaskProgressRing` from `task-list/subtask-progress-ring` — not from root.
-- `ProjectPanel` (`project/`) imports `Field` from `task-panel/panel-field` — shared primitive across folders.
-- Supabase sync should be **delta-based** (upsert/delete) with main-process debouncing; avoid delete+reinsert of whole workspace and don’t await remote push inside `store:save` IPC.
-- Shared domain/IPC types now live in `src/shared/types.ts`; main + preload import from it, renderer re-exports those shared types from `@renderer/types`.
-- Shared defaults now live in `src/shared/defaults.ts` (`UI_SCALE_OPTIONS`, `DEFAULT_UI_SCALE`, `DEFAULT_WORKSPACE_ID`, `DEFAULT_SYNC_SETTINGS`) and should be reused across main/renderer.
-- Renderer persistence now uses Zustand `persist` with IPC-backed storage and partial patch saves (`store:savePartial`) instead of manual subscribe+debounce.
-- Health PK chart should shape the summed dose curve with asymmetric smoothing (faster rise, slower fall) so overlapping doses have softer peaks and longer offsets.
-- Branding/docs were standardized to `Swag Todo`, and build/test instructions should now consistently use Bun.
+- SQLite persistence: main-process `better-sqlite3` behind `window.api.storage` IPC. First run imports legacy `todoist-clone.json` into `swag-todo.db`. In-memory normalized cache avoids reload before every `store:savePartial`. Node tests must not open the native DB directly — test serialization helpers only.
+- Renderer crash guard lives at root: wrap `App` in layout-level `GlobalErrorBoundary` and also listen for `window.error` + `unhandledrejection` so runtime faults show fallback UI instead of blank/crashed window.
+- In renderer global `window.error` handling, ignore resource-load errors (`event.target !== window`) or missing font/img/script can falsely trip full-app fallback.
+- Renderer Zustand is live state source; `persist` sends changed-slice patches via `store:savePartial`. UI filters still use `localStorage`.
+- Kanban cross-column DnD: update draft column state in `onDragOver`, not only `onDragEnd` — late reorder leaves target column frozen and misplaces drop index.
+- Settings/Appearance page: same container rhythm as list pages (`px-4` outer, `px-2` inner).
+- Component subfolders: `layout/`, `task-panel/`, `task-list/`, `modals/`, `project/`, `sidebar/`, `settings/`, `task-edit/`, `kanban/`, `sessions-calendar/`, `ui/`. See CLAUDE.md for full mapping.
+- Cross-folder import paths: `SubtaskList` → `task-list/animated-checkbox`; `KanbanCard` → `task-list/subtask-progress-ring`; `ProjectPanel` → `task-panel/panel-field`.
+- Shared types in `src/shared/types.ts`; shared defaults (`UI_SCALE_OPTIONS`, `DEFAULT_UI_SCALE`, etc.) in `src/shared/defaults.ts`. Main + preload import directly; renderer re-exports from `@renderer/types`.
+- Health PK chart: apply asymmetric smoothing (`smoothSummedEffect` — faster rise, slower fall) to summed dose curve before crash/band analysis to avoid sharp additive peaks.
 
 ## Do-Not-Repeat
 
-<!-- Format: [YYYY-MM-DD] Description of what went wrong and what to do instead. -->
-
-- [2026-04-23] Do NOT swap persistence backends without a first-run import path for existing user data; migrations must preserve the old on-disk payload.
-- [2026-04-23] Do NOT implement `savePartial` by reloading the full SQLite snapshot first when main is the single writer; keep a normalized cache and merge patches in memory.
-- [2026-04-23] Do NOT try to run `better-sqlite3` storage tests under the plain Node test runtime after Electron rebuild; test the snapshot/serialization layer there instead.
-- [2026-04-19] Do NOT place new components as loose files in `components/` root. Always put in appropriate subfolder + export from its `index.tsx`.
-- [2026-04-19] Do NOT use default exports for new components. Use named exports throughout.
-- [2026-04-19] Do NOT implement destructive sync (delete-all then insert-all) for Supabase workspaces — it’s slow and can wipe remote data on partial failure.
+- [2026-04-23] Do NOT swap persistence backends without a first-run import for existing user data; migrations must preserve old on-disk payload.
+- [2026-04-23] Do NOT implement `savePartial` by reloading the full SQLite snapshot; keep normalized cache, merge patches in memory.
+- [2026-04-23] Do NOT run `better-sqlite3` storage tests under plain Node runtime after Electron rebuild; test serialization layer instead.
+- [2026-04-19] Do NOT place new components as loose files in `components/` root. Always use appropriate subfolder + `index.tsx` barrel.
+- [2026-04-19] Do NOT use default exports for new components.
+- [2026-04-19] Do NOT implement destructive sync (delete-all then insert-all) for Supabase — slow, risks data loss on partial failure.
 
 ## Decision Log
 
-- [2026-04-23] Delta writes: `writeDeltaTx` compares serialized prev/next snapshots via `changedTaskIds()` (JSON-stringify diff of row + child tables). Only changed tasks get `INSERT OR REPLACE`; child rows (task_subtasks, task_labels) rebuilt per-task. Other collections use `INSERT OR REPLACE` + `DELETE WHERE id NOT IN (json_each(?))`. `writeSnapshotTx` kept for legacy migration only. Added indices on `task_subtasks(task_id)` and `task_labels(task_id)`.
-- [2026-04-23] SQLite storage now performs a first-run import from the legacy `electron-store` JSON file and maintains an in-memory normalized cache so partial IPC saves avoid a redundant read-before-write cycle.
-- [2026-04-23] Replaced `electron-store` app persistence with main-process SQLite via `better-sqlite3`, keeping renderer Zustand hydration and patch-save IPC unchanged so UI remains instant and local-first.
-- [2026-04-19] Moved all 23 loose `components/` root files into domain subfolders with `index.tsx` barrels. Rationale: reduce import noise, enforce discoverability, eliminate root clutter. Named exports chosen over default so barrel re-exports work without aliasing.
-- [2026-04-19] Refactored Supabase sync to use a debounced, diff-based delta (upsert/delete) driven by a “shadow” slice; IPC `store:save` no longer awaits remote sync to avoid backpressure.
-- [2026-04-19] Consolidated duplicated cross-process types/constants into `src/shared/types.ts` and updated `main`, `preload`, `preload/index.d.ts`, and renderer types to consume/re-export shared definitions.
-- [2026-04-19] Introduced shared defaults module and partial IPC persistence path (`store:savePartial`), then switched renderer persistence to Zustand `persist` with changed-slice patching.
-- [2026-04-19] Updated Health PK generation to apply asymmetric smoothing to summed medication effects (`smoothSummedEffect`) before crash/band analysis to avoid unrealistically sharp additive peaks.
+- [2026-04-23] Runtime crash guard: main process now installs global `uncaughtException` / `unhandledRejection` handlers with `dialog.showErrorBox`; renderer root wrapped in `GlobalErrorBoundary` to keep app open and offer reload after React/window/promise failures.
+- [2026-04-23] Lint workflow: removed ESLint cache from repo script because cached prettier diagnostics produced false positives after formatting; correctness of signal beats small speed gain here.
+- [2026-04-23] SQLite migration: replaced `electron-store` with `better-sqlite3`. Delta writes via `writeDeltaTx` (JSON-stringify diff, `changedTaskIds()`); only changed tasks get `INSERT OR REPLACE`, child rows rebuilt per-task. Other collections use `INSERT OR REPLACE` + `DELETE WHERE id NOT IN (json_each(?))`. In-memory cache avoids read-before-write. `writeSnapshotTx` kept for legacy migration only. Indices on `task_subtasks(task_id)` and `task_labels(task_id)`.
+- [2026-04-19] Component reorganization: moved 23 loose root files into domain subfolders with `index.tsx` barrels. Named exports for barrel compatibility.
+- [2026-04-19] Supabase sync: debounced diff-based delta (upsert/delete) via shadow slice; `store:save` IPC no longer awaits remote push. Types/constants consolidated into `src/shared/types.ts` + `src/shared/defaults.ts`. Renderer switched to Zustand `persist` with `store:savePartial`.
+- [2026-04-19] Health PK: asymmetric smoothing (`smoothSummedEffect`) applied before crash/band analysis.

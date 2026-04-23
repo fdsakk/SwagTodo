@@ -1,4 +1,4 @@
-import { app, shell, BrowserWindow, ipcMain, type IpcMainInvokeEvent } from 'electron'
+import { app, shell, dialog, BrowserWindow, ipcMain, type IpcMainInvokeEvent } from 'electron'
 import { join } from 'path'
 import { electronApp, optimizer, is } from '@electron-toolkit/utils'
 import icon from '../../resources/icon.png?asset'
@@ -12,6 +12,7 @@ const MAX_ZOOM_FACTOR = UI_SCALE_OPTIONS[UI_SCALE_OPTIONS.length - 1] / 100
 const IS_MAC = process.platform === 'darwin'
 const IS_WAYLAND = process.platform === 'linux' && process.env.XDG_SESSION_TYPE === 'wayland'
 let appStorage: SqliteAppStorage | null = null
+let hasShownProcessErrorDialog = false
 
 if (IS_WAYLAND) {
   const WAYLAND_CM_FEATURES =
@@ -40,6 +41,43 @@ const senderWindow = (event: IpcMainInvokeEvent): BrowserWindow => {
   const w = BrowserWindow.fromWebContents(event.sender)
   if (!w) throw new Error('Unable to resolve sender window')
   return w
+}
+
+const formatProcessError = (value: unknown): string => {
+  if (value instanceof Error) {
+    return value.stack ?? `${value.name}: ${value.message}`
+  }
+
+  if (typeof value === 'string') return value
+
+  try {
+    return JSON.stringify(value, null, 2)
+  } catch {
+    return String(value)
+  }
+}
+
+const reportProcessError = (
+  kind: 'uncaughtException' | 'unhandledRejection',
+  error: unknown
+): void => {
+  const detail = formatProcessError(error)
+  console.error(`[main] ${kind}`, detail)
+
+  if (!app.isReady() || hasShownProcessErrorDialog) return
+  hasShownProcessErrorDialog = true
+  dialog.showErrorBox('Swag Todo error', `${kind}\n\n${detail}`)
+  hasShownProcessErrorDialog = false
+}
+
+function installGlobalErrorHandlers(): void {
+  process.on('uncaughtException', (error) => {
+    reportProcessError('uncaughtException', error)
+  })
+
+  process.on('unhandledRejection', (reason) => {
+    reportProcessError('unhandledRejection', reason)
+  })
 }
 
 function createWindow(): void {
@@ -164,6 +202,8 @@ app.whenReady().then(() => {
     if (BrowserWindow.getAllWindows().length === 0) createWindow()
   })
 })
+
+installGlobalErrorHandlers()
 
 app.on('window-all-closed', () => {
   if (!IS_MAC) app.quit()

@@ -500,47 +500,69 @@
 
 ## Session: 2026-04-23 15:38
 
-| Time  | Action                                                           | File(s)                            | Outcome    | ~Tokens |
-| ----- | ---------------------------------------------------------------- | ---------------------------------- | ---------- | ------- |
-| 15:41 | Edited src/main/storage/sqlite.ts                                | 91→94 lines                        | ~638       |
-| 15:42 | Edited src/main/storage/sqlite.ts                                | 5→6 lines                          | ~98        |
-| 15:42 | Edited src/main/storage/sqlite.ts                                | added 3 condition(s)               | ~2458      |
-| 15:42 | Edited src/main/storage/sqlite.ts                                | writeSnapshotTx() → writeDeltaTx() | ~76        |
-| 15:42 | Edited src/main/storage/sqlite.ts                                | added nullish coalescing           | ~540       |
-| 15:46 | Edited src/main/storage/sqlite.ts                                | 2→2 lines                          | ~56        |
-| 15:46 | Edited src/main/tests/sqlite.test.ts                             | 6→11 lines                         | ~102       |
-| 15:46 | Edited src/main/tests/sqlite.test.ts                             | expanded (+100 lines)              | ~1019      |
-| 15:53 | Session end: 8 writes across 2 files (sqlite.ts, sqlite.test.ts) | 4 reads                            | ~15559 tok |
-| 16:01 | Edited src/main/storage/sqlite.ts                                | expanded (+10 lines)               | ~118       |
-| 16:01 | Edited src/main/storage/sqlite.ts                                | 12→12 lines                        | ~129       |
-| 16:01 | Edited src/main/storage/sqlite.ts                                | removed 68 lines                   | ~65        |
-| 16:04 | Session end: 11 writes across 2 files (sqlite.ts, sqlite.test.ts) | 4 reads | ~15036 tok |
+| Time  | Action                                                            | File(s)                            | Outcome    | ~Tokens |
+| ----- | ----------------------------------------------------------------- | ---------------------------------- | ---------- | ------- |
+| 15:41 | Edited src/main/storage/sqlite.ts                                 | 91→94 lines                        | ~638       |
+| 15:42 | Edited src/main/storage/sqlite.ts                                 | 5→6 lines                          | ~98        |
+| 15:42 | Edited src/main/storage/sqlite.ts                                 | added 3 condition(s)               | ~2458      |
+| 15:42 | Edited src/main/storage/sqlite.ts                                 | writeSnapshotTx() → writeDeltaTx() | ~76        |
+| 15:42 | Edited src/main/storage/sqlite.ts                                 | added nullish coalescing           | ~540       |
+| 15:46 | Edited src/main/storage/sqlite.ts                                 | 2→2 lines                          | ~56        |
+| 15:46 | Edited src/main/tests/sqlite.test.ts                              | 6→11 lines                         | ~102       |
+| 15:46 | Edited src/main/tests/sqlite.test.ts                              | expanded (+100 lines)              | ~1019      |
+| 15:53 | Session end: 8 writes across 2 files (sqlite.ts, sqlite.test.ts)  | 4 reads                            | ~15559 tok |
+| 16:01 | Edited src/main/storage/sqlite.ts                                 | expanded (+10 lines)               | ~118       |
+| 16:01 | Edited src/main/storage/sqlite.ts                                 | 12→12 lines                        | ~129       |
+| 16:01 | Edited src/main/storage/sqlite.ts                                 | removed 68 lines                   | ~65        |
+| 16:04 | Session end: 11 writes across 2 files (sqlite.ts, sqlite.test.ts) | 4 reads                            | ~15036 tok |
 
 ## Session: 2026-04-23 16:05
 
-| Time | Action | File(s) | Outcome | ~Tokens |
-|------|--------|---------|---------|--------|
-| 16:09 | Edited src/main/storage/sqlite.ts | added 1 condition(s) | ~477 |
-| 16:09 | Edited src/main/storage/sqlite.ts | added 5 condition(s) | ~409 |
-| 16:09 | Edited src/main/storage/sqlite.ts | 4→5 lines | ~80 |
-| 16:09 | Edited src/main/storage/sqlite.ts | modified readLegacyElectronStore() | ~79 |
-| 16:10 | Edited src/main/storage/sqlite.ts | modified writeState() | ~74 |
-| 16:10 | Edited src/main/storage/appState.ts | modified if() | ~310 |
-| 16:10 | Edited src/main/storage/appState.ts | 1→4 lines | ~79 |
-| 16:10 | Edited src/main/storage/appState.ts | added optional chaining | ~236 |
-| 16:12 | Edited src/main/storage/appState.ts | reduced (-6 lines) | ~172 |
-| 16:12 | Edited src/main/storage/appState.ts | 2→4 lines | ~96 |
-| 16:12 | Edited src/main/storage/appState.ts | added 6 condition(s) | ~292 |
-| 16:12 | Edited src/main/storage/appState.ts | added 6 condition(s) | ~342 |
-| 16:13 | Session end: 12 writes across 2 files (sqlite.ts, appState.ts) | 7 reads | ~22879 tok |
-| 16:16 | Edited src/renderer/src/store/domain/persist.ts | reduced (-7 lines) | ~24 |
-| 16:16 | Edited src/renderer/src/store/domain/persist.ts | modified for() | ~360 |
-| 16:17 | Session end: 14 writes across 3 files (sqlite.ts, appState.ts, persist.ts) | 8 reads | ~23263 tok |
-| 16:20 | Created src/main/storage/appState.ts | — | ~1447 |
-| 16:21 | Created src/renderer/src/store/domain/persist.ts | — | ~1174 |
-| 16:22 | Session end: 16 writes across 3 files (sqlite.ts, appState.ts, persist.ts) | 8 reads | ~27588 tok |
+| Time  | Action                                                                     | File(s)                            | Outcome    | ~Tokens |
+| ----- | -------------------------------------------------------------------------- | ---------------------------------- | ---------- | ------- |
+| 16:09 | Edited src/main/storage/sqlite.ts                                          | added 1 condition(s)               | ~477       |
+| 16:09 | Edited src/main/storage/sqlite.ts                                          | added 5 condition(s)               | ~409       |
+| 16:09 | Edited src/main/storage/sqlite.ts                                          | 4→5 lines                          | ~80        |
+| 16:09 | Edited src/main/storage/sqlite.ts                                          | modified readLegacyElectronStore() | ~79        |
+| 16:10 | Edited src/main/storage/sqlite.ts                                          | modified writeState()              | ~74        |
+| 16:10 | Edited src/main/storage/appState.ts                                        | modified if()                      | ~310       |
+| 16:10 | Edited src/main/storage/appState.ts                                        | 1→4 lines                          | ~79        |
+| 16:10 | Edited src/main/storage/appState.ts                                        | added optional chaining            | ~236       |
+| 16:12 | Edited src/main/storage/appState.ts                                        | reduced (-6 lines)                 | ~172       |
+| 16:12 | Edited src/main/storage/appState.ts                                        | 2→4 lines                          | ~96        |
+| 16:12 | Edited src/main/storage/appState.ts                                        | added 6 condition(s)               | ~292       |
+| 16:12 | Edited src/main/storage/appState.ts                                        | added 6 condition(s)               | ~342       |
+| 16:13 | Session end: 12 writes across 2 files (sqlite.ts, appState.ts)             | 7 reads                            | ~22879 tok |
+| 16:16 | Edited src/renderer/src/store/domain/persist.ts                            | reduced (-7 lines)                 | ~24        |
+| 16:16 | Edited src/renderer/src/store/domain/persist.ts                            | modified for()                     | ~360       |
+| 16:17 | Session end: 14 writes across 3 files (sqlite.ts, appState.ts, persist.ts) | 8 reads                            | ~23263 tok |
+| 16:20 | Created src/main/storage/appState.ts                                       | —                                  | ~1447      |
+| 16:21 | Created src/renderer/src/store/domain/persist.ts                           | —                                  | ~1174      |
+| 16:22 | Session end: 16 writes across 3 files (sqlite.ts, appState.ts, persist.ts) | 8 reads                            | ~27588 tok |
 
 ## Session: 2026-04-23 16:24
 
 | Time | Action | File(s) | Outcome | ~Tokens |
-|------|--------|---------|---------|--------|
+| ---- | ------ | ------- | ------- | ------- |
+
+## Session: 2026-04-23 17:46
+
+| Time | Action | File(s) | Outcome | ~Tokens |
+| ---- | ------ | ------- | ------- | ------- |
+
+## Session: 2026-04-23 17:47
+
+| Time | Action | File(s) | Outcome | ~Tokens |
+| ---- | ------ | ------- | ------- | ------- |
+
+## Session: 2026-04-23 17:54
+
+| Time | Action | File(s) | Outcome | ~Tokens |
+| ---- | ------ | ------- | ------- | ------- |
+
+## Session: 2026-04-23 18:03
+
+| Time  | Action                                                                                   | File(s)                                                                                                                   | Outcome                                                                     | ~Tokens |
+| ----- | ---------------------------------------------------------------------------------------- | ------------------------------------------------------------------------------------------------------------------------- | --------------------------------------------------------------------------- | ------- |
+| 18:03 | Added global runtime crash guard in main + renderer, fixed TS guard, ran `bun run build` | `src/main/index.ts`, `src/renderer/src/main.tsx`, `src/renderer/src/components/layout/GlobalErrorBoundary.tsx`, `.wolf/*` | App now catches global runtime faults with fallback/error box; build passes | ~5200   |
+| 18:10 | Audited repo, fixed false app fallback on asset-load errors, removed ESLint cache from lint script, re-ran checks | `src/renderer/src/components/layout/GlobalErrorBoundary.tsx`, `package.json`, `.wolf/*` | Found 2 bugs; lint/test/build green with deterministic lint output | ~4800 |

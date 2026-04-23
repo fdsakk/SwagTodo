@@ -429,7 +429,10 @@ export const deserializeAppState = (snapshot: SqliteStateSnapshot): AppState => 
   })
 }
 
-const buildChildJson = (rows: Array<{ task_id: string }>, stringify: (r: unknown) => string): Map<string, string> => {
+const buildChildJson = (
+  rows: Array<{ task_id: string }>,
+  stringify: (r: unknown) => string
+): Map<string, string> => {
   const m = new Map<string, string>()
   for (const row of rows) {
     m.set(row.task_id, (m.get(row.task_id) ?? '') + stringify(row))
