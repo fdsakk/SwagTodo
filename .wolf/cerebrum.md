@@ -11,6 +11,8 @@
 - Components must be organized in subfolders — no loose files at `components/` root.
 - All component exports are **named** (not default). Default exports only in legacy shadcn/ui primitives under `components/ui/`.
 - Each component subfolder has an `index.tsx` barrel that re-exports everything from that folder.
+- This repo's current public app name is `Swag Todo`; use that in docs and UI-facing product metadata.
+- Bun is the repository package manager and script runner; prefer `bun install` / `bun run <script>` in docs and scripts.
 
 ## Key Learnings
 
@@ -25,6 +27,7 @@
 - Shared defaults now live in `src/shared/defaults.ts` (`UI_SCALE_OPTIONS`, `DEFAULT_UI_SCALE`, `DEFAULT_WORKSPACE_ID`, `DEFAULT_SYNC_SETTINGS`) and should be reused across main/renderer.
 - Renderer persistence now uses Zustand `persist` with IPC-backed storage and partial patch saves (`store:savePartial`) instead of manual subscribe+debounce.
 - Health PK chart should shape the summed dose curve with asymmetric smoothing (faster rise, slower fall) so overlapping doses have softer peaks and longer offsets.
+- Branding/docs were standardized to `Swag Todo`, and build/test instructions should now consistently use Bun.
 
 ## Do-Not-Repeat
 

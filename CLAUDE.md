@@ -10,22 +10,22 @@ This file provides guidance to Claude Code (claude.ai/code) when working with co
 
 ## Commands
 
-Package manager: npm (lockfile present). `bun.lock` also exists but CI/scripts target npm.
+Package manager: Bun. `bun.lock` is the source of truth for installs and scripts.
 
 | Task                                              | Command                                           |
 | ------------------------------------------------- | ------------------------------------------------- |
-| Install                                           | `npm install`                                     |
-| Dev (hot reload, Electron window + Vite renderer) | `npm run dev`                                     |
-| Type-check both targets                           | `npm run typecheck`                               |
-| Type-check node/main+preload only                 | `npm run typecheck:node`                          |
-| Type-check web/renderer only                      | `npm run typecheck:web`                           |
-| Lint                                              | `npm run lint` (ESLint flat config, caching on)   |
-| Format                                            | `npm run format` (Prettier)                       |
-| Build (typecheck + bundle)                        | `npm run build`                                   |
-| Preview built app                                 | `npm run start`                                   |
-| Platform packages                                 | `npm run build:linux` / `build:mac` / `build:win` |
+| Install                                           | `bun install`                                     |
+| Dev (hot reload, Electron window + Vite renderer) | `bun run dev`                                     |
+| Type-check both targets                           | `bun run typecheck`                               |
+| Type-check node/main+preload only                 | `bun run typecheck:node`                          |
+| Type-check web/renderer only                      | `bun run typecheck:web`                           |
+| Lint                                              | `bun run lint` (ESLint flat config, caching on)   |
+| Format                                            | `bun run format` (Prettier)                       |
+| Build (typecheck + bundle)                        | `bun run build`                                   |
+| Preview built app                                 | `bun run start`                                   |
+| Platform packages                                 | `bun run build:linux` / `bun run build:mac` / `bun run build:win` |
 
-No test runner configured. No `test` script in `package.json`.
+Tests use the Node built-in runner through `bun run test` and `bun run test:store`.
 
 ## Architecture
 
@@ -104,7 +104,7 @@ Kanban uses `@dnd-kit/core` + `@dnd-kit/sortable`. `KanbanBoard` buckets tasks i
 
 ## Conventions
 
-- Strict TS. Both node and web `tsconfig` extend `@electron-toolkit/tsconfig`. Run `npm run typecheck` after touching any shared type (`types/index.ts`, preload `.d.ts`, main state shape).
+- Strict TS. Both node and web `tsconfig` extend `@electron-toolkit/tsconfig`. Run `bun run typecheck` after touching any shared type (`types/index.ts`, preload `.d.ts`, main state shape).
 - Reducers in `useAppStore` prefer slice-return-unchanged patterns (`return state`) when no domain data changes, to avoid spurious re-renders and persistence writes.
 - Platform-specific logic in main keys off `process.platform` and `process.env.XDG_SESSION_TYPE`; the `IS_MAC`/`IS_WAYLAND` constants at the top of `src/main/index.ts` are the canonical checks.
 - When touching the title bar, note that `trafficLightPosition` is set for macOS; the frameless frame and drag regions are styled in `TitleBar.tsx`.

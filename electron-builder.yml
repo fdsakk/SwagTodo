@@ -1,5 +1,5 @@
 appId: com.electron.app
-productName: electron-todo
+productName: Swag Todo
 directories:
   buildResources: build
 files:
@@ -12,7 +12,7 @@ files:
 asarUnpack:
   - resources/**
 win:
-  executableName: electron-todo
+  executableName: swag-todo
   icon: build/icon.ico
 nsis:
   artifactName: ${name}-${version}-setup.${ext}
@@ -22,10 +22,10 @@ nsis:
 mac:
   entitlementsInherit: build/entitlements.mac.plist
   extendInfo:
-    - NSCameraUsageDescription: Application requests access to the device's camera.
-    - NSMicrophoneUsageDescription: Application requests access to the device's microphone.
-    - NSDocumentsFolderUsageDescription: Application requests access to the user's Documents folder.
-    - NSDownloadsFolderUsageDescription: Application requests access to the user's Downloads folder.
+    - NSCameraUsageDescription: Swag Todo uses the camera when you attach images or scans to a task.
+    - NSMicrophoneUsageDescription: Swag Todo uses the microphone when you capture voice notes or recordings.
+    - NSDocumentsFolderUsageDescription: Swag Todo may access your Documents folder when you import or export workspace data.
+    - NSDownloadsFolderUsageDescription: Swag Todo may access your Downloads folder when you import attachments or backups.
   notarize: false
 dmg:
   artifactName: ${name}-${version}.${ext}

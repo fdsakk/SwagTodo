@@ -1,6 +1,6 @@
-# electron-todo
+# Swag Todo
 
-An Electron application with React and TypeScript
+Swag Todo is a local-first desktop app for managing tasks, projects, labels, sessions, and health tracking.
 
 ## Recommended IDE Setup
 
@@ -11,24 +11,24 @@ An Electron application with React and TypeScript
 ### Install
 
 ```bash
-$ npm install
+$ bun install
 ```
 
 ### Development
 
 ```bash
-$ npm run dev
+$ bun run dev
 ```
 
 ### Build
 
 ```bash
 # For windows
-$ npm run build:win
+$ bun run build:win
 
 # For macOS
-$ npm run build:mac
+$ bun run build:mac
 
 # For Linux
-$ npm run build:linux
+$ bun run build:linux
 ```
