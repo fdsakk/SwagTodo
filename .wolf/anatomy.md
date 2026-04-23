@@ -1,7 +1,7 @@
 # anatomy.md
 
-> Auto-maintained by OpenWolf. Last scanned: 2026-04-22T13:42:35.127Z
-> Files: 120 tracked | Anatomy hits: 0 | Misses: 0
+> Auto-maintained by OpenWolf. Last scanned: 2026-04-23T14:21:04.478Z
+> Files: 125 tracked | Anatomy hits: 0 | Misses: 0
 
 ## ./
 
@@ -19,6 +19,7 @@
 - `package-lock.json` — npm lock file (~132737 tok)
 - `package.json` — Node.js package manifest (~838 tok)
 - `postcss.config.cjs` — PostCSS configuration (~22 tok)
+- `prompt.md` — Brief dla kolejnego agenta: delta-write refactor SQLite storage, dodatkowe poprawki i kryteria akceptacji (~420 tok)
 - `README.md` — Project documentation (~354 tok)
 - `tailwind.config.ts` — Tailwind CSS configuration (~713 tok)
 - `tsconfig.json` — TypeScript configuration (~31 tok)
@@ -33,6 +34,9 @@
 ## .claude/rules/
 
 - `openwolf.md` (~313 tok)
+
+## Recent Updates
+
 
 ## out/main/
 
@@ -53,6 +57,15 @@
 ## src/main/
 
 - `index.ts` — Declares IpcMainInvokeEvent (~10629 tok)
+
+## src/main/storage/
+
+- `appState.ts` — Exports defaultAppState, APP_STATE_KEYS, isUiScale, isSafeId + 5 more (~1447 tok)
+- `sqlite.ts` — Exports SqliteStateSnapshot, parseLegacyElectronStore, serializeAppState, deserializeAppState, chang (~6102 tok)
+
+## src/main/tests/
+
+- `sqlite.test.ts` — Declares createFixtureState (~1985 tok)
 
 ## src/preload/
 
@@ -195,6 +208,10 @@
 
 - `useAppStore.ts` — Exports SessionCreateInput, SessionUpdateInput, SessionResult, SessionUpdateResult + 4 more (~6933 tok)
 
+## src/renderer/src/store/domain/
+
+- `persist.ts` — Exports PERSISTED_KEYS, stateFromPersisted, pickPersistedState, persistedStorage (~1174 tok)
+
 ## src/renderer/src/types/
 
 - `index.ts` — Vertical scale — subjective sensitivity. 1.0 = one dose peaks at 1.0 on Y. Default 1.0. (~4728 tok)
@@ -215,8 +232,3 @@
 ## supabase/
 
 - `schema.sql` — Database schema (~804 tok)
-
-## Recent Updates
-
-- 2026-04-22: Kanban drag overlay sizing preserves source card width and height; preview now reuses same shell classes as sortable card. Files: `src/renderer/src/components/kanban/KanbanBoard.tsx`, `src/renderer/src/components/kanban/KanbanCard.tsx`, `src/renderer/src/components/kanban/KanbanCardPreview.tsx`.
-- 2026-04-22: Kanban cross-column drag now uses live draft column ids in `onDragOver`, so target columns preview insertion and final drop index follows hover position instead of snapping to start. File: `src/renderer/src/components/kanban/KanbanBoard.tsx`.

@@ -153,6 +153,258 @@
       ],
       "occurrences": 1,
       "last_seen": "2026-04-22T16:08:00+02:00"
+    },
+    {
+      "id": "bug-010",
+      "timestamp": "2026-04-23T15:00:02+02:00",
+      "error_message": "Node test runtime failed to load `better-sqlite3` after Electron rebuild with NODE_MODULE_VERSION mismatch / module did not self-register.",
+      "file": "src/main/tests/sqlite.test.ts",
+      "root_cause": "The native module was rebuilt for Electron's ABI during install, so direct database tests under the plain Node test runner could not load the binary.",
+      "fix": "Reworked main storage tests to cover pure SQLite snapshot serialization/deserialization helpers instead of opening the native DB in the Node-based test script.",
+      "tags": [
+        "sqlite",
+        "better-sqlite3",
+        "electron",
+        "node-test",
+        "native-module"
+      ],
+      "related_bugs": [],
+      "occurrences": 1,
+      "last_seen": "2026-04-23T15:00:02+02:00"
+    },
+    {
+      "id": "bug-011",
+      "timestamp": "2026-04-23T15:00:02+02:00",
+      "error_message": "ESLint failed on `src/renderer/src/store/tests/register-aliases.cjs` with `@typescript-eslint/no-require-imports`.",
+      "file": "src/renderer/src/store/tests/register-aliases.cjs",
+      "root_cause": "The CommonJS alias bootstrap file uses `require`, but the lint rule also scanned `.cjs` test helpers without a local override.",
+      "fix": "Added a targeted ESLint disable comment for `@typescript-eslint/no-require-imports` at the top of the CommonJS helper and formatted the flagged files.",
+      "tags": [
+        "lint",
+        "eslint",
+        "commonjs",
+        "tests"
+      ],
+      "related_bugs": [],
+      "occurrences": 1,
+      "last_seen": "2026-04-23T15:00:02+02:00"
+    },
+    {
+      "id": "bug-012",
+      "timestamp": "2026-04-23T15:25:09+02:00",
+      "error_message": "SQLite migration created a fresh database but did not import existing `electron-store` data, so existing users would boot into an empty workspace.",
+      "file": "src/main/storage/sqlite.ts",
+      "root_cause": "The new storage backend initialized only `swag-todo.db` and removed the old dependency without any first-run bridge from the legacy `todoist-clone.json` payload.",
+      "fix": "Added legacy-store parsing plus first-run import from the previous electron-store JSON file when creating a new SQLite database.",
+      "tags": [
+        "sqlite",
+        "migration",
+        "data-loss",
+        "persistence"
+      ],
+      "related_bugs": [],
+      "occurrences": 1,
+      "last_seen": "2026-04-23T15:25:09+02:00"
+    },
+    {
+      "id": "bug-013",
+      "timestamp": "2026-04-23T15:25:09+02:00",
+      "error_message": "`store:savePartial` reloaded the full SQLite snapshot before every patch and `uiScale` lookup read the entire state just to fetch one setting.",
+      "file": "src/main/storage/sqlite.ts",
+      "root_cause": "Main-process SQLite storage had no in-memory state cache, so partial updates and simple lookups paid a redundant full-database read cost before the inevitable full snapshot rewrite.",
+      "fix": "Introduced a normalized in-memory cache, dedicated `loadUiScale()`, and prepared read/write closures so partial saves merge in memory and avoid unnecessary DB roundtrips.",
+      "tags": [
+        "sqlite",
+        "performance",
+        "ipc",
+        "persistence"
+      ],
+      "related_bugs": [
+        "bug-012"
+      ],
+      "occurrences": 1,
+      "last_seen": "2026-04-23T15:25:09+02:00"
+    },
+    {
+      "id": "bug-014",
+      "timestamp": "2026-04-23T13:42:55.668Z",
+      "error_message": "Null/undefined access in ",
+      "file": "src/main/storage/sqlite.ts",
+      "root_cause": "Property access on potentially null/undefined value",
+      "fix": "Added null safety (optional chaining or null check)",
+      "tags": [
+        "auto-detected",
+        "null-safety",
+        "ts"
+      ],
+      "related_bugs": [],
+      "occurrences": 1,
+      "last_seen": "2026-04-23T13:42:55.668Z"
+    },
+    {
+      "id": "bug-015",
+      "timestamp": "2026-04-23T13:46:26.860Z",
+      "error_message": "Type error",
+      "file": "src/main/tests/sqlite.test.ts",
+      "root_cause": "Missing or incorrect type annotation",
+      "fix": "Added type assertion/annotation",
+      "tags": [
+        "auto-detected",
+        "type-fix",
+        "ts"
+      ],
+      "related_bugs": [],
+      "occurrences": 1,
+      "last_seen": "2026-04-23T13:46:26.860Z"
+    },
+    {
+      "id": "bug-016",
+      "timestamp": "2026-04-23T14:00:00.000Z",
+      "error_message": "SQLite storage doing full DELETE+INSERT on every save — performance bottleneck",
+      "file": "src/main/storage/sqlite.ts",
+      "root_cause": "writeSnapshotTx cleared all tables then re-inserted entire app state on every saveState/savePartial call",
+      "fix": "Replaced writeSnapshotTx with writeDeltaTx: changedTaskIds() diffs prev/next snapshots, only changed tasks get UPSERT, child tables rebuilt per changed task_id, other collections use INSERT OR REPLACE + DELETE WHERE id NOT IN. writeSnapshotTx kept for legacy migration path only.",
+      "tags": [
+        "performance",
+        "sqlite",
+        "delta-write",
+        "architecture"
+      ],
+      "related_bugs": [],
+      "occurrences": 1,
+      "last_seen": "2026-04-23T14:00:00.000Z"
+    },
+    {
+      "id": "bug-017",
+      "timestamp": "2026-04-23T14:01:41.765Z",
+      "error_message": "Significant refactor of ",
+      "file": "src/main/storage/sqlite.ts",
+      "root_cause": "64 lines replaced/restructured",
+      "fix": "Rewrote 68→3 lines (64 removed)",
+      "tags": [
+        "auto-detected",
+        "refactor",
+        "ts"
+      ],
+      "related_bugs": [],
+      "occurrences": 1,
+      "last_seen": "2026-04-23T14:01:41.766Z"
+    },
+    {
+      "id": "bug-018",
+      "timestamp": "2026-04-23T14:09:38.908Z",
+      "error_message": "Missing guard clause",
+      "file": "src/main/storage/sqlite.ts",
+      "root_cause": "No early return/throw for edge case: prevTaskJson.get(t.id",
+      "fix": "Added guard clause: if (prevTaskJson.get(t.id)",
+      "tags": [
+        "auto-detected",
+        "guard-clause",
+        "ts"
+      ],
+      "related_bugs": [],
+      "occurrences": 1,
+      "last_seen": "2026-04-23T14:09:38.908Z"
+    },
+    {
+      "id": "bug-019",
+      "timestamp": "2026-04-23T14:10:23.483Z",
+      "error_message": "Null/undefined access in ",
+      "file": "src/main/storage/appState.ts",
+      "root_cause": "Property access on potentially null/undefined value",
+      "fix": "Added null safety (optional chaining or null check)",
+      "tags": [
+        "auto-detected",
+        "null-safety",
+        "ts"
+      ],
+      "related_bugs": [],
+      "occurrences": 1,
+      "last_seen": "2026-04-23T14:10:23.483Z"
+    },
+    {
+      "id": "bug-020",
+      "timestamp": "2026-04-23T14:12:10.336Z",
+      "error_message": "Type error",
+      "file": "src/main/storage/appState.ts",
+      "root_cause": "Missing or incorrect type annotation",
+      "fix": "Added type assertion/annotation",
+      "tags": [
+        "auto-detected",
+        "type-fix",
+        "ts"
+      ],
+      "related_bugs": [],
+      "occurrences": 1,
+      "last_seen": "2026-04-23T14:12:10.336Z"
+    },
+    {
+      "id": "bug-021",
+      "timestamp": "2026-04-23T16:30:00+02:00",
+      "error_message": "Performance: changedTaskIds used Array.find in O(n²) loop for deleted-task detection; writeState serialized cachedState on every save (1 extra full serialization); non-task collections upserted unconditionally on every writeDeltaTx call",
+      "file": "src/main/storage/sqlite.ts",
+      "root_cause": "1) Array.find inside for-loop = O(n²) for removed-task detection. 2) No snapshot cache — prev snapshot re-serialized from cachedState each write. 3) projects/sessions/labels/timeBlocks/medications always upserted even when unchanged",
+      "fix": "1) Built Set<string> from next.tasks before removed-task loop. 2) Added cachedSnapshot field, updated in writeState, used as prev in writeDeltaTx. 3) Added changedIds() helper, wrapped non-task collection upserts in if(changedIds(...)) guard",
+      "tags": [
+        "performance",
+        "sqlite",
+        "delta-write",
+        "o-n-squared"
+      ],
+      "related_bugs": [
+        "bug-016"
+      ],
+      "occurrences": 1,
+      "last_seen": "2026-04-23T16:30:00+02:00"
+    },
+    {
+      "id": "bug-022",
+      "timestamp": "2026-04-23T16:30:00+02:00",
+      "error_message": "Performance: mergeAppState called normalizeAppState unconditionally — iterates all tasks on every savePartial even for non-task patches like isSidebarCollapsed",
+      "file": "src/main/storage/appState.ts",
+      "root_cause": "normalizeAppState mapped all tasks through normalizeTask on every merge regardless of which fields changed",
+      "fix": "Conditionally skip normalizeAppState when patch.tasks is undefined; only normalize when tasks field is present in the patch",
+      "tags": [
+        "performance",
+        "appState",
+        "merge"
+      ],
+      "related_bugs": [],
+      "occurrences": 1,
+      "last_seen": "2026-04-23T16:30:00+02:00"
+    },
+    {
+      "id": "bug-023",
+      "timestamp": "2026-04-23T16:30:00+02:00",
+      "error_message": "Security: IPC store:save / store:savePartial accepted arrays without validating element IDs — malicious renderer payload could inject arbitrary id strings",
+      "file": "src/main/storage/appState.ts",
+      "root_cause": "isAppState and isAppStatePatch only checked that fields were arrays, not that array elements had valid UUID-format ids",
+      "fix": "Added UUID_RE + isSafeId + allHaveSafeIds helpers; isAppState and isAppStatePatch now reject payloads where any entity id fails UUID format check",
+      "tags": [
+        "security",
+        "ipc",
+        "validation",
+        "uuid"
+      ],
+      "related_bugs": [],
+      "occurrences": 1,
+      "last_seen": "2026-04-23T16:30:00+02:00"
+    },
+    {
+      "id": "bug-024",
+      "timestamp": "2026-04-23T14:16:18.298Z",
+      "error_message": "Wrong operator: ?? should be !==",
+      "file": "src/renderer/src/store/domain/persist.ts",
+      "root_cause": "Used \"??\" instead of \"!==\"",
+      "fix": "Changed operator ?? → !==",
+      "tags": [
+        "auto-detected",
+        "operator-fix",
+        "ts"
+      ],
+      "related_bugs": [],
+      "occurrences": 1,
+      "last_seen": "2026-04-23T14:16:18.298Z"
     }
   ]
 }

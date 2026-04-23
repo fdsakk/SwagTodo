@@ -90,9 +90,7 @@ export function TaskCreatePanel(props: TaskCreatePanelProps): React.JSX.Element 
     <div className="flex flex-col" style={{ maxHeight: 'calc(100vh - 80px)' }}>
       {/* Header */}
       <div className="flex items-center justify-between border-b border-app-border px-6 py-2.5">
-        <span className="text-[11px] font-medium  tracking-widest text-app-text-muted">
-          Create
-        </span>
+        <span className="text-[11px] font-medium  tracking-widest text-app-text-muted">Create</span>
         <button
           className="flex h-7 w-7 items-center justify-center rounded-md text-app-text-muted hover:bg-app-hover hover:text-app-text-secondary"
           onClick={props.onClose}

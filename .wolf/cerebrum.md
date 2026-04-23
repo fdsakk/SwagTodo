@@ -2,7 +2,7 @@
 
 > OpenWolf's learning memory. Updated automatically as the AI learns from interactions.
 > Do not edit manually unless correcting an error.
-> Last updated: 2026-04-19
+> Last updated: 2026-04-23
 
 ## User Preferences
 
@@ -16,6 +16,10 @@
 
 ## Key Learnings
 
+- SQLite backend migration here must preserve prior `electron-store` data by importing the legacy `todoist-clone.json` payload on first creation of `swag-todo.db`.
+- Main-process SQLite storage should keep a normalized in-memory cache so `store:savePartial` does not reload the full database before every patch and simple reads like `uiScale` stay O(1).
+- `better-sqlite3` in this Electron app should be rebuilt for Electron runtime; Node-based tests should avoid opening the native DB directly and instead cover pure serialization/deserialization helpers.
+- Local persistence now lives in main-process SQLite (`better-sqlite3`) behind the existing `window.api.storage` IPC surface, while renderer Zustand remains the live state source and UI filters still persist in `localStorage`.
 - Kanban cross-column DnD needs live draft column state updated in `onDragOver`; computing reorder only in `onDragEnd` leaves target column frozen and can misplace drop index.
 - Settings/Appearance page should follow the same container rhythm used by list pages (`px-4` outer, `px-2` inner alignment) for consistent layout.
 - Component subfolders: `layout/`, `task-panel/`, `task-list/`, `modals/`, `project/`, `sidebar/`, `settings/`, `task-edit/`, `kanban/`, `sessions-calendar/`, `ui/`. See CLAUDE.md component table for full mapping.
@@ -33,12 +37,18 @@
 
 <!-- Format: [YYYY-MM-DD] Description of what went wrong and what to do instead. -->
 
+- [2026-04-23] Do NOT swap persistence backends without a first-run import path for existing user data; migrations must preserve the old on-disk payload.
+- [2026-04-23] Do NOT implement `savePartial` by reloading the full SQLite snapshot first when main is the single writer; keep a normalized cache and merge patches in memory.
+- [2026-04-23] Do NOT try to run `better-sqlite3` storage tests under the plain Node test runtime after Electron rebuild; test the snapshot/serialization layer there instead.
 - [2026-04-19] Do NOT place new components as loose files in `components/` root. Always put in appropriate subfolder + export from its `index.tsx`.
 - [2026-04-19] Do NOT use default exports for new components. Use named exports throughout.
 - [2026-04-19] Do NOT implement destructive sync (delete-all then insert-all) for Supabase workspaces — it’s slow and can wipe remote data on partial failure.
 
 ## Decision Log
 
+- [2026-04-23] Delta writes: `writeDeltaTx` compares serialized prev/next snapshots via `changedTaskIds()` (JSON-stringify diff of row + child tables). Only changed tasks get `INSERT OR REPLACE`; child rows (task_subtasks, task_labels) rebuilt per-task. Other collections use `INSERT OR REPLACE` + `DELETE WHERE id NOT IN (json_each(?))`. `writeSnapshotTx` kept for legacy migration only. Added indices on `task_subtasks(task_id)` and `task_labels(task_id)`.
+- [2026-04-23] SQLite storage now performs a first-run import from the legacy `electron-store` JSON file and maintains an in-memory normalized cache so partial IPC saves avoid a redundant read-before-write cycle.
+- [2026-04-23] Replaced `electron-store` app persistence with main-process SQLite via `better-sqlite3`, keeping renderer Zustand hydration and patch-save IPC unchanged so UI remains instant and local-first.
 - [2026-04-19] Moved all 23 loose `components/` root files into domain subfolders with `index.tsx` barrels. Rationale: reduce import noise, enforce discoverability, eliminate root clutter. Named exports chosen over default so barrel re-exports work without aliasing.
 - [2026-04-19] Refactored Supabase sync to use a debounced, diff-based delta (upsert/delete) driven by a “shadow” slice; IPC `store:save` no longer awaits remote sync to avoid backpressure.
 - [2026-04-19] Consolidated duplicated cross-process types/constants into `src/shared/types.ts` and updated `main`, `preload`, `preload/index.d.ts`, and renderer types to consume/re-export shared definitions.

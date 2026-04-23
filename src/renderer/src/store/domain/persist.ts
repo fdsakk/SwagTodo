@@ -34,13 +34,6 @@ const normalizePkSettings = (raw: unknown): PkSettings => {
   return defaults
 }
 
-const persistedValueEqual = (left: unknown, right: unknown): boolean => {
-  if (Object.is(left, right)) return true
-  if (!left || !right || typeof left !== 'object' || typeof right !== 'object') return false
-
-  return JSON.stringify(left) === JSON.stringify(right)
-}
-
 export const stateFromPersisted = (persisted: unknown): PersistedDomainState => {
   const data =
     persisted && typeof persisted === 'object'
@@ -66,45 +59,64 @@ export const stateFromPersisted = (persisted: unknown): PersistedDomainState => 
 }
 
 export function pickPersistedState(state: DomainState): PersistedDomainState {
+  const {
+    tasks,
+    projects,
+    labels,
+    sessions,
+    timeBlocks,
+    medications,
+    pkSettings,
+    uiScale,
+    isSidebarCollapsed,
+    appearance
+  } = state
   return {
-    tasks: state.tasks,
-    projects: state.projects,
-    labels: state.labels,
-    sessions: state.sessions,
-    timeBlocks: state.timeBlocks,
-    medications: state.medications,
-    pkSettings: state.pkSettings,
-    uiScale: state.uiScale,
-    isSidebarCollapsed: state.isSidebarCollapsed,
-    appearance: state.appearance
+    tasks,
+    projects,
+    labels,
+    sessions,
+    timeBlocks,
+    medications,
+    pkSettings,
+    uiScale,
+    isSidebarCollapsed,
+    appearance
   }
 }
 
-let lastPersistedState: PersistedDomainState | undefined
+type PersistedJson = Map<keyof PersistedDomainState, string>
+
+let lastPersistedJson: PersistedJson | undefined
+
+const buildPersistedJson = (state: PersistedDomainState): PersistedJson =>
+  new Map(PERSISTED_KEYS.map((k) => [k, JSON.stringify(state[k])]))
 
 export const persistedStorage: PersistStorage<PersistedDomainState> = {
   getItem: async () => {
     if (!window.api?.storage) return null
     const loaded = stateFromPersisted(await window.api.storage.loadState())
-    lastPersistedState = loaded
+    lastPersistedJson = buildPersistedJson(loaded)
     return { state: loaded, version: 1 }
   },
   setItem: async (_, value) => {
     if (!window.api?.storage) return
 
     const nextState = value.state
-    const patch: Partial<PersistedDomainState> = {}
+    const nextJson = buildPersistedJson(nextState)
+    const patch = {} as Partial<PersistedDomainState>
+
     for (const key of PERSISTED_KEYS) {
-      if (!lastPersistedState || !persistedValueEqual(nextState[key], lastPersistedState[key])) {
-        ;(patch as Record<string, unknown>)[key] = nextState[key]
+      if (!lastPersistedJson || lastPersistedJson.get(key) !== nextJson.get(key)) {
+        patch[key] = nextState[key] as never
       }
     }
 
     if (Object.keys(patch).length === 0) return
     await window.api.storage.savePartial(patch)
-    lastPersistedState = { ...(lastPersistedState ?? nextState), ...patch }
+    lastPersistedJson = nextJson
   },
   removeItem: async () => {
-    lastPersistedState = undefined
+    lastPersistedJson = undefined
   }
 }

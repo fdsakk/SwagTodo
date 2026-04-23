@@ -151,9 +151,7 @@ export function TaskEditPanel({ task, onClose }: TaskEditPanelProps): React.JSX.
     <div className="flex flex-col" style={{ maxHeight: 'calc(100vh - 80px)' }}>
       {/* Header */}
       <div className="flex items-center justify-between border-b border-app-border px-6 py-2.5">
-        <span className="text-[11px] font-medium tracking-widest text-app-text-muted">
-          Task
-        </span>
+        <span className="text-[11px] font-medium tracking-widest text-app-text-muted">Task</span>
         <button
           className="flex h-7 w-7 items-center justify-center rounded-md text-app-text-muted hover:bg-app-hover hover:text-app-text-secondary"
           onClick={onClose}
@@ -200,18 +198,14 @@ export function TaskEditPanel({ task, onClose }: TaskEditPanelProps): React.JSX.
           <Separator className="my-5 bg-app-border" />
 
           <div>
-            <div className="mb-3 text-[11px] font-medium text-app-text-muted">
-              Sessions
-            </div>
+            <div className="mb-3 text-[11px] font-medium text-app-text-muted">Sessions</div>
             <SessionStats stats={stats} />
           </div>
         </div>
 
         {/* Right: metadata */}
         <div className="col-span-3  border-l border-app-border bg-app-titlebar/30 px-4 py-5">
-          <div className="mb-3 text-[11px] font-medium text-app-text-muted">
-            Details
-          </div>
+          <div className="mb-3 text-[11px] font-medium text-app-text-muted">Details</div>
           <TaskFormFields
             dueDate={task.dueDate}
             emptyLabelsMessage="No labels selected."

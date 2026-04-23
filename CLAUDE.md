@@ -12,17 +12,17 @@ This file provides guidance to Claude Code (claude.ai/code) when working with co
 
 Package manager: Bun. `bun.lock` is the source of truth for installs and scripts.
 
-| Task                                              | Command                                           |
-| ------------------------------------------------- | ------------------------------------------------- |
-| Install                                           | `bun install`                                     |
-| Dev (hot reload, Electron window + Vite renderer) | `bun run dev`                                     |
-| Type-check both targets                           | `bun run typecheck`                               |
-| Type-check node/main+preload only                 | `bun run typecheck:node`                          |
-| Type-check web/renderer only                      | `bun run typecheck:web`                           |
-| Lint                                              | `bun run lint` (ESLint flat config, caching on)   |
-| Format                                            | `bun run format` (Prettier)                       |
-| Build (typecheck + bundle)                        | `bun run build`                                   |
-| Preview built app                                 | `bun run start`                                   |
+| Task                                              | Command                                                           |
+| ------------------------------------------------- | ----------------------------------------------------------------- |
+| Install                                           | `bun install`                                                     |
+| Dev (hot reload, Electron window + Vite renderer) | `bun run dev`                                                     |
+| Type-check both targets                           | `bun run typecheck`                                               |
+| Type-check node/main+preload only                 | `bun run typecheck:node`                                          |
+| Type-check web/renderer only                      | `bun run typecheck:web`                                           |
+| Lint                                              | `bun run lint` (ESLint flat config, caching on)                   |
+| Format                                            | `bun run format` (Prettier)                                       |
+| Build (typecheck + bundle)                        | `bun run build`                                                   |
+| Preview built app                                 | `bun run start`                                                   |
 | Platform packages                                 | `bun run build:linux` / `bun run build:mac` / `bun run build:win` |
 
 Tests use the Node built-in runner through `bun run test` and `bun run test:store`.
@@ -33,22 +33,22 @@ Electron app with three build targets via `electron-vite`: `main`, `preload`, `r
 
 ### Process boundaries
 
-- **Main** (`src/main/index.ts`) — creates the single `BrowserWindow`, owns `electron-store` persistence, registers all IPC handlers (`store:*`, `ui:*`, `window:*`), and emits `window:state` on maximize/unmaximize/full-screen transitions. Frameless window (`titleBarStyle: 'hidden'` / macOS `hiddenInset`), transparent. On Wayland it disables `WaylandColorManagement*` features to avoid rendering issues.
+- **Main** (`src/main/index.ts`) — creates the single `BrowserWindow`, owns SQLite-backed persistence via `src/main/storage/appState.ts` + `src/main/storage/sqlite.ts`, registers all IPC handlers (`store:*`, `ui:*`, `window:*`), and emits `window:state` on maximize/unmaximize/full-screen transitions. Frameless window (`titleBarStyle: 'hidden'` / macOS `hiddenInset`), transparent. On Wayland it disables `WaylandColorManagement*` features to avoid rendering issues.
 - **Preload** (`src/preload/index.ts`) — exposes a typed `window.api` bridge (`storage`, `ui`, `window`) via `contextBridge`. Non-context-isolated fallback assigns directly to `window`. Type declarations live in `src/preload/index.d.ts` and define the global `Window.api` shape consumed by the renderer.
 - **Renderer** (`src/renderer/src/**`) — React 18 + Vite + Tailwind + shadcn/ui primitives (under `components/ui/`). Entry: `main.tsx` → `App.tsx`.
 
 ### State model
 
-Single Zustand store in `src/renderer/src/store/useAppStore.ts` holds both persistent domain data (`tasks`, `projects`, `labels`, `uiScale`) and transient UI state (`selectedView`, `taskPanel`, `searchQuery`, `sortMode`, `showCompleted`, `isSidebarCollapsed`, `projectTab`, `searchFocusSignal`, `hydrated`).
+Persistent domain data lives in the Zustand domain store (`src/renderer/src/store/domain/domainStore.ts`) and ephemeral view filters live in the UI store (`src/renderer/src/store/ui/uiStore.ts`).
 
 Persistence flow:
 
-1. `hydrate()` loads via `window.api.storage.loadState()` on mount (`App.tsx` `useEffect`).
-2. A `useAppStore.subscribe` listener diff-checks `tasks` / `projects` / `labels` / `uiScale` by reference; unrelated UI state changes do **not** trigger persistence.
-3. Debounced (120 ms) `window.api.storage.saveState({ tasks, projects, labels, uiScale })`.
-4. Main validates the payload via `isAppState` before writing to `electron-store` (store name: `todoist-clone`).
+1. Renderer hydration loads the persisted domain slice via `window.api.storage.loadState()`.
+2. Zustand `persist` in `src/renderer/src/store/domain/persist.ts` partializes the domain slice, diffs it against the last persisted value, and sends only changed keys through `window.api.storage.savePartial(...)`.
+3. Main validates the payload with `isAppState` / `isAppStatePatch`, normalizes it, and writes a SQLite snapshot in the main process.
+4. On first launch after the migration, main also imports the legacy `electron-store` payload (`todoist-clone.json`) into SQLite if that file exists.
 
-When adding a persistent field: update `AppState` in `src/renderer/src/types/index.ts`, `src/main/index.ts` (+ `isAppState` guard), `src/preload/index.ts`, `src/preload/index.d.ts`, and the persist-subscribe diff in `useAppStore.ts`.
+When adding a persistent field: update `src/shared/types.ts`, `src/main/storage/appState.ts`, `src/main/storage/sqlite.ts`, `src/preload/index.ts`, `src/preload/index.d.ts`, and the renderer domain persistence types/helpers under `src/renderer/src/store/domain/`.
 
 ### Task domain invariants
 
@@ -105,6 +105,6 @@ Kanban uses `@dnd-kit/core` + `@dnd-kit/sortable`. `KanbanBoard` buckets tasks i
 ## Conventions
 
 - Strict TS. Both node and web `tsconfig` extend `@electron-toolkit/tsconfig`. Run `bun run typecheck` after touching any shared type (`types/index.ts`, preload `.d.ts`, main state shape).
-- Reducers in `useAppStore` prefer slice-return-unchanged patterns (`return state`) when no domain data changes, to avoid spurious re-renders and persistence writes.
+- Domain store actions should prefer slice-return-unchanged patterns (`return state`) when no domain data changes, to avoid spurious re-renders and persistence writes.
 - Platform-specific logic in main keys off `process.platform` and `process.env.XDG_SESSION_TYPE`; the `IS_MAC`/`IS_WAYLAND` constants at the top of `src/main/index.ts` are the canonical checks.
 - When touching the title bar, note that `trafficLightPosition` is set for macOS; the frameless frame and drag regions are styled in `TitleBar.tsx`.

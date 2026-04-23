@@ -3,6 +3,11 @@
 > Chronological action log. Hooks and AI append to this file automatically.
 > Old sessions are consolidated by the daemon weekly.
 
+| 16:45 | persist.ts: replaced object deep-compare (JSON.stringify both sides) with cached JSON-string map — compare now string===string, no re-alloc | persist.ts | 25/25 green | ~400 |
+| 16:30 | perf+security audit: cache prevSnapshot, O(n²)→Set, delta guards for collections, skip normalizeAppState on non-task patch, UUID validation in IPC | sqlite.ts, appState.ts | 25/25 tests green | ~2500 |
+
+| 14:00 | Delta-write refactor: replaced full snapshot DELETE+INSERT with changedTaskIds diff + INSERT OR REPLACE + targeted DELETE | src/main/storage/sqlite.ts, src/main/tests/sqlite.test.ts | 25/25 tests pass, build clean | ~4k |
+
 | 09:30 | Refactored all loose components into subfolders (task-panel, task-list, modals, project, layout) with index.tsx barrel files; converted default exports to named exports; updated all imports in App.tsx and pages | components/, App.tsx, pages/ | success, typecheck clean | ~8000 |
 
 | 20:56 | perf audit + fixes: pre-grouped blocks by day map, stable pointerDown handler, cached HOURS constant, single Date ctor per block, Date.parse in sort, Sidebar hasLabels bool selector | SessionsCalendar.tsx, types.ts, ActivityPage.tsx, Sidebar.tsx | ok ~2000 tok |
@@ -440,45 +445,102 @@
 
 ## Session: 2026-04-19 18:01
 
-| Time | Action | File(s) | Outcome | ~Tokens |
-| ---- | ------ | ------- | ------- | ------- |
-| 18:21 | Punkt 1 z to_fix: unifikacja typów do shared | src/shared/types.ts; src/main/index.ts; src/preload/index.ts; src/preload/index.d.ts; src/renderer/src/types/index.ts; tsconfig.* | Deduplikacja typów + przejście lint/build | ~2600 |
-| 18:33 | Punkty 2-7 z to_fix: persist+slices+partial IPC+PK opt+defaults | src/renderer/src/store/useAppStore.ts; src/main/index.ts; src/preload/*; src/shared/defaults.ts; src/renderer/src/utils/pharmacokinetics.ts; src/renderer/src/pages/HealthPage.tsx; src/renderer/src/types/index.ts | Zrobione punkt po punkcie, lint/build zielone | ~5200 |
+| Time  | Action                                                          | File(s)                                                                                                                                                                                                              | Outcome                                       | ~Tokens |
+| ----- | --------------------------------------------------------------- | -------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- | --------------------------------------------- | ------- |
+| 18:21 | Punkt 1 z to_fix: unifikacja typów do shared                    | src/shared/types.ts; src/main/index.ts; src/preload/index.ts; src/preload/index.d.ts; src/renderer/src/types/index.ts; tsconfig.\*                                                                                   | Deduplikacja typów + przejście lint/build     | ~2600   |
+| 18:33 | Punkty 2-7 z to_fix: persist+slices+partial IPC+PK opt+defaults | src/renderer/src/store/useAppStore.ts; src/main/index.ts; src/preload/\*; src/shared/defaults.ts; src/renderer/src/utils/pharmacokinetics.ts; src/renderer/src/pages/HealthPage.tsx; src/renderer/src/types/index.ts | Zrobione punkt po punkcie, lint/build zielone | ~5200   |
 
 ## Session: 2026-04-19 19:16
 
-| Time | Action | File(s) | Outcome | ~Tokens |
-|------|--------|---------|---------|--------|
-| 19:18 | Edited src/renderer/src/App.tsx | added optional chaining | ~115 |
-| 19:18 | Edited src/renderer/src/App.tsx | 4→4 lines | ~100 |
-| 19:18 | Edited src/renderer/src/App.tsx | "flex h-full flex-col over" → "flex h-full flex-col over" | ~35 |
-| 19:18 | Edited src/renderer/src/App.tsx | "relative flex min-h-0 fle" → "relative flex min-h-0 fle" | ~34 |
-| 19:18 | remove window roundness in fullscreen | App.tsx | done — isFullScreen state drives rounded-xl/rounded-lg removal | ~150 |
-| 19:35 | wygładzenie i wydłużenie opadania krzywej leków (asymetryczne kształtowanie sumy dawek) | src/renderer/src/utils/pharmacokinetics.ts | peak bardziej miękki, spadek dłuższy przy dokładaniu dawek | ~900 |
-| 19:18 | Session end: 4 writes across 1 files (App.tsx) | 2 reads | ~2941 tok |
+| Time  | Action                                                                                  | File(s)                                                   | Outcome                                                        | ~Tokens |
+| ----- | --------------------------------------------------------------------------------------- | --------------------------------------------------------- | -------------------------------------------------------------- | ------- |
+| 19:18 | Edited src/renderer/src/App.tsx                                                         | added optional chaining                                   | ~115                                                           |
+| 19:18 | Edited src/renderer/src/App.tsx                                                         | 4→4 lines                                                 | ~100                                                           |
+| 19:18 | Edited src/renderer/src/App.tsx                                                         | "flex h-full flex-col over" → "flex h-full flex-col over" | ~35                                                            |
+| 19:18 | Edited src/renderer/src/App.tsx                                                         | "relative flex min-h-0 fle" → "relative flex min-h-0 fle" | ~34                                                            |
+| 19:18 | remove window roundness in fullscreen                                                   | App.tsx                                                   | done — isFullScreen state drives rounded-xl/rounded-lg removal | ~150    |
+| 19:35 | wygładzenie i wydłużenie opadania krzywej leków (asymetryczne kształtowanie sumy dawek) | src/renderer/src/utils/pharmacokinetics.ts                | peak bardziej miękki, spadek dłuższy przy dokładaniu dawek     | ~900    |
+| 19:18 | Session end: 4 writes across 1 files (App.tsx)                                          | 2 reads                                                   | ~2941 tok                                                      |
 
 ## Session: 2026-04-21 16:29
 
-| Time | Action | File(s) | Outcome | ~Tokens |
-|------|--------|---------|---------|--------|
-| 16:32 | Created src/renderer/src/components/settings/CustomizeSection.tsx | — | ~1801 |
-| 16:32 | redesign CustomizeSection: 2-col grid, big swatch previews, hover edit overlay, reset-per-token | settings/CustomizeSection.tsx | done | ~800 |
-| 16:32 | Session end: 1 writes across 1 files (CustomizeSection.tsx) | 1 reads | ~3108 tok |
-| 16:33 | Session end: 1 writes across 1 files (CustomizeSection.tsx) | 2 reads | ~4178 tok |
-| 16:34 | Created src/renderer/src/components/settings/CustomizeSection.tsx | — | ~2449 |
-| 16:39 | Session end: 2 writes across 1 files (CustomizeSection.tsx) | 3 reads | ~6995 tok |
+| Time  | Action                                                                                          | File(s)                       | Outcome   | ~Tokens |
+| ----- | ----------------------------------------------------------------------------------------------- | ----------------------------- | --------- | ------- |
+| 16:32 | Created src/renderer/src/components/settings/CustomizeSection.tsx                               | —                             | ~1801     |
+| 16:32 | redesign CustomizeSection: 2-col grid, big swatch previews, hover edit overlay, reset-per-token | settings/CustomizeSection.tsx | done      | ~800    |
+| 16:32 | Session end: 1 writes across 1 files (CustomizeSection.tsx)                                     | 1 reads                       | ~3108 tok |
+| 16:33 | Session end: 1 writes across 1 files (CustomizeSection.tsx)                                     | 2 reads                       | ~4178 tok |
+| 16:34 | Created src/renderer/src/components/settings/CustomizeSection.tsx                               | —                             | ~2449     |
+| 16:39 | Session end: 2 writes across 1 files (CustomizeSection.tsx)                                     | 3 reads                       | ~6995 tok |
 
 ## Session: 2026-04-22 15:37
 
+| Time  | Action                                                                                                                                                                                                      | File(s)                                                                                                                                                                                                                             | Outcome                                        | ~Tokens |
+| ----- | ----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- | ----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- | ---------------------------------------------- | ------- |
+| 15:41 | Created src/renderer/src/components/task-panel/TaskDetailPanel.tsx                                                                                                                                          | —                                                                                                                                                                                                                                   | ~1091                                          |
+| 15:41 | Created src/renderer/src/components/task-panel/TaskEditPanel.tsx                                                                                                                                            | —                                                                                                                                                                                                                                   | ~2414                                          |
+| 15:41 | Created src/renderer/src/components/task-panel/TaskCreatePanel.tsx                                                                                                                                          | —                                                                                                                                                                                                                                   | ~1442                                          |
+| 15:42 | Created src/renderer/src/components/project/ProjectPanel.tsx                                                                                                                                                | —                                                                                                                                                                                                                                   | ~1620                                          |
+| 15:42 | Edited src/renderer/src/components/task-panel/TaskEditPanel.tsx                                                                                                                                             | 14→11 lines                                                                                                                                                                                                                         | ~108                                           |
+| 15:42 | Redesigned all panels (TaskEditPanel, TaskCreatePanel, ProjectPanel, TaskDetailPanel) from right-side slide to centered modal cards                                                                         | task-panel/, project/ProjectPanel.tsx                                                                                                                                                                                               | success                                        | ~3000   |
+| 15:42 | Session end: 5 writes across 4 files (TaskDetailPanel.tsx, TaskEditPanel.tsx, TaskCreatePanel.tsx, ProjectPanel.tsx)                                                                                        | 9 reads                                                                                                                                                                                                                             | ~17855 tok                                     |
+| 15:58 | Fixed kanban drag card size snap by freezing overlay width+height from source rect and reusing identical card shell styles in preview; logged mandatory `.wolf` preference                                  | `.wolf/cerebrum.md`, `.wolf/anatomy.md`, `.wolf/buglog.json`, `src/renderer/src/components/kanban/KanbanBoard.tsx`, `src/renderer/src/components/kanban/KanbanCard.tsx`, `src/renderer/src/components/kanban/KanbanCardPreview.tsx` | success, typecheck clean                       | ~1200   |
+| 16:08 | Fixed kanban cross-column drag preview by keeping live draft task ids per column in `onDragOver`; target columns now animate insertion and drop index follows hover midpoint instead of defaulting near top | `.wolf/cerebrum.md`, `.wolf/anatomy.md`, `.wolf/buglog.json`, `src/renderer/src/components/kanban/KanbanBoard.tsx`                                                                                                                  | success, typecheck clean                       | ~1500   |
+| 14:20 | Standardized app branding to Swag Todo and switched repo instructions/scripts from npm to Bun                                                                                                               | `package.json`, `README.md`, `CLAUDE.md`, `electron-builder.yml`, `bun.lock`                                                                                                                                                        | success, bun test clean                        | ~1200   |
+| 14:49 | inspected current storage + build config for sqlite migration                                                                                                                                               | .wolf/buglog.json, src/main/index.ts, src/renderer/src/store, package.json                                                                                                                                                          | clarified implementation scope and constraints | ~2200   |
+| 14:59 | implemented sqlite-backed main-process storage, swapped dependency from electron-store, and added main serialization tests                                                                                  | src/main/index.ts, src/main/storage/\*, src/main/tests/sqlite.test.ts, package.json, bun.lock                                                                                                                                       | tests/build passing; lint cleanup pending      | ~2800   |
+| 15:01 | finalized sqlite migration housekeeping in OpenWolf docs and bug log; lint/test/build all green                                                                                                             | .wolf/anatomy.md, .wolf/cerebrum.md, .wolf/buglog.json, .wolf/memory.md                                                                                                                                                             | success                                        | ~1400   |
+| 15:25 | reviewed sqlite migration, added legacy electron-store import plus main-process cache for partial saves, and revalidated test/build/lint                                                                    | `src/main/index.ts`, `src/main/storage/sqlite.ts`, `src/main/tests/sqlite.test.ts`, `CLAUDE.md`, `.wolf/cerebrum.md`, `.wolf/buglog.json`, `.wolf/memory.md`                                                                        | success, review issues fixed                   | ~2600   |
+| 15:32 | created handoff prompt for next agent covering sqlite delta-write refactor, constraints, extra improvements, and acceptance criteria                                                                        | `prompt.md`, `.wolf/anatomy.md`, `.wolf/memory.md`                                                                                                                                                                                  | success                                        | ~900    |
+
+## Session: 2026-04-23 15:37
+
+| Time | Action | File(s) | Outcome | ~Tokens |
+| ---- | ------ | ------- | ------- | ------- |
+
+## Session: 2026-04-23 15:38
+
+| Time  | Action                                                           | File(s)                            | Outcome    | ~Tokens |
+| ----- | ---------------------------------------------------------------- | ---------------------------------- | ---------- | ------- |
+| 15:41 | Edited src/main/storage/sqlite.ts                                | 91→94 lines                        | ~638       |
+| 15:42 | Edited src/main/storage/sqlite.ts                                | 5→6 lines                          | ~98        |
+| 15:42 | Edited src/main/storage/sqlite.ts                                | added 3 condition(s)               | ~2458      |
+| 15:42 | Edited src/main/storage/sqlite.ts                                | writeSnapshotTx() → writeDeltaTx() | ~76        |
+| 15:42 | Edited src/main/storage/sqlite.ts                                | added nullish coalescing           | ~540       |
+| 15:46 | Edited src/main/storage/sqlite.ts                                | 2→2 lines                          | ~56        |
+| 15:46 | Edited src/main/tests/sqlite.test.ts                             | 6→11 lines                         | ~102       |
+| 15:46 | Edited src/main/tests/sqlite.test.ts                             | expanded (+100 lines)              | ~1019      |
+| 15:53 | Session end: 8 writes across 2 files (sqlite.ts, sqlite.test.ts) | 4 reads                            | ~15559 tok |
+| 16:01 | Edited src/main/storage/sqlite.ts                                | expanded (+10 lines)               | ~118       |
+| 16:01 | Edited src/main/storage/sqlite.ts                                | 12→12 lines                        | ~129       |
+| 16:01 | Edited src/main/storage/sqlite.ts                                | removed 68 lines                   | ~65        |
+| 16:04 | Session end: 11 writes across 2 files (sqlite.ts, sqlite.test.ts) | 4 reads | ~15036 tok |
+
+## Session: 2026-04-23 16:05
+
 | Time | Action | File(s) | Outcome | ~Tokens |
 |------|--------|---------|---------|--------|
-| 15:41 | Created src/renderer/src/components/task-panel/TaskDetailPanel.tsx | — | ~1091 |
-| 15:41 | Created src/renderer/src/components/task-panel/TaskEditPanel.tsx | — | ~2414 |
-| 15:41 | Created src/renderer/src/components/task-panel/TaskCreatePanel.tsx | — | ~1442 |
-| 15:42 | Created src/renderer/src/components/project/ProjectPanel.tsx | — | ~1620 |
-| 15:42 | Edited src/renderer/src/components/task-panel/TaskEditPanel.tsx | 14→11 lines | ~108 |
-| 15:42 | Redesigned all panels (TaskEditPanel, TaskCreatePanel, ProjectPanel, TaskDetailPanel) from right-side slide to centered modal cards | task-panel/, project/ProjectPanel.tsx | success | ~3000 |
-| 15:42 | Session end: 5 writes across 4 files (TaskDetailPanel.tsx, TaskEditPanel.tsx, TaskCreatePanel.tsx, ProjectPanel.tsx) | 9 reads | ~17855 tok |
-| 15:58 | Fixed kanban drag card size snap by freezing overlay width+height from source rect and reusing identical card shell styles in preview; logged mandatory `.wolf` preference | `.wolf/cerebrum.md`, `.wolf/anatomy.md`, `.wolf/buglog.json`, `src/renderer/src/components/kanban/KanbanBoard.tsx`, `src/renderer/src/components/kanban/KanbanCard.tsx`, `src/renderer/src/components/kanban/KanbanCardPreview.tsx` | success, typecheck clean | ~1200 |
-| 16:08 | Fixed kanban cross-column drag preview by keeping live draft task ids per column in `onDragOver`; target columns now animate insertion and drop index follows hover midpoint instead of defaulting near top | `.wolf/cerebrum.md`, `.wolf/anatomy.md`, `.wolf/buglog.json`, `src/renderer/src/components/kanban/KanbanBoard.tsx` | success, typecheck clean | ~1500 |
-| 14:20 | Standardized app branding to Swag Todo and switched repo instructions/scripts from npm to Bun | `package.json`, `README.md`, `CLAUDE.md`, `electron-builder.yml`, `bun.lock` | success, bun test clean | ~1200 |
+| 16:09 | Edited src/main/storage/sqlite.ts | added 1 condition(s) | ~477 |
+| 16:09 | Edited src/main/storage/sqlite.ts | added 5 condition(s) | ~409 |
+| 16:09 | Edited src/main/storage/sqlite.ts | 4→5 lines | ~80 |
+| 16:09 | Edited src/main/storage/sqlite.ts | modified readLegacyElectronStore() | ~79 |
+| 16:10 | Edited src/main/storage/sqlite.ts | modified writeState() | ~74 |
+| 16:10 | Edited src/main/storage/appState.ts | modified if() | ~310 |
+| 16:10 | Edited src/main/storage/appState.ts | 1→4 lines | ~79 |
+| 16:10 | Edited src/main/storage/appState.ts | added optional chaining | ~236 |
+| 16:12 | Edited src/main/storage/appState.ts | reduced (-6 lines) | ~172 |
+| 16:12 | Edited src/main/storage/appState.ts | 2→4 lines | ~96 |
+| 16:12 | Edited src/main/storage/appState.ts | added 6 condition(s) | ~292 |
+| 16:12 | Edited src/main/storage/appState.ts | added 6 condition(s) | ~342 |
+| 16:13 | Session end: 12 writes across 2 files (sqlite.ts, appState.ts) | 7 reads | ~22879 tok |
+| 16:16 | Edited src/renderer/src/store/domain/persist.ts | reduced (-7 lines) | ~24 |
+| 16:16 | Edited src/renderer/src/store/domain/persist.ts | modified for() | ~360 |
+| 16:17 | Session end: 14 writes across 3 files (sqlite.ts, appState.ts, persist.ts) | 8 reads | ~23263 tok |
+| 16:20 | Created src/main/storage/appState.ts | — | ~1447 |
+| 16:21 | Created src/renderer/src/store/domain/persist.ts | — | ~1174 |
+| 16:22 | Session end: 16 writes across 3 files (sqlite.ts, appState.ts, persist.ts) | 8 reads | ~27588 tok |
+
+## Session: 2026-04-23 16:24
+
+| Time | Action | File(s) | Outcome | ~Tokens |
+|------|--------|---------|---------|--------|

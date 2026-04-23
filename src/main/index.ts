@@ -1,35 +1,17 @@
 import { app, shell, BrowserWindow, ipcMain, type IpcMainInvokeEvent } from 'electron'
 import { join } from 'path'
 import { electronApp, optimizer, is } from '@electron-toolkit/utils'
-import ElectronStore from 'electron-store'
 import icon from '../../resources/icon.png?asset'
 import { DEFAULT_UI_SCALE, UI_SCALE_OPTIONS } from '../shared/defaults'
-import { type AppState, type AppearanceSettings, type Task, type UiScale } from '../shared/types'
+import type { UiScale } from '../shared/types'
+import { isAppState, isAppStatePatch, isUiScale } from './storage/appState'
+import { createSqliteAppStorage, type SqliteAppStorage } from './storage/sqlite'
 
-const UI_SCALE_SET: ReadonlySet<number> = new Set(UI_SCALE_OPTIONS)
 const MIN_ZOOM_FACTOR = UI_SCALE_OPTIONS[0] / 100
 const MAX_ZOOM_FACTOR = UI_SCALE_OPTIONS[UI_SCALE_OPTIONS.length - 1] / 100
 const IS_MAC = process.platform === 'darwin'
 const IS_WAYLAND = process.platform === 'linux' && process.env.XDG_SESSION_TYPE === 'wayland'
-
-const defaultAppState: AppState = {
-  tasks: [],
-  projects: [],
-  labels: [],
-  sessions: [],
-  timeBlocks: [],
-  medications: [],
-  uiScale: DEFAULT_UI_SCALE,
-  isSidebarCollapsed: false
-}
-
-const StoreCtor =
-  (ElectronStore as unknown as { default?: typeof ElectronStore }).default ?? ElectronStore
-
-const appStore = new StoreCtor<{ appState: AppState }>({
-  name: 'todoist-clone',
-  defaults: { appState: defaultAppState }
-})
+let appStorage: SqliteAppStorage | null = null
 
 if (IS_WAYLAND) {
   const WAYLAND_CM_FEATURES =
@@ -41,151 +23,16 @@ if (IS_WAYLAND) {
   )
 }
 
-const isUiScale = (v: unknown): v is UiScale => typeof v === 'number' && UI_SCALE_SET.has(v)
-
 const isZoomFactor = (v: unknown): v is number =>
   typeof v === 'number' && v >= MIN_ZOOM_FACTOR && v <= MAX_ZOOM_FACTOR
 
-const isStringRecord = (v: unknown): v is Record<string, string> =>
-  !!v &&
-  typeof v === 'object' &&
-  !Array.isArray(v) &&
-  Object.values(v as object).every((x) => typeof x === 'string')
-
-const APP_STATE_KEYS: ReadonlySet<string> = new Set([
-  'tasks',
-  'projects',
-  'labels',
-  'sessions',
-  'timeBlocks',
-  'medications',
-  'pkSettings',
-  'uiScale',
-  'isSidebarCollapsed',
-  'appearance'
-])
-
-const normalizeAppearance = (raw: unknown): AppearanceSettings | undefined => {
-  if (!raw || typeof raw !== 'object') return undefined
-  const appearance = raw as Partial<AppearanceSettings>
-  if (typeof appearance.themeId !== 'string') return undefined
-  if (appearance.customTokens !== undefined && !isStringRecord(appearance.customTokens)) {
-    return undefined
-  }
-  return {
-    themeId: appearance.themeId,
-    customTokens: appearance.customTokens ?? {}
-  }
-}
-
-const normalizeTask = (task: Task): Task => {
-  const completed = task.status === 'done' || task.completed
-  return {
-    ...task,
-    completed,
-    status: completed ? 'done' : task.status === 'in_progress' ? 'in_progress' : 'todo',
-    completedAt: completed ? (task.completedAt ?? task.updatedAt) : undefined
-  }
-}
-
-const normalizeAppState = (state: unknown): AppState => {
-  const data = state && typeof state === 'object' ? (state as Partial<AppState>) : {}
-  const next: AppState = {
-    tasks: Array.isArray(data.tasks) ? data.tasks.map((task) => normalizeTask(task)) : [],
-    projects: Array.isArray(data.projects) ? data.projects : [],
-    labels: Array.isArray(data.labels) ? data.labels : [],
-    sessions: Array.isArray(data.sessions) ? data.sessions : [],
-    timeBlocks: Array.isArray(data.timeBlocks) ? data.timeBlocks : [],
-    medications: Array.isArray(data.medications) ? data.medications : [],
-    uiScale: isUiScale(data.uiScale) ? data.uiScale : DEFAULT_UI_SCALE,
-    isSidebarCollapsed:
-      typeof data.isSidebarCollapsed === 'boolean' ? data.isSidebarCollapsed : false
-  }
-
-  if ('pkSettings' in data) next.pkSettings = data.pkSettings
-
-  const appearance = normalizeAppearance(data.appearance)
-  if (appearance) next.appearance = appearance
-
-  return next
-}
-
-const isAppState = (v: unknown): v is AppState => {
-  if (!v || typeof v !== 'object') return false
-  const d = v as Partial<AppState>
-  if (
-    !Array.isArray(d.tasks) ||
-    !Array.isArray(d.projects) ||
-    !Array.isArray(d.labels) ||
-    !Array.isArray(d.sessions) ||
-    !Array.isArray(d.timeBlocks)
-  ) {
-    return false
-  }
-  if (d.medications !== undefined && !Array.isArray(d.medications)) return false
-  if (d.uiScale !== undefined && !isUiScale(d.uiScale)) return false
-  if (d.isSidebarCollapsed !== undefined && typeof d.isSidebarCollapsed !== 'boolean') {
-    return false
-  }
-  if (d.appearance !== undefined && !normalizeAppearance(d.appearance)) return false
-  return true
-}
-
-const isAppStatePatch = (v: unknown): v is Partial<AppState> => {
-  if (!v || typeof v !== 'object' || Array.isArray(v)) return false
-  const patch = v as Record<string, unknown>
-  for (const key of Object.keys(patch)) {
-    if (!APP_STATE_KEYS.has(key)) return false
-  }
-  if ('tasks' in patch && !Array.isArray(patch.tasks)) return false
-  if ('projects' in patch && !Array.isArray(patch.projects)) return false
-  if ('labels' in patch && !Array.isArray(patch.labels)) return false
-  if ('sessions' in patch && !Array.isArray(patch.sessions)) return false
-  if ('timeBlocks' in patch && !Array.isArray(patch.timeBlocks)) return false
-  if (
-    'medications' in patch &&
-    patch.medications !== undefined &&
-    !Array.isArray(patch.medications)
-  ) {
-    return false
-  }
-  if ('uiScale' in patch && patch.uiScale !== undefined && !isUiScale(patch.uiScale)) return false
-  if (
-    'isSidebarCollapsed' in patch &&
-    patch.isSidebarCollapsed !== undefined &&
-    typeof patch.isSidebarCollapsed !== 'boolean'
-  ) {
-    return false
-  }
-  if (
-    'appearance' in patch &&
-    patch.appearance !== undefined &&
-    !normalizeAppearance(patch.appearance)
-  ) {
-    return false
-  }
-  return true
-}
-
-const mergeAppState = (current: AppState, patch: Partial<AppState>): AppState => {
-  let next = current
-  if (patch.tasks !== undefined) next = { ...next, tasks: patch.tasks }
-  if (patch.projects !== undefined) next = { ...next, projects: patch.projects }
-  if (patch.labels !== undefined) next = { ...next, labels: patch.labels }
-  if (patch.sessions !== undefined) next = { ...next, sessions: patch.sessions }
-  if (patch.timeBlocks !== undefined) next = { ...next, timeBlocks: patch.timeBlocks }
-  if ('medications' in patch) next = { ...next, medications: patch.medications }
-  if ('pkSettings' in patch) next = { ...next, pkSettings: patch.pkSettings }
-  if (patch.uiScale !== undefined) next = { ...next, uiScale: patch.uiScale }
-  if ('isSidebarCollapsed' in patch) {
-    next = { ...next, isSidebarCollapsed: patch.isSidebarCollapsed }
-  }
-  if ('appearance' in patch) next = { ...next, appearance: patch.appearance }
-  return normalizeAppState(next)
+const getAppStorage = (): SqliteAppStorage => {
+  if (!appStorage) throw new Error('App storage is not initialized')
+  return appStorage
 }
 
 const getPersistedUiScale = (): UiScale => {
-  const s = appStore.get('appState').uiScale
+  const s = getAppStorage().loadUiScale()
   return isUiScale(s) ? s : DEFAULT_UI_SCALE
 }
 
@@ -261,21 +108,16 @@ function createWindow(): void {
 }
 
 function registerIpcHandlers(): void {
-  ipcMain.handle('store:load', async () => {
-    const current = normalizeAppState(appStore.get('appState'))
-    appStore.set('appState', current)
-    return current
-  })
+  ipcMain.handle('store:load', async () => getAppStorage().loadState())
 
   ipcMain.handle('store:save', async (_, nextState: unknown) => {
     if (!isAppState(nextState)) throw new Error('Invalid app state payload')
-    appStore.set('appState', normalizeAppState(nextState))
+    getAppStorage().saveState(nextState)
   })
 
   ipcMain.handle('store:savePartial', async (_, patch: unknown) => {
     if (!isAppStatePatch(patch)) throw new Error('Invalid app state patch payload')
-    const current = normalizeAppState(appStore.get('appState'))
-    appStore.set('appState', mergeAppState(current, patch))
+    getAppStorage().savePartial(patch)
   })
 
   ipcMain.handle('ui:getZoomFactor', (event) => senderWindow(event).webContents.getZoomFactor())
@@ -314,7 +156,7 @@ app.whenReady().then(() => {
     optimizer.watchWindowShortcuts(window)
   })
 
-  appStore.set('appState', normalizeAppState(appStore.get('appState')))
+  appStorage = createSqliteAppStorage(join(app.getPath('userData'), 'swag-todo.db'))
   registerIpcHandlers()
   createWindow()
 
@@ -325,4 +167,9 @@ app.whenReady().then(() => {
 
 app.on('window-all-closed', () => {
   if (!IS_MAC) app.quit()
+})
+
+app.on('before-quit', () => {
+  appStorage?.close()
+  appStorage = null
 })

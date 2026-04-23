@@ -147,22 +147,29 @@ export default function KanbanBoard(props: KanbanBoardProps): React.JSX.Element 
     if (!draftColumnTaskIds) return columns
 
     return {
-      todo: draftColumnTaskIds.todo.map((id) => taskById.get(id)).filter((task): task is Task => !!task),
+      todo: draftColumnTaskIds.todo
+        .map((id) => taskById.get(id))
+        .filter((task): task is Task => !!task),
       in_progress: draftColumnTaskIds.in_progress
         .map((id) => taskById.get(id))
         .filter((task): task is Task => !!task),
-      done: draftColumnTaskIds.done.map((id) => taskById.get(id)).filter((task): task is Task => !!task)
+      done: draftColumnTaskIds.done
+        .map((id) => taskById.get(id))
+        .filter((task): task is Task => !!task)
     }
   }, [columns, draftColumnTaskIds, taskById])
 
   const activeTask = activeTaskId ? taskById.get(activeTaskId) : undefined
 
-  const onDragStart = useCallback((event: DragStartEvent): void => {
-    setActiveTaskId(String(event.active.id))
-    setDraftColumnTaskIds(cloneColumnTaskIds(committedColumnTaskIds))
-    const rect = event.active.rect.current.initial
-    setActiveTaskSize(rect ? { width: rect.width, height: rect.height } : null)
-  }, [committedColumnTaskIds])
+  const onDragStart = useCallback(
+    (event: DragStartEvent): void => {
+      setActiveTaskId(String(event.active.id))
+      setDraftColumnTaskIds(cloneColumnTaskIds(committedColumnTaskIds))
+      const rect = event.active.rect.current.initial
+      setActiveTaskSize(rect ? { width: rect.width, height: rect.height } : null)
+    },
+    [committedColumnTaskIds]
+  )
 
   const onDragOver = useCallback(
     (event: DragOverEvent): void => {
@@ -198,7 +205,7 @@ export default function KanbanBoard(props: KanbanBoardProps): React.JSX.Element 
       const baseColumns = draftColumnTaskIds ?? committedColumnTaskIds
       const nextColumns =
         overId != null
-          ? getProjectedColumns({
+          ? (getProjectedColumns({
               activeId,
               overId,
               columns: baseColumns,
@@ -206,7 +213,7 @@ export default function KanbanBoard(props: KanbanBoardProps): React.JSX.Element 
               translatedTop: event.active.rect.current.translated?.top,
               overTop: event.over?.rect.top,
               overHeight: event.over?.rect.height
-            }) ?? baseColumns
+            }) ?? baseColumns)
           : baseColumns
 
       setDraftColumnTaskIds(null)
