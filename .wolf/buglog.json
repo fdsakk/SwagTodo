@@ -324,6 +324,18 @@
       "related_bugs": [],
       "occurrences": 1,
       "last_seen": "2026-04-23T18:10:00+02:00"
+    },
+    {
+      "id": "bug-028",
+      "timestamp": "2026-04-23T19:43:45+02:00",
+      "error_message": "Node test runtime zgłaszał `window is not defined` po włączeniu automatycznej hydracji Zustand store przy imporcie renderer store.",
+      "file": "src/renderer/src/store/domain/domainStore.ts",
+      "root_cause": "Persist middleware auto-uruchamiał `rehydrate()` także w środowisku Node, gdzie `persistedStorage.getItem()` dotyka `window.api` i kończy się unhandled rejection.",
+      "fix": "Dodałem `skipHydration: typeof window === 'undefined'` dla store domenowego i zostawiłem automatyczną hydrację tylko w rendererze przeglądarkowym.",
+      "tags": ["zustand", "persist", "hydration", "node-test", "window"],
+      "related_bugs": [],
+      "occurrences": 1,
+      "last_seen": "2026-04-23T19:43:45+02:00"
     }
   ]
 }

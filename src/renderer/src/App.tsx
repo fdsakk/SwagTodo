@@ -17,11 +17,10 @@ import { useKeyboardShortcuts } from '@renderer/hooks/useKeyboardShortcuts'
 import { useShallow } from 'zustand/react/shallow'
 import { UI_SCALE_OPTIONS } from '@renderer/types'
 import { useDomainStore, useUiStore } from '@renderer/store'
-import { hydrateDomainStore } from '@renderer/store/bootstrap'
+import { cn } from '@renderer/utils/cn'
 
 function App(): React.JSX.Element {
   const [isFullScreen, setIsFullScreen] = useState(false)
-  const [hydrated, setHydrated] = useState(() => useDomainStore.persist.hasHydrated())
 
   useEffect(() => {
     const windowApi = window.api?.window
@@ -32,72 +31,46 @@ function App(): React.JSX.Element {
 
   const {
     selectedView,
-    closeTaskPanel,
-    openCreatePanelForCurrentView,
-    openCreateProjectPanel,
-    openEditProjectPanel,
-    triggerSearchFocus,
-    selectInbox,
-    selectToday,
-    selectActivity,
-    selectSessions,
-    selectSettings,
-    selectHealth,
-    selectProject,
-    setProjectTab
+    actions: {
+      closeTaskPanel,
+      openCreatePanelForCurrentView,
+      openCreateProjectPanel,
+      openEditProjectPanel,
+      triggerSearchFocus,
+      selectInbox,
+      selectToday,
+      selectActivity,
+      selectSessions,
+      selectSettings,
+      selectHealth,
+      selectProject,
+      setProjectTab
+    }
   } = useUiStore(
     useShallow((state) => ({
       selectedView: state.selectedView,
-      closeTaskPanel: state.closeTaskPanel,
-      openCreatePanelForCurrentView: state.openCreatePanelForCurrentView,
-      openCreateProjectPanel: state.openCreateProjectPanel,
-      openEditProjectPanel: state.openEditProjectPanel,
-      triggerSearchFocus: state.triggerSearchFocus,
-      selectInbox: state.selectInbox,
-      selectToday: state.selectToday,
-      selectActivity: state.selectActivity,
-      selectSessions: state.selectSessions,
-      selectSettings: state.selectSettings,
-      selectHealth: state.selectHealth,
-      selectProject: state.selectProject,
-      setProjectTab: state.setProjectTab
+      actions: state.actions
     }))
   )
   const {
+    hydrated,
     uiScale,
     labels,
-    addLabel,
-    updateLabel,
-    deleteLabel,
     projects,
-    toggleSidebar,
-    setUiScale
+    actions: { addLabel, updateLabel, deleteLabel, toggleSidebar, setUiScale }
   } = useDomainStore(
     useShallow((state) => ({
+      hydrated: state.hydrated,
       uiScale: state.uiScale,
       labels: state.labels,
-      addLabel: state.addLabel,
-      updateLabel: state.updateLabel,
-      deleteLabel: state.deleteLabel,
       projects: state.projects,
-      toggleSidebar: state.toggleSidebar,
-      setUiScale: state.setUiScale
+      actions: state.actions
     }))
   )
 
   const [labelModalOpen, setLabelModalOpen] = useState(false)
   const [helpOpen, setHelpOpen] = useState(false)
   const [projectPickerOpen, setProjectPickerOpen] = useState(false)
-
-  useEffect(() => {
-    let cancelled = false
-    void hydrateDomainStore().finally(() => {
-      if (!cancelled) setHydrated(true)
-    })
-    return () => {
-      cancelled = true
-    }
-  }, [])
 
   useEffect(() => {
     if (!hydrated || !window.api?.ui) return
@@ -140,11 +113,17 @@ function App(): React.JSX.Element {
   if (!hydrated) {
     return (
       <div
-        className={`flex h-full flex-col overflow-hidden bg-[#070708] px-[2px] pb-[2px] ring-1 ring-white/5${isFullScreen ? '' : ' rounded-xl'}`}
+        className={cn(
+          'flex h-full flex-col overflow-hidden bg-[#070708] px-[2px] pb-[2px] ring-1 ring-white/5',
+          !isFullScreen && 'rounded-xl'
+        )}
       >
         <TitleBar />
         <div
-          className={`flex flex-1 items-center justify-center overflow-hidden bg-app-bg text-sm text-app-text-muted${isFullScreen ? '' : ' rounded-b-[10px]'}`}
+          className={cn(
+            'flex flex-1 items-center justify-center overflow-hidden bg-app-bg text-sm text-app-text-muted',
+            !isFullScreen && 'rounded-b-[10px]'
+          )}
         >
           Loading workspace...
         </div>
@@ -154,12 +133,18 @@ function App(): React.JSX.Element {
 
   return (
     <div
-      className={`flex h-full flex-col overflow-hidden bg-app-titlebar px-2 pb-2${isFullScreen ? '' : ' rounded-xl'}`}
+      className={cn(
+        'flex h-full flex-col overflow-hidden bg-app-titlebar px-2 pb-2',
+        !isFullScreen && 'rounded-xl'
+      )}
     >
       <ThemeProvider />
       <TitleBar />
       <div
-        className={`relative flex min-h-0 flex-1 overflow-hidden bg-app-bg${isFullScreen ? '' : ' rounded-lg'}`}
+        className={cn(
+          'relative flex min-h-0 flex-1 overflow-hidden bg-app-bg',
+          !isFullScreen && 'rounded-lg'
+        )}
       >
         <Sidebar
           onOpenLabelModal={() => setLabelModalOpen(true)}
@@ -171,13 +156,14 @@ function App(): React.JSX.Element {
             selectedView !== 'settings' &&
             selectedView !== 'health' && <SearchSortBar />}
           <div
-            className={
+            className={cn(
+              'min-h-0 flex-1',
               selectedView === 'sessions' ||
-              selectedView === 'settings' ||
-              selectedView === 'health'
-                ? 'min-h-0 flex-1 overflow-y-auto'
-                : 'min-h-0 flex-1 mt-4 '
-            }
+                selectedView === 'settings' ||
+                selectedView === 'health'
+                ? 'overflow-y-auto'
+                : 'mt-4'
+            )}
           >
             {selectedView === 'inbox' && <InboxPage />}
             {selectedView === 'today' && <TodayPage />}

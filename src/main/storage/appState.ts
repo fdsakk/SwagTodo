@@ -1,5 +1,15 @@
 import { DEFAULT_UI_SCALE, UI_SCALE_OPTIONS } from '../../shared/defaults'
+import {
+  labelSchema,
+  medicationSchema,
+  projectSchema,
+  sessionSchema,
+  sharedAppearanceSchema,
+  taskSchema,
+  timeBlockSchema
+} from '../../shared/stateSchema'
 import { type AppState, type AppearanceSettings, type Task, type UiScale } from '../../shared/types'
+import { z } from 'zod'
 
 const UI_SCALE_SET: ReadonlySet<number> = new Set(UI_SCALE_OPTIONS)
 
@@ -38,23 +48,24 @@ const isEntityWithSafeId = (item: unknown): boolean =>
 const isValidEntityArray = (v: unknown): v is unknown[] =>
   Array.isArray(v) && v.every(isEntityWithSafeId)
 
-const isStringRecord = (v: unknown): v is Record<string, string> =>
-  !!v &&
-  typeof v === 'object' &&
-  !Array.isArray(v) &&
-  Object.values(v as object).every((x) => typeof x === 'string')
+const appStateSchema = z
+  .object({
+    tasks: z.array(taskSchema).catch([]),
+    projects: z.array(projectSchema).catch([]),
+    labels: z.array(labelSchema).catch([]),
+    sessions: z.array(sessionSchema).catch([]),
+    timeBlocks: z.array(timeBlockSchema).catch([]),
+    medications: z.array(medicationSchema).catch([]),
+    pkSettings: z.unknown().optional(),
+    uiScale: z.number().refine(isUiScale).optional().catch(DEFAULT_UI_SCALE),
+    isSidebarCollapsed: z.boolean().optional().catch(false),
+    appearance: sharedAppearanceSchema.optional().catch(undefined)
+  })
+  .passthrough()
 
 export const normalizeAppearance = (raw: unknown): AppearanceSettings | undefined => {
-  if (!raw || typeof raw !== 'object') return undefined
-  const appearance = raw as Partial<AppearanceSettings>
-  if (typeof appearance.themeId !== 'string') return undefined
-  if (appearance.customTokens !== undefined && !isStringRecord(appearance.customTokens)) {
-    return undefined
-  }
-  return {
-    themeId: appearance.themeId,
-    customTokens: appearance.customTokens ?? {}
-  }
+  const parsed = sharedAppearanceSchema.safeParse(raw)
+  return parsed.success ? parsed.data : undefined
 }
 
 const normalizeTask = (task: Task): Task => {
@@ -68,23 +79,20 @@ const normalizeTask = (task: Task): Task => {
 }
 
 export const normalizeAppState = (state: unknown): AppState => {
-  const data = state && typeof state === 'object' ? (state as Partial<AppState>) : {}
+  const data = appStateSchema.parse(state ?? {})
   const next: AppState = {
-    tasks: Array.isArray(data.tasks) ? data.tasks.map((task) => normalizeTask(task)) : [],
-    projects: Array.isArray(data.projects) ? data.projects : [],
-    labels: Array.isArray(data.labels) ? data.labels : [],
-    sessions: Array.isArray(data.sessions) ? data.sessions : [],
-    timeBlocks: Array.isArray(data.timeBlocks) ? data.timeBlocks : [],
-    medications: Array.isArray(data.medications) ? data.medications : [],
-    uiScale: isUiScale(data.uiScale) ? data.uiScale : DEFAULT_UI_SCALE,
-    isSidebarCollapsed:
-      typeof data.isSidebarCollapsed === 'boolean' ? data.isSidebarCollapsed : false
+    tasks: data.tasks.map(normalizeTask),
+    projects: data.projects,
+    labels: data.labels,
+    sessions: data.sessions,
+    timeBlocks: data.timeBlocks,
+    medications: data.medications,
+    uiScale: data.uiScale ?? DEFAULT_UI_SCALE,
+    isSidebarCollapsed: data.isSidebarCollapsed ?? false
   }
 
   if ('pkSettings' in data) next.pkSettings = data.pkSettings
-
-  const appearance = normalizeAppearance(data.appearance)
-  if (appearance) next.appearance = appearance
+  if (data.appearance) next.appearance = data.appearance
 
   return next
 }

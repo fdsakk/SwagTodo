@@ -12,21 +12,32 @@ import { createInitialDomainState } from './state'
 
 export const useDomainStore = create<DomainStore>()(
   persist(
-    (set, get): DomainStore => ({
-      ...createInitialDomainState(),
-      ...createSettingsActions(set),
-      ...createTaskActions(set, get),
-      ...createProjectActions(set),
-      ...createLabelActions(set),
-      ...createSessionActions(set, get),
-      ...createHealthActions(set)
-    }),
+    (set, get): DomainStore => {
+      const actions = {
+        ...createSettingsActions(set),
+        ...createTaskActions(set, get),
+        ...createProjectActions(set),
+        ...createLabelActions(set),
+        ...createSessionActions(set, get),
+        ...createHealthActions(set)
+      }
+
+      return {
+        ...createInitialDomainState(),
+        ...actions,
+        actions
+      }
+    },
     {
       name: 'app-state',
       version: 1,
       storage: persistedStorage,
       partialize: pickPersistedState,
-      skipHydration: true
+      skipHydration: typeof window === 'undefined',
+      onRehydrateStorage: () => (_state, error) => {
+        if (error) console.error('[store] domain rehydrate failed', error)
+        useDomainStore.setState({ hydrated: true })
+      }
     }
   )
 )

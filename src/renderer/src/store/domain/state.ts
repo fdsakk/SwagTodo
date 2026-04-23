@@ -11,5 +11,6 @@ export const createInitialDomainState = (): DomainState => ({
   pkSettings: DEFAULT_PK_SETTINGS,
   uiScale: UI_SCALE_OPTIONS[0],
   isSidebarCollapsed: true,
-  appearance: DEFAULT_APPEARANCE
+  appearance: DEFAULT_APPEARANCE,
+  hydrated: false
 })

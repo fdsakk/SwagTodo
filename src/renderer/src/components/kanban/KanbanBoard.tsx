@@ -121,16 +121,13 @@ export default function KanbanBoard(props: KanbanBoardProps): React.JSX.Element 
 
   const labelMap = useMemo(() => {
     const m = new Map<string, Label>()
-    for (let i = 0; i < props.labels.length; i++) m.set(props.labels[i].id, props.labels[i])
+    for (const label of props.labels) m.set(label.id, label)
     return m
   }, [props.labels])
 
   const columns = useMemo<Record<TaskStatus, Task[]>>(() => {
     const buckets: Record<TaskStatus, Task[]> = { todo: [], in_progress: [], done: [] }
-    for (let i = 0; i < props.tasks.length; i++) {
-      const t = props.tasks[i]
-      buckets[t.status].push(t)
-    }
+    for (const task of props.tasks) buckets[task.status].push(task)
     buckets.todo.sort(byOrderAsc)
     buckets.in_progress.sort(byOrderAsc)
     buckets.done.sort(byOrderAsc)
@@ -139,7 +136,7 @@ export default function KanbanBoard(props: KanbanBoardProps): React.JSX.Element 
 
   const taskById = useMemo(() => {
     const m = new Map<string, Task>()
-    for (let i = 0; i < props.tasks.length; i++) m.set(props.tasks[i].id, props.tasks[i])
+    for (const task of props.tasks) m.set(task.id, task)
     return m
   }, [props.tasks])
   const committedColumnTaskIds = useMemo(() => buildColumnTaskIds(columns), [columns])

@@ -23,10 +23,14 @@ const localUiStorage: StateStorage = {
 
 export const useUiStore = create<UiStore>()(
   persist(
-    (set, get) => ({
-      ...createInitialUiState(),
-      ...createUiActions(set, get)
-    }),
+    (set, get) => {
+      const actions = createUiActions(set, get)
+      return {
+        ...createInitialUiState(),
+        ...actions,
+        actions
+      }
+    },
     {
       name: UI_STORE_PERSIST_KEY,
       storage: createJSONStorage(() => localUiStorage),

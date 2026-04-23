@@ -31,16 +31,23 @@ const createTask = (
 })
 
 const createDomainTestStore = (preloaded: Partial<DomainState> = {}) =>
-  createStore<DomainStore>()((set, get) => ({
-    ...createInitialDomainState(),
-    ...preloaded,
-    ...createSettingsActions(set),
-    ...createTaskActions(set, get),
-    ...createProjectActions(set),
-    ...createLabelActions(set),
-    ...createSessionActions(set, get),
-    ...createHealthActions(set)
-  }))
+  createStore<DomainStore>()((set, get) => {
+    const actions = {
+      ...createSettingsActions(set),
+      ...createTaskActions(set, get),
+      ...createProjectActions(set),
+      ...createLabelActions(set),
+      ...createSessionActions(set, get),
+      ...createHealthActions(set)
+    }
+
+    return {
+      ...createInitialDomainState(),
+      ...preloaded,
+      ...actions,
+      actions
+    }
+  })
 
 test('updateTask preserves task array reference on no-op patches', () => {
   const task = createTask()

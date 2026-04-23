@@ -86,6 +86,7 @@ export interface DomainState {
   uiScale: UiScale
   isSidebarCollapsed: boolean
   appearance: AppearanceSettings
+  hydrated: boolean
 }
 
 export interface DomainActions {
@@ -158,6 +159,14 @@ export interface UiActions {
   closeTaskPanel: () => void
 }
 
+export interface DomainStoreMeta {
+  actions: DomainActions
+}
+
+export interface UiStoreMeta {
+  actions: UiActions
+}
+
 export type PersistedDomainState = Pick<
   DomainState,
   | 'tasks'
@@ -172,8 +181,8 @@ export type PersistedDomainState = Pick<
   | 'appearance'
 >
 
-export type DomainStore = DomainState & DomainActions
-export type UiStore = UiState & UiActions
+export type DomainStore = DomainState & DomainActions & DomainStoreMeta
+export type UiStore = UiState & UiActions & UiStoreMeta
 
 export type DomainStoreSet = StoreApi<DomainStore>['setState']
 export type DomainStoreGet = StoreApi<DomainStore>['getState']

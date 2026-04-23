@@ -16,6 +16,7 @@
 - `electron-builder.yml` (~419 tok)
 - `electron.vite.config.ts` (~90 tok)
 - `eslint.config.mjs` — ESLint flat configuration (~356 tok)
+- `improvements.md` — Review checklist with requested cleanup/refactor items across App, Zustand, Kanban, and SQLite (~1192 tok)
 - `package.json` — Node.js package manifest (~909 tok)
 - `postcss.config.cjs` — PostCSS configuration (~22 tok)
 - `prompt.md` — Prompt For Next Agent (~859 tok)
@@ -257,4 +258,5 @@
 ## src/shared/
 
 - `defaults.ts` — Exports DEFAULT_UI_SCALE (~43 tok)
+- `stateSchema.ts` — Shared Zod schemas for normalized tasks/projects/labels/sessions/time blocks/medications/appearance (~1130 tok)
 - `types.ts` — Exports Priority, TaskStatus, UI_SCALE_OPTIONS, UiScale + 10 more (~482 tok)

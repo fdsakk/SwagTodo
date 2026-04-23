@@ -83,6 +83,11 @@ type StoredSettingRow = { key: string; value: string }
 
 type LegacyElectronStore = { appState?: unknown }
 
+type StoredTaskAggregateRow = StoredTaskRow & {
+  subtasks_json: string
+  labels_json: string
+}
+
 export interface SqliteStateSnapshot {
   tasks: StoredTaskRow[]
   taskSubtasks: StoredSubTaskRow[]
@@ -201,17 +206,51 @@ const parseSetting = <T>(
   if (raw === undefined) return undefined
   try {
     return JSON.parse(raw) as T
-  } catch {
+  } catch (error) {
+    console.error('[storage] failed to parse SQLite setting', { key, error })
     return undefined
   }
 }
+
+const parseJsonArray = <T>(raw: string, fallback: T[], context: string): T[] => {
+  try {
+    const parsed = JSON.parse(raw) as unknown
+    return Array.isArray(parsed) ? (parsed as T[]) : fallback
+  } catch (error) {
+    console.error(`[storage] failed to parse ${context}`, error)
+    return fallback
+  }
+}
+
+const inflateTaskRows = (rows: StoredTaskAggregateRow[]): Task[] =>
+  rows.map((task) => ({
+    id: task.id,
+    title: task.title,
+    description: task.description ?? undefined,
+    priority: task.priority,
+    dueDate: task.due_date ?? undefined,
+    projectId: task.project_id ?? undefined,
+    labels: parseJsonArray<string>(task.labels_json, [], `task labels for ${task.id}`),
+    completed: Boolean(task.completed),
+    status: task.status,
+    completedAt: task.completed_at ?? undefined,
+    createdAt: task.created_at,
+    updatedAt: task.updated_at,
+    order: task.sort_order,
+    subTasks: parseJsonArray<Task['subTasks'][number]>(
+      task.subtasks_json,
+      [],
+      `task subtasks for ${task.id}`
+    )
+  }))
 
 export const parseLegacyElectronStore = (raw: string): AppState | null => {
   try {
     const parsed = JSON.parse(raw) as LegacyElectronStore
     if (!parsed || typeof parsed !== 'object' || !('appState' in parsed)) return null
     return normalizeAppState(parsed.appState)
-  } catch {
+  } catch (error) {
+    console.error('[storage] failed to parse legacy electron-store payload', error)
     return null
   }
 }
@@ -223,7 +262,15 @@ const readLegacyElectronStore = (dbPath: string): AppState | null => {
     const filePath = join(userDataDir, fileName)
     if (!existsSync(filePath)) continue
 
-    const state = parseLegacyElectronStore(readFileSync(filePath, 'utf8'))
+    let raw = ''
+    try {
+      raw = readFileSync(filePath, 'utf8')
+    } catch (error) {
+      console.error('[storage] failed to read legacy electron-store file', { filePath, error })
+      continue
+    }
+
+    const state = parseLegacyElectronStore(raw)
     if (!state) continue
 
     console.info('[storage] migrated legacy electron-store data', { from: filePath, to: dbPath })
@@ -498,15 +545,36 @@ export class SqliteAppStorage {
     this.db = new Database(path)
     this.db.exec(SCHEMA)
 
-    const selectTasks = this.db.prepare<[], StoredTaskRow>(
-      'SELECT * FROM tasks ORDER BY position ASC'
-    )
-    const selectTaskSubtasks = this.db.prepare<[], StoredSubTaskRow>(
-      'SELECT * FROM task_subtasks ORDER BY task_id ASC, position ASC'
-    )
-    const selectTaskLabels = this.db.prepare<[], StoredTaskLabelRow>(
-      'SELECT * FROM task_labels ORDER BY task_id ASC, position ASC'
-    )
+    const selectTasks = this.db.prepare<[], StoredTaskAggregateRow>(`
+      SELECT
+        tasks.*,
+        COALESCE((
+          SELECT json_group_array(
+            json_object(
+              'id', ordered_subtasks.id,
+              'title', ordered_subtasks.title,
+              'completed', ordered_subtasks.completed
+            )
+          )
+          FROM (
+            SELECT id, title, completed
+            FROM task_subtasks
+            WHERE task_id = tasks.id
+            ORDER BY position ASC
+          ) AS ordered_subtasks
+        ), '[]') AS subtasks_json,
+        COALESCE((
+          SELECT json_group_array(ordered_labels.label_id)
+          FROM (
+            SELECT label_id
+            FROM task_labels
+            WHERE task_id = tasks.id
+            ORDER BY position ASC
+          ) AS ordered_labels
+        ), '[]') AS labels_json
+      FROM tasks
+      ORDER BY position ASC
+    `)
     const selectProjects = this.db.prepare<[], StoredProjectRow>(
       'SELECT * FROM projects ORDER BY position ASC'
     )
@@ -524,18 +592,57 @@ export class SqliteAppStorage {
     )
     const selectSettings = this.db.prepare<[], StoredSettingRow>('SELECT * FROM settings')
 
-    const readStateFromDb = (): AppState =>
-      deserializeAppState({
-        tasks: selectTasks.all(),
-        taskSubtasks: selectTaskSubtasks.all(),
-        taskLabels: selectTaskLabels.all(),
-        projects: selectProjects.all(),
-        labels: selectLabels.all(),
-        sessions: selectSessions.all(),
-        timeBlocks: selectTimeBlocks.all(),
-        medications: selectMedications.all(),
-        settings: selectSettings.all()
+    const readStateFromDb = (): AppState => {
+      const settings = new Map<string, string>(
+        selectSettings.all().map((row): [string, string] => [row.key, row.value])
+      )
+
+      return normalizeAppState({
+        ...defaultAppState,
+        tasks: inflateTaskRows(selectTasks.all()),
+        projects: selectProjects.all().map((project) => ({
+          id: project.id,
+          name: project.name,
+          color: project.color,
+          emoji: project.emoji ?? undefined,
+          description: project.description ?? undefined,
+          createdAt: project.created_at
+        })),
+        labels: selectLabels.all().map((label) => ({
+          id: label.id,
+          name: label.name,
+          color: label.color
+        })),
+        sessions: selectSessions.all().map((session) => ({
+          id: session.id,
+          taskId: session.task_id,
+          projectId: session.project_id,
+          startAt: session.start_at,
+          endAt: session.end_at,
+          createdAt: session.created_at,
+          updatedAt: session.updated_at
+        })),
+        timeBlocks: selectTimeBlocks.all().map((timeBlock) => ({
+          id: timeBlock.id,
+          label: timeBlock.label,
+          startAt: timeBlock.start_at,
+          endAt: timeBlock.end_at,
+          createdAt: timeBlock.created_at
+        })),
+        medications: selectMedications.all().map((medication) => ({
+          id: medication.id,
+          medId: medication.med_id,
+          medName: medication.med_name,
+          dose: medication.dose,
+          takenAt: medication.taken_at,
+          createdAt: medication.created_at
+        })),
+        pkSettings: parseSetting(settings, 'pkSettings'),
+        uiScale: parseSetting(settings, 'uiScale'),
+        isSidebarCollapsed: parseSetting(settings, 'isSidebarCollapsed'),
+        appearance: parseSetting(settings, 'appearance')
       })
+    }
 
     // ── upsert / delta-delete statements ──────────────────────────────────────
     const upsertTask = this.db.prepare(`

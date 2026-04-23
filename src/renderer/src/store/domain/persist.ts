@@ -6,10 +6,19 @@ import {
   type AppState,
   type PkSettings
 } from '@renderer/types'
+import {
+  labelSchema,
+  medicationSchema,
+  projectSchema,
+  sessionSchema,
+  taskSchema,
+  timeBlockSchema
+} from '../../../../shared/stateSchema'
 import { normalizeStoredTask } from '../shared/normalize'
 import type { DomainState, PersistedDomainState } from '../shared/types'
 import { isUiScale } from '../shared/utils'
 import { createInitialDomainState } from './state'
+import { z } from 'zod'
 
 const defaultPersistedState = pickPersistedState(createInitialDomainState())
 
@@ -34,26 +43,39 @@ const normalizePkSettings = (raw: unknown): PkSettings => {
   return defaults
 }
 
+const persistedDomainSchema = z
+  .object({
+    tasks: z.array(taskSchema.or(z.unknown().transform(normalizeStoredTask))).catch([]),
+    projects: z.array(projectSchema).catch([]),
+    labels: z.array(labelSchema).catch([]),
+    sessions: z.array(sessionSchema).catch([]),
+    timeBlocks: z.array(timeBlockSchema).catch([]),
+    medications: z.array(medicationSchema).catch([]),
+    pkSettings: z.unknown().optional(),
+    uiScale: z.number().refine(isUiScale).optional().catch(defaultPersistedState.uiScale),
+    isSidebarCollapsed: z.boolean().optional().catch(defaultPersistedState.isSidebarCollapsed),
+    appearance: z.unknown().optional()
+  })
+  .passthrough()
+
 export const stateFromPersisted = (persisted: unknown): PersistedDomainState => {
-  const data =
+  const data = persistedDomainSchema.parse(
     persisted && typeof persisted === 'object'
       ? (persisted as Partial<AppState> & { appearance?: unknown })
       : {}
+  )
 
   return {
     ...defaultPersistedState,
-    tasks: Array.isArray(data.tasks) ? data.tasks.map((task) => normalizeStoredTask(task)) : [],
-    projects: Array.isArray(data.projects) ? data.projects : [],
-    labels: Array.isArray(data.labels) ? data.labels : [],
-    sessions: Array.isArray(data.sessions) ? data.sessions : [],
-    timeBlocks: Array.isArray(data.timeBlocks) ? data.timeBlocks : [],
-    medications: Array.isArray(data.medications) ? data.medications : [],
+    tasks: data.tasks,
+    projects: data.projects,
+    labels: data.labels,
+    sessions: data.sessions,
+    timeBlocks: data.timeBlocks,
+    medications: data.medications,
     pkSettings: normalizePkSettings(data.pkSettings),
-    uiScale: isUiScale(data.uiScale) ? data.uiScale : defaultPersistedState.uiScale,
-    isSidebarCollapsed:
-      typeof data.isSidebarCollapsed === 'boolean'
-        ? data.isSidebarCollapsed
-        : defaultPersistedState.isSidebarCollapsed,
+    uiScale: data.uiScale ?? defaultPersistedState.uiScale,
+    isSidebarCollapsed: data.isSidebarCollapsed ?? defaultPersistedState.isSidebarCollapsed,
     appearance: normalizeAppearance(data.appearance ?? DEFAULT_APPEARANCE)
   }
 }
