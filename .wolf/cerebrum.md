@@ -13,6 +13,9 @@
 - Each component subfolder has an `index.tsx` barrel that re-exports everything from that folder.
 - Public app name is `Swag Todo`; use in docs and UI-facing metadata. Bun is the package manager; use `bun install` / `bun run <script>`.
 - When user asks to execute review/improvement list, resolve every listed item fully; do not stop at cosmetic cleanup or partial shortcuts.
+- User wants terse caveman responses in this session; keep technical substance, drop fluff.
+- User prefers Geist Sans for app UI font.
+- For theme polish, keep existing vibe and nudge colors toward better harmony instead of full redesign.
 
 ## Key Learnings
 

@@ -67,7 +67,7 @@ export default {
         sm: 'calc(var(--radius) - 4px)'
       },
       fontFamily: {
-        sans: ['Inter', 'system-ui', 'sans-serif']
+        sans: ['Geist Sans', 'system-ui', 'sans-serif']
       },
       transitionDuration: {
         150: '150ms',
