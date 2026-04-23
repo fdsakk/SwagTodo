@@ -1,5 +1,6 @@
 import { useMemo } from 'react'
 import type { Label, Project, TaskGroup } from '@renderer/types'
+import { Badge } from '@renderer/components/ui/badge'
 import { TaskRow } from './TaskRow'
 
 interface TaskListProps {
@@ -37,12 +38,14 @@ export function TaskList(props: TaskListProps): React.JSX.Element {
 
   return (
     <div className="h-full overflow-y-auto px-4 pb-6">
-      <div className="space-y-6">
+      <div className="flex flex-col gap-6">
         {props.groups.map((group) =>
           group.tasks.length > 0 ? (
-            <section key={group.id}>
-              <h3 className="mb-1 px-2 text-xs font-medium text-app-text-muted">{group.title}</h3>
-              <ul>
+            <section className="flex flex-col gap-2" key={group.id}>
+              <Badge className="w-fit px-2.5 py-1 rounded-md" variant="outline">
+                {group.title}
+              </Badge>
+              <ul className="flex flex-col gap-2">
                 {group.tasks.map((task) => {
                   const index = rowIndex++
                   const labels = task.labels

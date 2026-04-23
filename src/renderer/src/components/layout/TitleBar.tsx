@@ -51,7 +51,7 @@ export function TitleBar(): React.JSX.Element | null {
 
   return (
     <div
-      className="flex h-8 shrink-0 items-center justify-between select-none px-2.5 z-50"
+      className="flex h-7 shrink-0 items-center justify-between select-none px-2.5 z-50"
       style={{ WebkitAppRegion: 'drag' } as React.CSSProperties}
     >
       <span className="text-sm text-app-text-secondary ml-2">😎</span>

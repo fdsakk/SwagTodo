@@ -163,18 +163,18 @@ function ColorTokenCard({
   return (
     <div className="rounded-lg border border-app-border bg-app-card p-3">
       <ColorPickerPopover label={label} hex={hex} onChange={onChange} />
-      <div className="mt-2.5 flex items-center justify-between gap-2">
+      <div className="mt-2.5 flex items-end justify-between gap-2">
         <div className="min-w-0">
           <p className="truncate text-xs font-medium text-app-text">{label}</p>
-          <p className="mt-0.5 truncate text-[11px] text-app-text-muted">{tokenKey}</p>
+          <p className="text-xs text-app-text-muted">{hex}</p>
+          
         </div>
         <div className="flex items-center gap-2">
-          <span className="text-xs text-app-text-secondary">{hex}</span>
           {isCustom && (
             <button
               type="button"
               onClick={onReset}
-              className="rounded-md border border-app-border px-2 py-1 text-[11px] text-app-text-secondary hover:text-app-text transition-colors"
+              className="rounded-md border border-app-border px-2 py-1 text-xs text-app-text-secondary hover:text-app-text transition-colors"
               aria-label={`Reset ${label}`}
             >
               Reset
@@ -256,10 +256,10 @@ export function CustomizeSection({
         <div className="space-y-4">
           {TOKEN_GROUPS.map(({ id, title, keys }) => (
             <div key={id} className="space-y-2">
-              <h3 className="text-xs font-semibold uppercase tracking-wide text-app-text-secondary">
+              <h3 className="text-xs font-semibold text-app-text-secondary">
                 {title}
               </h3>
-              <div className="grid gap-2 grid-cols-2 lg:grid-cols-3 xl:grid-cols-5">
+              <div className="grid gap-2 grid-cols-5 xl:grid-cols-7">
                 {keys.map((key) => {
                   const hex = colorToHex(resolved[key])
                   const isCustom = Boolean(customTokens[key])

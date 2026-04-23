@@ -3,6 +3,7 @@ import { Flag } from 'lucide-react'
 import { AnimatedCheckbox } from './animated-checkbox'
 import { SubtaskProgressRing } from './subtask-progress-ring'
 import type { Label, Project, Task } from '@renderer/types'
+import { Item } from '@renderer/components/ui/item'
 import { isTaskOverdue } from '@renderer/store'
 import { PRIORITY_META, formatDueDate } from '@renderer/utils/task'
 import { cn } from '@renderer/utils/cn'
@@ -51,53 +52,56 @@ function TaskRowBase(props: TaskRowProps): React.JSX.Element {
   }
 
   return (
-    <li
-      className={cn(
-        'group flex cursor-pointer items-center gap-3 border-b border-app-border pl-2.5 pr-4 py-2.5 transition-colors hover:bg-app-hover',
-        props.task.completed && 'opacity-40'
-      )}
-      onClick={() => props.onOpen(props.task.id)}
-    >
-      <div onClick={(e) => e.stopPropagation()}>
-        <AnimatedCheckbox
-          checked={props.task.completed}
-          onCheckedChange={() => props.onToggleComplete(props.task.id)}
-        />
-      </div>
-
-      <div className="min-w-0 flex-1">
-        <div
-          className={cn(
-            'truncate text-sm leading-snug text-app-text',
-            props.task.completed && 'line-through text-app-text-muted'
-          )}
-        >
-          {props.task.title}
+    <li>
+      <Item
+        className={cn(
+          'group flex cursor-pointer items-center gap-3.5 px-3.5 py-2.5',
+          props.task.completed && 'opacity-40'
+        )}
+        onClick={() => props.onOpen(props.task.id)}
+        variant="muted"
+      >
+        <div onClick={(e) => e.stopPropagation()}>
+          <AnimatedCheckbox
+            checked={props.task.completed}
+            onCheckedChange={() => props.onToggleComplete(props.task.id)}
+          />
         </div>
 
-        {metaParts.length > 0 && (
-          <div className="mt-1 flex flex-wrap items-center gap-x-1.5 gap-y-1 text-xs text-app-text-muted">
-            {metaParts.map((part, index) => (
-              <Fragment key={index}>
-                {index > 0 && <span>·</span>}
-                {part}
-              </Fragment>
-            ))}
+        <div className="min-w-0 flex-1">
+          <div
+            className={cn(
+              'truncate text-sm leading-snug text-app-text',
+              props.task.completed && 'line-through text-app-text-muted'
+            )}
+          >
+            {props.task.title}
           </div>
+
+          {metaParts.length > 0 && (
+            <div className="mt-1 flex flex-wrap items-center gap-x-1.5 gap-y-1 text-xs text-app-text-muted">
+              {metaParts.map((part, index) => (
+                <Fragment key={index}>
+                  {index > 0 && <span>·</span>}
+                  {part}
+                </Fragment>
+              ))}
+            </div>
+          )}
+        </div>
+
+        {showFlag && (
+          <Flag
+            aria-label={priorityMeta.label}
+            className="shrink-0"
+            fill={priorityMeta.color}
+            size={18}
+            style={{ color: priorityMeta.color }}
+          />
         )}
-      </div>
 
-      {showFlag && (
-        <Flag
-          aria-label={priorityMeta.label}
-          className="shrink-0"
-          fill={priorityMeta.color}
-          size={18}
-          style={{ color: priorityMeta.color }}
-        />
-      )}
-
-      {subTaskTotal > 0 && <SubtaskProgressRing completed={subTaskDone} total={subTaskTotal} />}
+        {subTaskTotal > 0 && <SubtaskProgressRing completed={subTaskDone} total={subTaskTotal} />}
+      </Item>
     </li>
   )
 }

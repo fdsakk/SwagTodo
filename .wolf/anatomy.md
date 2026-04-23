@@ -171,6 +171,7 @@
 - `checkbox.tsx` — Checkbox (~306 tok)
 - `dialog.tsx` — Dialog — renders modal (~1077 tok)
 - `input.tsx` — Input (~228 tok)
+- `item.tsx` — Item — reusable bordered list/card shell (~118 tok)
 - `kbd.tsx` — Kbd (~251 tok)
 - `popover.tsx` — Popover (~368 tok)
 - `scroll-area.tsx` — ScrollArea (~467 tok)

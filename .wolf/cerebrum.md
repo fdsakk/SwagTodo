@@ -16,6 +16,8 @@
 - User wants terse caveman responses in this session; keep technical substance, drop fluff.
 - User prefers Geist Sans for app UI font.
 - For theme polish, keep existing vibe and nudge colors toward better harmony instead of full redesign.
+- Inbox page should render task entries as shadcn-style `Item` cards instead of flat border-separated rows, and group date labels should use `Badge`.
+- `ui/badge` and `ui/item` should use app theme color variables (`app-*`) so they adapt to customized color tokens.
 
 ## Key Learnings
 

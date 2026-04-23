@@ -115,7 +115,7 @@ function App(): React.JSX.Element {
       <div
         className={cn(
           'flex h-full flex-col overflow-hidden bg-[#070708] px-[2px] pb-[2px] ring-1 ring-white/5',
-          !isFullScreen && 'rounded-xl'
+          !isFullScreen && 'rounded-lg'
         )}
       >
         <TitleBar />
@@ -134,8 +134,8 @@ function App(): React.JSX.Element {
   return (
     <div
       className={cn(
-        'flex h-full flex-col overflow-hidden bg-app-titlebar px-2 pb-2',
-        !isFullScreen && 'rounded-xl'
+        'flex h-full flex-col overflow-hidden bg-app-titlebar px-1.5 pb-1.5',
+        !isFullScreen && 'rounded-lg'
       )}
     >
       <ThemeProvider />
