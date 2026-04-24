@@ -1,13 +1,13 @@
 import { useMemo } from 'react'
 import { TaskList } from '@renderer/components/task-list'
-import { selectTodayTaskGroups, useDomainStore, useUiStore } from '@renderer/store'
-import { useVisibleTasks } from '@renderer/utils/task'
+import { selectArchivedTaskGroups, useDomainStore, useUiStore } from '@renderer/store'
 import { useShallow } from 'zustand/react/shallow'
 import { useTaskComplete } from '@renderer/hooks/useTaskComplete'
 
-export default function TodayPage(): React.JSX.Element {
-  const { projects, labels, actions } = useDomainStore(
+export default function ArchivePage(): React.JSX.Element {
+  const { tasks, projects, labels, actions } = useDomainStore(
     useShallow((state) => ({
+      tasks: state.tasks,
       projects: state.projects,
       labels: state.labels,
       actions: state.actions
@@ -17,31 +17,29 @@ export default function TodayPage(): React.JSX.Element {
   const visibleInput = useUiStore(
     useShallow((state) => ({
       searchQuery: state.searchQuery,
-      sortMode: state.sortMode,
-      showCompleted: state.showCompleted,
-      selectedView: state.selectedView
+      sortMode: state.sortMode
     }))
   )
   const toggleTaskComplete = useTaskComplete()
 
-  const tasks = useVisibleTasks()
   const groupedTasks = useMemo(
-    () => selectTodayTaskGroups({ tasks }, visibleInput),
+    () => selectArchivedTaskGroups({ tasks }, visibleInput),
     [tasks, visibleInput]
   )
 
   return (
     <TaskList
-      emptyStateDescription="No tasks are due today."
-      emptyStateTitle="You're all caught up"
+      emptyStateDescription="Archived tasks will appear here."
+      emptyStateTitle="Archive is empty"
       groups={groupedTasks}
       labels={labels}
-      onArchiveTask={actions.archiveTask}
       onDeleteTask={actions.deleteTask}
       onOpenTask={openEditPanel}
       onToggleComplete={toggleTaskComplete}
+      onUnarchiveTask={actions.unarchiveTask}
       onUpdateTask={actions.updateTask}
       projects={projects}
+      showProjectContext
     />
   )
 }

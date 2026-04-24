@@ -50,6 +50,7 @@
 
 ## Decision Log
 
+- [2026-04-24] Archive task feature merge: keep `archive-tooltip-2` data model and filtering logic (`archivedAt`, archive page/selectors/persistence) while using Radix/shadcn-style `TaskContextMenu` from `archive-tooltip` with hover colors from `archive-tooltip-2`.
 - [2026-04-23] Inbox completion UX: delayed the real `toggleTaskComplete` mutation behind a short local completion state in `TaskRow`; after follow-up UX correction this keeps checkbox/confetti feedback but does not animate the row out.
 - [2026-04-23] Runtime crash guard: main process now installs global `uncaughtException` / `unhandledRejection` handlers with `dialog.showErrorBox`; renderer root wrapped in `GlobalErrorBoundary` to keep app open and offer reload after React/window/promise failures.
 - [2026-04-23] Lint workflow: removed ESLint cache from repo script because cached prettier diagnostics produced false positives after formatting; correctness of signal beats small speed gain here.

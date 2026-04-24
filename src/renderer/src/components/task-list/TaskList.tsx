@@ -1,5 +1,5 @@
 import { useMemo } from 'react'
-import type { Label, Project, TaskGroup } from '@renderer/types'
+import type { Label, Priority, Project, TaskGroup, TaskStatus } from '@renderer/types'
 import { Badge } from '@renderer/components/ui/badge'
 import { TaskRow } from './TaskRow'
 
@@ -13,6 +13,13 @@ interface TaskListProps {
   emptyStateDescription: string
   onToggleComplete: (taskId: string, options?: { delayMs?: number }) => void
   onOpenTask: (taskId: string) => void
+  onArchiveTask?: (taskId: string) => void
+  onUnarchiveTask?: (taskId: string) => void
+  onDeleteTask?: (taskId: string) => void
+  onUpdateTask?: (
+    taskId: string,
+    updates: { priority?: Priority; dueDate?: string | undefined; status?: TaskStatus }
+  ) => void
 }
 
 export function TaskList(props: TaskListProps): React.JSX.Element {
@@ -57,8 +64,12 @@ export function TaskList(props: TaskListProps): React.JSX.Element {
                       index={index}
                       key={task.id}
                       labels={labels}
+                      onArchive={props.onArchiveTask}
+                      onDelete={props.onDeleteTask}
                       onOpen={props.onOpenTask}
                       onToggleComplete={props.onToggleComplete}
+                      onUnarchive={props.onUnarchiveTask}
+                      onUpdate={props.onUpdateTask}
                       project={task.projectId ? projectById.get(task.projectId) : undefined}
                       delayCompleteAnimation={props.delayCompleteAnimation}
                       showProjectContext={props.showProjectContext}

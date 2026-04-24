@@ -11,6 +11,7 @@ interface KeyboardShortcutOptions {
   onGoInbox: () => void
   onGoToday: () => void
   onGoActivity: () => void
+  onGoArchive: () => void
   onGoHealth: () => void
   onGoSessions: () => void
   onGoSettings: () => void
@@ -44,6 +45,7 @@ const KEY_BINDINGS: Record<string, HandlerKey> = {
   i: 'onGoInbox',
   t: 'onGoToday',
   a: 'onGoActivity',
+  r: 'onGoArchive',
   h: 'onGoHealth',
   s: 'onGoSessions',
   ',': 'onGoSettings',

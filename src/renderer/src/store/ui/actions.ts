@@ -4,7 +4,7 @@ import type { UiActions, UiStoreGet, UiStoreSet } from '../shared/types'
 const createViewSelector =
   (
     set: UiStoreSet,
-    selectedView: 'inbox' | 'today' | 'activity' | 'sessions' | 'settings' | 'health'
+    selectedView: 'inbox' | 'today' | 'activity' | 'sessions' | 'settings' | 'health' | 'archive'
   ) =>
   (): void =>
     set({ selectedView, selectedProjectId: undefined })
@@ -16,6 +16,7 @@ export const createUiActions = (set: UiStoreSet, get: UiStoreGet): UiActions => 
   selectSessions: createViewSelector(set, 'sessions'),
   selectSettings: createViewSelector(set, 'settings'),
   selectHealth: createViewSelector(set, 'health'),
+  selectArchive: createViewSelector(set, 'archive'),
   selectProject: (projectId) => set({ selectedView: 'project', selectedProjectId: projectId }),
   setProjectTab: (projectTab) =>
     set((state) => (state.projectTab === projectTab ? state : { projectTab })),

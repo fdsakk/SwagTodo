@@ -56,6 +56,7 @@ export function normalizeStoredTask(raw: unknown): Task {
         ? task.completedAt
         : updatedAt
       : undefined,
+    archivedAt: typeof task.archivedAt === 'string' ? task.archivedAt : undefined,
     createdAt: typeof task.createdAt === 'string' ? task.createdAt : updatedAt,
     updatedAt,
     order: typeof task.order === 'number' ? task.order : 0,
@@ -95,6 +96,8 @@ export function normalizeTaskPatch(
 
   if ('priority' in updates && updates.priority !== task.priority) patch.priority = updates.priority
   if ('dueDate' in updates && updates.dueDate !== task.dueDate) patch.dueDate = updates.dueDate
+  if ('archivedAt' in updates && updates.archivedAt !== task.archivedAt)
+    patch.archivedAt = updates.archivedAt
   if ('projectId' in updates && updates.projectId !== task.projectId)
     patch.projectId = updates.projectId
 

@@ -5,10 +5,11 @@ import { useShallow } from 'zustand/react/shallow'
 import { useTaskComplete } from '@renderer/hooks/useTaskComplete'
 
 export default function InboxPage(): React.JSX.Element {
-  const { projects, labels } = useDomainStore(
+  const { projects, labels, actions } = useDomainStore(
     useShallow((state) => ({
       projects: state.projects,
-      labels: state.labels
+      labels: state.labels,
+      actions: state.actions
     }))
   )
   const openEditPanel = useUiStore((state) => state.openEditPanel)
@@ -36,8 +37,11 @@ export default function InboxPage(): React.JSX.Element {
       delayCompleteAnimation
       groups={groupedTasks}
       labels={labels}
+      onArchiveTask={actions.archiveTask}
+      onDeleteTask={actions.deleteTask}
       onOpenTask={openEditPanel}
       onToggleComplete={toggleTaskComplete}
+      onUpdateTask={actions.updateTask}
       projects={projects}
       showProjectContext
     />

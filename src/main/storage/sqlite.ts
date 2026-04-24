@@ -17,6 +17,7 @@ type StoredTaskRow = {
   completed: number
   status: Task['status']
   completed_at: string | null
+  archived_at: string | null
   created_at: string
   updated_at: string
   sort_order: number
@@ -114,6 +115,7 @@ CREATE TABLE IF NOT EXISTS tasks (
   completed INTEGER NOT NULL,
   status TEXT NOT NULL,
   completed_at TEXT,
+  archived_at TEXT,
   created_at TEXT NOT NULL,
   updated_at TEXT NOT NULL,
   sort_order REAL NOT NULL,
@@ -234,6 +236,7 @@ const inflateTaskRows = (rows: StoredTaskAggregateRow[]): Task[] =>
     completed: Boolean(task.completed),
     status: task.status,
     completedAt: task.completed_at ?? undefined,
+    archivedAt: task.archived_at ?? undefined,
     createdAt: task.created_at,
     updatedAt: task.updated_at,
     order: task.sort_order,
@@ -305,6 +308,7 @@ export const serializeAppState = (state: AppState): SqliteStateSnapshot => {
       completed: task.completed ? 1 : 0,
       status: task.status,
       completed_at: task.completedAt ?? null,
+      archived_at: task.archivedAt ?? null,
       created_at: task.createdAt,
       updated_at: task.updatedAt,
       sort_order: task.order,
@@ -427,6 +431,7 @@ export const deserializeAppState = (snapshot: SqliteStateSnapshot): AppState => 
       completed: Boolean(task.completed),
       status: task.status,
       completedAt: task.completed_at ?? undefined,
+      archivedAt: task.archived_at ?? undefined,
       createdAt: task.created_at,
       updatedAt: task.updated_at,
       order: task.sort_order,
@@ -544,6 +549,13 @@ export class SqliteAppStorage {
     const isNewDatabase = !existsSync(path)
     this.db = new Database(path)
     this.db.exec(SCHEMA)
+    const taskColumns = this.db
+      .prepare<[], { name: string }>('PRAGMA table_info(tasks)')
+      .all()
+      .map((column) => column.name)
+    if (!taskColumns.includes('archived_at')) {
+      this.db.exec('ALTER TABLE tasks ADD COLUMN archived_at TEXT')
+    }
 
     const selectTasks = this.db.prepare<[], StoredTaskAggregateRow>(`
       SELECT
@@ -648,10 +660,10 @@ export class SqliteAppStorage {
     const upsertTask = this.db.prepare(`
       INSERT OR REPLACE INTO tasks (
         id, title, description, priority, due_date, project_id, completed, status,
-        completed_at, created_at, updated_at, sort_order, position
+        completed_at, archived_at, created_at, updated_at, sort_order, position
       ) VALUES (
         @id, @title, @description, @priority, @due_date, @project_id, @completed, @status,
-        @completed_at, @created_at, @updated_at, @sort_order, @position
+        @completed_at, @archived_at, @created_at, @updated_at, @sort_order, @position
       )
     `)
     const deleteTasksNotIn = this.db.prepare(

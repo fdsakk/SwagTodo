@@ -19,11 +19,12 @@ interface ProjectPageProps {
 }
 
 export default function ProjectPage(props: ProjectPageProps): React.JSX.Element {
-  const { tasks, projects, labels } = useDomainStore(
+  const { tasks, projects, labels, actions } = useDomainStore(
     useShallow((state) => ({
       tasks: state.tasks,
       projects: state.projects,
-      labels: state.labels
+      labels: state.labels,
+      actions: state.actions
     }))
   )
   const {
@@ -141,8 +142,11 @@ export default function ProjectPage(props: ProjectPageProps): React.JSX.Element 
             emptyStateTitle="No tasks"
             groups={groupedTasks}
             labels={labels}
+            onArchiveTask={actions.archiveTask}
+            onDeleteTask={actions.deleteTask}
             onOpenTask={openEditPanel}
             onToggleComplete={toggleTaskComplete}
+            onUpdateTask={actions.updateTask}
             projects={projects}
           />
         ) : (

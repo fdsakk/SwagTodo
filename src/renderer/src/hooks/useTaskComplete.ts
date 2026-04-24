@@ -22,7 +22,7 @@ function getConfetti(): confetti.CreateTypes {
   return confettiInstance
 }
 
-export function useTaskComplete(): (taskId: string) => void {
+export function useTaskComplete(): (taskId: string, options?: ToggleTaskCompleteOptions) => void {
   const tasks = useDomainStore((state) => state.tasks)
   const toggleTaskComplete = useDomainStore((state) => state.toggleTaskComplete)
 

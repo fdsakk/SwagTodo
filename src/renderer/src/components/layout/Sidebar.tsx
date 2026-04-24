@@ -1,5 +1,6 @@
 import {
   Activity,
+  Archive,
   Calendar,
   ChevronLeft,
   ChevronRight,
@@ -36,6 +37,7 @@ export function Sidebar(props: SidebarProps): React.JSX.Element {
     selectInbox,
     selectToday,
     selectActivity,
+    selectArchive,
     selectSessions,
     selectSettings,
     selectHealth,
@@ -47,6 +49,7 @@ export function Sidebar(props: SidebarProps): React.JSX.Element {
       selectInbox: state.selectInbox,
       selectToday: state.selectToday,
       selectActivity: state.selectActivity,
+      selectArchive: state.selectArchive,
       selectSessions: state.selectSessions,
       selectSettings: state.selectSettings,
       selectHealth: state.selectHealth,
@@ -102,6 +105,13 @@ export function Sidebar(props: SidebarProps): React.JSX.Element {
           icon={<Activity size={14} />}
           label="Activity"
           onClick={selectActivity}
+        />
+        <NavItem
+          active={selectedView === 'archive'}
+          collapsed={isSidebarCollapsed}
+          icon={<Archive size={14} />}
+          label="Archive"
+          onClick={selectArchive}
         />
         <NavItem
           active={selectedView === 'sessions'}

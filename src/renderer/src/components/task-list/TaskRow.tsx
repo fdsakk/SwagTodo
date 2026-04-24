@@ -2,7 +2,8 @@ import { Fragment, memo, useEffect, useRef, useState } from 'react'
 import { Flag } from 'lucide-react'
 import { AnimatedCheckbox } from './animated-checkbox'
 import { SubtaskProgressRing } from './subtask-progress-ring'
-import type { Label, Project, Task } from '@renderer/types'
+import { TaskContextMenu } from './task-context-menu'
+import type { Label, Priority, Project, Task, TaskStatus } from '@renderer/types'
 import { Item } from '@renderer/components/ui/item'
 import { isTaskOverdue } from '@renderer/store'
 import { PRIORITY_META, formatDueDate } from '@renderer/utils/task'
@@ -17,6 +18,13 @@ interface TaskRowProps {
   index: number
   onOpen: (taskId: string) => void
   onToggleComplete: (taskId: string, options?: { delayMs?: number }) => void
+  onArchive?: (taskId: string) => void
+  onUnarchive?: (taskId: string) => void
+  onDelete?: (taskId: string) => void
+  onUpdate?: (
+    taskId: string,
+    updates: { priority?: Priority; dueDate?: string | undefined; status?: TaskStatus }
+  ) => void
 }
 
 const COMPLETE_TOGGLE_DELAY_MS = 1500
@@ -58,6 +66,16 @@ function TaskRowBase(props: TaskRowProps): React.JSX.Element {
     props.onToggleComplete(props.task.id)
   }
 
+  const handleArchive = (taskId: string): void => props.onArchive?.(taskId)
+  const handleUnarchive = (taskId: string): void => props.onUnarchive?.(taskId)
+  const handleDelete = (taskId: string): void => props.onDelete?.(taskId)
+  const handleSetPriority = (taskId: string, priority: Priority): void =>
+    props.onUpdate?.(taskId, { priority })
+  const handleSetStatus = (taskId: string, status: TaskStatus): void =>
+    props.onUpdate?.(taskId, { status })
+  const handleSetDueDate = (taskId: string, dueDate: string | undefined): void =>
+    props.onUpdate?.(taskId, { dueDate })
+
   if (props.task.dueDate) {
     metaParts.push(
       <span className={cn(overdue && 'text-red-400/80')} key="due-date">
@@ -83,57 +101,70 @@ function TaskRowBase(props: TaskRowProps): React.JSX.Element {
   }
 
   return (
-    <li>
-      <Item
-        className={cn(
-          'group flex cursor-pointer items-center gap-3.5 px-3.5 py-2.5',
-          isVisuallyCompleted && 'opacity-40'
-        )}
-        onClick={() => {
-          if (isCompleting) return
-          props.onOpen(props.task.id)
-        }}
-        variant="muted"
-      >
-        <div onClick={(e) => e.stopPropagation()}>
-          <AnimatedCheckbox checked={isVisuallyCompleted} onCheckedChange={handleToggleComplete} />
-        </div>
-
-        <div className="min-w-0 flex-1">
-          <div
-            className={cn(
-              'truncate text-sm leading-snug text-app-text',
-              isVisuallyCompleted && 'line-through text-app-text-muted'
-            )}
-          >
-            {props.task.title}
+    <TaskContextMenu
+      task={props.task}
+      onArchive={handleArchive}
+      onDelete={handleDelete}
+      onSetDueDate={handleSetDueDate}
+      onSetPriority={handleSetPriority}
+      onSetStatus={handleSetStatus}
+      onUnarchive={handleUnarchive}
+    >
+      <li>
+        <Item
+          className={cn(
+            'group flex cursor-pointer items-center gap-3.5 px-3.5 py-2.5',
+            isVisuallyCompleted && 'opacity-40'
+          )}
+          onClick={() => {
+            if (isCompleting) return
+            props.onOpen(props.task.id)
+          }}
+          variant="muted"
+        >
+          <div onClick={(e) => e.stopPropagation()}>
+            <AnimatedCheckbox
+              checked={isVisuallyCompleted}
+              onCheckedChange={handleToggleComplete}
+            />
           </div>
 
-          {metaParts.length > 0 && (
-            <div className="mt-1 flex flex-wrap items-center gap-x-1.5 gap-y-1 text-xs text-app-text-muted">
-              {metaParts.map((part, index) => (
-                <Fragment key={index}>
-                  {index > 0 && <span>·</span>}
-                  {part}
-                </Fragment>
-              ))}
+          <div className="min-w-0 flex-1">
+            <div
+              className={cn(
+                'truncate text-sm leading-snug text-app-text',
+                isVisuallyCompleted && 'line-through text-app-text-muted'
+              )}
+            >
+              {props.task.title}
             </div>
+
+            {metaParts.length > 0 && (
+              <div className="mt-1 flex flex-wrap items-center gap-x-1.5 gap-y-1 text-xs text-app-text-muted">
+                {metaParts.map((part, index) => (
+                  <Fragment key={index}>
+                    {index > 0 && <span>·</span>}
+                    {part}
+                  </Fragment>
+                ))}
+              </div>
+            )}
+          </div>
+
+          {showFlag && (
+            <Flag
+              aria-label={priorityMeta.label}
+              className="shrink-0"
+              fill={priorityMeta.color}
+              size={18}
+              style={{ color: priorityMeta.color }}
+            />
           )}
-        </div>
 
-        {showFlag && (
-          <Flag
-            aria-label={priorityMeta.label}
-            className="shrink-0"
-            fill={priorityMeta.color}
-            size={18}
-            style={{ color: priorityMeta.color }}
-          />
-        )}
-
-        {subTaskTotal > 0 && <SubtaskProgressRing completed={subTaskDone} total={subTaskTotal} />}
-      </Item>
-    </li>
+          {subTaskTotal > 0 && <SubtaskProgressRing completed={subTaskDone} total={subTaskTotal} />}
+        </Item>
+      </li>
+    </TaskContextMenu>
   )
 }
 

@@ -9,6 +9,7 @@ import {
 import InboxPage from '@renderer/pages/InboxPage'
 import TodayPage from '@renderer/pages/TodayPage'
 import ActivityPage from '@renderer/pages/ActivityPage'
+import ArchivePage from '@renderer/pages/ArchivePage'
 import ProjectPage from '@renderer/pages/ProjectPage'
 import SessionsPage from '@renderer/pages/SessionsPage'
 import SettingsPage from '@renderer/pages/SettingsPage'
@@ -40,6 +41,7 @@ function App(): React.JSX.Element {
       selectInbox,
       selectToday,
       selectActivity,
+      selectArchive,
       selectSessions,
       selectSettings,
       selectHealth,
@@ -93,6 +95,7 @@ function App(): React.JSX.Element {
     onGoInbox: selectInbox,
     onGoToday: selectToday,
     onGoActivity: selectActivity,
+    onGoArchive: selectArchive,
     onGoHealth: selectHealth,
     onGoSessions: selectSessions,
     onGoSettings: selectSettings,
@@ -168,6 +171,7 @@ function App(): React.JSX.Element {
             {selectedView === 'inbox' && <InboxPage />}
             {selectedView === 'today' && <TodayPage />}
             {selectedView === 'activity' && <ActivityPage />}
+            {selectedView === 'archive' && <ArchivePage />}
             {selectedView === 'sessions' && <SessionsPage />}
             {selectedView === 'settings' && <SettingsPage />}
             {selectedView === 'health' && <HealthPage />}

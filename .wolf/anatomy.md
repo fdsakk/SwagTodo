@@ -150,6 +150,7 @@
 - `animated-checkbox.tsx` — AnimatedCheckbox (~427 tok)
 - `index.tsx` (~55 tok)
 - `subtask-progress-ring.tsx` — SubtaskProgressRingBase (~516 tok)
+- `task-context-menu.tsx` — TaskContextMenu — Radix context menu for task archive/delete/priority/status/due date (~1270 tok)
 - `TaskList.tsx` — TaskList — uses useMemo (~674 tok)
 - `TaskRow.tsx` — TaskRowBase (~914 tok)
 
@@ -189,6 +190,7 @@
 ## src/renderer/src/pages/
 
 - `ActivityPage.tsx` — buildEvents — uses useMemo (~1521 tok)
+- `ArchivePage.tsx` — ArchivePage — lists archived tasks with unarchive/delete/update actions (~420 tok)
 - `HealthPage.tsx` — today — renders chart — uses useState, useCallback, useMemo (~5362 tok)
 - `InboxPage.tsx` — InboxPage — uses useMemo (~409 tok)
 - `ProjectPage.tsx` — ProjectPage — uses useMemo, useEffect (~1364 tok)

@@ -3,6 +3,7 @@ export {
   isTaskInFuture,
   isTaskOverdue,
   selectEditingProjectById,
+  selectArchivedTaskGroups,
   selectInboxCounts,
   selectInboxTaskGroups,
   selectProjectById,

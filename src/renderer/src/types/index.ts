@@ -42,6 +42,7 @@ export type ViewName =
   | 'sessions'
   | 'settings'
   | 'health'
+  | 'archive'
 export type ProjectTab = 'list' | 'kanban'
 
 export interface TaskSessionStats {

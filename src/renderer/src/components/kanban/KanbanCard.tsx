@@ -1,10 +1,12 @@
 import { memo, useCallback, useMemo, type CSSProperties } from 'react'
 import { CSS } from '@dnd-kit/utilities'
 import { useSortable } from '@dnd-kit/sortable'
-import type { Label, Task } from '@renderer/types'
+import type { Label, Priority, Task, TaskStatus } from '@renderer/types'
 import { PRIORITY_META, formatDueDate } from '@renderer/utils/task'
 import { cn } from '@renderer/utils/cn'
 import { SubtaskProgressRing } from '@renderer/components/task-list/subtask-progress-ring'
+import { TaskContextMenu } from '@renderer/components/task-list/task-context-menu'
+import { useDomainStore } from '@renderer/store'
 
 export const KANBAN_CARD_CLASSNAME =
   'cursor-pointer rounded-md border border-app-border bg-app-hover p-2 transition-colors hover:border-app-active'
@@ -60,17 +62,42 @@ export const SortableCard = memo(function SortableCard({
     [transform, transition]
   )
   const handleClick = useCallback(() => onOpen(task.id), [onOpen, task.id])
+  const { archiveTask, unarchiveTask, deleteTask, updateTask } = useDomainStore(
+    (state) => state.actions
+  )
+  const handleSetPriority = useCallback(
+    (taskId: string, priority: Priority) => updateTask(taskId, { priority }),
+    [updateTask]
+  )
+  const handleSetStatus = useCallback(
+    (taskId: string, status: TaskStatus) => updateTask(taskId, { status }),
+    [updateTask]
+  )
+  const handleSetDueDate = useCallback(
+    (taskId: string, dueDate: string | undefined) => updateTask(taskId, { dueDate }),
+    [updateTask]
+  )
 
   return (
-    <div
-      className={cn(KANBAN_CARD_CLASSNAME, isDragging && 'opacity-50')}
-      ref={setNodeRef}
-      style={style}
-      onClick={handleClick}
-      {...attributes}
-      {...listeners}
+    <TaskContextMenu
+      task={task}
+      onArchive={archiveTask}
+      onDelete={deleteTask}
+      onSetDueDate={handleSetDueDate}
+      onSetPriority={handleSetPriority}
+      onSetStatus={handleSetStatus}
+      onUnarchive={unarchiveTask}
     >
-      <CardBody task={task} labels={labels} />
-    </div>
+      <div
+        className={cn(KANBAN_CARD_CLASSNAME, isDragging && 'opacity-50')}
+        ref={setNodeRef}
+        style={style}
+        onClick={handleClick}
+        {...attributes}
+        {...listeners}
+      >
+        <CardBody task={task} labels={labels} />
+      </div>
+    </TaskContextMenu>
   )
 })

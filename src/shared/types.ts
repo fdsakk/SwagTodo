@@ -20,6 +20,7 @@ export interface Task {
   completed: boolean
   status: TaskStatus
   completedAt?: string
+  archivedAt?: string
   createdAt: string
   updatedAt: string
   order: number

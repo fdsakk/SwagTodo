@@ -94,7 +94,10 @@ export default function SessionsPage(): React.JSX.Element {
     return out
   }, [anchor, dayCount])
 
-  const projectTasks = useMemo(() => tasks.filter((t) => Boolean(t.projectId)), [tasks])
+  const projectTasks = useMemo(
+    () => tasks.filter((t) => Boolean(t.projectId) && !t.archivedAt),
+    [tasks]
+  )
 
   const pendingDraft = useMemo(() => {
     if (!draftCreate) return null

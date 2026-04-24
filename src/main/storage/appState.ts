@@ -74,7 +74,8 @@ const normalizeTask = (task: Task): Task => {
     ...task,
     completed,
     status: completed ? 'done' : task.status === 'in_progress' ? 'in_progress' : 'todo',
-    completedAt: completed ? (task.completedAt ?? task.updatedAt) : undefined
+    completedAt: completed ? (task.completedAt ?? task.updatedAt) : undefined,
+    archivedAt: task.archivedAt
   }
 }
 

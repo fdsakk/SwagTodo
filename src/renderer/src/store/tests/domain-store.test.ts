@@ -8,7 +8,12 @@ import { createProjectActions } from '../domain/actions/projects'
 import { createSessionActions } from '../domain/actions/sessions'
 import { createSettingsActions } from '../domain/actions/settings'
 import { createTaskActions } from '../domain/actions/tasks'
-import { selectInboxCounts, selectInboxTaskGroups, selectVisibleTasks } from '../domain/selectors'
+import {
+  selectArchivedTaskGroups,
+  selectInboxCounts,
+  selectInboxTaskGroups,
+  selectVisibleTasks
+} from '../domain/selectors'
 import { createInitialDomainState } from '../domain/state'
 
 const createTask = (
@@ -24,6 +29,7 @@ const createTask = (
   completed: overrides.completed ?? false,
   status: overrides.status ?? 'todo',
   completedAt: overrides.completedAt,
+  archivedAt: overrides.archivedAt,
   createdAt: overrides.createdAt ?? '2026-04-20T09:00:00.000Z',
   updatedAt: overrides.updatedAt ?? '2026-04-20T09:00:00.000Z',
   order: overrides.order ?? 1,
@@ -69,6 +75,46 @@ test('toggleTaskComplete preserves task array reference for unknown task ids', (
   store.getState().toggleTaskComplete('missing-task')
 
   assert.equal(store.getState().tasks, beforeTasks)
+})
+
+test('archiveTask hides tasks from active selectors and unarchive restores them', () => {
+  const task = createTask()
+  const store = createDomainTestStore({ tasks: [task] })
+  const visibleInput = {
+    searchQuery: '',
+    sortMode: 'priority' as const,
+    showCompleted: false,
+    selectedView: 'inbox' as const
+  }
+  const inboxInput = {
+    searchQuery: '',
+    sortMode: 'priority' as const,
+    inboxStatusFilter: 'all' as const,
+    inboxProjectFilter: 'all' as const,
+    inboxPriorityFilter: 'all' as const
+  }
+
+  store.getState().archiveTask(task.id)
+
+  assert.equal(store.getState().tasks[0].archivedAt !== undefined, true)
+  assert.deepEqual(selectVisibleTasks(store.getState(), visibleInput), [])
+  assert.deepEqual(selectInboxTaskGroups(store.getState(), inboxInput)[0].tasks, [])
+  assert.deepEqual(selectInboxCounts(store.getState()), { inboxCount: 0, todayCount: 0 })
+  assert.deepEqual(
+    selectArchivedTaskGroups(store.getState(), {
+      searchQuery: '',
+      sortMode: 'priority'
+    })[0].tasks.map((archivedTask) => archivedTask.id),
+    [task.id]
+  )
+
+  store.getState().unarchiveTask(task.id)
+
+  assert.equal(store.getState().tasks[0].archivedAt, undefined)
+  assert.deepEqual(
+    selectVisibleTasks(store.getState(), visibleInput).map((visibleTask) => visibleTask.id),
+    [task.id]
+  )
 })
 
 test('toggleSubTask and deleteSubTask preserve references on no-op', () => {

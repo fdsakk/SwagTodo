@@ -29,6 +29,8 @@ const filterBySearch = (tasks: readonly Task[], query: string): Task[] => {
   return tasks.filter((task) => task.title.toLowerCase().includes(needle))
 }
 
+const activeTasks = (tasks: readonly Task[]): Task[] => tasks.filter((task) => !task.archivedAt)
+
 const sortByPriority = (a: Task, b: Task): number => {
   const diff = PRIORITY_WEIGHT[a.priority] - PRIORITY_WEIGHT[b.priority]
   return diff !== 0 ? diff : a.order - b.order
@@ -73,6 +75,7 @@ export type InboxTasksInput = Pick<
 
 const filterInboxTasks = (tasks: readonly Task[], input: InboxTasksInput): Task[] =>
   tasks.filter((task) => {
+    if (task.archivedAt) return false
     if (input.inboxStatusFilter === 'active' && task.completed) return false
     if (input.inboxStatusFilter === 'done' && !task.completed) return false
 
@@ -110,7 +113,8 @@ export const selectVisibleTasks = (
   input: VisibleTasksInput
 ): Task[] => {
   const includeCompleted = input.showCompleted || input.selectedView === 'project'
-  const base = includeCompleted ? state.tasks : state.tasks.filter((task) => !task.completed)
+  const tasks = activeTasks(state.tasks)
+  const base = includeCompleted ? tasks : tasks.filter((task) => !task.completed)
   return sortTasks(filterBySearch(base, input.searchQuery), input.sortMode)
 }
 
@@ -159,6 +163,20 @@ export const selectInboxTaskGroups = (
     })
 
   return [{ id: 'no-date', title: 'No date', tasks: noDate }, ...dateGroups]
+}
+
+export const selectArchivedTaskGroups = (
+  state: Pick<DomainState, 'tasks'>,
+  input: Pick<UiState, 'searchQuery' | 'sortMode'>
+): TaskGroup[] => {
+  const archived = state.tasks.filter((task) => task.archivedAt)
+  return [
+    {
+      id: 'archived',
+      title: 'Archived',
+      tasks: sortTasks(filterBySearch(archived, input.searchQuery), input.sortMode)
+    }
+  ]
 }
 
 export const selectTodayTaskGroups = (
@@ -213,6 +231,7 @@ export const selectInboxCounts = (
   let todayCount = 0
 
   for (const task of state.tasks) {
+    if (task.archivedAt) continue
     if (task.completed) continue
     inboxCount += 1
     if (isTaskDueToday(task) || isTaskOverdue(task)) todayCount += 1
@@ -231,6 +250,7 @@ export const domainSelectors = {
   selectVisibleTasks,
   selectTasksForProject,
   selectInboxTaskGroups,
+  selectArchivedTaskGroups,
   selectTodayTaskGroups,
   selectProjectTaskGroups,
   selectInboxCounts

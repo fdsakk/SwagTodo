@@ -20,7 +20,17 @@ import type {
 } from '@renderer/types'
 
 export type UpdateTaskInput = Partial<
-  Pick<Task, 'title' | 'description' | 'priority' | 'dueDate' | 'projectId' | 'labels' | 'status'>
+  Pick<
+    Task,
+    | 'title'
+    | 'description'
+    | 'priority'
+    | 'dueDate'
+    | 'projectId'
+    | 'labels'
+    | 'status'
+    | 'archivedAt'
+  >
 > & {
   completed?: boolean
 }
@@ -95,6 +105,8 @@ export interface DomainActions {
   addTask: (input: CreateTaskInput) => void
   updateTask: (taskId: string, updates: UpdateTaskInput) => void
   toggleTaskComplete: (taskId: string) => void
+  archiveTask: (taskId: string) => void
+  unarchiveTask: (taskId: string) => void
   deleteTask: (taskId: string) => void
   addSubTask: (taskId: string, title: string) => void
   toggleSubTask: (taskId: string, subTaskId: string) => void
@@ -142,6 +154,7 @@ export interface UiActions {
   selectSessions: () => void
   selectSettings: () => void
   selectHealth: () => void
+  selectArchive: () => void
   selectProject: (projectId: string) => void
   setProjectTab: (tab: ProjectTab) => void
   setSearchQuery: (query: string) => void

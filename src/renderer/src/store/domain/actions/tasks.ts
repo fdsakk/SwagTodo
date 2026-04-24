@@ -16,6 +16,8 @@ type TaskActions = Pick<
   | 'addTask'
   | 'updateTask'
   | 'toggleTaskComplete'
+  | 'archiveTask'
+  | 'unarchiveTask'
   | 'deleteTask'
   | 'addSubTask'
   | 'toggleSubTask'
@@ -64,6 +66,24 @@ export const createTaskActions = (set: DomainStoreSet, get: DomainStoreGet): Tas
     set((state) => ({
       tasks: replaceByIdIfChanged(state.tasks, taskId, (task) => {
         const patch = normalizeTaskPatch(task, { completed: !task.completed }, updatedAt)
+        return patch ? { ...task, ...patch } : task
+      })
+    }))
+  },
+  archiveTask: (taskId) => {
+    const updatedAt = nowIso()
+    set((state) => ({
+      tasks: replaceByIdIfChanged(state.tasks, taskId, (task) => {
+        const patch = normalizeTaskPatch(task, { archivedAt: updatedAt }, updatedAt)
+        return patch ? { ...task, ...patch } : task
+      })
+    }))
+  },
+  unarchiveTask: (taskId) => {
+    const updatedAt = nowIso()
+    set((state) => ({
+      tasks: replaceByIdIfChanged(state.tasks, taskId, (task) => {
+        const patch = normalizeTaskPatch(task, { archivedAt: undefined }, updatedAt)
         return patch ? { ...task, ...patch } : task
       })
     }))
