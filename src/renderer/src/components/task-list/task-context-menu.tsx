@@ -1,4 +1,5 @@
 import * as ContextMenu from '@radix-ui/react-context-menu'
+import { format, parseISO } from 'date-fns'
 import {
   Archive,
   ArchiveRestore,
@@ -59,7 +60,7 @@ export function TaskContextMenu({
   children
 }: TaskContextMenuProps): React.JSX.Element {
   const handleDaySelect = (day: Date | undefined): void => {
-    onSetDueDate(task.id, day ? day.toISOString().slice(0, 10) : undefined)
+    onSetDueDate(task.id, day ? format(day, 'yyyy-MM-dd') : undefined)
   }
 
   return (
@@ -148,7 +149,7 @@ export function TaskContextMenu({
               >
                 <Calendar
                   mode="single"
-                  selected={task.dueDate ? new Date(task.dueDate) : undefined}
+                  selected={task.dueDate ? parseISO(task.dueDate) : undefined}
                   onSelect={handleDaySelect}
                 />
                 {task.dueDate && (

@@ -408,6 +408,18 @@
       "related_bugs": ["bug-032"],
       "occurrences": 1,
       "last_seen": "2026-04-24T14:51:51+02:00"
+    },
+    {
+      "id": "bug-035",
+      "timestamp": "2026-04-24T15:12:36+02:00",
+      "error_message": "Komponent due date buguje się: ring kliknięcia działa na właściwym dniu, ale wybiera się lewa data obok.",
+      "file": "src/renderer/src/components/task-list/task-context-menu.tsx",
+      "root_cause": "`handleDaySelect` zapisywał datę przez `toISOString().slice(0, 10)`, więc lokalna północ w strefach z dodatnim offsetem UTC serializowała się jako poprzedni dzień.",
+      "fix": "Zmieniono zapis due date na lokalne `format(day, 'yyyy-MM-dd')` i odczyt selected date na `parseISO(task.dueDate)`.",
+      "tags": ["due-date", "calendar", "timezone", "context-menu", "date-fns"],
+      "related_bugs": ["bug-033"],
+      "occurrences": 1,
+      "last_seen": "2026-04-24T15:12:36+02:00"
     }
   ]
 }

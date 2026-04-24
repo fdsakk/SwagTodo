@@ -591,3 +591,9 @@
 | ----- | --------------------------------------------------------------------------------------------------------------------------------------------- | ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- | ------------------------------------------------------------------------------------------------------- | ------- |
 | 14:45 | merged archive tooltip branches: archive logic from `archive-tooltip-2`, Radix menu look from `archive-tooltip`, hover styling from tooltip-2 | src/shared/types.ts, src/main/storage/sqlite.ts, src/renderer/src/store/**, src/renderer/src/components/task-list/**, src/renderer/src/components/kanban/KanbanCard.tsx, src/renderer/src/pages/ArchivePage.tsx, .wolf/\* | format/lint/test/build passed                                                                           | ~5200   |
 | 14:51 | fixed due date submenu anchoring and light-theme delete contrast in task context menu                                                         | src/renderer/src/components/task-list/task-context-menu.tsx, .wolf/buglog.json, .wolf/memory.md                                                                                                                           | replaced popover with ContextMenu.SubContent; added light-theme delete colors; format/lint/build passed | ~1100   |
+
+## Session: 2026-04-24 15:05
+
+| Time | Action | File(s) | Outcome | ~Tokens |
+| ---- | ------ | ------- | ------- | ------- |
+| 15:12 | fixed due date calendar off-by-one timezone serialization | src/renderer/src/components/task-list/task-context-menu.tsx, .wolf/buglog.json, .wolf/cerebrum.md | format local day instead of UTC ISO slice; lint/typecheck pass | ~1800 |
