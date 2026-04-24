@@ -35,6 +35,7 @@
 - Shared schema validation now lives in `src/shared/stateSchema.ts` with Zod; renderer persist and main app-state normalization should reuse it instead of reintroducing scattered manual type guards.
 - Health PK chart: apply asymmetric smoothing (`smoothSummedEffect` — faster rise, slower fall) to summed dose curve before crash/band analysis to avoid sharp additive peaks.
 - Theme appearance persistence now keeps `customTokensByTheme`; switching presets must restore that preset's saved token overrides, while old payloads with flat `customTokens` migrate into active theme bucket.
+- Theme presets now carry `tone: 'light' | 'dark'`; `ThemeProvider` exposes `data-theme-tone` plus `app-theme-light/dark` root classes and chart contrast CSS vars for tone-specific UI polish.
 
 ## Do-Not-Repeat
 

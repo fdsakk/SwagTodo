@@ -53,17 +53,20 @@ const KIND_META: Record<ActivityKind, { verb: string; icon: React.ReactNode; ico
     created: {
       verb: 'You created',
       icon: <Plus size={12} />,
-      iconClass: 'bg-blue-500/15 text-blue-400'
+      iconClass:
+        'border border-blue-400/25 bg-blue-500/15 text-blue-400 [.app-theme-light_&]:border-blue-900/35 [.app-theme-light_&]:bg-blue-500/16 [.app-theme-light_&]:text-blue-900'
     },
     edited: {
       verb: 'You edited',
       icon: <Pencil size={12} />,
-      iconClass: 'bg-amber-500/15 text-amber-400'
+      iconClass:
+        'border border-amber-400/25 bg-amber-500/15 text-amber-400 [.app-theme-light_&]:border-amber-950/40 [.app-theme-light_&]:bg-amber-500/18 [.app-theme-light_&]:text-amber-950'
     },
     completed: {
       verb: 'You completed',
       icon: <Check size={12} />,
-      iconClass: 'bg-emerald-500/15 text-emerald-400'
+      iconClass:
+        'border border-emerald-400/25 bg-emerald-500/15 text-emerald-400 [.app-theme-light_&]:border-emerald-950/35 [.app-theme-light_&]:bg-emerald-500/16 [.app-theme-light_&]:text-emerald-950'
     }
   }
 

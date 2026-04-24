@@ -293,15 +293,15 @@ export function HealthPage(): React.JSX.Element {
           </p>
           <div className="ml-auto flex items-center gap-3 text-[10px] text-app-text-secondary">
             <span className="flex items-center gap-1">
-              <span className="inline-block h-2 w-3 rounded-sm bg-emerald-500/70" />
+              <span className="inline-block h-2 w-3 rounded-sm bg-emerald-500/80 [.app-theme-light_&]:bg-emerald-700" />
               Therapeutic
             </span>
             <span className="flex items-center gap-1">
-              <span className="inline-block h-2 w-3 rounded-sm bg-red-500/60" />
+              <span className="inline-block h-2 w-3 rounded-sm bg-red-500/75 [.app-theme-light_&]:bg-red-800" />
               Crash risk
             </span>
             <span className="flex items-center gap-1">
-              <span className="inline-block h-2 w-3 rounded-sm bg-amber-500/60" />
+              <span className="inline-block h-2 w-3 rounded-sm bg-amber-500/75 [.app-theme-light_&]:bg-amber-800" />
               Above MTC
             </span>
           </div>
@@ -314,13 +314,13 @@ export function HealthPage(): React.JSX.Element {
                 <stop offset="95%" stopColor="var(--app-accent)" stopOpacity={0} />
               </linearGradient>
             </defs>
-            <CartesianGrid strokeDasharray="2 4" stroke="var(--app-border)" vertical={false} />
+            <CartesianGrid strokeDasharray="2 4" stroke="var(--app-chart-grid)" vertical={false} />
 
             {/* Therapeutic window band */}
             <ReferenceArea
               y1={pkSettings.mec}
               y2={pkSettings.mtc}
-              fill="rgba(16,185,129,0.10)"
+              fill="var(--app-chart-band-therapeutic)"
               stroke="none"
               ifOverflow="visible"
             />
@@ -331,7 +331,7 @@ export function HealthPage(): React.JSX.Element {
                 key={`${seg.x1}-${seg.x2}`}
                 x1={seg.x1}
                 x2={seg.x2}
-                fill="rgba(220,38,38,0.18)"
+                fill="var(--app-chart-band-crash)"
                 stroke="none"
                 ifOverflow="visible"
               />
@@ -348,7 +348,7 @@ export function HealthPage(): React.JSX.Element {
                     y={(y as number) + 10}
                     textAnchor="middle"
                     fontSize={10}
-                    fill="var(--app-text-muted)"
+                    fill="var(--app-chart-muted)"
                   >
                     {payload.value}
                   </text>
@@ -361,7 +361,7 @@ export function HealthPage(): React.JSX.Element {
             <YAxis
               domain={yDomain}
               ticks={yTicks}
-              tick={{ fontSize: 10, fill: 'var(--app-text-muted)' }}
+              tick={{ fontSize: 10, fill: 'var(--app-chart-muted)' }}
               tickLine={false}
               axisLine={false}
               width={24}
@@ -371,27 +371,27 @@ export function HealthPage(): React.JSX.Element {
             {/* MEC line */}
             <ReferenceLine
               y={pkSettings.mec}
-              stroke="rgba(16,185,129,0.9)"
+              stroke="var(--app-chart-mec)"
               strokeDasharray="3 3"
-              strokeWidth={1}
+              strokeWidth={1.75}
               label={{
                 value: 'MEC',
                 position: 'insideTopRight',
                 fontSize: 9,
-                fill: 'rgba(16,185,129,1)'
+                fill: 'var(--app-chart-mec)'
               }}
             />
             {/* MTC line */}
             <ReferenceLine
               y={pkSettings.mtc}
-              stroke="rgba(217,119,6,0.9)"
+              stroke="var(--app-chart-mtc)"
               strokeDasharray="3 3"
-              strokeWidth={1}
+              strokeWidth={1.75}
               label={{
                 value: 'MTC',
                 position: 'insideTopRight',
                 fontSize: 9,
-                fill: 'rgba(217,119,6,1)'
+                fill: 'var(--app-chart-mtc)'
               }}
             />
 
@@ -399,14 +399,14 @@ export function HealthPage(): React.JSX.Element {
             {nowLabel && (
               <ReferenceLine
                 x={nowLabel}
-                stroke="var(--app-text-muted)"
-                strokeWidth={1.5}
+                stroke="var(--app-chart-now)"
+                strokeWidth={1.75}
                 strokeDasharray="4 3"
                 label={{
                   value: 'now',
                   position: 'insideTopRight',
                   fontSize: 9,
-                  fill: 'var(--app-text-muted)'
+                  fill: 'var(--app-chart-now)'
                 }}
               />
             )}

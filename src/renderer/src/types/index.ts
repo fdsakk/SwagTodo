@@ -138,9 +138,12 @@ export type ThemeId =
   | 'retro'
   | 'retro-dark'
 
+export type ThemeTone = 'dark' | 'light'
+
 export interface ThemePreset {
   id: ThemeId
   name: string
+  tone: ThemeTone
   tokens: ThemeTokens
 }
 
@@ -149,6 +152,7 @@ export const THEME_PRESETS: ThemePreset[] = [
   {
     id: 'default',
     name: 'Default',
+    tone: 'dark',
     tokens: {
       '--app-bg': '#101011',
       '--app-sidebar': '#0b0b0c',
@@ -170,6 +174,7 @@ export const THEME_PRESETS: ThemePreset[] = [
   {
     id: 'nero',
     name: 'Black',
+    tone: 'dark',
     tokens: {
       '--app-bg': '#020202',
       '--app-sidebar': '#090909',
@@ -191,6 +196,7 @@ export const THEME_PRESETS: ThemePreset[] = [
   {
     id: 'concrete-dark',
     name: 'Concrete Dark',
+    tone: 'dark',
     tokens: {
       '--app-bg': '#2d2a28',
       '--app-sidebar': '#24211f',
@@ -213,6 +219,7 @@ export const THEME_PRESETS: ThemePreset[] = [
   {
     id: 'dracula',
     name: 'Dracula',
+    tone: 'dark',
     tokens: {
       '--app-bg': '#282a36',
       '--app-sidebar': '#21222c',
@@ -234,6 +241,7 @@ export const THEME_PRESETS: ThemePreset[] = [
   {
     id: 'rose-pine',
     name: 'Rose Pine',
+    tone: 'dark',
     tokens: {
       '--app-bg': '#191724',
       '--app-sidebar': '#13111e',
@@ -255,6 +263,7 @@ export const THEME_PRESETS: ThemePreset[] = [
   {
     id: 'tokyo-night',
     name: 'Tokyo Night',
+    tone: 'dark',
     tokens: {
       '--app-bg': '#1a1b26',
       '--app-sidebar': '#16161e',
@@ -276,6 +285,7 @@ export const THEME_PRESETS: ThemePreset[] = [
   {
     id: 'kanagawa',
     name: 'Kanagawa',
+    tone: 'dark',
     tokens: {
       '--app-bg': '#1f1f28',
       '--app-sidebar': '#16161d',
@@ -297,6 +307,7 @@ export const THEME_PRESETS: ThemePreset[] = [
   {
     id: 'nord',
     name: 'Nord',
+    tone: 'dark',
     tokens: {
       '--app-bg': '#2e3440',
       '--app-sidebar': '#292e39',
@@ -318,6 +329,7 @@ export const THEME_PRESETS: ThemePreset[] = [
   {
     id: 'everforest',
     name: 'Everforest',
+    tone: 'dark',
     tokens: {
       '--app-bg': '#2b3339',
       '--app-sidebar': '#232b30',
@@ -339,6 +351,7 @@ export const THEME_PRESETS: ThemePreset[] = [
   {
     id: 'gruvbox',
     name: 'Gruvbox',
+    tone: 'dark',
     tokens: {
       '--app-bg': '#282828',
       '--app-sidebar': '#1d2021',
@@ -360,6 +373,7 @@ export const THEME_PRESETS: ThemePreset[] = [
   {
     id: 'solarized',
     name: 'Solarized',
+    tone: 'dark',
     tokens: {
       '--app-bg': '#002b36',
       '--app-sidebar': '#00212b',
@@ -381,6 +395,7 @@ export const THEME_PRESETS: ThemePreset[] = [
   {
     id: 'cyberpunk',
     name: 'Cyberpunk',
+    tone: 'dark',
     tokens: {
       '--app-bg': '#0a0a12',
       '--app-sidebar': '#08080f',
@@ -403,6 +418,7 @@ export const THEME_PRESETS: ThemePreset[] = [
   {
     id: 'slate',
     name: 'Concrete',
+    tone: 'light',
     tokens: {
       '--app-bg': '#a8a39b',
       '--app-sidebar': '#9f9a93',
@@ -424,6 +440,7 @@ export const THEME_PRESETS: ThemePreset[] = [
   {
     id: 'light',
     name: 'Light',
+    tone: 'light',
     tokens: {
       '--app-bg': '#f2f1ee',
       '--app-sidebar': '#e9e7e3',
@@ -445,6 +462,7 @@ export const THEME_PRESETS: ThemePreset[] = [
   {
     id: 'retro',
     name: 'Retro',
+    tone: 'light',
     tokens: {
       '--app-bg': '#e9dfcf',
       '--app-sidebar': '#d7cab3',
@@ -466,6 +484,7 @@ export const THEME_PRESETS: ThemePreset[] = [
   {
     id: 'retro-dark',
     name: 'Retro Dark',
+    tone: 'light',
     tokens: {
       '--app-bg': '#cbb89c',
       '--app-sidebar': '#c0ac8f',
@@ -547,6 +566,10 @@ export function normalizeAppearance(raw: unknown): AppearanceSettings {
 export function getResolvedTokens(settings: AppearanceSettings): ThemeTokens {
   const preset = THEME_PRESETS.find((p) => p.id === settings.themeId) ?? THEME_PRESETS[0]
   return { ...preset.tokens, ...(settings.customTokens ?? {}) }
+}
+
+export function getThemeTone(settings: AppearanceSettings): ThemeTone {
+  return (THEME_PRESETS.find((p) => p.id === settings.themeId) ?? THEME_PRESETS[0]).tone
 }
 
 export interface TaskGroup {

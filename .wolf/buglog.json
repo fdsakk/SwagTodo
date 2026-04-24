@@ -372,6 +372,18 @@
       "related_bugs": [],
       "occurrences": 1,
       "last_seen": "2026-04-23T23:57:00+02:00"
+    },
+    {
+      "id": "bug-032",
+      "timestamp": "2026-04-24T13:47:14+02:00",
+      "error_message": "Na jasnych themach ikony Activity (Completed, edited, created) oraz pomocnicze linie/bandy wykresu HealthPage są słabo widoczne przez zbyt jasne kolory i przezroczystość.",
+      "file": "src/renderer/src/types/index.ts",
+      "root_cause": "Theme presets nie miały klasyfikacji light/dark, więc Activity i HealthPage używały tych samych transparentnych kolorów dla wszystkich motywów.",
+      "fix": "Dodałem `ThemeTone`, klasy root `app-theme-light/dark`, mocniejsze light warianty ikon Activity oraz tone-aware CSS vars dla pomocniczych elementów wykresu HealthPage; po feedbacku podbiłem light chart opacity/darkness oraz grubość linii.",
+      "tags": ["theme", "contrast", "activity", "health-chart", "accessibility"],
+      "related_bugs": [],
+      "occurrences": 2,
+      "last_seen": "2026-04-24T13:51:19+02:00"
     }
   ]
 }
