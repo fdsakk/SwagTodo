@@ -1,5 +1,5 @@
 import { useEffect, useMemo, useRef } from 'react'
-import { Funnel, Plus, Search } from 'lucide-react'
+import { ListFilter, Plus, Search } from 'lucide-react'
 import {
   Select,
   SelectPopup,
@@ -14,6 +14,7 @@ import { useDomainStore, useUiStore } from '@renderer/store'
 import { PRIORITY_META } from '@renderer/utils/task'
 import { useShallow } from 'zustand/react/shallow'
 import { Button, buttonVariants } from '../ui/button'
+import { Badge } from '../ui/badge'
 
 const SORT_OPTIONS = [
   { value: 'priority', label: 'Priority' },
@@ -117,13 +118,9 @@ export function SearchSortBar(): React.JSX.Element {
             <button className={buttonVariants({ size: 'sm', variant: 'outline' })} type="button" />
           }
         >
-          <Funnel size={16} />
+          <ListFilter size={16} />
           Filter
-          {activeFilterCount > 0 && (
-            <span className="ml-0.5 rounded-full bg-app-accent px-1.5 py-0.5 text-[10px] font-semibold leading-none text-white">
-              {activeFilterCount}
-            </span>
-          )}
+          {activeFilterCount > 0 && <Badge variant={'info'}>{activeFilterCount}</Badge>}
         </PopoverTrigger>
         <PopoverPopup align="end" className="w-[260px] border-app-border bg-app-card p-1 shadow-lg">
           <div className="space-y-3">

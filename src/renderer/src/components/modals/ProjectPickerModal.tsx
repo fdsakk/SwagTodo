@@ -1,5 +1,13 @@
 import { useEffect } from 'react'
-import { AnimatePresence, motion } from 'framer-motion'
+import {
+  Dialog,
+  DialogDescription,
+  DialogHeader,
+  DialogPanel,
+  DialogPopup,
+  DialogTitle
+} from '@renderer/components/ui/dialog'
+import { Kbd } from '@renderer/components/ui/kbd'
 import type { Project } from '@renderer/types'
 
 interface ProjectPickerModalProps {
@@ -37,75 +45,45 @@ export function ProjectPickerModal({
   }, [open, projects, onClose, onSelect])
 
   return (
-    <AnimatePresence>
-      {open && (
-        <>
-          <motion.div
-            animate={{ opacity: 1 }}
-            className="fixed left-2 right-2 top-8 bottom-2 z-40 rounded-lg bg-black/50"
-            exit={{ opacity: 0 }}
-            initial={{ opacity: 0 }}
-            onClick={onClose}
-            transition={{ duration: 0.15 }}
-          />
-          <div className="pointer-events-none fixed left-2 right-2 top-8 bottom-2 z-50 flex items-center justify-center">
-            <motion.div
-              animate={{ opacity: 1, scale: 1 }}
-              className="pointer-events-auto w-[420px] max-h-[90%] overflow-y-auto rounded-lg border border-app-border bg-app-bg p-5 shadow-xl"
-              exit={{ opacity: 0, scale: 0.98 }}
-              initial={{ opacity: 0, scale: 0.98 }}
-              transition={{ duration: 0.15 }}
-            >
-              <div className="mb-4 flex items-center justify-between">
-                <h2 className="text-sm font-semibold text-zinc-100">Go to project</h2>
+    <Dialog open={open} onOpenChange={(next) => !next && onClose()}>
+      <DialogPopup>
+        <DialogHeader>
+          <DialogTitle>Go to project</DialogTitle>
+          <DialogDescription>Pick a project to navigate to.</DialogDescription>
+        </DialogHeader>
+        <DialogPanel>
+          {projects.length === 0 ? (
+            <p className="text-sm text-app-text-muted">
+              No projects yet. Press <Kbd>o</Kbd> to create one.
+            </p>
+          ) : (
+            <div className="space-y-1">
+              {projects.slice(0, 9).map((project, idx) => (
                 <button
-                  className="text-xs text-app-text-muted hover:text-app-text-secondary"
-                  onClick={onClose}
+                  key={project.id}
+                  className="flex w-full items-center gap-3 rounded-md px-2 py-1.5 text-left text-sm text-app-text-secondary hover:bg-app-hover"
+                  onClick={() => {
+                    onSelect(project.id)
+                    onClose()
+                  }}
                   type="button"
                 >
-                  Close
+                  <Kbd>{idx + 1}</Kbd>
+                  <span className="flex h-4 w-4 items-center justify-center text-xs">
+                    {project.emoji || '#'}
+                  </span>
+                  <span className="flex-1 truncate">{project.name}</span>
                 </button>
-              </div>
-              {projects.length === 0 ? (
-                <p className="text-xs text-app-text-muted">
-                  No projects yet. Press{' '}
-                  <kbd className="mx-1 rounded border border-app-border bg-app-hover px-1.5 py-0.5 font-mono text-[10px] text-app-text-secondary">
-                    o
-                  </kbd>{' '}
-                  to create one.
+              ))}
+              {projects.length > 9 && (
+                <p className="pt-2 text-xs text-app-text-muted">
+                  {projects.length - 9} more — click to select.
                 </p>
-              ) : (
-                <div className="space-y-1">
-                  {projects.slice(0, 9).map((project, idx) => (
-                    <button
-                      key={project.id}
-                      className="flex w-full items-center gap-3 rounded-md px-2 py-1.5 text-left text-sm text-app-text-secondary hover:bg-app-hover"
-                      onClick={() => {
-                        onSelect(project.id)
-                        onClose()
-                      }}
-                      type="button"
-                    >
-                      <kbd className="flex h-5 w-5 shrink-0 items-center justify-center rounded border border-app-border bg-app-hover font-mono text-[10px] text-app-text-secondary">
-                        {idx + 1}
-                      </kbd>
-                      <span className="flex h-4 w-4 items-center justify-center text-xs">
-                        {project.emoji || '#'}
-                      </span>
-                      <span className="flex-1 truncate">{project.name}</span>
-                    </button>
-                  ))}
-                  {projects.length > 9 && (
-                    <p className="pt-2 text-[11px] text-app-text-muted">
-                      {projects.length - 9} more — click to select.
-                    </p>
-                  )}
-                </div>
               )}
-            </motion.div>
-          </div>
-        </>
-      )}
-    </AnimatePresence>
+            </div>
+          )}
+        </DialogPanel>
+      </DialogPopup>
+    </Dialog>
   )
 }

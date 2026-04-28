@@ -112,7 +112,7 @@ function TaskRowBase(props: TaskRowProps): React.JSX.Element {
       <li>
         <div
           className={cn(
-            'group flex cursor-pointer items-center gap-3.5 rounded-sm border border-app-border bg-app-card px-3.5 py-2.5 transition-colors hover:bg-app-hover',
+            'group flex cursor-pointer items-center gap-3.5 rounded-lg border border-app-border bg-app-card px-3.5 py-2.5 transition-colors hover:bg-app-hover',
             isVisuallyCompleted && 'opacity-40'
           )}
           onClick={() => {

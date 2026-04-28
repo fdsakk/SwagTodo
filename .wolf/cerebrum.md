@@ -2,7 +2,7 @@
 
 > OpenWolf's learning memory. Updated automatically as the AI learns from interactions.
 > Do not edit manually unless correcting an error.
-> Last updated: 2026-04-23
+> Last updated: 2026-04-28
 
 ## User Preferences
 
@@ -40,6 +40,8 @@
 - coss registry output may need import cleanup in this Electron/Vite alias setup: primitive namespaces should import from `@base-ui/react/*`, local components from `@renderer/components/ui/*`, and `cn` from `@renderer/utils/cn`.
 - Base UI popup triggers need a real DOM anchor/ref; in this app, use a native `button` styled with `buttonVariants` for `PopoverTrigger render={...}` instead of local `Button` when positioning is unstable.
 - Tailwind v4 migration for this app uses `@tailwindcss/vite`, `@import 'tailwindcss'`, and `@theme inline` tokens in `src/renderer/src/assets/main.css`; app theme colors must be exposed as `--color-app-*` for existing `bg-app-*` classes.
+- Project List/Board switching should use controlled coss `Tabs`/`TabsPanel` with `projectTab` and `setProjectTab`, preserving the existing `list`/`kanban` UI state values.
+- Dialog overlays are portaled to `body`; to keep the custom Electron title bar outside backdrop blur, constrain `DialogBackdrop`/`DialogViewport` with global `--app-overlay-top` set in `App.tsx`.
 
 ## Do-Not-Repeat
 

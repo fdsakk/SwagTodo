@@ -468,6 +468,66 @@
       "related_bugs": [],
       "occurrences": 1,
       "last_seen": "2026-04-28T18:44:00+02:00"
+    },
+    {
+      "id": "bug-040",
+      "timestamp": "2026-04-28T17:00:23.827Z",
+      "error_message": "Wrong reference: SheetFooter should be DialogFooter",
+      "file": "src/renderer/src/components/project/ProjectPanel.tsx",
+      "root_cause": "Used \"SheetFooter\" instead of \"DialogFooter\"",
+      "fix": "Changed SheetFooter → DialogFooter",
+      "tags": ["auto-detected", "wrong-reference", "tsx"],
+      "related_bugs": [],
+      "occurrences": 1,
+      "last_seen": "2026-04-28T17:00:23.827Z"
+    },
+    {
+      "id": "bug-041",
+      "timestamp": "2026-04-28T17:07:58.457Z",
+      "error_message": "Incorrect value in code",
+      "file": "src/renderer/src/components/ui/dialog.tsx",
+      "root_cause": "Had 'relative row-start-2 flex max-h-full min-h-0 w-fu",
+      "fix": "Changed to 'relative row-start-2 flex max-h-full min-h-0 w-fu",
+      "tags": ["auto-detected", "wrong-value", "tsx"],
+      "related_bugs": [],
+      "occurrences": 5,
+      "last_seen": "2026-04-28T17:08:33.276Z"
+    },
+    {
+      "id": "bug-042",
+      "timestamp": "2026-04-28T17:08:22.534Z",
+      "error_message": "CSS fix: not-dark",
+      "file": "src/renderer/src/components/ui/dialog.tsx",
+      "root_cause": "not-dark: bg-clip-padding text-app-text opacity-[calc(1-var(--nested-dialogs))] → bg-clip-padding text-popover-foreground opacity-[calc(1-var(--nested-dialogs))]",
+      "fix": "Changed not-dark: bg-clip-padding text-app-text opacity-[calc(1-var(--nested-dialogs))] → bg-clip-padding text-popover-foreground opacity-[calc(1-var(--nested-dialogs))]",
+      "tags": ["auto-detected", "style-fix", "tsx"],
+      "related_bugs": [],
+      "occurrences": 1,
+      "last_seen": "2026-04-28T17:08:22.534Z"
+    },
+    {
+      "id": "bug-043",
+      "timestamp": "2026-04-28T19:27:13+02:00",
+      "error_message": "Background blur covers the whole app including the title bar; it should only cover sidebar plus content.",
+      "file": "src/renderer/src/components/ui/dialog.tsx",
+      "root_cause": "Dialog backdrop and viewport used `fixed inset-0`, so the Base UI overlay covered the custom Electron title bar as well as the app body.",
+      "fix": "Constrained dialog backdrop and viewport with `top-[var(--app-overlay-top,1.75rem)]`, and set `--app-overlay-top` from `App.tsx` so fullscreen can use `0px`.",
+      "tags": ["dialog", "backdrop", "blur", "titlebar", "electron"],
+      "related_bugs": ["bug-041", "bug-042"],
+      "occurrences": 1,
+      "last_seen": "2026-04-28T19:27:13+02:00"
+    },
+    {
+      "id": "bug-044",
+      "timestamp": "2026-04-28T19:27:13+02:00",
+      "error_message": "bun run build failed: SearchSortBar.tsx declared `Filter`, `FilterX`, and `Funnel` but never used them.",
+      "file": "src/renderer/src/components/layout/SearchSortBar.tsx",
+      "root_cause": "Stale lucide icon imports remained after the filter button implementation changed.",
+      "fix": "Removed the unused icon imports, leaving only `ListFilter`, `Plus`, and `Search`; `bun run build` then passed.",
+      "tags": ["typescript", "build", "unused-imports", "search-sort-bar"],
+      "related_bugs": [],
+      "occurrences": 1,
+      "last_seen": "2026-04-28T19:27:13+02:00"
     }
   ]
 }

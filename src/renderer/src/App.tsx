@@ -30,6 +30,13 @@ function App(): React.JSX.Element {
     return windowApi.onStateChange((state) => setIsFullScreen(state.isFullScreen))
   }, [])
 
+  useEffect(() => {
+    document.documentElement.style.setProperty(
+      '--app-overlay-top',
+      isFullScreen ? '0px' : '1.75rem'
+    )
+  }, [isFullScreen])
+
   const {
     selectedView,
     actions: {

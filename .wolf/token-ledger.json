@@ -2,14 +2,14 @@
   "version": 1,
   "created_at": "2026-04-18T19:20:23.576Z",
   "lifetime": {
-    "total_tokens_estimated": 959925,
-    "total_reads": 381,
-    "total_writes": 763,
-    "total_sessions": 37,
-    "anatomy_hits": 338,
+    "total_tokens_estimated": 1019598,
+    "total_reads": 432,
+    "total_writes": 794,
+    "total_sessions": 39,
+    "anatomy_hits": 389,
     "anatomy_misses": 43,
-    "repeated_reads_blocked": 175,
-    "estimated_savings_vs_bare_cli": 729966
+    "repeated_reads_blocked": 177,
+    "estimated_savings_vs_bare_cli": 742951
   },
   "sessions": [
     {
@@ -7126,6 +7126,517 @@
         "writes_count": 16,
         "repeated_reads_blocked": 7,
         "anatomy_lookups": 5
+      }
+    },
+    {
+      "id": "session-2026-04-28-1847",
+      "started": "2026-04-28T16:47:37.991Z",
+      "ended": "2026-04-28T16:51:46.333Z",
+      "reads": [
+        {
+          "file": "/home/fenta/Projects/SwagTodo/src/renderer/src/components/task-panel/TaskCreatePanel.tsx",
+          "tokens_estimated": 1434,
+          "was_repeated": false,
+          "anatomy_had_description": false
+        },
+        {
+          "file": "/home/fenta/Projects/SwagTodo/src/renderer/src/components/task-panel/TaskEditPanel.tsx",
+          "tokens_estimated": 2303,
+          "was_repeated": false,
+          "anatomy_had_description": false
+        },
+        {
+          "file": "/home/fenta/Projects/SwagTodo/src/renderer/src/components/task-panel/TaskDetailPanel.tsx",
+          "tokens_estimated": 1091,
+          "was_repeated": false,
+          "anatomy_had_description": false
+        },
+        {
+          "file": "/home/fenta/Projects/SwagTodo/src/renderer/src/components/task-panel/task-form-fields.tsx",
+          "tokens_estimated": 2298,
+          "was_repeated": false,
+          "anatomy_had_description": false
+        },
+        {
+          "file": "/home/fenta/Projects/SwagTodo/src/renderer/src/components/task-panel/panel-field.tsx",
+          "tokens_estimated": 93,
+          "was_repeated": false,
+          "anatomy_had_description": false
+        },
+        {
+          "file": "/home/fenta/Projects/SwagTodo/src/renderer/src/components/project/ProjectPanel.tsx",
+          "tokens_estimated": 1606,
+          "was_repeated": false,
+          "anatomy_had_description": false
+        },
+        {
+          "file": "/home/fenta/Projects/SwagTodo/src/renderer/src/components/ui/sheet.tsx",
+          "tokens_estimated": 1480,
+          "was_repeated": false,
+          "anatomy_had_description": false
+        },
+        {
+          "file": "/home/fenta/Projects/SwagTodo/src/renderer/src/components/ui/field.tsx",
+          "tokens_estimated": 420,
+          "was_repeated": false,
+          "anatomy_had_description": false
+        },
+        {
+          "file": "/home/fenta/Projects/SwagTodo/src/renderer/src/components/ui/dialog.tsx",
+          "tokens_estimated": 1077,
+          "was_repeated": false,
+          "anatomy_had_description": false
+        },
+        {
+          "file": "/home/fenta/Projects/SwagTodo/src/renderer/src/components/ui/input.tsx",
+          "tokens_estimated": 228,
+          "was_repeated": false,
+          "anatomy_had_description": false
+        },
+        {
+          "file": "/home/fenta/Projects/SwagTodo/src/renderer/src/components/ui/textarea.tsx",
+          "tokens_estimated": 205,
+          "was_repeated": false,
+          "anatomy_had_description": false
+        },
+        {
+          "file": "/home/fenta/Projects/SwagTodo/src/renderer/src/components/ui/fieldset.tsx",
+          "tokens_estimated": 260,
+          "was_repeated": false,
+          "anatomy_had_description": false
+        },
+        {
+          "file": "/home/fenta/Projects/SwagTodo/src/renderer/src/components/ui/button.tsx",
+          "tokens_estimated": 526,
+          "was_repeated": false,
+          "anatomy_had_description": false
+        },
+        {
+          "file": "/home/fenta/Projects/SwagTodo/src/renderer/src/components/modals/ShortcutsHelpModal.tsx",
+          "tokens_estimated": 963,
+          "was_repeated": false,
+          "anatomy_had_description": false
+        },
+        {
+          "file": "/home/fenta/Projects/SwagTodo/src/renderer/src/components/modals/ProjectPickerModal.tsx",
+          "tokens_estimated": 1197,
+          "was_repeated": false,
+          "anatomy_had_description": false
+        },
+        {
+          "file": "/home/fenta/Projects/SwagTodo/src/renderer/src/components/modals/LabelManagerModal.tsx",
+          "tokens_estimated": 1100,
+          "was_repeated": false,
+          "anatomy_had_description": false
+        },
+        {
+          "file": "/home/fenta/Projects/SwagTodo/src/renderer/src/components/task-edit/SubtaskList.tsx",
+          "tokens_estimated": 615,
+          "was_repeated": false,
+          "anatomy_had_description": false
+        },
+        {
+          "file": "/home/fenta/Projects/SwagTodo/src/renderer/src/components/project/emoji-picker.tsx",
+          "tokens_estimated": 994,
+          "was_repeated": false,
+          "anatomy_had_description": false
+        },
+        {
+          "file": "/home/fenta/Projects/SwagTodo/src/renderer/src/components/project/color-selector.tsx",
+          "tokens_estimated": 387,
+          "was_repeated": false,
+          "anatomy_had_description": false
+        },
+        {
+          "file": "/home/fenta/Projects/SwagTodo/src/renderer/src/components/project/custom-color-input.tsx",
+          "tokens_estimated": 576,
+          "was_repeated": false,
+          "anatomy_had_description": false
+        }
+      ],
+      "writes": [],
+      "totals": {
+        "input_tokens_estimated": 18853,
+        "output_tokens_estimated": 0,
+        "reads_count": 20,
+        "writes_count": 0,
+        "repeated_reads_blocked": 0,
+        "anatomy_lookups": 20
+      }
+    },
+    {
+      "id": "session-2026-04-28-1847",
+      "started": "2026-04-28T16:47:37.991Z",
+      "ended": "2026-04-28T17:01:52.397Z",
+      "reads": [
+        {
+          "file": "/home/fenta/Projects/SwagTodo/src/renderer/src/components/task-panel/TaskCreatePanel.tsx",
+          "tokens_estimated": 1434,
+          "was_repeated": false,
+          "anatomy_had_description": false
+        },
+        {
+          "file": "/home/fenta/Projects/SwagTodo/src/renderer/src/components/task-panel/TaskEditPanel.tsx",
+          "tokens_estimated": 2034,
+          "was_repeated": true,
+          "anatomy_had_description": false
+        },
+        {
+          "file": "/home/fenta/Projects/SwagTodo/src/renderer/src/components/task-panel/TaskDetailPanel.tsx",
+          "tokens_estimated": 751,
+          "was_repeated": true,
+          "anatomy_had_description": false
+        },
+        {
+          "file": "/home/fenta/Projects/SwagTodo/src/renderer/src/components/task-panel/task-form-fields.tsx",
+          "tokens_estimated": 2298,
+          "was_repeated": false,
+          "anatomy_had_description": false
+        },
+        {
+          "file": "/home/fenta/Projects/SwagTodo/src/renderer/src/components/task-panel/panel-field.tsx",
+          "tokens_estimated": 93,
+          "was_repeated": false,
+          "anatomy_had_description": false
+        },
+        {
+          "file": "/home/fenta/Projects/SwagTodo/src/renderer/src/components/project/ProjectPanel.tsx",
+          "tokens_estimated": 1606,
+          "was_repeated": false,
+          "anatomy_had_description": false
+        },
+        {
+          "file": "/home/fenta/Projects/SwagTodo/src/renderer/src/components/ui/sheet.tsx",
+          "tokens_estimated": 1480,
+          "was_repeated": false,
+          "anatomy_had_description": false
+        },
+        {
+          "file": "/home/fenta/Projects/SwagTodo/src/renderer/src/components/ui/field.tsx",
+          "tokens_estimated": 420,
+          "was_repeated": false,
+          "anatomy_had_description": false
+        },
+        {
+          "file": "/home/fenta/Projects/SwagTodo/src/renderer/src/components/ui/dialog.tsx",
+          "tokens_estimated": 1077,
+          "was_repeated": false,
+          "anatomy_had_description": false
+        },
+        {
+          "file": "/home/fenta/Projects/SwagTodo/src/renderer/src/components/ui/input.tsx",
+          "tokens_estimated": 228,
+          "was_repeated": false,
+          "anatomy_had_description": false
+        },
+        {
+          "file": "/home/fenta/Projects/SwagTodo/src/renderer/src/components/ui/textarea.tsx",
+          "tokens_estimated": 205,
+          "was_repeated": false,
+          "anatomy_had_description": false
+        },
+        {
+          "file": "/home/fenta/Projects/SwagTodo/src/renderer/src/components/ui/fieldset.tsx",
+          "tokens_estimated": 260,
+          "was_repeated": false,
+          "anatomy_had_description": false
+        },
+        {
+          "file": "/home/fenta/Projects/SwagTodo/src/renderer/src/components/ui/button.tsx",
+          "tokens_estimated": 526,
+          "was_repeated": false,
+          "anatomy_had_description": false
+        },
+        {
+          "file": "/home/fenta/Projects/SwagTodo/src/renderer/src/components/modals/ShortcutsHelpModal.tsx",
+          "tokens_estimated": 963,
+          "was_repeated": false,
+          "anatomy_had_description": false
+        },
+        {
+          "file": "/home/fenta/Projects/SwagTodo/src/renderer/src/components/modals/ProjectPickerModal.tsx",
+          "tokens_estimated": 1197,
+          "was_repeated": false,
+          "anatomy_had_description": false
+        },
+        {
+          "file": "/home/fenta/Projects/SwagTodo/src/renderer/src/components/modals/LabelManagerModal.tsx",
+          "tokens_estimated": 1100,
+          "was_repeated": false,
+          "anatomy_had_description": false
+        },
+        {
+          "file": "/home/fenta/Projects/SwagTodo/src/renderer/src/components/task-edit/SubtaskList.tsx",
+          "tokens_estimated": 615,
+          "was_repeated": false,
+          "anatomy_had_description": false
+        },
+        {
+          "file": "/home/fenta/Projects/SwagTodo/src/renderer/src/components/project/emoji-picker.tsx",
+          "tokens_estimated": 994,
+          "was_repeated": false,
+          "anatomy_had_description": false
+        },
+        {
+          "file": "/home/fenta/Projects/SwagTodo/src/renderer/src/components/project/color-selector.tsx",
+          "tokens_estimated": 387,
+          "was_repeated": false,
+          "anatomy_had_description": false
+        },
+        {
+          "file": "/home/fenta/Projects/SwagTodo/src/renderer/src/components/project/custom-color-input.tsx",
+          "tokens_estimated": 576,
+          "was_repeated": false,
+          "anatomy_had_description": false
+        },
+        {
+          "file": "/home/fenta/Projects/SwagTodo/src/renderer/src/components/task-panel/index.tsx",
+          "tokens_estimated": 70,
+          "was_repeated": false,
+          "anatomy_had_description": false
+        },
+        {
+          "file": "/home/fenta/Projects/SwagTodo/src/renderer/src/components/ui/kbd.tsx",
+          "tokens_estimated": 251,
+          "was_repeated": false,
+          "anatomy_had_description": false
+        },
+        {
+          "file": "/home/fenta/Projects/SwagTodo/src/renderer/src/components/ui/popover.tsx",
+          "tokens_estimated": 368,
+          "was_repeated": false,
+          "anatomy_had_description": false
+        }
+      ],
+      "writes": [
+        {
+          "file": "/home/fenta/Projects/SwagTodo/src/renderer/src/components/task-panel/TaskDetailPanel.tsx",
+          "tokens_estimated": 745,
+          "action": "create"
+        },
+        {
+          "file": "/home/fenta/Projects/SwagTodo/src/renderer/src/components/task-panel/task-form-fields.tsx",
+          "tokens_estimated": 2260,
+          "action": "create"
+        },
+        {
+          "file": "/home/fenta/Projects/SwagTodo/src/renderer/src/components/task-panel/TaskCreatePanel.tsx",
+          "tokens_estimated": 1206,
+          "action": "create"
+        },
+        {
+          "file": "/home/fenta/Projects/SwagTodo/src/renderer/src/components/task-panel/TaskEditPanel.tsx",
+          "tokens_estimated": 2034,
+          "action": "create"
+        },
+        {
+          "file": "/home/fenta/Projects/SwagTodo/src/renderer/src/components/project/ProjectPanel.tsx",
+          "tokens_estimated": 1359,
+          "action": "create"
+        },
+        {
+          "file": "/home/fenta/Projects/SwagTodo/src/renderer/src/components/task-panel/index.tsx",
+          "tokens_estimated": 15,
+          "action": "edit"
+        },
+        {
+          "file": "/home/fenta/Projects/SwagTodo/src/renderer/src/components/modals/ShortcutsHelpModal.tsx",
+          "tokens_estimated": 625,
+          "action": "create"
+        },
+        {
+          "file": "/home/fenta/Projects/SwagTodo/src/renderer/src/components/modals/ProjectPickerModal.tsx",
+          "tokens_estimated": 790,
+          "action": "create"
+        },
+        {
+          "file": "/home/fenta/Projects/SwagTodo/src/renderer/src/components/modals/LabelManagerModal.tsx",
+          "tokens_estimated": 1082,
+          "action": "create"
+        },
+        {
+          "file": "/home/fenta/Projects/SwagTodo/src/renderer/src/components/task-edit/SubtaskList.tsx",
+          "tokens_estimated": 614,
+          "action": "create"
+        },
+        {
+          "file": "/home/fenta/Projects/SwagTodo/src/renderer/src/components/project/emoji-picker.tsx",
+          "tokens_estimated": 741,
+          "action": "create"
+        },
+        {
+          "file": "/home/fenta/Projects/SwagTodo/src/renderer/src/components/task-panel/TaskDetailPanel.tsx",
+          "tokens_estimated": 71,
+          "action": "edit"
+        },
+        {
+          "file": "/home/fenta/Projects/SwagTodo/src/renderer/src/components/task-panel/TaskDetailPanel.tsx",
+          "tokens_estimated": 747,
+          "action": "create"
+        },
+        {
+          "file": "/home/fenta/Projects/SwagTodo/src/renderer/src/components/task-panel/TaskCreatePanel.tsx",
+          "tokens_estimated": 38,
+          "action": "edit"
+        },
+        {
+          "file": "/home/fenta/Projects/SwagTodo/src/renderer/src/components/task-panel/TaskCreatePanel.tsx",
+          "tokens_estimated": 58,
+          "action": "edit"
+        },
+        {
+          "file": "/home/fenta/Projects/SwagTodo/src/renderer/src/components/task-panel/TaskCreatePanel.tsx",
+          "tokens_estimated": 82,
+          "action": "edit"
+        },
+        {
+          "file": "/home/fenta/Projects/SwagTodo/src/renderer/src/components/task-panel/TaskEditPanel.tsx",
+          "tokens_estimated": 38,
+          "action": "edit"
+        },
+        {
+          "file": "/home/fenta/Projects/SwagTodo/src/renderer/src/components/task-panel/TaskEditPanel.tsx",
+          "tokens_estimated": 60,
+          "action": "edit"
+        },
+        {
+          "file": "/home/fenta/Projects/SwagTodo/src/renderer/src/components/task-panel/TaskEditPanel.tsx",
+          "tokens_estimated": 26,
+          "action": "edit"
+        },
+        {
+          "file": "/home/fenta/Projects/SwagTodo/src/renderer/src/components/task-panel/TaskEditPanel.tsx",
+          "tokens_estimated": 38,
+          "action": "edit"
+        },
+        {
+          "file": "/home/fenta/Projects/SwagTodo/src/renderer/src/components/project/ProjectPanel.tsx",
+          "tokens_estimated": 38,
+          "action": "edit"
+        },
+        {
+          "file": "/home/fenta/Projects/SwagTodo/src/renderer/src/components/project/ProjectPanel.tsx",
+          "tokens_estimated": 88,
+          "action": "edit"
+        },
+        {
+          "file": "/home/fenta/Projects/SwagTodo/src/renderer/src/components/project/ProjectPanel.tsx",
+          "tokens_estimated": 26,
+          "action": "edit"
+        },
+        {
+          "file": "/home/fenta/Projects/SwagTodo/src/renderer/src/components/project/ProjectPanel.tsx",
+          "tokens_estimated": 11,
+          "action": "edit"
+        }
+      ],
+      "totals": {
+        "input_tokens_estimated": 18933,
+        "output_tokens_estimated": 12792,
+        "reads_count": 23,
+        "writes_count": 24,
+        "repeated_reads_blocked": 2,
+        "anatomy_lookups": 23
+      }
+    },
+    {
+      "id": "session-2026-04-28-1906",
+      "started": "2026-04-28T17:06:35.638Z",
+      "ended": "2026-04-28T17:20:11.982Z",
+      "reads": [
+        {
+          "file": "/home/fenta/Projects/SwagTodo/src/renderer/src/components/task-panel/TaskCreatePanel.tsx",
+          "tokens_estimated": 1210,
+          "was_repeated": false,
+          "anatomy_had_description": false
+        },
+        {
+          "file": "/home/fenta/Projects/SwagTodo/src/renderer/src/components/task-panel/TaskEditPanel.tsx",
+          "tokens_estimated": 2024,
+          "was_repeated": false,
+          "anatomy_had_description": false
+        },
+        {
+          "file": "/home/fenta/Projects/SwagTodo/src/renderer/src/components/ui/dialog.tsx",
+          "tokens_estimated": 1077,
+          "was_repeated": false,
+          "anatomy_had_description": false
+        },
+        {
+          "file": "/home/fenta/Projects/SwagTodo/tailwind.config.ts",
+          "tokens_estimated": 713,
+          "was_repeated": false,
+          "anatomy_had_description": false
+        },
+        {
+          "file": "/home/fenta/Projects/SwagTodo/src/renderer/src/assets/main.css",
+          "tokens_estimated": 372,
+          "was_repeated": false,
+          "anatomy_had_description": false
+        },
+        {
+          "file": "/home/fenta/Projects/SwagTodo/src/renderer/src/components/layout/ThemeProvider.tsx",
+          "tokens_estimated": 142,
+          "was_repeated": false,
+          "anatomy_had_description": false
+        },
+        {
+          "file": "/home/fenta/Projects/SwagTodo/src/renderer/src/components/task-panel/task-form-fields.tsx",
+          "tokens_estimated": 2260,
+          "was_repeated": false,
+          "anatomy_had_description": false
+        },
+        {
+          "file": "/home/fenta/Projects/SwagTodo/src/renderer/src/components/task-panel/TaskDetailPanel.tsx",
+          "tokens_estimated": 747,
+          "was_repeated": false,
+          "anatomy_had_description": false
+        }
+      ],
+      "writes": [
+        {
+          "file": "/home/fenta/Projects/SwagTodo/src/renderer/src/components/ui/dialog.tsx",
+          "tokens_estimated": 211,
+          "action": "edit"
+        },
+        {
+          "file": "/home/fenta/Projects/SwagTodo/src/renderer/src/components/ui/dialog.tsx",
+          "tokens_estimated": 24,
+          "action": "edit"
+        },
+        {
+          "file": "/home/fenta/Projects/SwagTodo/src/renderer/src/components/ui/dialog.tsx",
+          "tokens_estimated": 18,
+          "action": "edit"
+        },
+        {
+          "file": "/home/fenta/Projects/SwagTodo/src/renderer/src/components/ui/dialog.tsx",
+          "tokens_estimated": 61,
+          "action": "edit"
+        },
+        {
+          "file": "/home/fenta/Projects/SwagTodo/src/renderer/src/components/ui/dialog.tsx",
+          "tokens_estimated": 17,
+          "action": "edit"
+        },
+        {
+          "file": "/home/fenta/Projects/SwagTodo/src/renderer/src/components/ui/dialog.tsx",
+          "tokens_estimated": 19,
+          "action": "edit"
+        },
+        {
+          "file": "/home/fenta/Projects/SwagTodo/src/renderer/src/assets/main.css",
+          "tokens_estimated": 200,
+          "action": "edit"
+        }
+      ],
+      "totals": {
+        "input_tokens_estimated": 8545,
+        "output_tokens_estimated": 550,
+        "reads_count": 8,
+        "writes_count": 7,
+        "repeated_reads_blocked": 0,
+        "anatomy_lookups": 8
       }
     }
   ],

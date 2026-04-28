@@ -1,5 +1,7 @@
 import type { SubTask } from '@renderer/types'
 import { AnimatedCheckbox } from '@renderer/components/task-list/animated-checkbox'
+import { Button } from '@renderer/components/ui/button'
+import { Input } from '@renderer/components/ui/input'
 import { cn } from '@renderer/utils/cn'
 import { Trash2 } from 'lucide-react'
 
@@ -22,12 +24,12 @@ export function SubtaskList({
   onAdd
 }: SubtaskListProps): React.JSX.Element {
   return (
-    <div>
-      <div className="mb-2 text-xs text-app-text-muted">Subtasks</div>
+    <div className="space-y-2">
+      <p className="text-xs font-medium text-app-text-muted">Subtasks</p>
       <div className="space-y-1">
         {subTasks.map((subTask) => (
           <div
-            className="group flex items-center gap-2 rounded px-1 py-1 hover:bg-white/[0.02]"
+            className="group flex items-center gap-2 rounded px-1 py-1 hover:bg-app-hover/40"
             key={subTask.id}
           >
             <AnimatedCheckbox
@@ -43,21 +45,24 @@ export function SubtaskList({
             >
               {subTask.title}
             </span>
-            <button
-              className="flex size-5 items-center justify-center rounded text-app-text-muted opacity-0 hover:bg-app-hover hover:text-app-text-secondary group-hover:opacity-100"
+            <Button
+              aria-label="Delete subtask"
+              className="opacity-0 group-hover:opacity-100"
               onClick={() => onDelete(subTask.id)}
+              size="icon-xs"
               type="button"
+              variant="ghost"
             >
               <Trash2 size={11} />
-            </button>
+            </Button>
           </div>
         ))}
       </div>
-      <input
-        className="mt-1 h-7 w-full bg-transparent px-1 text-sm text-app-text-secondary placeholder:text-app-text-muted focus:outline-none"
+      <Input
         onChange={(event) => onNewSubTaskTitleChange(event.target.value)}
         onKeyDown={onAdd}
         placeholder="+ Add subtask"
+        size="sm"
         value={newSubTaskTitle}
       />
     </div>

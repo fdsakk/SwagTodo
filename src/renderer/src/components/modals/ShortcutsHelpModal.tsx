@@ -1,4 +1,12 @@
-import { AnimatePresence, motion } from 'framer-motion'
+import {
+  Dialog,
+  DialogDescription,
+  DialogHeader,
+  DialogPanel,
+  DialogPopup,
+  DialogTitle
+} from '@renderer/components/ui/dialog'
+import { Kbd } from '@renderer/components/ui/kbd'
 
 interface ShortcutsHelpModalProps {
   open: boolean
@@ -28,59 +36,27 @@ const SHORTCUTS: { keys: string[]; label: string }[] = [
 
 export function ShortcutsHelpModal({ open, onClose }: ShortcutsHelpModalProps): React.JSX.Element {
   return (
-    <AnimatePresence>
-      {open && (
-        <>
-          <motion.div
-            animate={{ opacity: 1 }}
-            className="fixed left-2 right-2 top-8 bottom-2 z-40 rounded-lg bg-black/50"
-            exit={{ opacity: 0 }}
-            initial={{ opacity: 0 }}
-            onClick={onClose}
-            transition={{ duration: 0.15 }}
-          />
-          <div className="pointer-events-none fixed left-2 right-2 top-8 bottom-2 z-50 flex items-center justify-center">
-            <motion.div
-              animate={{ opacity: 1, scale: 1 }}
-              className="pointer-events-auto w-[420px] max-h-[90%] overflow-y-auto rounded-lg border border-app-border bg-app-bg p-5 shadow-xl"
-              exit={{ opacity: 0, scale: 0.98 }}
-              initial={{ opacity: 0, scale: 0.98 }}
-              transition={{ duration: 0.15 }}
-            >
-              <div className="mb-4 flex items-center justify-between">
-                <h2 className="text-sm font-semibold text-zinc-100">Keyboard shortcuts</h2>
-                <button
-                  className="text-xs text-app-text-muted hover:text-app-text-secondary"
-                  onClick={onClose}
-                  type="button"
-                >
-                  Close
-                </button>
+    <Dialog open={open} onOpenChange={(next) => !next && onClose()}>
+      <DialogPopup>
+        <DialogHeader>
+          <DialogTitle>Keyboard shortcuts</DialogTitle>
+          <DialogDescription>Press any key to navigate the app.</DialogDescription>
+        </DialogHeader>
+        <DialogPanel>
+          <div className="space-y-2">
+            {SHORTCUTS.map((sc) => (
+              <div key={sc.keys.join('+')} className="flex items-center justify-between text-sm">
+                <span className="text-app-text-secondary">{sc.label}</span>
+                <div className="flex items-center gap-1">
+                  {sc.keys.map((k, idx) => (
+                    <Kbd key={`${k}-${idx}`}>{k}</Kbd>
+                  ))}
+                </div>
               </div>
-              <div className="space-y-1.5">
-                {SHORTCUTS.map((sc) => (
-                  <div
-                    key={sc.keys.join('+')}
-                    className="flex items-center justify-between text-xs"
-                  >
-                    <span className="text-zinc-400">{sc.label}</span>
-                    <div className="flex items-center gap-1">
-                      {sc.keys.map((k, idx) => (
-                        <kbd
-                          key={`${k}-${idx}`}
-                          className="rounded border border-app-border bg-app-hover px-1.5 py-0.5 font-mono text-[10px] text-app-text-secondary"
-                        >
-                          {k}
-                        </kbd>
-                      ))}
-                    </div>
-                  </div>
-                ))}
-              </div>
-            </motion.div>
+            ))}
           </div>
-        </>
-      )}
-    </AnimatePresence>
+        </DialogPanel>
+      </DialogPopup>
+    </Dialog>
   )
 }

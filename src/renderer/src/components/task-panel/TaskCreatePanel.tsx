@@ -1,7 +1,15 @@
 import { useCallback, useState } from 'react'
-import { X } from 'lucide-react'
 import { Button } from '@renderer/components/ui/button'
-import { Separator } from '@renderer/components/ui/separator'
+import { Field, FieldLabel } from '@renderer/components/ui/field'
+import { Input } from '@renderer/components/ui/input'
+import {
+  DialogDescription,
+  DialogFooter,
+  DialogHeader,
+  DialogPanel,
+  DialogTitle
+} from '@renderer/components/ui/dialog'
+import { Textarea } from '@renderer/components/ui/textarea'
 import type { Priority, TaskStatus } from '@renderer/types'
 import { TaskFormFields } from './task-form-fields'
 import { useShallow } from 'zustand/react/shallow'
@@ -77,84 +85,70 @@ export function TaskCreatePanel(props: TaskCreatePanelProps): React.JSX.Element 
       if (event.key === 'Enter') {
         event.preventDefault()
         handleCreate()
-      } else if (event.key === 'Escape') {
-        props.onClose()
       }
     },
-    [handleCreate, props]
+    [handleCreate]
   )
 
   const canSubmit = form.title.trim().length > 0
 
   return (
-    <div className="flex flex-col" style={{ maxHeight: 'calc(100vh - 80px)' }}>
-      {/* Header */}
-      <div className="flex items-center justify-between border-b border-app-border px-6 py-2.5">
-        <span className="text-[11px] font-medium  tracking-widest text-app-text-muted">Create</span>
-        <button
-          className="flex h-7 w-7 items-center justify-center rounded-md text-app-text-muted hover:bg-app-hover hover:text-app-text-secondary"
-          onClick={props.onClose}
-          type="button"
-        >
-          <X size={15} />
-        </button>
-      </div>
+    <>
+      <DialogHeader>
+        <DialogTitle>New task</DialogTitle>
+        <DialogDescription>Add a task to your list.</DialogDescription>
+      </DialogHeader>
 
-      {/* Body */}
-      <div className="flex-1 overflow-y-auto px-6 py-5 space-y-4">
-        <input
-          autoFocus
-          className="w-full bg-transparent text-xl font-semibold text-zinc-100 placeholder:text-zinc-600 focus:outline-none"
-          onChange={(event) => patch({ title: event.target.value })}
-          onKeyDown={handleTitleKeyDown}
-          placeholder="Task name"
-          value={form.title}
-        />
+      <DialogPanel>
+        <div className="grid gap-4 sm:grid-cols-[minmax(0,1fr)_13.5rem]">
+          <div className="space-y-3">
+            <Field>
+              <FieldLabel>Title</FieldLabel>
+              <Input
+                autoFocus
+                onChange={(event) => patch({ title: event.target.value })}
+                onKeyDown={handleTitleKeyDown}
+                placeholder="Task name"
+                value={form.title}
+              />
+            </Field>
 
-        <textarea
-          className="h-20 w-full resize-none bg-transparent text-sm leading-relaxed text-zinc-400 placeholder:text-zinc-600 focus:outline-none"
-          onChange={(event) => patch({ description: event.target.value })}
-          placeholder="Add description..."
-          value={form.description}
-        />
+            <Field>
+              <FieldLabel>Description</FieldLabel>
+              <Textarea
+                className="min-h-32"
+                onChange={(event) => patch({ description: event.target.value })}
+                placeholder="Add description..."
+                value={form.description}
+              />
+            </Field>
+          </div>
 
-        <Separator className="bg-app-border" />
+          <TaskFormFields
+            dueDate={form.dueDate || undefined}
+            labels={labels}
+            onDueDateChange={(v) => patch({ dueDate: v ?? '' })}
+            onPriorityChange={(v) => patch({ priority: v })}
+            onProjectChange={(v) => patch({ projectId: v ?? '' })}
+            onStatusChange={(v) => patch({ status: v })}
+            onToggleLabel={toggleLabel}
+            priority={form.priority}
+            projectId={form.projectId || undefined}
+            projects={projects}
+            selectedLabelIds={form.labels}
+            status={form.status}
+          />
+        </div>
+      </DialogPanel>
 
-        <TaskFormFields
-          dueDate={form.dueDate || undefined}
-          labels={labels}
-          onDueDateChange={(v) => patch({ dueDate: v ?? '' })}
-          onPriorityChange={(v) => patch({ priority: v })}
-          onProjectChange={(v) => patch({ projectId: v ?? '' })}
-          onStatusChange={(v) => patch({ status: v })}
-          onToggleLabel={toggleLabel}
-          priority={form.priority}
-          projectId={form.projectId || undefined}
-          projects={projects}
-          selectedLabelIds={form.labels}
-          status={form.status}
-        />
-      </div>
-
-      {/* Footer */}
-      <div className="flex items-center justify-end gap-2 border-t border-app-border px-6 py-2.5">
-        <Button
-          className="h-7 bg-transparent px-3 text-xs text-app-text-muted hover:bg-app-hover hover:text-app-text-secondary"
-          onClick={props.onClose}
-          type="button"
-          variant="ghost"
-        >
+      <DialogFooter>
+        <Button onClick={props.onClose} type="button" variant="outline">
           Cancel
         </Button>
-        <Button
-          className="h-7 px-4 text-xs"
-          disabled={!canSubmit}
-          onClick={handleCreate}
-          type="button"
-        >
+        <Button disabled={!canSubmit} onClick={handleCreate} type="button">
           Add task
         </Button>
-      </div>
-    </div>
+      </DialogFooter>
+    </>
   )
 }

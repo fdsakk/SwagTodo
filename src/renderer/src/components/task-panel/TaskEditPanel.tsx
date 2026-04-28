@@ -1,7 +1,17 @@
 import { useCallback, useEffect, useMemo, useRef, useState } from 'react'
-import { Trash2, X } from 'lucide-react'
+import { Trash2 } from 'lucide-react'
 import { Button } from '@renderer/components/ui/button'
+import { Field, FieldLabel } from '@renderer/components/ui/field'
+import { Input } from '@renderer/components/ui/input'
 import { Separator } from '@renderer/components/ui/separator'
+import {
+  DialogDescription,
+  DialogFooter,
+  DialogHeader,
+  DialogPanel,
+  DialogTitle
+} from '@renderer/components/ui/dialog'
+import { Textarea } from '@renderer/components/ui/textarea'
 import type { Priority, Task, TaskStatus } from '@renderer/types'
 import { TaskFormFields } from './task-form-fields'
 import { useShallow } from 'zustand/react/shallow'
@@ -96,13 +106,6 @@ export function TaskEditPanel({ task, onClose }: TaskEditPanelProps): React.JSX.
     [commitDescription]
   )
 
-  const handleTitleKeyDown = useCallback(
-    (e: React.KeyboardEvent<HTMLInputElement>) => {
-      if (e.key === 'Escape') onClose()
-    },
-    [onClose]
-  )
-
   const flushTitle = useCallback(() => {
     if (titleTimerRef.current) {
       clearTimeout(titleTimerRef.current)
@@ -148,64 +151,41 @@ export function TaskEditPanel({ task, onClose }: TaskEditPanelProps): React.JSX.
   }, [deleteTask, onClose, task.id])
 
   return (
-    <div className="flex flex-col" style={{ maxHeight: 'calc(100vh - 80px)' }}>
-      {/* Header */}
-      <div className="flex items-center justify-between border-b border-app-border px-6 py-2.5">
-        <span className="text-[11px] font-medium tracking-widest text-app-text-muted">Task</span>
-        <button
-          className="flex h-7 w-7 items-center justify-center rounded-md text-app-text-muted hover:bg-app-hover hover:text-app-text-secondary"
-          onClick={onClose}
-          type="button"
-        >
-          <X size={15} />
-        </button>
-      </div>
+    <>
+      <DialogHeader>
+        <DialogTitle>Edit task</DialogTitle>
+      </DialogHeader>
 
-      {/* Body — two columns */}
-      <div className="grid grid-cols-8">
-        {/* Left: title, description, subtasks */}
-        <div className="col-span-5 overflow-y-auto px-6 py-5">
-          <input
-            autoFocus
-            className="mb-3 w-full bg-transparent text-xl font-semibold text-zinc-100 placeholder:text-zinc-600 focus:outline-none"
-            onBlur={flushTitle}
-            onChange={handleTitleChange}
-            onKeyDown={handleTitleKeyDown}
-            placeholder="Task name"
-            value={title}
-          />
+      <Separator />
 
-          <textarea
-            className="mb-5 min-h-[120px] w-full resize-none bg-transparent text-sm leading-relaxed text-zinc-400 placeholder:text-zinc-600 focus:outline-none"
-            onBlur={flushDescription}
-            onChange={handleDescriptionChange}
-            placeholder="Add description..."
-            value={description}
-          />
+      <DialogPanel className="space-y-3 mt-4">
+        <div className="grid gap-4 sm:grid-cols-[minmax(0,1fr)_auto_13.5rem]">
+          <div className="space-y-3">
+            <Field>
+              <FieldLabel>Title</FieldLabel>
+              <Input
+                autoFocus
+                onBlur={flushTitle}
+                onChange={handleTitleChange}
+                placeholder="Task name"
+                value={title}
+              />
+            </Field>
 
-          <Separator className="mb-5 bg-app-border" />
-
-          <SubtaskList
-            taskId={task.id}
-            subTasks={task.subTasks}
-            newSubTaskTitle={newSubTaskTitle}
-            onNewSubTaskTitleChange={setNewSubTaskTitle}
-            onToggle={(subTaskId) => toggleSubTask(task.id, subTaskId)}
-            onDelete={(subTaskId) => deleteSubTask(task.id, subTaskId)}
-            onAdd={handleAddSubTask}
-          />
-
-          <Separator className="my-5 bg-app-border" />
-
-          <div>
-            <div className="mb-3 text-[11px] font-medium text-app-text-muted">Sessions</div>
-            <SessionStats stats={stats} />
+            <Field>
+              <FieldLabel>Description</FieldLabel>
+              <Textarea
+                className="min-h-[10.25rem]"
+                onBlur={flushDescription}
+                onChange={handleDescriptionChange}
+                placeholder="Add description..."
+                value={description}
+              />
+            </Field>
           </div>
-        </div>
 
-        {/* Right: metadata */}
-        <div className="col-span-3  border-l border-app-border bg-app-titlebar/30 px-4 py-5">
-          <div className="mb-3 text-[11px] font-medium text-app-text-muted">Details</div>
+          <Separator orientation="vertical" />
+
           <TaskFormFields
             dueDate={task.dueDate}
             emptyLabelsMessage="No labels selected."
@@ -222,20 +202,35 @@ export function TaskEditPanel({ task, onClose }: TaskEditPanelProps): React.JSX.
             status={task.status}
           />
         </div>
-      </div>
 
-      {/* Footer */}
-      <div className="flex items-center border-t border-app-border px-4 py-2.5">
-        <Button
-          className="h-7 bg-transparent px-2 text-xs text-app-text-muted hover:bg-app-hover hover:text-red-400"
-          onClick={handleDelete}
-          type="button"
-          variant="ghost"
-        >
+        <Separator className="mt-6 mb-5"/>
+
+        <div className="max-w-fit">
+          <SubtaskList
+            taskId={task.id}
+            subTasks={task.subTasks}
+            newSubTaskTitle={newSubTaskTitle}
+            onNewSubTaskTitleChange={setNewSubTaskTitle}
+            onToggle={(subTaskId) => toggleSubTask(task.id, subTaskId)}
+            onDelete={(subTaskId) => deleteSubTask(task.id, subTaskId)}
+            onAdd={handleAddSubTask}
+          />
+        </div>
+        <div className="space-y-2">
+          <p className="text-xs font-medium text-app-text-muted">Sessions</p>
+          <SessionStats stats={stats} />
+        </div>
+      </DialogPanel>
+
+      <DialogFooter className="justify-between sm:justify-between">
+        <Button onClick={handleDelete} type="button" variant="destructive-outline" size="sm">
           <Trash2 size={12} />
           Delete
         </Button>
-      </div>
-    </div>
+        <Button onClick={onClose} type="button" variant="outline" size="sm">
+          Done
+        </Button>
+      </DialogFooter>
+    </>
   )
 }

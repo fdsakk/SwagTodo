@@ -1,10 +1,18 @@
 import { useState } from 'react'
-import { Trash2, X } from 'lucide-react'
+import { Trash2 } from 'lucide-react'
 import { Button } from '@renderer/components/ui/button'
-import { Separator } from '@renderer/components/ui/separator'
+import { Field, FieldLabel } from '@renderer/components/ui/field'
+import { Input } from '@renderer/components/ui/input'
+import {
+  DialogDescription,
+  DialogFooter,
+  DialogHeader,
+  DialogPanel,
+  DialogTitle
+} from '@renderer/components/ui/dialog'
+import { Textarea } from '@renderer/components/ui/textarea'
 import type { Project } from '@renderer/types'
 import { PROJECT_COLOR_SWATCHES } from '@renderer/utils/task'
-import { Field } from '@renderer/components/task-panel/panel-field'
 import { ColorSelector } from './color-selector'
 import { CustomColorInput } from './custom-color-input'
 import { EmojiPicker } from './emoji-picker'
@@ -71,102 +79,79 @@ export function ProjectPanel({ project, onClose }: ProjectPanelProps): React.JSX
   }
 
   return (
-    <div className="flex flex-col" style={{ maxHeight: 'calc(100vh - 80px)' }}>
-      {/* Header */}
-      <div className="flex items-center justify-between border-b border-app-border px-6 py-2.5">
-        <span className="text-[11px] font-medium text-app-text-muted">
-          {isEdit ? 'Edit project' : 'New project'}
-        </span>
-        <button
-          className="flex h-7 w-7 items-center justify-center rounded-md text-app-text-muted hover:bg-app-hover hover:text-app-text-secondary"
-          onClick={onClose}
-          type="button"
-        >
-          <X size={15} />
-        </button>
-      </div>
+    <>
+      <DialogHeader>
+        <DialogTitle>{isEdit ? 'Edit project' : 'New project'}</DialogTitle>
+        <DialogDescription>
+          {isEdit ? 'Update project name, emoji, and color.' : 'Create a new project.'}
+        </DialogDescription>
+      </DialogHeader>
 
-      {/* Body */}
-      <div className="flex-1 overflow-y-auto px-6 py-5 space-y-4">
-        <input
-          autoFocus
-          className="w-full bg-transparent text-xl font-semibold text-zinc-100 placeholder:text-zinc-600 focus:outline-none"
-          onChange={(event) => patch({ name: event.target.value })}
-          onKeyDown={(event) => {
-            if (event.key === 'Enter') {
-              event.preventDefault()
-              handleSave()
-            }
-            if (event.key === 'Escape') onClose()
-          }}
-          placeholder="Project name"
-          value={form.name}
-        />
+      <DialogPanel className="space-y-3">
+        <Field>
+          <FieldLabel>Name</FieldLabel>
+          <Input
+            autoFocus
+            onChange={(event) => patch({ name: event.target.value })}
+            onKeyDown={(event) => {
+              if (event.key === 'Enter') {
+                event.preventDefault()
+                handleSave()
+              }
+            }}
+            placeholder="Project name"
+            value={form.name}
+          />
+        </Field>
 
-        <textarea
-          className="h-20 w-full resize-none bg-transparent text-sm leading-relaxed text-zinc-400 placeholder:text-zinc-600 focus:outline-none"
-          onChange={(event) => patch({ description: event.target.value })}
-          placeholder="Add description..."
-          value={form.description}
-        />
+        <Field>
+          <FieldLabel>Description</FieldLabel>
+          <Textarea
+            onChange={(event) => patch({ description: event.target.value })}
+            placeholder="Add description..."
+            value={form.description}
+          />
+        </Field>
 
-        <Separator className="bg-app-border" />
+        <Field>
+          <FieldLabel>Emoji</FieldLabel>
+          <EmojiPicker onSelect={(emoji) => patch({ emoji })} value={form.emoji} />
+        </Field>
 
-        <div className="divide-y divide-app-border">
-          <Field label="Emoji">
-            <EmojiPicker onSelect={(emoji) => patch({ emoji })} value={form.emoji} />
-          </Field>
-
-          <Field label="Color">
-            <div className="space-y-3 pt-1">
-              <ColorSelector
-                colors={PROJECT_COLOR_SWATCHES}
-                onColorSelect={(color) => patch({ color })}
-                value={form.color}
-              />
-              <div className="space-y-1.5">
-                <p className="text-[10px] ext-app-text-muted">Custom</p>
-                <CustomColorInput onChange={(color) => patch({ color })} value={form.color} />
-              </div>
+        <Field>
+          <FieldLabel>Color</FieldLabel>
+          <div className="w-full space-y-3">
+            <ColorSelector
+              colors={PROJECT_COLOR_SWATCHES}
+              onColorSelect={(color) => patch({ color })}
+              value={form.color}
+            />
+            <div className="space-y-2">
+              <p className="text-xs text-app-text-muted">Custom</p>
+              <CustomColorInput onChange={(color) => patch({ color })} value={form.color} />
             </div>
-          </Field>
-        </div>
-      </div>
+          </div>
+        </Field>
+      </DialogPanel>
 
-      {/* Footer */}
-      <div className="flex items-center justify-between border-t border-app-border px-6 py-2.5">
+      <DialogFooter className="justify-between sm:justify-between">
         {isEdit ? (
-          <Button
-            className="h-7 bg-transparent px-2 text-xs text-app-text-muted hover:bg-app-hover hover:text-red-400"
-            onClick={handleDelete}
-            type="button"
-            variant="ghost"
-          >
+          <Button onClick={handleDelete} size="sm" type="button" variant="destructive-outline">
             <Trash2 size={12} />
             Delete
           </Button>
         ) : (
-          <div />
+          <span />
         )}
         <div className="flex items-center gap-2">
-          <Button
-            className="h-7 bg-transparent px-3 text-xs text-app-text-muted hover:bg-app-hover hover:text-app-text-secondary"
-            onClick={onClose}
-            type="button"
-            variant="ghost"
-          >
+          <Button onClick={onClose} size="sm" type="button" variant="outline">
             Cancel
           </Button>
-          <Button
-            className="h-7 px-4 text-xs"
-            disabled={!form.name.trim()}
-            onClick={handleSave}
-            type="button"
-          >
+          <Button disabled={!form.name.trim()} onClick={handleSave} size="sm" type="button">
             {isEdit ? 'Save' : 'Add project'}
           </Button>
         </div>
-      </div>
-    </div>
+      </DialogFooter>
+    </>
   )
 }

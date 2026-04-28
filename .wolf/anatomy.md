@@ -1,7 +1,7 @@
 # anatomy.md
 
-> Auto-maintained by OpenWolf. Last scanned: 2026-04-23T16:00:00.752Z
-> Files: 141 tracked | Anatomy hits: 0 | Misses: 0
+> Auto-maintained by OpenWolf. Last scanned: 2026-04-28T17:08:40.431Z
+> Files: 187 tracked | Anatomy hits: 0 | Misses: 0
 
 ## ./
 
@@ -81,7 +81,7 @@
 ## src/renderer/src/assets/
 
 - `base.css` — Styles: 22 vars (~400 tok)
-- `main.css` — Styles: 5 rules, 20 vars, 2 layers (~372 tok)
+- `main.css` — Styles: 6 rules, 122 vars (~2174 tok)
 
 ## src/renderer/src/components/kanban/
 
@@ -104,17 +104,17 @@
 ## src/renderer/src/components/modals/
 
 - `index.tsx` (~50 tok)
-- `LabelManagerModal.tsx` — LabelManagerModal — renders modal — uses useState (~1100 tok)
-- `ProjectPickerModal.tsx` — ProjectPickerModal — uses useEffect (~1197 tok)
-- `ShortcutsHelpModal.tsx` — SHORTCUTS (~963 tok)
+- `LabelManagerModal.tsx` — LabelManagerModal — renders modal (~1082 tok)
+- `ProjectPickerModal.tsx` — ProjectPickerModal — renders modal (~790 tok)
+- `ShortcutsHelpModal.tsx` — SHORTCUTS — renders modal (~625 tok)
 
 ## src/renderer/src/components/project/
 
 - `color-selector.tsx` — sizeClass (~387 tok)
 - `custom-color-input.tsx` — HEX_RE — uses useState, useEffect (~576 tok)
-- `emoji-picker.tsx` — EMOJI_GROUPS — uses useState, useEffect (~994 tok)
+- `emoji-picker.tsx` — EMOJI_GROUPS (~741 tok)
 - `index.tsx` (~56 tok)
-- `ProjectPanel.tsx` — ProjectPanel — renders form (~1606 tok)
+- `ProjectPanel.tsx` — ProjectPanel — renders form, modal (~1364 tok)
 
 ## src/renderer/src/components/sessions-calendar/
 
@@ -143,7 +143,7 @@
 
 - `index.tsx` (~26 tok)
 - `SessionStats.tsx` — SessionStats (~345 tok)
-- `SubtaskList.tsx` — SubtaskList (~615 tok)
+- `SubtaskList.tsx` — SubtaskList (~614 tok)
 
 ## src/renderer/src/components/task-list/
 
@@ -156,12 +156,12 @@
 
 ## src/renderer/src/components/task-panel/
 
-- `index.tsx` (~70 tok)
+- `index.tsx` (~59 tok)
 - `panel-field.tsx` — Field (~93 tok)
-- `task-form-fields.tsx` — INBOX_VALUE — uses useCallback (~2298 tok)
-- `TaskCreatePanel.tsx` — INITIAL_STATE — renders form — uses useCallback (~1434 tok)
-- `TaskDetailPanel.tsx` — TaskDetailPanel — uses useEffect (~1091 tok)
-- `TaskEditPanel.tsx` — TEXT_COMMIT_DEBOUNCE_MS — uses useMemo, useState, useEffect, useCallback (~2303 tok)
+- `task-form-fields.tsx` — INBOX_VALUE (~2260 tok)
+- `TaskCreatePanel.tsx` — INITIAL_STATE — renders form, modal (~1210 tok)
+- `TaskDetailPanel.tsx` — TaskDetailPanel — renders modal (~747 tok)
+- `TaskEditPanel.tsx` — TEXT_COMMIT_DEBOUNCE_MS — renders modal (~2024 tok)
 
 ## src/renderer/src/components/ui/
 
@@ -180,7 +180,7 @@
 - `collapsible.tsx` — coss/Base UI Collapsible wrappers (~335 tok)
 - `combobox.tsx` — coss/Base UI Combobox input/list wrappers (~1920 tok)
 - `command.tsx` — coss Command dialog built from dialog/autocomplete primitives (~1250 tok)
-- `dialog.tsx` — Dialog — renders modal (~1077 tok)
+- `dialog.tsx` — DialogCreateHandle — renders modal (~1817 tok)
 - `drawer.tsx` — coss/Base UI Drawer and drawer menu wrappers (~3590 tok)
 - `empty.tsx` — coss Empty state layout components (~480 tok)
 - `field.tsx` — coss/Base UI Field label/description/error wrappers (~420 tok)

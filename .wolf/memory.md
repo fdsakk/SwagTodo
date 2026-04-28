@@ -600,10 +600,66 @@
 
 ## Session: 2026-04-28 18:05
 
-| Time  | Action                                                                                                       | File(s)                                                                                                                       | Outcome                                                                | ~Tokens |
-| ----- | ------------------------------------------------------------------------------------------------------------ | ----------------------------------------------------------------------------------------------------------------------------- | ---------------------------------------------------------------------- | ------- |
-| 18:05 | migrated renderer UI primitives from shadcn/Radix to coss/Base UI and Tailwind v4                            | `src/renderer/src/components/ui/*`, `src/renderer/src/assets/main.css`, `electron.vite.config.ts`, `package.json`, `bun.lock` | Radix runtime removed; coss/Base UI components build                   | ~9000   |
-| 18:05 | refactored task selects, popovers, label dialog, task rows, and task context menu for coss/Base UI API       | `SearchSortBar.tsx`, `task-form-fields.tsx`, `LabelManagerModal.tsx`, `TaskRow.tsx`, `task-context-menu.tsx`                  | canonical coss names used; Base UI context menu preserves actions      | ~4500   |
-| 18:05 | fixed coss registry import/type issues, Prettier read-only skill traversal, and generated sidebar lint issue | `.prettierignore`, `src/renderer/src/components/ui/*.tsx`, `.wolf/*`                                                          | `bun run format`, `bun run lint`, `bun run test`, `bun run build` pass | ~2500   |
-| 18:34 | consolidated SearchSortBar sort/filter controls into one coss Popover filter button                          | `src/renderer/src/components/layout/SearchSortBar.tsx`, `.wolf/cerebrum.md`                                                   | `bun run format`, `bun run lint`, `bun run test`, `bun run build` pass | ~1200   |
+| Time  | Action                                                                                                       | File(s)                                                                                                                       | Outcome                                                                       | ~Tokens |
+| ----- | ------------------------------------------------------------------------------------------------------------ | ----------------------------------------------------------------------------------------------------------------------------- | ----------------------------------------------------------------------------- | ------- |
+| 18:05 | migrated renderer UI primitives from shadcn/Radix to coss/Base UI and Tailwind v4                            | `src/renderer/src/components/ui/*`, `src/renderer/src/assets/main.css`, `electron.vite.config.ts`, `package.json`, `bun.lock` | Radix runtime removed; coss/Base UI components build                          | ~9000   |
+| 18:05 | refactored task selects, popovers, label dialog, task rows, and task context menu for coss/Base UI API       | `SearchSortBar.tsx`, `task-form-fields.tsx`, `LabelManagerModal.tsx`, `TaskRow.tsx`, `task-context-menu.tsx`                  | canonical coss names used; Base UI context menu preserves actions             | ~4500   |
+| 18:05 | fixed coss registry import/type issues, Prettier read-only skill traversal, and generated sidebar lint issue | `.prettierignore`, `src/renderer/src/components/ui/*.tsx`, `.wolf/*`                                                          | `bun run format`, `bun run lint`, `bun run test`, `bun run build` pass        | ~2500   |
+| 18:34 | consolidated SearchSortBar sort/filter controls into one coss Popover filter button                          | `src/renderer/src/components/layout/SearchSortBar.tsx`, `.wolf/cerebrum.md`                                                   | `bun run format`, `bun run lint`, `bun run test`, `bun run build` pass        | ~1200   |
 | 18:42 | fixed SearchSortBar filter popover anchoring bug                                                             | `src/renderer/src/components/layout/SearchSortBar.tsx`, `.wolf/buglog.json`                                                   | native button trigger gives Base UI a DOM anchor; format/lint/test/build pass | ~500    |
+
+## Session: 2026-04-28 18:47
+
+| Time  | Action                                                                                                                                       | File(s)     | Outcome    | ~Tokens |
+| ----- | -------------------------------------------------------------------------------------------------------------------------------------------- | ----------- | ---------- | ------- |
+| 18:52 | Created src/renderer/src/components/task-panel/TaskDetailPanel.tsx                                                                           | —           | ~745       |
+| 18:52 | Created src/renderer/src/components/task-panel/task-form-fields.tsx                                                                          | —           | ~2260      |
+| 18:53 | Created src/renderer/src/components/task-panel/TaskCreatePanel.tsx                                                                           | —           | ~1206      |
+| 18:53 | Created src/renderer/src/components/task-panel/TaskEditPanel.tsx                                                                             | —           | ~2034      |
+| 18:54 | Created src/renderer/src/components/project/ProjectPanel.tsx                                                                                 | —           | ~1359      |
+| 18:54 | Edited src/renderer/src/components/task-panel/index.tsx                                                                                      | 2→1 lines   | ~15        |
+| 18:54 | Created src/renderer/src/components/modals/ShortcutsHelpModal.tsx                                                                            | —           | ~625       |
+| 18:54 | Created src/renderer/src/components/modals/ProjectPickerModal.tsx                                                                            | —           | ~790       |
+| 18:55 | Created src/renderer/src/components/modals/LabelManagerModal.tsx                                                                             | —           | ~1082      |
+| 18:55 | Created src/renderer/src/components/task-edit/SubtaskList.tsx                                                                                | —           | ~614       |
+| 18:55 | Created src/renderer/src/components/project/emoji-picker.tsx                                                                                 | —           | ~741       |
+| 18:56 | Edited src/renderer/src/components/task-panel/TaskDetailPanel.tsx                                                                            | 6→7 lines   | ~71        |
+| 18:59 | Created src/renderer/src/components/task-panel/TaskDetailPanel.tsx                                                                           | —           | ~747       |
+| 18:59 | Edited src/renderer/src/components/task-panel/TaskCreatePanel.tsx                                                                            | 7→7 lines   | ~38        |
+| 18:59 | Edited src/renderer/src/components/task-panel/TaskCreatePanel.tsx                                                                            | 6→6 lines   | ~58        |
+| 19:00 | Edited src/renderer/src/components/task-panel/TaskCreatePanel.tsx                                                                            | 10→10 lines | ~82        |
+| 19:00 | Edited src/renderer/src/components/task-panel/TaskEditPanel.tsx                                                                              | 7→7 lines   | ~38        |
+| 19:00 | Edited src/renderer/src/components/task-panel/TaskEditPanel.tsx                                                                              | 6→6 lines   | ~60        |
+| 19:00 | Edited src/renderer/src/components/task-panel/TaskEditPanel.tsx                                                                              | 3→3 lines   | ~26        |
+| 19:00 | Edited src/renderer/src/components/task-panel/TaskEditPanel.tsx                                                                              | 4→4 lines   | ~38        |
+| 19:00 | Edited src/renderer/src/components/project/ProjectPanel.tsx                                                                                  | 7→7 lines   | ~38        |
+| 19:00 | Edited src/renderer/src/components/project/ProjectPanel.tsx                                                                                  | 8→8 lines   | ~88        |
+| 19:00 | Edited src/renderer/src/components/project/ProjectPanel.tsx                                                                                  | 3→3 lines   | ~26        |
+| 19:00 | Edited src/renderer/src/components/project/ProjectPanel.tsx                                                                                  | 2→2 lines   | ~11        |
+| 19:01 | Session end: 24 writes across 11 files (TaskDetailPanel.tsx, task-form-fields.tsx, TaskCreatePanel.tsx, TaskEditPanel.tsx, ProjectPanel.tsx) | 23 reads    | ~31725 tok |
+
+## Session: 2026-04-28 19:03
+
+| Time  | Action                                                                     | File(s)                                  | Outcome                         | ~Tokens |
+| ----- | -------------------------------------------------------------------------- | ---------------------------------------- | ------------------------------- | ------- |
+| 19:03 | replaced ProjectPage List/Board buttons with controlled coss Tabs + panels | `src/renderer/src/pages/ProjectPage.tsx` | `bun run format` and build pass | ~1200   |
+
+## Session: 2026-04-28 19:06
+
+| Time  | Action                                                      | File(s)                                                   | Outcome                  | ~Tokens |
+| ----- | ----------------------------------------------------------- | --------------------------------------------------------- | ------------------------ | ------- |
+| 19:07 | Edited src/renderer/src/components/ui/dialog.tsx            | 2→2 lines                                                 | ~211                     |
+| 19:08 | Edited src/renderer/src/components/ui/dialog.tsx            | inline fix                                                | ~24                      |
+| 19:08 | Edited src/renderer/src/components/ui/dialog.tsx            | "text-muted-foreground tex" → "text-app-text-muted text-" | ~18                      |
+| 19:08 | Edited src/renderer/src/components/ui/dialog.tsx            | inline fix                                                | ~61                      |
+| 19:08 | Edited src/renderer/src/components/ui/dialog.tsx            | inline fix                                                | ~17                      |
+| 19:08 | Edited src/renderer/src/components/ui/dialog.tsx            | "text-app-text-muted text-" → "text-muted-foreground tex" | ~19                      |
+| 19:08 | Edited src/renderer/src/assets/main.css                     | expanded (+20 lines)                                      | ~200                     |
+| 19:20 | bridge shadcn tokens to app-\* theme                        | main.css, dialog.tsx (no-op)                              | task panels follow theme | ~3k     |
+| 19:20 | Session end: 7 writes across 2 files (dialog.tsx, main.css) | 8 reads                                                   | ~9095 tok                |
+
+## Session: 2026-04-28 19:27
+
+| Time  | Action                                                                                     | File(s)                                                                                                         | Outcome                         | ~Tokens |
+| ----- | ------------------------------------------------------------------------------------------ | --------------------------------------------------------------------------------------------------------------- | ------------------------------- | ------- |
+| 19:27 | moved task metadata selects into a side column and constrained dialog blur below title bar | `TaskCreatePanel.tsx`, `TaskEditPanel.tsx`, `TaskDetailPanel.tsx`, `dialog.tsx`, `App.tsx`, `SearchSortBar.tsx` | `bun run format` and build pass | ~7k     |
