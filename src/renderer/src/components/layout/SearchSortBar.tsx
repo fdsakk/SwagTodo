@@ -1,5 +1,5 @@
-import { useEffect, useRef } from 'react'
-import { Plus, Search } from 'lucide-react'
+import { useEffect, useMemo, useRef } from 'react'
+import { Funnel, Plus, Search } from 'lucide-react'
 import {
   Select,
   SelectPopup,
@@ -8,11 +8,12 @@ import {
   SelectTrigger,
   SelectValue
 } from '@renderer/components/ui/select'
+import { Popover, PopoverPopup, PopoverTrigger } from '@renderer/components/ui/popover'
 import { AnimatedCheckbox } from '@renderer/components/task-list/animated-checkbox'
 import { useDomainStore, useUiStore } from '@renderer/store'
 import { PRIORITY_META } from '@renderer/utils/task'
 import { useShallow } from 'zustand/react/shallow'
-import { Button } from '../ui/button'
+import { Button, buttonVariants } from '../ui/button'
 
 const SORT_OPTIONS = [
   { value: 'priority', label: 'Priority' },
@@ -73,6 +74,23 @@ export function SearchSortBar(): React.JSX.Element {
   )
   const projects = useDomainStore((state) => state.projects)
   const showInboxFilters = selectedView === 'inbox'
+  const showDoneFilter = !showInboxFilters && selectedView !== 'project'
+  const projectFilterOptions = useMemo(
+    () => [
+      { value: 'all', label: 'All projects' },
+      { value: 'no_project', label: 'Inbox only' },
+      ...projects.map((project) => ({
+        value: project.id,
+        label: project.emoji ? `${project.emoji} ${project.name}` : project.name
+      }))
+    ],
+    [projects]
+  )
+  const activeFilterCount =
+    (showInboxFilters && inboxStatusFilter !== 'all' ? 1 : 0) +
+    (showInboxFilters && inboxProjectFilter !== 'all' ? 1 : 0) +
+    (showInboxFilters && inboxPriorityFilter !== 'all' ? 1 : 0) +
+    (showDoneFilter && showCompleted ? 1 : 0)
 
   useEffect(() => {
     if (searchFocusSignal > 0) inputRef.current?.focus()
@@ -93,109 +111,131 @@ export function SearchSortBar(): React.JSX.Element {
           value={searchQuery}
         />
       </div>
-      <Select
-        items={SORT_OPTIONS}
-        onValueChange={(value) => {
-          if (value) setSortMode(value as typeof sortMode)
-        }}
-        value={sortMode}
-      >
-        <SelectTrigger size="sm">
-          <SelectValue />
-        </SelectTrigger>
-        <SelectPopup alignItemWithTrigger={false}>
-          <SelectGroup>
-            {SORT_OPTIONS.map((option) => (
-              <SelectItem key={option.value} value={option.value}>
-                {option.label}
-              </SelectItem>
-            ))}
-          </SelectGroup>
-        </SelectPopup>
-      </Select>
-      {showInboxFilters && (
-        <>
-          <Select
-            items={STATUS_FILTER_OPTIONS}
-            onValueChange={(value) => {
-              if (value) setInboxStatusFilter(value as typeof inboxStatusFilter)
-            }}
-            value={inboxStatusFilter}
-          >
-            <SelectTrigger size="sm">
-              <SelectValue />
-            </SelectTrigger>
-            <SelectPopup alignItemWithTrigger={false}>
-              <SelectGroup>
-                {STATUS_FILTER_OPTIONS.map((option) => (
-                  <SelectItem key={option.value} value={option.value}>
-                    {option.label}
-                  </SelectItem>
-                ))}
-              </SelectGroup>
-            </SelectPopup>
-          </Select>
-          <Select
-            items={[
-              { value: 'all', label: 'All projects' },
-              { value: 'no_project', label: 'Inbox only' },
-              ...projects.map((project) => ({
-                value: project.id,
-                label: project.emoji ? `${project.emoji} ${project.name}` : project.name
-              }))
-            ]}
-            onValueChange={(value) => {
-              if (value) setInboxProjectFilter(value)
-            }}
-            value={inboxProjectFilter}
-          >
-            <SelectTrigger size="sm">
-              <SelectValue />
-            </SelectTrigger>
-            <SelectPopup alignItemWithTrigger={false}>
-              <SelectGroup>
-                <SelectItem value="all">All projects</SelectItem>
-                <SelectItem value="no_project">Inbox only</SelectItem>
-                {projects.map((project) => (
-                  <SelectItem key={project.id} value={project.id}>
-                    {project.emoji ? `${project.emoji} ${project.name}` : project.name}
-                  </SelectItem>
-                ))}
-              </SelectGroup>
-            </SelectPopup>
-          </Select>
-          <Select
-            items={PRIORITY_FILTER_OPTIONS}
-            onValueChange={(value) => {
-              if (value) setInboxPriorityFilter(value as typeof inboxPriorityFilter)
-            }}
-            value={inboxPriorityFilter}
-          >
-            <SelectTrigger size="sm">
-              <SelectValue />
-            </SelectTrigger>
-            <SelectPopup alignItemWithTrigger={false}>
-              <SelectGroup>
-                {PRIORITY_FILTER_OPTIONS.map((option) => (
-                  <SelectItem key={option.value} value={option.value}>
-                    {option.label}
-                  </SelectItem>
-                ))}
-              </SelectGroup>
-            </SelectPopup>
-          </Select>
-        </>
-      )}
-      {!showInboxFilters && selectedView !== 'project' && (
-        <label className="flex cursor-pointer items-center gap-2 px-2 text-xs text-app-text-muted hover:text-app-text-secondary">
-          <AnimatedCheckbox
-            checked={showCompleted}
-            className="size-[18px] rounded-[5px]"
-            onCheckedChange={setShowCompleted}
-          />
-          Show done
-        </label>
-      )}
+      <Popover>
+        <PopoverTrigger
+          render={
+            <button className={buttonVariants({ size: 'sm', variant: 'outline' })} type="button" />
+          }
+        >
+          <Funnel size={16} />
+          Filter
+          {activeFilterCount > 0 && (
+            <span className="ml-0.5 rounded-full bg-app-accent px-1.5 py-0.5 text-[10px] font-semibold leading-none text-white">
+              {activeFilterCount}
+            </span>
+          )}
+        </PopoverTrigger>
+        <PopoverPopup align="end" className="w-[260px] border-app-border bg-app-card p-1 shadow-lg">
+          <div className="space-y-3">
+            <div className="grid gap-1.5">
+              <span className="text-xs font-medium text-app-text-muted">Sort by</span>
+              <Select
+                items={SORT_OPTIONS}
+                onValueChange={(value) => {
+                  if (value) setSortMode(value as typeof sortMode)
+                }}
+                value={sortMode}
+              >
+                <SelectTrigger size="sm" className="w-full">
+                  <SelectValue />
+                </SelectTrigger>
+                <SelectPopup alignItemWithTrigger={false}>
+                  <SelectGroup>
+                    {SORT_OPTIONS.map((option) => (
+                      <SelectItem key={option.value} value={option.value}>
+                        {option.label}
+                      </SelectItem>
+                    ))}
+                  </SelectGroup>
+                </SelectPopup>
+              </Select>
+            </div>
+            {showInboxFilters && (
+              <>
+                <div className="grid gap-1.5">
+                  <span className="text-xs font-medium text-app-text-muted">Status</span>
+                  <Select
+                    items={STATUS_FILTER_OPTIONS}
+                    onValueChange={(value) => {
+                      if (value) setInboxStatusFilter(value as typeof inboxStatusFilter)
+                    }}
+                    value={inboxStatusFilter}
+                  >
+                    <SelectTrigger size="sm" className="w-full">
+                      <SelectValue />
+                    </SelectTrigger>
+                    <SelectPopup alignItemWithTrigger={false}>
+                      <SelectGroup>
+                        {STATUS_FILTER_OPTIONS.map((option) => (
+                          <SelectItem key={option.value} value={option.value}>
+                            {option.label}
+                          </SelectItem>
+                        ))}
+                      </SelectGroup>
+                    </SelectPopup>
+                  </Select>
+                </div>
+                <div className="grid gap-1.5">
+                  <span className="text-xs font-medium text-app-text-muted">Project</span>
+                  <Select
+                    items={projectFilterOptions}
+                    onValueChange={(value) => {
+                      if (value) setInboxProjectFilter(value)
+                    }}
+                    value={inboxProjectFilter}
+                  >
+                    <SelectTrigger size="sm" className="w-full">
+                      <SelectValue />
+                    </SelectTrigger>
+                    <SelectPopup alignItemWithTrigger={false}>
+                      <SelectGroup>
+                        {projectFilterOptions.map((option) => (
+                          <SelectItem key={option.value} value={option.value}>
+                            {option.label}
+                          </SelectItem>
+                        ))}
+                      </SelectGroup>
+                    </SelectPopup>
+                  </Select>
+                </div>
+                <div className="grid gap-1.5">
+                  <span className="text-xs font-medium text-app-text-muted">Priority</span>
+                  <Select
+                    items={PRIORITY_FILTER_OPTIONS}
+                    onValueChange={(value) => {
+                      if (value) setInboxPriorityFilter(value as typeof inboxPriorityFilter)
+                    }}
+                    value={inboxPriorityFilter}
+                  >
+                    <SelectTrigger size="sm" className="w-full">
+                      <SelectValue />
+                    </SelectTrigger>
+                    <SelectPopup alignItemWithTrigger={false}>
+                      <SelectGroup>
+                        {PRIORITY_FILTER_OPTIONS.map((option) => (
+                          <SelectItem key={option.value} value={option.value}>
+                            {option.label}
+                          </SelectItem>
+                        ))}
+                      </SelectGroup>
+                    </SelectPopup>
+                  </Select>
+                </div>
+              </>
+            )}
+            {showDoneFilter && (
+              <label className="flex cursor-pointer items-center justify-between gap-3 rounded-md px-1 py-0.5 text-xs font-medium text-app-text-muted hover:text-app-text-secondary">
+                Show done
+                <AnimatedCheckbox
+                  checked={showCompleted}
+                  className="size-[18px] rounded-[5px]"
+                  onCheckedChange={setShowCompleted}
+                />
+              </label>
+            )}
+          </div>
+        </PopoverPopup>
+      </Popover>
       <Button
         onClick={openCreatePanelForCurrentView}
         title="Add task"

@@ -38,6 +38,7 @@
 - Theme presets now carry `tone: 'light' | 'dark'`; `ThemeProvider` exposes `data-theme-tone` plus `app-theme-light/dark` root classes and chart contrast CSS vars for tone-specific UI polish.
 - Due date calendar must serialize selected days with local date formatting (`format(day, 'yyyy-MM-dd')`), not `toISOString().slice(0, 10)`, or positive UTC offsets shift selection to previous day.
 - coss registry output may need import cleanup in this Electron/Vite alias setup: primitive namespaces should import from `@base-ui/react/*`, local components from `@renderer/components/ui/*`, and `cn` from `@renderer/utils/cn`.
+- Base UI popup triggers need a real DOM anchor/ref; in this app, use a native `button` styled with `buttonVariants` for `PopoverTrigger render={...}` instead of local `Button` when positioning is unstable.
 - Tailwind v4 migration for this app uses `@tailwindcss/vite`, `@import 'tailwindcss'`, and `@theme inline` tokens in `src/renderer/src/assets/main.css`; app theme colors must be exposed as `--color-app-*` for existing `bg-app-*` classes.
 
 ## Do-Not-Repeat
@@ -56,6 +57,7 @@
 
 - [2026-04-24] Archive task feature merge: keep `archive-tooltip-2` data model and filtering logic (`archivedAt`, archive page/selectors/persistence) while using Radix/shadcn-style `TaskContextMenu` from `archive-tooltip` with hover colors from `archive-tooltip-2`.
 - [2026-04-28] UI migration: `/components/ui` now uses coss/Base UI primitives with Tailwind v4; task right-click context menu uses direct Base UI `ContextMenu`; Radix runtime packages were removed.
+- [2026-04-28] SearchSortBar filters: use coss `Popover` for a filter panel containing selects; reserve `Menu` for action lists because nested selects inside menus are a weaker keyboard/focus fit.
 - [2026-04-23] Inbox completion UX: delayed the real `toggleTaskComplete` mutation behind a short local completion state in `TaskRow`; after follow-up UX correction this keeps checkbox/confetti feedback but does not animate the row out.
 - [2026-04-23] Runtime crash guard: main process now installs global `uncaughtException` / `unhandledRejection` handlers with `dialog.showErrorBox`; renderer root wrapped in `GlobalErrorBoundary` to keep app open and offer reload after React/window/promise failures.
 - [2026-04-23] Lint workflow: removed ESLint cache from repo script because cached prettier diagnostics produced false positives after formatting; correctness of signal beats small speed gain here.

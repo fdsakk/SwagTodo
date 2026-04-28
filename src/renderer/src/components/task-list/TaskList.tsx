@@ -50,7 +50,7 @@ export function TaskList(props: TaskListProps): React.JSX.Element {
         {props.groups.map((group) =>
           group.tasks.length > 0 ? (
             <section className="flex flex-col gap-2" key={group.id}>
-              <Badge className="w-fit px-2.5 py-1 rounded-md" variant="outline">
+              <Badge className="w-fit p-2.5" size="default" variant="outline">
                 {group.title}
               </Badge>
               <ul className="flex flex-col gap-2">

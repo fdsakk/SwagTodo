@@ -456,6 +456,18 @@
       "related_bugs": [],
       "occurrences": 1,
       "last_seen": "2026-04-28T18:05:54+02:00"
+    },
+    {
+      "id": "bug-039",
+      "timestamp": "2026-04-28T18:44:00+02:00",
+      "error_message": "SearchSortBar filter popover flashes briefly in the top-right corner and disappears.",
+      "file": "src/renderer/src/components/layout/SearchSortBar.tsx",
+      "root_cause": "The coss PopoverTrigger rendered through the local Button component, which does not forward a DOM ref for Base UI to anchor the popover positioner reliably.",
+      "fix": "Changed the popover trigger render target to a native button styled with `buttonVariants`, preserving the same appearance while giving Base UI a real DOM anchor.",
+      "tags": ["coss", "base-ui", "popover", "positioning", "ref"],
+      "related_bugs": [],
+      "occurrences": 1,
+      "last_seen": "2026-04-28T18:44:00+02:00"
     }
   ]
 }
