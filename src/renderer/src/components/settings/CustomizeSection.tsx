@@ -8,7 +8,7 @@ import {
   type ThemeTokens
 } from '@renderer/types'
 import { cn } from '@renderer/utils/cn'
-import { Popover, PopoverContent, PopoverTrigger } from '@renderer/components/ui/popover'
+import { Popover, PopoverPopup, PopoverTrigger } from '@renderer/components/ui/popover'
 
 const TOKEN_LABELS: Record<keyof ThemeTokens, string> = {
   '--app-bg': 'Background',
@@ -93,15 +93,17 @@ function ColorPickerPopover({ label, hex, onChange }: ColorPickerPopoverProps): 
 
   return (
     <Popover>
-      <PopoverTrigger asChild>
-        <button
-          type="button"
-          className="h-10 w-full rounded-md border border-app-border/80 transition-colors hover:border-app-accent/40 focus:outline-none focus-visible:ring-2 focus-visible:ring-app-accent"
-          style={{ backgroundColor: hex }}
-          aria-label={`Pick color for ${label}`}
-        />
-      </PopoverTrigger>
-      <PopoverContent
+      <PopoverTrigger
+        aria-label={`Pick color for ${label}`}
+        render={
+          <button
+            type="button"
+            className="h-10 w-full rounded-md border border-app-border/80 transition-colors hover:border-app-accent/40 focus:outline-none focus-visible:ring-2 focus-visible:ring-app-accent"
+            style={{ backgroundColor: hex }}
+          />
+        }
+      />
+      <PopoverPopup
         className="w-[244px] border-app-border bg-app-card p-3 shadow-lg"
         align="center"
       >
@@ -138,7 +140,7 @@ function ColorPickerPopover({ label, hex, onChange }: ColorPickerPopoverProps): 
             />
           </div>
         </div>
-      </PopoverContent>
+      </PopoverPopup>
     </Popover>
   )
 }

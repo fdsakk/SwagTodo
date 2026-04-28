@@ -115,6 +115,28 @@ test('sqlite serialization round-trips full app state', () => {
   assert.deepEqual(loaded, normalizeAppState(initial))
 })
 
+test('normalizeAppState preserves numeric SQLite subtask completion values', () => {
+  const state = normalizeAppState({
+    tasks: [
+      {
+        id: 'task-1',
+        title: 'Task with numeric child completion',
+        priority: 'p2',
+        labels: [],
+        completed: 0,
+        status: 'todo',
+        createdAt: '2026-04-23T10:00:00.000Z',
+        updatedAt: '2026-04-23T10:00:00.000Z',
+        order: 1,
+        subTasks: [{ id: 'sub-1', title: 'Done child', completed: 1 }]
+      }
+    ]
+  })
+
+  assert.equal(state.tasks[0]?.completed, false)
+  assert.equal(state.tasks[0]?.subTasks[0]?.completed, true)
+})
+
 test('sqlite serialization preserves ordering for tasks, labels, and subtasks', () => {
   const snapshot = serializeAppState(createFixtureState())
 

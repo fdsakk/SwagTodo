@@ -40,6 +40,8 @@ export function ThemeProvider(): null {
     rootElement.dataset.themeTone = tone
     rootElement.classList.toggle('app-theme-light', tone === 'light')
     rootElement.classList.toggle('app-theme-dark', tone === 'dark')
+    rootElement.classList.toggle('theme', true)
+    rootElement.classList.toggle('dark', tone === 'dark')
   }, [appearance])
 
   return null

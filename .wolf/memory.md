@@ -594,6 +594,14 @@
 
 ## Session: 2026-04-24 15:05
 
-| Time | Action | File(s) | Outcome | ~Tokens |
-| ---- | ------ | ------- | ------- | ------- |
-| 15:12 | fixed due date calendar off-by-one timezone serialization | src/renderer/src/components/task-list/task-context-menu.tsx, .wolf/buglog.json, .wolf/cerebrum.md | format local day instead of UTC ISO slice; lint/typecheck pass | ~1800 |
+| Time  | Action                                                    | File(s)                                                                                           | Outcome                                                        | ~Tokens |
+| ----- | --------------------------------------------------------- | ------------------------------------------------------------------------------------------------- | -------------------------------------------------------------- | ------- |
+| 15:12 | fixed due date calendar off-by-one timezone serialization | src/renderer/src/components/task-list/task-context-menu.tsx, .wolf/buglog.json, .wolf/cerebrum.md | format local day instead of UTC ISO slice; lint/typecheck pass | ~1800   |
+
+## Session: 2026-04-28 18:05
+
+| Time  | Action                                                                                                       | File(s)                                                                                                                       | Outcome                                                                | ~Tokens |
+| ----- | ------------------------------------------------------------------------------------------------------------ | ----------------------------------------------------------------------------------------------------------------------------- | ---------------------------------------------------------------------- | ------- |
+| 18:05 | migrated renderer UI primitives from shadcn/Radix to coss/Base UI and Tailwind v4                            | `src/renderer/src/components/ui/*`, `src/renderer/src/assets/main.css`, `electron.vite.config.ts`, `package.json`, `bun.lock` | Radix runtime removed; coss/Base UI components build                   | ~9000   |
+| 18:05 | refactored task selects, popovers, label dialog, task rows, and task context menu for coss/Base UI API       | `SearchSortBar.tsx`, `task-form-fields.tsx`, `LabelManagerModal.tsx`, `TaskRow.tsx`, `task-context-menu.tsx`                  | canonical coss names used; Base UI context menu preserves actions      | ~4500   |
+| 18:05 | fixed coss registry import/type issues, Prettier read-only skill traversal, and generated sidebar lint issue | `.prettierignore`, `src/renderer/src/components/ui/*.tsx`, `.wolf/*`                                                          | `bun run format`, `bun run lint`, `bun run test`, `bun run build` pass | ~2500   |

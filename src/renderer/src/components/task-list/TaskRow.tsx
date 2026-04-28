@@ -4,7 +4,6 @@ import { AnimatedCheckbox } from './animated-checkbox'
 import { SubtaskProgressRing } from './subtask-progress-ring'
 import { TaskContextMenu } from './task-context-menu'
 import type { Label, Priority, Project, Task, TaskStatus } from '@renderer/types'
-import { Item } from '@renderer/components/ui/item'
 import { isTaskOverdue } from '@renderer/store'
 import { PRIORITY_META, formatDueDate } from '@renderer/utils/task'
 import { cn } from '@renderer/utils/cn'
@@ -111,16 +110,15 @@ function TaskRowBase(props: TaskRowProps): React.JSX.Element {
       onUnarchive={handleUnarchive}
     >
       <li>
-        <Item
+        <div
           className={cn(
-            'group flex cursor-pointer items-center gap-3.5 px-3.5 py-2.5',
+            'group flex cursor-pointer items-center gap-3.5 rounded-lg border border-app-border bg-app-card px-3.5 py-2.5 transition-colors hover:bg-app-hover',
             isVisuallyCompleted && 'opacity-40'
           )}
           onClick={() => {
             if (isCompleting) return
             props.onOpen(props.task.id)
           }}
-          variant="muted"
         >
           <div onClick={(e) => e.stopPropagation()}>
             <AnimatedCheckbox
@@ -162,7 +160,7 @@ function TaskRowBase(props: TaskRowProps): React.JSX.Element {
           )}
 
           {subTaskTotal > 0 && <SubtaskProgressRing completed={subTaskDone} total={subTaskTotal} />}
-        </Item>
+        </div>
       </li>
     </TaskContextMenu>
   )

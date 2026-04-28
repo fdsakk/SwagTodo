@@ -420,6 +420,42 @@
       "related_bugs": ["bug-033"],
       "occurrences": 1,
       "last_seen": "2026-04-24T15:12:36+02:00"
+    },
+    {
+      "id": "bug-036",
+      "timestamp": "2026-04-28T18:05:54+02:00",
+      "error_message": "tsc errors after coss registry install: generated components imported local `src/renderer/src/components/ui/*` instead of Base UI namespaces.",
+      "file": "src/renderer/src/components/ui/*.tsx",
+      "root_cause": "The shadcn/coss registry resolved primitive imports through the project's local aliases, producing self-imports and stale local dialog/drawer/otp mappings.",
+      "fix": "Rewrote generated primitive imports to `@base-ui/react/*`, local component imports to `@renderer/components/ui/*`, and cn imports to `@renderer/utils/cn`.",
+      "tags": ["coss", "base-ui", "typescript", "registry", "imports"],
+      "related_bugs": [],
+      "occurrences": 1,
+      "last_seen": "2026-04-28T18:05:54+02:00"
+    },
+    {
+      "id": "bug-037",
+      "timestamp": "2026-04-28T18:05:54+02:00",
+      "error_message": "bun run format failed with EROFS writing `.agents/skills/coss-*` files.",
+      "file": ".prettierignore",
+      "root_cause": "Repo-wide Prettier traversed local read-only skill directories mounted under the workspace.",
+      "fix": "Added `.agents`, `.claude/skills`, and `.pi` to `.prettierignore`, then reran `bun run format` successfully.",
+      "tags": ["format", "prettier", "tooling", "read-only"],
+      "related_bugs": [],
+      "occurrences": 1,
+      "last_seen": "2026-04-28T18:05:54+02:00"
+    },
+    {
+      "id": "bug-038",
+      "timestamp": "2026-04-28T18:05:54+02:00",
+      "error_message": "bun run lint failed: React purity rule rejected `Math.random()` inside coss `SidebarMenuSkeleton` render.",
+      "file": "src/renderer/src/components/ui/sidebar.tsx",
+      "root_cause": "Generated coss sidebar skeleton computed a random width during render via `Math.random()`.",
+      "fix": "Replaced the random skeleton width with deterministic widths based on whether the skeleton includes an icon.",
+      "tags": ["lint", "react", "coss", "sidebar", "purity"],
+      "related_bugs": [],
+      "occurrences": 1,
+      "last_seen": "2026-04-28T18:05:54+02:00"
     }
   ]
 }

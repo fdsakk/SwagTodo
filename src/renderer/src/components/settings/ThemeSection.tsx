@@ -8,12 +8,17 @@ import {
 import { cn } from '@renderer/utils/cn'
 import {
   Select,
-  SelectContent,
+  SelectPopup,
   SelectItem,
   SelectTrigger,
   SelectValue
 } from '@renderer/components/ui/select'
 import { ThemeSwatch } from './ThemeSwatch'
+
+const UI_SCALE_ITEMS = UI_SCALE_OPTIONS.map((scale) => ({
+  value: String(scale),
+  label: `${scale}%`
+}))
 
 interface ThemeSectionProps {
   appearance: AppearanceSettings
@@ -28,7 +33,8 @@ export function ThemeSection({
   uiScale,
   onSetUiScale
 }: ThemeSectionProps): React.JSX.Element {
-  const handleScaleChange = (value: string): void => {
+  const handleScaleChange = (value: string | null): void => {
+    if (!value) return
     const next = UI_SCALE_OPTIONS.find((s): s is UiScale => String(s) === value)
     if (next !== undefined) onSetUiScale(next)
   }
@@ -42,17 +48,17 @@ export function ThemeSection({
         </div>
         <div className="flex items-center gap-2">
           <span className="text-xs text-app-text-muted">UI scale</span>
-          <Select onValueChange={handleScaleChange} value={String(uiScale)}>
+          <Select items={UI_SCALE_ITEMS} onValueChange={handleScaleChange} value={String(uiScale)}>
             <SelectTrigger className="h-7 w-24 border-app-border bg-app-card px-2.5 text-xs text-app-text">
               <SelectValue />
             </SelectTrigger>
-            <SelectContent>
+            <SelectPopup>
               {UI_SCALE_OPTIONS.map((scale) => (
                 <SelectItem key={scale} value={String(scale)}>
                   {scale}%
                 </SelectItem>
               ))}
-            </SelectContent>
+            </SelectPopup>
           </Select>
         </div>
       </div>

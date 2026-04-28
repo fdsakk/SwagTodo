@@ -2,6 +2,10 @@ import { z } from 'zod'
 import type { AppearanceSettings, Task } from './types'
 
 const EPOCH_ISO = new Date(0).toISOString()
+const storedBooleanSchema = z.preprocess(
+  (value) => (typeof value === 'number' ? value !== 0 : value),
+  z.boolean().catch(false)
+)
 
 export const prioritySchema = z.enum(['p1', 'p2', 'p3', 'p4'])
 export const taskStatusSchema = z.enum(['todo', 'in_progress', 'done'])
@@ -10,7 +14,7 @@ export const subTaskSchema = z
   .object({
     id: z.string().catch(''),
     title: z.string().catch(''),
-    completed: z.boolean().catch(false)
+    completed: storedBooleanSchema
   })
   .passthrough()
 
@@ -23,7 +27,7 @@ export const taskSchema = z
     dueDate: z.string().optional().catch(undefined),
     projectId: z.string().optional().catch(undefined),
     labels: z.array(z.string()).catch([]),
-    completed: z.boolean().catch(false),
+    completed: storedBooleanSchema,
     status: taskStatusSchema.optional().catch(undefined),
     completedAt: z.string().optional().catch(undefined),
     archivedAt: z.string().optional().catch(undefined),

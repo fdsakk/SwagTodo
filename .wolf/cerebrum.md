@@ -37,6 +37,8 @@
 - Theme appearance persistence now keeps `customTokensByTheme`; switching presets must restore that preset's saved token overrides, while old payloads with flat `customTokens` migrate into active theme bucket.
 - Theme presets now carry `tone: 'light' | 'dark'`; `ThemeProvider` exposes `data-theme-tone` plus `app-theme-light/dark` root classes and chart contrast CSS vars for tone-specific UI polish.
 - Due date calendar must serialize selected days with local date formatting (`format(day, 'yyyy-MM-dd')`), not `toISOString().slice(0, 10)`, or positive UTC offsets shift selection to previous day.
+- coss registry output may need import cleanup in this Electron/Vite alias setup: primitive namespaces should import from `@base-ui/react/*`, local components from `@renderer/components/ui/*`, and `cn` from `@renderer/utils/cn`.
+- Tailwind v4 migration for this app uses `@tailwindcss/vite`, `@import 'tailwindcss'`, and `@theme inline` tokens in `src/renderer/src/assets/main.css`; app theme colors must be exposed as `--color-app-*` for existing `bg-app-*` classes.
 
 ## Do-Not-Repeat
 
@@ -45,6 +47,7 @@
 - [2026-04-23] Do NOT run `better-sqlite3` storage tests under plain Node runtime after Electron rebuild; test serialization layer instead.
 - [2026-04-23] Do NOT enable auto-hydration for renderer Zustand stores in Node/test environment; guard with `typeof window === 'undefined'` or tests will throw unhandled `window is not defined`.
 - [2026-04-23] Do NOT keep theme customization in one flat `appearance.customTokens` map if preset switching should preserve per-theme edits; use per-theme buckets and migrate legacy flat payloads.
+- [2026-04-28] Do NOT let repo-wide Prettier traverse local read-only skill folders; keep `.agents`, `.claude/skills`, and `.pi` ignored.
 - [2026-04-19] Do NOT place new components as loose files in `components/` root. Always use appropriate subfolder + `index.tsx` barrel.
 - [2026-04-19] Do NOT use default exports for new components.
 - [2026-04-19] Do NOT implement destructive sync (delete-all then insert-all) for Supabase — slow, risks data loss on partial failure.
@@ -52,6 +55,7 @@
 ## Decision Log
 
 - [2026-04-24] Archive task feature merge: keep `archive-tooltip-2` data model and filtering logic (`archivedAt`, archive page/selectors/persistence) while using Radix/shadcn-style `TaskContextMenu` from `archive-tooltip` with hover colors from `archive-tooltip-2`.
+- [2026-04-28] UI migration: `/components/ui` now uses coss/Base UI primitives with Tailwind v4; task right-click context menu uses direct Base UI `ContextMenu`; Radix runtime packages were removed.
 - [2026-04-23] Inbox completion UX: delayed the real `toggleTaskComplete` mutation behind a short local completion state in `TaskRow`; after follow-up UX correction this keeps checkbox/confetti feedback but does not animate the row out.
 - [2026-04-23] Runtime crash guard: main process now installs global `uncaughtException` / `unhandledRejection` handlers with `dialog.showErrorBox`; renderer root wrapped in `GlobalErrorBoundary` to keep app open and offer reload after React/window/promise failures.
 - [2026-04-23] Lint workflow: removed ESLint cache from repo script because cached prettier diagnostics produced false positives after formatting; correctness of signal beats small speed gain here.

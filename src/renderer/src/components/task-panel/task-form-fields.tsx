@@ -3,11 +3,11 @@ import { format, parseISO } from 'date-fns'
 import { CalendarIcon, ChevronDownIcon, X } from 'lucide-react'
 import { Button } from '@renderer/components/ui/button'
 import { Calendar } from '@renderer/components/ui/calendar'
-import { Popover, PopoverContent, PopoverTrigger } from '@renderer/components/ui/popover'
+import { Popover, PopoverPopup, PopoverTrigger } from '@renderer/components/ui/popover'
 import { Separator } from '@renderer/components/ui/separator'
 import {
   Select,
-  SelectContent,
+  SelectPopup,
   SelectGroup,
   SelectItem,
   SelectTrigger,
@@ -26,6 +26,10 @@ const STATUS_OPTIONS: readonly { value: TaskStatus; label: string }[] = [
   { value: 'in_progress', label: 'In Progress' },
   { value: 'done', label: 'Done' }
 ] as const
+const PRIORITY_OPTIONS = PRIORITIES.map((value) => ({
+  value,
+  label: PRIORITY_META[value].label
+}))
 
 interface LabelChipProps {
   label: Label
@@ -91,15 +95,19 @@ function TaskFormFieldsImpl({
   const selectedLabelSet = new Set(selectedLabelIds)
 
   const handlePriority = useCallback(
-    (value: string) => onPriorityChange(value as Priority),
+    (value: Priority | null) => {
+      if (value) onPriorityChange(value)
+    },
     [onPriorityChange]
   )
   const handleStatus = useCallback(
-    (value: string) => onStatusChange(value as TaskStatus),
+    (value: TaskStatus | null) => {
+      if (value) onStatusChange(value)
+    },
     [onStatusChange]
   )
   const handleProject = useCallback(
-    (value: string) => onProjectChange(value === INBOX_VALUE ? undefined : value),
+    (value: string | null) => onProjectChange(value === INBOX_VALUE || !value ? undefined : value),
     [onProjectChange]
   )
   const clearDate = useCallback(() => onDueDateChange(undefined), [onDueDateChange])
@@ -112,53 +120,55 @@ function TaskFormFieldsImpl({
     <>
       <div className="divide-y divide-app-border">
         <Field label="Priority">
-          <Select onValueChange={handlePriority} value={priority}>
+          <Select items={PRIORITY_OPTIONS} onValueChange={handlePriority} value={priority}>
             <SelectTrigger className="h-7 border-0 bg-transparent px-0 text-sm text-app-text-secondary shadow-none focus:ring-0">
               <SelectValue />
             </SelectTrigger>
-            <SelectContent>
+            <SelectPopup>
               <SelectGroup>
-                {PRIORITIES.map((p) => (
-                  <SelectItem key={p} value={p}>
+                {PRIORITY_OPTIONS.map((p) => (
+                  <SelectItem key={p.value} value={p.value}>
                     <span className="flex items-center gap-2">
                       <span
                         className="size-2 rounded-full"
-                        style={{ background: PRIORITY_META[p].color }}
+                        style={{ background: PRIORITY_META[p.value].color }}
                       />
-                      {PRIORITY_META[p].label}
+                      {p.label}
                     </span>
                   </SelectItem>
                 ))}
               </SelectGroup>
-            </SelectContent>
+            </SelectPopup>
           </Select>
         </Field>
 
         <Field label="Due date">
           <div className="flex items-center gap-2">
             <Popover>
-              <PopoverTrigger asChild>
-                <Button
-                  className="h-7 flex-1 justify-between border-0 bg-transparent px-0 text-sm font-normal text-app-text-secondary shadow-none hover:bg-transparent hover:text-app-text data-[empty=true]:text-app-text-muted"
-                  data-empty={!selectedDate}
-                  type="button"
-                  variant="ghost"
-                >
-                  <span className="flex items-center gap-2">
-                    <CalendarIcon size={14} />
-                    {selectedDate ? format(selectedDate, 'PPP') : 'Pick a date'}
-                  </span>
-                  <ChevronDownIcon size={14} />
-                </Button>
+              <PopoverTrigger
+                render={
+                  <Button
+                    className="h-7 flex-1 justify-between border-0 bg-transparent px-0 text-sm font-normal text-app-text-secondary shadow-none hover:bg-transparent hover:text-app-text data-[empty=true]:text-app-text-muted"
+                    data-empty={!selectedDate}
+                    type="button"
+                    variant="ghost"
+                  />
+                }
+              >
+                <span className="flex items-center gap-2">
+                  <CalendarIcon size={14} />
+                  {selectedDate ? format(selectedDate, 'PPP') : 'Pick a date'}
+                </span>
+                <ChevronDownIcon size={14} />
               </PopoverTrigger>
-              <PopoverContent align="start" className="w-auto p-0">
+              <PopoverPopup align="start" className="w-auto p-0">
                 <Calendar
                   defaultMonth={selectedDate}
                   mode="single"
                   onSelect={handleCalendarSelect}
                   selected={selectedDate}
                 />
-              </PopoverContent>
+              </PopoverPopup>
             </Popover>
             {selectedDate && (
               <button
@@ -173,11 +183,21 @@ function TaskFormFieldsImpl({
         </Field>
 
         <Field label="Project">
-          <Select onValueChange={handleProject} value={projectValue}>
+          <Select
+            items={[
+              { value: INBOX_VALUE, label: 'Inbox' },
+              ...projects.map((project) => ({
+                value: project.id,
+                label: `${project.emoji || '#'} ${project.name}`
+              }))
+            ]}
+            onValueChange={handleProject}
+            value={projectValue}
+          >
             <SelectTrigger className="h-7 border-0 bg-transparent px-0 text-sm text-app-text-secondary shadow-none focus:ring-0">
               <SelectValue placeholder="Inbox" />
             </SelectTrigger>
-            <SelectContent>
+            <SelectPopup>
               <SelectGroup>
                 <SelectItem value={INBOX_VALUE}>Inbox</SelectItem>
                 {projects.map((project) => (
@@ -186,16 +206,16 @@ function TaskFormFieldsImpl({
                   </SelectItem>
                 ))}
               </SelectGroup>
-            </SelectContent>
+            </SelectPopup>
           </Select>
         </Field>
 
         <Field label="Status">
-          <Select onValueChange={handleStatus} value={status}>
+          <Select items={STATUS_OPTIONS} onValueChange={handleStatus} value={status}>
             <SelectTrigger className="h-7 border-0 bg-transparent px-0 text-sm text-app-text-secondary shadow-none focus:ring-0">
               <SelectValue />
             </SelectTrigger>
-            <SelectContent>
+            <SelectPopup>
               <SelectGroup>
                 {STATUS_OPTIONS.map((opt) => (
                   <SelectItem key={opt.value} value={opt.value}>
@@ -203,7 +223,7 @@ function TaskFormFieldsImpl({
                   </SelectItem>
                 ))}
               </SelectGroup>
-            </SelectContent>
+            </SelectPopup>
           </Select>
         </Field>
       </div>
