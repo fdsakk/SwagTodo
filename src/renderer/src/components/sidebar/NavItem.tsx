@@ -1,3 +1,8 @@
+import {
+  SidebarMenuBadge,
+  SidebarMenuButton,
+  SidebarMenuItem
+} from '@renderer/components/ui/sidebar'
 import { cn } from '@renderer/utils/cn'
 
 interface NavItemProps {
@@ -18,26 +23,25 @@ export function NavItem({
   onClick
 }: NavItemProps): React.JSX.Element {
   return (
-    <button
-      className={cn(
-        'flex h-8 w-full items-center rounded-md px-2 text-sm transition-colors',
-        active
-          ? 'bg-app-active text-app-text'
-          : 'text-app-text-secondary hover:bg-app-hover hover:text-app-text',
-        collapsed && 'justify-center px-0'
+    <SidebarMenuItem>
+      <SidebarMenuButton
+        className={cn(
+          'h-8 px-2 text-sm',
+          active
+            ? 'bg-app-active text-app-text data-[active=true]:bg-app-active data-[active=true]:text-app-text'
+            : 'text-app-text-secondary hover:bg-app-hover hover:!text-app-text data-[active=false]:hover:bg-app-hover',
+          collapsed && 'justify-center px-0'
+        )}
+        isActive={active}
+        onClick={onClick}
+        tooltip={collapsed ? label : undefined}
+      >
+        <span className="flex h-4 w-4 items-center justify-center">{icon}</span>
+        {!collapsed && <span className="flex-1 truncate text-left">{label}</span>}
+      </SidebarMenuButton>
+      {!collapsed && typeof count === 'number' && count > 0 && (
+        <SidebarMenuBadge className="text-xs text-app-text-muted">{count}</SidebarMenuBadge>
       )}
-      onClick={onClick}
-      type="button"
-    >
-      <span className="flex h-4 w-4 items-center justify-center">{icon}</span>
-      {!collapsed && (
-        <>
-          <span className="ml-2.5 flex-1 text-left">{label}</span>
-          {typeof count === 'number' && count > 0 && (
-            <span className="text-xs text-app-text-muted">{count}</span>
-          )}
-        </>
-      )}
-    </button>
+    </SidebarMenuItem>
   )
 }

@@ -42,6 +42,7 @@
 - Tailwind v4 migration for this app uses `@tailwindcss/vite`, `@import 'tailwindcss'`, and `@theme inline` tokens in `src/renderer/src/assets/main.css`; app theme colors must be exposed as `--color-app-*` for existing `bg-app-*` classes.
 - Project List/Board switching should use controlled coss `Tabs`/`TabsPanel` with `projectTab` and `setProjectTab`, preserving the existing `list`/`kanban` UI state values.
 - Dialog overlays are portaled to `body`; to keep the custom Electron title bar outside backdrop blur, constrain `DialogBackdrop`/`DialogViewport` with global `--app-overlay-top` set in `App.tsx`.
+- Sidebar primitive (`components/ui/sidebar.tsx`) ships its own `SidebarProvider` with `cookieStore.set` + `min-h-svh` wrapper unsuitable for the frameless Electron layout. Layout `Sidebar` instead exposes a custom `SidebarContext.Provider` synced to the Zustand `isSidebarCollapsed` flag, renders `Sidebar collapsible="none"` (no fixed positioning), and sets `data-collapsible="icon"` + `data-state` on a wrapper so `group-data-*` styles + `SidebarMenuButton` collapsed tooltips still trigger. Override `bg-sidebar`/`text-sidebar-foreground` with `!bg-app-sidebar !text-app-text` because no `--color-sidebar` token exists.
 
 ## Do-Not-Repeat
 

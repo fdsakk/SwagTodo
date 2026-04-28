@@ -663,3 +663,21 @@
 | Time  | Action                                                                                     | File(s)                                                                                                         | Outcome                         | ~Tokens |
 | ----- | ------------------------------------------------------------------------------------------ | --------------------------------------------------------------------------------------------------------------- | ------------------------------- | ------- |
 | 19:27 | moved task metadata selects into a side column and constrained dialog blur below title bar | `TaskCreatePanel.tsx`, `TaskEditPanel.tsx`, `TaskDetailPanel.tsx`, `dialog.tsx`, `App.tsx`, `SearchSortBar.tsx` | `bun run format` and build pass | ~7k     |
+
+## Session: 2026-04-28 00:01
+
+| Time | Action | File(s) | Outcome | ~Tokens |
+| ---- | ------ | ------- | ------- | ------- |
+
+## Session: 2026-04-28 00:02
+
+| Time  | Action                                                        | File(s) | Outcome | ~Tokens |
+| ----- | ------------------------------------------------------------- | ------- | ------- | ------- |
+| 00:06 | Created src/renderer/src/components/layout/Sidebar.tsx        | —       | ~2039   |
+| 00:06 | Created src/renderer/src/components/sidebar/NavItem.tsx       | —       | ~380    |
+| 00:06 | Created src/renderer/src/components/sidebar/ProjectList.tsx   | —       | ~525    |
+| 00:06 | Created src/renderer/src/components/sidebar/SidebarFooter.tsx | —       | ~226    |
+| 00:08 | Edited src/renderer/src/components/layout/Sidebar.tsx | 2→2 lines | ~18 |
+
+| 14:30 | Migrated Sidebar to coss/Base UI sidebar primitives (SidebarMenu/Item/Button/Badge, SidebarHeader/Content/Footer/Group). Preserved zustand selectors + actions. NavItem/ProjectList/SidebarFooter rewritten as menu items with tooltip-on-collapse. | components/layout/Sidebar.tsx, components/sidebar/* | typecheck+lint clean | ~3500 |
+| 00:09 | Session end: 5 writes across 4 files (Sidebar.tsx, NavItem.tsx, ProjectList.tsx, SidebarFooter.tsx) | 8 reads | ~12937 tok |

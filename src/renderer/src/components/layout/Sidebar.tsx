@@ -1,3 +1,4 @@
+import * as React from 'react'
 import {
   Activity,
   Archive,
@@ -6,20 +7,35 @@ import {
   ChevronRight,
   Inbox,
   Pill,
+  Plus,
   Settings,
   Sun
 } from 'lucide-react'
-import { cn } from '@renderer/utils/cn'
 import { useShallow } from 'zustand/react/shallow'
 import { NavItem } from '@renderer/components/sidebar/NavItem'
 import { ProjectList } from '@renderer/components/sidebar/ProjectList'
-import { SidebarFooter } from '@renderer/components/sidebar/SidebarFooter'
+import { SidebarFooter as LabelsFooter } from '@renderer/components/sidebar/SidebarFooter'
 import { selectInboxCounts, useDomainStore, useUiStore } from '@renderer/store'
+import {
+  SidebarContent,
+  SidebarContext,
+  SidebarFooter,
+  SidebarGroup,
+  SidebarGroupAction,
+  SidebarGroupLabel,
+  SidebarHeader,
+  SidebarMenu,
+  Sidebar as ShadcnSidebar
+} from '@renderer/components/ui/sidebar'
+import { cn } from '@renderer/utils/cn'
 
 interface SidebarProps {
   onOpenProjectPanel: () => void
   onOpenLabelModal: () => void
 }
+
+const COLLAPSED_WIDTH = '56px'
+const EXPANDED_WIDTH = '220px'
 
 export function Sidebar(props: SidebarProps): React.JSX.Element {
   const { projects, hasLabels, isSidebarCollapsed, toggleSidebar } = useDomainStore(
@@ -57,99 +73,144 @@ export function Sidebar(props: SidebarProps): React.JSX.Element {
     }))
   )
 
+  const open = !isSidebarCollapsed
+  const state = open ? 'expanded' : 'collapsed'
+
+  const ctx = React.useMemo(
+    () => ({
+      isMobile: false,
+      open,
+      openMobile: false,
+      setOpen: () => {},
+      setOpenMobile: () => {},
+      state: state as 'expanded' | 'collapsed',
+      toggleSidebar
+    }),
+    [open, state, toggleSidebar]
+  )
+
   return (
-    <aside
-      className={cn(
-        'flex h-full flex-col bg-app-sidebar transition-all duration-200 overflow-hidden',
-        isSidebarCollapsed ? 'w-[56px]' : 'w-[220px]'
-      )}
-    >
+    <SidebarContext.Provider value={ctx}>
       <div
-        className={cn(
-          'flex h-12 items-center px-2',
-          isSidebarCollapsed ? 'justify-center' : 'justify-between'
-        )}
+        className="group/sidebar peer flex h-full shrink-0 transition-[width] duration-200 ease-linear"
+        data-collapsible="icon"
+        data-side="left"
+        data-state={state}
+        style={
+          {
+            '--sidebar-width': open ? EXPANDED_WIDTH : COLLAPSED_WIDTH,
+            width: open ? EXPANDED_WIDTH : COLLAPSED_WIDTH
+          } as React.CSSProperties
+        }
       >
-        {!isSidebarCollapsed && (
-          <span className="text-xs font-medium text-app-text-muted">Tasks</span>
-        )}
-        <button
-          className="flex h-8 w-8 items-center justify-center rounded-md text-app-text-secondary hover:bg-app-hover hover:text-app-text"
-          onClick={toggleSidebar}
-          type="button"
-        >
-          {isSidebarCollapsed ? <ChevronRight size={14} /> : <ChevronLeft size={14} />}
-        </button>
-      </div>
+        <ShadcnSidebar className="!bg-app-sidebar !text-app-text" collapsible="none">
+          <SidebarHeader className="flex-row items-center justify-between px-2 py-2">
+            {open && <span className="text-xs font-medium text-app-text-muted">Tasks</span>}
+            <button
+              className={cn(
+                'flex h-8 w-8 items-center justify-center rounded-md text-app-text-secondary hover:bg-app-hover hover:text-app-text',
+                !open && 'mx-auto'
+              )}
+              onClick={toggleSidebar}
+              type="button"
+              aria-label={open ? 'Collapse sidebar' : 'Expand sidebar'}
+            >
+              {open ? <ChevronLeft size={14} /> : <ChevronRight size={14} />}
+            </button>
+          </SidebarHeader>
 
-      <div className="space-y-0.5 px-2">
-        <NavItem
-          active={selectedView === 'inbox'}
-          collapsed={isSidebarCollapsed}
-          count={inboxCount}
-          icon={<Inbox size={14} />}
-          label="Inbox"
-          onClick={selectInbox}
-        />
-        <NavItem
-          active={selectedView === 'today'}
-          collapsed={isSidebarCollapsed}
-          count={todayCount}
-          icon={<Sun size={14} />}
-          label="Today"
-          onClick={selectToday}
-        />
-        <NavItem
-          active={selectedView === 'activity'}
-          collapsed={isSidebarCollapsed}
-          icon={<Activity size={14} />}
-          label="Activity"
-          onClick={selectActivity}
-        />
-        <NavItem
-          active={selectedView === 'archive'}
-          collapsed={isSidebarCollapsed}
-          icon={<Archive size={14} />}
-          label="Archive"
-          onClick={selectArchive}
-        />
-        <NavItem
-          active={selectedView === 'sessions'}
-          collapsed={isSidebarCollapsed}
-          icon={<Calendar size={14} />}
-          label="Sessions"
-          onClick={selectSessions}
-        />
-        <NavItem
-          active={selectedView === 'health'}
-          collapsed={isSidebarCollapsed}
-          icon={<Pill size={14} />}
-          label="Meds"
-          onClick={selectHealth}
-        />
-      </div>
+          <SidebarContent className="px-0">
+            <SidebarGroup className="py-0">
+              <SidebarMenu className="gap-0.5">
+                <NavItem
+                  active={selectedView === 'inbox'}
+                  collapsed={!open}
+                  count={inboxCount}
+                  icon={<Inbox size={14} />}
+                  label="Inbox"
+                  onClick={selectInbox}
+                />
+                <NavItem
+                  active={selectedView === 'today'}
+                  collapsed={!open}
+                  count={todayCount}
+                  icon={<Sun size={14} />}
+                  label="Today"
+                  onClick={selectToday}
+                />
+                <NavItem
+                  active={selectedView === 'activity'}
+                  collapsed={!open}
+                  icon={<Activity size={14} />}
+                  label="Activity"
+                  onClick={selectActivity}
+                />
+                <NavItem
+                  active={selectedView === 'archive'}
+                  collapsed={!open}
+                  icon={<Archive size={14} />}
+                  label="Archive"
+                  onClick={selectArchive}
+                />
+                <NavItem
+                  active={selectedView === 'sessions'}
+                  collapsed={!open}
+                  icon={<Calendar size={14} />}
+                  label="Sessions"
+                  onClick={selectSessions}
+                />
+                <NavItem
+                  active={selectedView === 'health'}
+                  collapsed={!open}
+                  icon={<Pill size={14} />}
+                  label="Meds"
+                  onClick={selectHealth}
+                />
+              </SidebarMenu>
+            </SidebarGroup>
 
-      <ProjectList
-        projects={projects}
-        selectedProjectId={selectedProjectId}
-        isProjectView={selectedView === 'project'}
-        collapsed={isSidebarCollapsed}
-        onSelect={selectProject}
-        onOpenCreatePanel={props.onOpenProjectPanel}
-      />
+            <SidebarGroup className="flex-1 py-0">
+              {open && (
+                <>
+                  <SidebarGroupLabel className="px-4 text-[11px] text-app-text-muted">
+                    Projects
+                  </SidebarGroupLabel>
+                  <SidebarGroupAction
+                    onClick={props.onOpenProjectPanel}
+                    aria-label="New project"
+                    className="text-app-text-muted hover:bg-app-hover hover:text-app-text-secondary"
+                  >
+                    <Plus />
+                  </SidebarGroupAction>
+                </>
+              )}
+              <ProjectList
+                projects={projects}
+                selectedProjectId={selectedProjectId}
+                isProjectView={selectedView === 'project'}
+                collapsed={!open}
+                onSelect={selectProject}
+                onOpenCreatePanel={props.onOpenProjectPanel}
+              />
+            </SidebarGroup>
+          </SidebarContent>
 
-      <div className="mt-auto px-2 py-2 space-y-0.5">
-        <NavItem
-          active={selectedView === 'settings'}
-          collapsed={isSidebarCollapsed}
-          icon={<Settings size={14} />}
-          label="Settings"
-          onClick={selectSettings}
-        />
-        {!isSidebarCollapsed && (
-          <SidebarFooter hasLabels={hasLabels} onOpenLabelModal={props.onOpenLabelModal} />
-        )}
+          <SidebarFooter className="px-2 py-2 gap-0.5">
+            <SidebarMenu className="gap-0.5">
+              <NavItem
+                active={selectedView === 'settings'}
+                collapsed={!open}
+                icon={<Settings size={14} />}
+                label="Settings"
+                onClick={selectSettings}
+              />
+              {open && (
+                <LabelsFooter hasLabels={hasLabels} onOpenLabelModal={props.onOpenLabelModal} />
+              )}
+            </SidebarMenu>
+          </SidebarFooter>
+        </ShadcnSidebar>
       </div>
-    </aside>
+    </SidebarContext.Provider>
   )
 }

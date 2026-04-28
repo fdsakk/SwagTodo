@@ -1,6 +1,6 @@
 # anatomy.md
 
-> Auto-maintained by OpenWolf. Last scanned: 2026-04-28T17:08:40.431Z
+> Auto-maintained by OpenWolf. Last scanned: 2026-04-28T22:08:46.623Z
 > Files: 187 tracked | Anatomy hits: 0 | Misses: 0
 
 ## ./
@@ -97,7 +97,7 @@
 - `GlobalErrorBoundary.tsx` — GlobalErrorBoundary — catches React, window, promise errors (~1150 tok)
 - `index.tsx` (~49 tok)
 - `SearchSortBar.tsx` — SearchSortBar — uses useEffect (~1840 tok)
-- `Sidebar.tsx` — Sidebar (~1250 tok)
+- `Sidebar.tsx` — COLLAPSED_WIDTH (~2022 tok)
 - `ThemeProvider.tsx` — ThemeProvider — uses useEffect (~142 tok)
 - `TitleBar.tsx` — isMac — uses useState, useEffect (~832 tok)
 
@@ -135,9 +135,9 @@
 ## src/renderer/src/components/sidebar/
 
 - `index.tsx` (~37 tok)
-- `NavItem.tsx` — NavItem (~296 tok)
-- `ProjectList.tsx` — ProjectList (~588 tok)
-- `SidebarFooter.tsx` — SidebarFooter (~204 tok)
+- `NavItem.tsx` — NavItem (~380 tok)
+- `ProjectList.tsx` — ProjectList (~525 tok)
+- `SidebarFooter.tsx` — SidebarFooter (~226 tok)
 
 ## src/renderer/src/components/task-edit/
 

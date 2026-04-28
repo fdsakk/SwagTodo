@@ -203,7 +203,7 @@ export function TaskEditPanel({ task, onClose }: TaskEditPanelProps): React.JSX.
           />
         </div>
 
-        <Separator className="mt-6 mb-5"/>
+        <Separator className="mt-6 mb-5" />
 
         <div className="max-w-fit">
           <SubtaskList
