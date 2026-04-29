@@ -478,3 +478,17 @@
 
 | Time | Action | File(s) | Outcome | ~Tokens |
 | ---- | ------ | ------- | ------- | ------- |
+
+## Session: 2026-04-29 12:14
+
+| Time | Action | File(s) | Outcome | ~Tokens |
+|------|--------|---------|---------|--------|
+| 12:16 | Edited src/renderer/src/components/kanban/KanbanCard.tsx | "flex items-start items-ce" → "flex items-center gap-2" | ~14 |
+| 12:16 | Session end: 1 writes across 1 files (KanbanCard.tsx) | 1 reads | ~1028 tok |
+
+## Session: 2026-04-29 12:28
+
+| Time | Action | File(s) | Outcome | ~Tokens |
+|------|--------|---------|---------|--------|
+| 12:28 | Added urgency dot to priority filter select trigger in SearchSortBar | src/renderer/src/components/layout/SearchSortBar.tsx | Selected urgency now shows dot in filter popup trigger and list item | ~220 |
+| 12:28 | Ran `bun run lint` | repo | Passed | ~60 |

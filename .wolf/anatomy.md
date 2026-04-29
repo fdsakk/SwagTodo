@@ -1,6 +1,6 @@
 # anatomy.md
 
-> Auto-maintained by OpenWolf. Last scanned: 2026-04-29T08:40:22.613Z
+> Auto-maintained by OpenWolf. Last scanned: 2026-04-29T10:16:02.446Z
 > Files: 262 tracked | Anatomy hits: 0 | Misses: 0
 
 ## ./
@@ -169,7 +169,7 @@
 
 - `index.tsx` (~84 tok)
 - `KanbanBoard.tsx` — buildLabelMap — uses useMemo, useCallback (~2773 tok)
-- `KanbanCard.tsx` — KANBAN_CARD_CLASSNAME — uses useCallback (~1014 tok)
+- `KanbanCard.tsx` — KANBAN_CARD_CLASSNAME (~1044 tok)
 - `KanbanCardPreview.tsx` — KanbanCardPreview (~142 tok)
 - `KanbanColumn.tsx` — KanbanColumn — uses useState, useMemo, useCallback (~889 tok)
 - `types.ts` — Exports COLUMNS, COLUMN_PREFIX, EMPTY_LABELS, byOrderAsc, resolveTaskLabels (~207 tok)

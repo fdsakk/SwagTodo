@@ -28,7 +28,7 @@ export const CardBody = memo(function CardBody({
 
   return (
     <>
-      <div className="flex items-start items-center gap-2">
+      <div className="flex items-center gap-2">
         <span
           className="size-2 shrink-0 rounded-full"
           style={{ background: meta.color }}

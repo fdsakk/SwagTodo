@@ -2,14 +2,14 @@
   "version": 1,
   "created_at": "2026-04-18T19:20:23.576Z",
   "lifetime": {
-    "total_tokens_estimated": 1182933,
-    "total_reads": 514,
-    "total_writes": 902,
-    "total_sessions": 57,
-    "anatomy_hits": 462,
+    "total_tokens_estimated": 1183961,
+    "total_reads": 515,
+    "total_writes": 903,
+    "total_sessions": 58,
+    "anatomy_hits": 463,
     "anatomy_misses": 52,
     "repeated_reads_blocked": 191,
-    "estimated_savings_vs_bare_cli": 791426
+    "estimated_savings_vs_bare_cli": 791626
   },
   "sessions": [
     {
@@ -8923,6 +8923,34 @@
         "writes_count": 10,
         "repeated_reads_blocked": 0,
         "anatomy_lookups": 4
+      }
+    },
+    {
+      "id": "session-2026-04-29-1214",
+      "started": "2026-04-29T10:14:31.609Z",
+      "ended": "2026-04-29T10:16:05.057Z",
+      "reads": [
+        {
+          "file": "/home/fenta/Projects/SwagTodo/src/renderer/src/components/kanban/KanbanCard.tsx",
+          "tokens_estimated": 1014,
+          "was_repeated": false,
+          "anatomy_had_description": false
+        }
+      ],
+      "writes": [
+        {
+          "file": "/home/fenta/Projects/SwagTodo/src/renderer/src/components/kanban/KanbanCard.tsx",
+          "tokens_estimated": 14,
+          "action": "edit"
+        }
+      ],
+      "totals": {
+        "input_tokens_estimated": 1014,
+        "output_tokens_estimated": 14,
+        "reads_count": 1,
+        "writes_count": 1,
+        "repeated_reads_blocked": 0,
+        "anatomy_lookups": 1
       }
     }
   ],

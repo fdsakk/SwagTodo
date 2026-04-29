@@ -8,7 +8,11 @@
       "file": "src/main/index.ts",
       "root_cause": "Type dedup refactor imported extra shared types into main process that were not referenced.",
       "fix": "Removed unused type imports and cleaned extra newline in renderer types to satisfy lint/prettier.",
-      "tags": ["lint", "type-refactor", "unused-imports"],
+      "tags": [
+        "lint",
+        "type-refactor",
+        "unused-imports"
+      ],
       "related_bugs": [],
       "occurrences": 1,
       "last_seen": "2026-04-19T18:21:00+02:00"
@@ -20,7 +24,11 @@
       "file": "src/main/index.ts",
       "root_cause": "Shared defaults refactor imported DEFAULT_UI_SCALE while old local constant remained.",
       "fix": "Removed local DEFAULT_UI_SCALE constant and kept shared import from src/shared/defaults.ts.",
-      "tags": ["typescript", "shared-defaults", "refactor"],
+      "tags": [
+        "typescript",
+        "shared-defaults",
+        "refactor"
+      ],
       "related_bugs": [],
       "occurrences": 1,
       "last_seen": "2026-04-19T18:28:00+02:00"
@@ -32,8 +40,15 @@
       "file": "src/renderer/src/store/useAppStore.ts",
       "root_cause": "Indexed assignment to Partial<PersistedSlice> via union key was too narrow for TypeScript.",
       "fix": "Switched patch assignment to a generic record cast in the diff loop and revalidated build.",
-      "tags": ["typescript", "zustand", "persist", "partial-patch"],
-      "related_bugs": ["bug-002"],
+      "tags": [
+        "typescript",
+        "zustand",
+        "persist",
+        "partial-patch"
+      ],
+      "related_bugs": [
+        "bug-002"
+      ],
       "occurrences": 1,
       "last_seen": "2026-04-19T18:29:00+02:00"
     },
@@ -44,7 +59,11 @@
       "file": "src/renderer/src/App.tsx",
       "root_cause": "Property access on potentially null/undefined value",
       "fix": "Added null safety (optional chaining or null check)",
-      "tags": ["auto-detected", "null-safety", "tsx"],
+      "tags": [
+        "auto-detected",
+        "null-safety",
+        "tsx"
+      ],
       "related_bugs": [],
       "occurrences": 1,
       "last_seen": "2026-04-19T17:18:26.104Z"
@@ -56,7 +75,11 @@
       "file": "src/renderer/src/App.tsx",
       "root_cause": "Had \"flex h-full flex-col overflow-hidden rounded-xl b",
       "fix": "Changed to `flex h-full flex-col overflow-hidden bg-app-title",
-      "tags": ["auto-detected", "wrong-value", "tsx"],
+      "tags": [
+        "auto-detected",
+        "wrong-value",
+        "tsx"
+      ],
       "related_bugs": [],
       "occurrences": 2,
       "last_seen": "2026-04-19T17:18:37.991Z"
@@ -68,7 +91,12 @@
       "file": "src/renderer/src/utils/pharmacokinetics.ts",
       "root_cause": "Generator wykresu sumował surowe krzywe dawek liniowo bez kształtowania odpowiedzi układu, więc kumulacja dawała ostre szczyty i zbyt szybki zjazd.",
       "fix": "Dodano smoothSummedEffect (asymetryczny filtr: szybszy wzrost, wolniejszy spadek) i przełączono slope/band/crash na krzywą wygładzoną.",
-      "tags": ["health-chart", "pharmacokinetics", "smoothing", "medications"],
+      "tags": [
+        "health-chart",
+        "pharmacokinetics",
+        "smoothing",
+        "medications"
+      ],
       "related_bugs": [],
       "occurrences": 1,
       "last_seen": "2026-04-19T19:34:38+02:00"
@@ -80,7 +108,11 @@
       "file": "src/renderer/src/components/task-panel/TaskEditPanel.tsx",
       "root_cause": "4 lines replaced/restructured",
       "fix": "Rewrote 14→11 lines (4 removed)",
-      "tags": ["auto-detected", "refactor", "tsx"],
+      "tags": [
+        "auto-detected",
+        "refactor",
+        "tsx"
+      ],
       "related_bugs": [],
       "occurrences": 1,
       "last_seen": "2026-04-22T13:42:35.134Z"
@@ -92,7 +124,12 @@
       "file": "src/renderer/src/components/kanban/KanbanBoard.tsx",
       "root_cause": "Drag overlay used a different preview shell than the sortable card and only preserved width, so overlay height was recalculated instead of matching the source card.",
       "fix": "Captured both width and height from the dragged element's initial rect and reused the exact same card shell classes in `KanbanCardPreview` as in `SortableCard`.",
-      "tags": ["kanban", "drag-drop", "dnd-kit", "ui-sizing"],
+      "tags": [
+        "kanban",
+        "drag-drop",
+        "dnd-kit",
+        "ui-sizing"
+      ],
       "related_bugs": [],
       "occurrences": 1,
       "last_seen": "2026-04-22T15:58:00+02:00"
@@ -104,8 +141,16 @@
       "file": "src/renderer/src/components/kanban/KanbanBoard.tsx",
       "root_cause": "Board computed cross-column reorder only on drop, so target `SortableContext` never received temporary item positions during hover. Without live draft order, collision often resolved against early items and insertion index skewed toward the top.",
       "fix": "Added draft column task ids updated in `onDragOver`, rendered columns from that draft during drag, and computed insert-before/after using hovered card midpoint so cross-column preview and final drop position match pointer location.",
-      "tags": ["kanban", "drag-drop", "dnd-kit", "cross-column", "drop-preview"],
-      "related_bugs": ["bug-008"],
+      "tags": [
+        "kanban",
+        "drag-drop",
+        "dnd-kit",
+        "cross-column",
+        "drop-preview"
+      ],
+      "related_bugs": [
+        "bug-008"
+      ],
       "occurrences": 1,
       "last_seen": "2026-04-22T16:08:00+02:00"
     },
@@ -116,7 +161,13 @@
       "file": "src/main/tests/sqlite.test.ts",
       "root_cause": "The native module was rebuilt for Electron's ABI during install, so direct database tests under the plain Node test runner could not load the binary.",
       "fix": "Reworked main storage tests to cover pure SQLite snapshot serialization/deserialization helpers instead of opening the native DB in the Node-based test script.",
-      "tags": ["sqlite", "better-sqlite3", "electron", "node-test", "native-module"],
+      "tags": [
+        "sqlite",
+        "better-sqlite3",
+        "electron",
+        "node-test",
+        "native-module"
+      ],
       "related_bugs": [],
       "occurrences": 1,
       "last_seen": "2026-04-23T15:00:02+02:00"
@@ -128,7 +179,12 @@
       "file": "src/renderer/src/store/tests/register-aliases.cjs",
       "root_cause": "The CommonJS alias bootstrap file uses `require`, but the lint rule also scanned `.cjs` test helpers without a local override.",
       "fix": "Added a targeted ESLint disable comment for `@typescript-eslint/no-require-imports` at the top of the CommonJS helper and formatted the flagged files.",
-      "tags": ["lint", "eslint", "commonjs", "tests"],
+      "tags": [
+        "lint",
+        "eslint",
+        "commonjs",
+        "tests"
+      ],
       "related_bugs": [],
       "occurrences": 1,
       "last_seen": "2026-04-23T15:00:02+02:00"
@@ -140,7 +196,12 @@
       "file": "src/main/storage/sqlite.ts",
       "root_cause": "The new storage backend initialized only `swag-todo.db` and removed the old dependency without any first-run bridge from the legacy `todoist-clone.json` payload.",
       "fix": "Added legacy-store parsing plus first-run import from the previous electron-store JSON file when creating a new SQLite database.",
-      "tags": ["sqlite", "migration", "data-loss", "persistence"],
+      "tags": [
+        "sqlite",
+        "migration",
+        "data-loss",
+        "persistence"
+      ],
       "related_bugs": [],
       "occurrences": 1,
       "last_seen": "2026-04-23T15:25:09+02:00"
@@ -152,8 +213,15 @@
       "file": "src/main/storage/sqlite.ts",
       "root_cause": "Main-process SQLite storage had no in-memory state cache, so partial updates and simple lookups paid a redundant full-database read cost before the inevitable full snapshot rewrite.",
       "fix": "Introduced a normalized in-memory cache, dedicated `loadUiScale()`, and prepared read/write closures so partial saves merge in memory and avoid unnecessary DB roundtrips.",
-      "tags": ["sqlite", "performance", "ipc", "persistence"],
-      "related_bugs": ["bug-012"],
+      "tags": [
+        "sqlite",
+        "performance",
+        "ipc",
+        "persistence"
+      ],
+      "related_bugs": [
+        "bug-012"
+      ],
       "occurrences": 1,
       "last_seen": "2026-04-23T15:25:09+02:00"
     },
@@ -164,7 +232,11 @@
       "file": "src/main/storage/sqlite.ts",
       "root_cause": "Property access on potentially null/undefined value",
       "fix": "Added null safety (optional chaining or null check)",
-      "tags": ["auto-detected", "null-safety", "ts"],
+      "tags": [
+        "auto-detected",
+        "null-safety",
+        "ts"
+      ],
       "related_bugs": [],
       "occurrences": 1,
       "last_seen": "2026-04-23T13:42:55.668Z"
@@ -176,7 +248,11 @@
       "file": "src/main/tests/sqlite.test.ts",
       "root_cause": "Missing or incorrect type annotation",
       "fix": "Added type assertion/annotation",
-      "tags": ["auto-detected", "type-fix", "ts"],
+      "tags": [
+        "auto-detected",
+        "type-fix",
+        "ts"
+      ],
       "related_bugs": [],
       "occurrences": 1,
       "last_seen": "2026-04-23T13:46:26.860Z"
@@ -188,7 +264,12 @@
       "file": "src/main/storage/sqlite.ts",
       "root_cause": "writeSnapshotTx cleared all tables then re-inserted entire app state on every saveState/savePartial call",
       "fix": "Replaced writeSnapshotTx with writeDeltaTx: changedTaskIds() diffs prev/next snapshots, only changed tasks get UPSERT, child tables rebuilt per changed task_id, other collections use INSERT OR REPLACE + DELETE WHERE id NOT IN. writeSnapshotTx kept for legacy migration path only.",
-      "tags": ["performance", "sqlite", "delta-write", "architecture"],
+      "tags": [
+        "performance",
+        "sqlite",
+        "delta-write",
+        "architecture"
+      ],
       "related_bugs": [],
       "occurrences": 1,
       "last_seen": "2026-04-23T14:00:00.000Z"
@@ -200,7 +281,11 @@
       "file": "src/main/storage/sqlite.ts",
       "root_cause": "64 lines replaced/restructured",
       "fix": "Rewrote 68→3 lines (64 removed)",
-      "tags": ["auto-detected", "refactor", "ts"],
+      "tags": [
+        "auto-detected",
+        "refactor",
+        "ts"
+      ],
       "related_bugs": [],
       "occurrences": 1,
       "last_seen": "2026-04-23T14:01:41.766Z"
@@ -212,7 +297,11 @@
       "file": "src/main/storage/sqlite.ts",
       "root_cause": "No early return/throw for edge case: prevTaskJson.get(t.id",
       "fix": "Added guard clause: if (prevTaskJson.get(t.id)",
-      "tags": ["auto-detected", "guard-clause", "ts"],
+      "tags": [
+        "auto-detected",
+        "guard-clause",
+        "ts"
+      ],
       "related_bugs": [],
       "occurrences": 1,
       "last_seen": "2026-04-23T14:09:38.908Z"
@@ -224,7 +313,11 @@
       "file": "src/main/storage/appState.ts",
       "root_cause": "Property access on potentially null/undefined value",
       "fix": "Added null safety (optional chaining or null check)",
-      "tags": ["auto-detected", "null-safety", "ts"],
+      "tags": [
+        "auto-detected",
+        "null-safety",
+        "ts"
+      ],
       "related_bugs": [],
       "occurrences": 1,
       "last_seen": "2026-04-23T14:10:23.483Z"
@@ -236,7 +329,11 @@
       "file": "src/main/storage/appState.ts",
       "root_cause": "Missing or incorrect type annotation",
       "fix": "Added type assertion/annotation",
-      "tags": ["auto-detected", "type-fix", "ts"],
+      "tags": [
+        "auto-detected",
+        "type-fix",
+        "ts"
+      ],
       "related_bugs": [],
       "occurrences": 1,
       "last_seen": "2026-04-23T14:12:10.336Z"
@@ -248,8 +345,15 @@
       "file": "src/main/storage/sqlite.ts",
       "root_cause": "1) Array.find inside for-loop = O(n²) for removed-task detection. 2) No snapshot cache — prev snapshot re-serialized from cachedState each write. 3) projects/sessions/labels/timeBlocks/medications always upserted even when unchanged",
       "fix": "1) Built Set<string> from next.tasks before removed-task loop. 2) Added cachedSnapshot field, updated in writeState, used as prev in writeDeltaTx. 3) Added changedIds() helper, wrapped non-task collection upserts in if(changedIds(...)) guard",
-      "tags": ["performance", "sqlite", "delta-write", "o-n-squared"],
-      "related_bugs": ["bug-016"],
+      "tags": [
+        "performance",
+        "sqlite",
+        "delta-write",
+        "o-n-squared"
+      ],
+      "related_bugs": [
+        "bug-016"
+      ],
       "occurrences": 1,
       "last_seen": "2026-04-23T16:30:00+02:00"
     },
@@ -260,7 +364,11 @@
       "file": "src/main/storage/appState.ts",
       "root_cause": "normalizeAppState mapped all tasks through normalizeTask on every merge regardless of which fields changed",
       "fix": "Conditionally skip normalizeAppState when patch.tasks is undefined; only normalize when tasks field is present in the patch",
-      "tags": ["performance", "appState", "merge"],
+      "tags": [
+        "performance",
+        "appState",
+        "merge"
+      ],
       "related_bugs": [],
       "occurrences": 1,
       "last_seen": "2026-04-23T16:30:00+02:00"
@@ -272,7 +380,12 @@
       "file": "src/main/storage/appState.ts",
       "root_cause": "isAppState and isAppStatePatch only checked that fields were arrays, not that array elements had valid UUID-format ids",
       "fix": "Added UUID_RE + isSafeId + allHaveSafeIds helpers; isAppState and isAppStatePatch now reject payloads where any entity id fails UUID format check",
-      "tags": ["security", "ipc", "validation", "uuid"],
+      "tags": [
+        "security",
+        "ipc",
+        "validation",
+        "uuid"
+      ],
       "related_bugs": [],
       "occurrences": 1,
       "last_seen": "2026-04-23T16:30:00+02:00"
@@ -284,7 +397,11 @@
       "file": "src/renderer/src/store/domain/persist.ts",
       "root_cause": "Used \"??\" instead of \"!==\"",
       "fix": "Changed operator ?? → !==",
-      "tags": ["auto-detected", "operator-fix", "ts"],
+      "tags": [
+        "auto-detected",
+        "operator-fix",
+        "ts"
+      ],
       "related_bugs": [],
       "occurrences": 1,
       "last_seen": "2026-04-23T14:16:18.298Z"
@@ -296,7 +413,13 @@
       "file": "src/main/index.ts",
       "root_cause": "Brak globalnych handlerów dla `uncaughtException` / `unhandledRejection` w main oraz brak renderer boundary na poziomie root dla błędów React/window/promise.",
       "fix": "Dodałem globalne handlery procesu w Electron main z `dialog.showErrorBox` oraz renderer `GlobalErrorBoundary` łapiący React errors, `window.error` i `unhandledrejection`, z fallback UI i reloadem.",
-      "tags": ["error-handling", "electron", "react", "runtime", "crash-guard"],
+      "tags": [
+        "error-handling",
+        "electron",
+        "react",
+        "runtime",
+        "crash-guard"
+      ],
       "related_bugs": [],
       "occurrences": 1,
       "last_seen": "2026-04-23T18:03:25+02:00"
@@ -308,8 +431,16 @@
       "file": "src/renderer/src/components/layout/GlobalErrorBoundary.tsx",
       "root_cause": "Handler `window.addEventListener('error')` traktował każdy `ErrorEvent` jak runtime JS error i nie odróżniał resource-load failures od błędów wykonywania kodu.",
       "fix": "Dodałem filtr `event.target !== window`, więc boundary ignoruje błędy ładowania zasobów i reaguje tylko na real runtime faults.",
-      "tags": ["react", "renderer", "error-boundary", "assets", "runtime"],
-      "related_bugs": ["bug-025"],
+      "tags": [
+        "react",
+        "renderer",
+        "error-boundary",
+        "assets",
+        "runtime"
+      ],
+      "related_bugs": [
+        "bug-025"
+      ],
       "occurrences": 1,
       "last_seen": "2026-04-23T18:10:00+02:00"
     },
@@ -320,7 +451,13 @@
       "file": "package.json",
       "root_cause": "Skrypt lint używał `eslint --cache .`, a cache nie był spójny po `prettier --write`, więc workflow raportował nieistniejące problemy.",
       "fix": "Zmieniłem skrypt lint na `eslint .` bez cache, żeby wynik był deterministyczny i zgodny ze stanem plików.",
-      "tags": ["lint", "eslint", "prettier", "tooling", "cache"],
+      "tags": [
+        "lint",
+        "eslint",
+        "prettier",
+        "tooling",
+        "cache"
+      ],
       "related_bugs": [],
       "occurrences": 1,
       "last_seen": "2026-04-23T18:10:00+02:00"
@@ -332,7 +469,13 @@
       "file": "src/renderer/src/store/domain/domainStore.ts",
       "root_cause": "Persist middleware auto-uruchamiał `rehydrate()` także w środowisku Node, gdzie `persistedStorage.getItem()` dotyka `window.api` i kończy się unhandled rejection.",
       "fix": "Dodałem `skipHydration: typeof window === 'undefined'` dla store domenowego i zostawiłem automatyczną hydrację tylko w rendererze przeglądarkowym.",
-      "tags": ["zustand", "persist", "hydration", "node-test", "window"],
+      "tags": [
+        "zustand",
+        "persist",
+        "hydration",
+        "node-test",
+        "window"
+      ],
       "related_bugs": [],
       "occurrences": 1,
       "last_seen": "2026-04-23T19:43:45+02:00"
@@ -344,7 +487,12 @@
       "file": "openwolf designqc",
       "root_cause": "Dev server connection dropped during mobile screenshot capture, so only desktop screenshot completed.",
       "fix": "Reran designqc after theme tweak; desktop capture succeeded, mobile capture still needs a stable dev-server connection.",
-      "tags": ["designqc", "tooling", "dev-server", "screenshot"],
+      "tags": [
+        "designqc",
+        "tooling",
+        "dev-server",
+        "screenshot"
+      ],
       "related_bugs": [],
       "occurrences": 1,
       "last_seen": "2026-04-23T22:32:12+02:00"
@@ -356,7 +504,13 @@
       "file": "src/renderer/src/store/domain/actions/settings.ts",
       "root_cause": "Appearance state trzymał tylko jeden globalny `customTokens` map i `setThemeId()` zerował go przy każdej zmianie theme, więc customizacje znikały przy przełączaniu presetów.",
       "fix": "Dodałem `customTokensByTheme`, migrację legacy payloadu do aktywnego bucketu, przełączanie theme z przywracaniem bucketu danego presetu oraz testy store/persist/SQLite dla tego przepływu.",
-      "tags": ["theme", "appearance", "persist", "zustand", "settings"],
+      "tags": [
+        "theme",
+        "appearance",
+        "persist",
+        "zustand",
+        "settings"
+      ],
       "related_bugs": [],
       "occurrences": 1,
       "last_seen": "2026-04-23T23:42:18+02:00"
@@ -368,7 +522,13 @@
       "file": "src/renderer/src/components/task-list/TaskRow.tsx",
       "root_cause": "Flow completion przełączał `task.completed` natychmiast w store, a Inbox filtruje aktywne taski bezpośrednio po tym polu, więc wiersz znikał zanim UI skończyło animację.",
       "fix": "Dodałem opóźnione `toggleTaskComplete` z natychmiastowym confetti, lokalny stan `isCompleting`/`isFadingOut` w `TaskRow` oraz włączyłem ten tryb dla `InboxPage`, żeby task znikał dopiero po animacji z fade-outem.",
-      "tags": ["inbox", "task-list", "animation", "confetti", "completion"],
+      "tags": [
+        "inbox",
+        "task-list",
+        "animation",
+        "confetti",
+        "completion"
+      ],
       "related_bugs": [],
       "occurrences": 1,
       "last_seen": "2026-04-23T23:57:00+02:00"
@@ -380,7 +540,13 @@
       "file": "src/renderer/src/types/index.ts",
       "root_cause": "Theme presets nie miały klasyfikacji light/dark, więc Activity i HealthPage używały tych samych transparentnych kolorów dla wszystkich motywów.",
       "fix": "Dodałem `ThemeTone`, klasy root `app-theme-light/dark`, mocniejsze light warianty ikon Activity oraz tone-aware CSS vars dla pomocniczych elementów wykresu HealthPage; po feedbacku podbiłem light chart opacity/darkness oraz grubość linii.",
-      "tags": ["theme", "contrast", "activity", "health-chart", "accessibility"],
+      "tags": [
+        "theme",
+        "contrast",
+        "activity",
+        "health-chart",
+        "accessibility"
+      ],
       "related_bugs": [],
       "occurrences": 2,
       "last_seen": "2026-04-24T13:51:19+02:00"
@@ -392,7 +558,13 @@
       "file": "src/renderer/src/components/task-list/task-context-menu.tsx",
       "root_cause": "Due date używał osobnego Popover z ukrytym `sr-only` triggerem poza ContextMenu.Content, więc pozycjonowanie było względem złego elementu, a interakcja z menu zamykała/rozłączała popover.",
       "fix": "Zastąpiłem Popover komponentem `ContextMenu.SubContent` z kalendarzem, więc pozycjonowanie jest zakotwiczone w pozycji `Due Date`, a ruch myszy zostaje w jednym Radix menu tree.",
-      "tags": ["context-menu", "due-date", "radix", "popover", "ui-positioning"],
+      "tags": [
+        "context-menu",
+        "due-date",
+        "radix",
+        "popover",
+        "ui-positioning"
+      ],
       "related_bugs": [],
       "occurrences": 1,
       "last_seen": "2026-04-24T14:50:35+02:00"
@@ -404,8 +576,16 @@
       "file": "src/renderer/src/components/task-list/task-context-menu.tsx",
       "root_cause": "Delete item używał tylko ciemnothemowych klas `text-red-300` / `hover:text-red-200`, które na jasnym tle są zbyt blade.",
       "fix": "Dodałem `.app-theme-light` warianty: `text-red-800`, mocniejszy hover background `bg-red-700/15` i hover text `text-red-950`.",
-      "tags": ["context-menu", "delete", "contrast", "light-theme", "accessibility"],
-      "related_bugs": ["bug-032"],
+      "tags": [
+        "context-menu",
+        "delete",
+        "contrast",
+        "light-theme",
+        "accessibility"
+      ],
+      "related_bugs": [
+        "bug-032"
+      ],
       "occurrences": 1,
       "last_seen": "2026-04-24T14:51:51+02:00"
     },
@@ -416,8 +596,16 @@
       "file": "src/renderer/src/components/task-list/task-context-menu.tsx",
       "root_cause": "`handleDaySelect` zapisywał datę przez `toISOString().slice(0, 10)`, więc lokalna północ w strefach z dodatnim offsetem UTC serializowała się jako poprzedni dzień.",
       "fix": "Zmieniono zapis due date na lokalne `format(day, 'yyyy-MM-dd')` i odczyt selected date na `parseISO(task.dueDate)`.",
-      "tags": ["due-date", "calendar", "timezone", "context-menu", "date-fns"],
-      "related_bugs": ["bug-033"],
+      "tags": [
+        "due-date",
+        "calendar",
+        "timezone",
+        "context-menu",
+        "date-fns"
+      ],
+      "related_bugs": [
+        "bug-033"
+      ],
       "occurrences": 1,
       "last_seen": "2026-04-24T15:12:36+02:00"
     },
@@ -428,7 +616,13 @@
       "file": "src/renderer/src/components/ui/*.tsx",
       "root_cause": "The shadcn/coss registry resolved primitive imports through the project's local aliases, producing self-imports and stale local dialog/drawer/otp mappings.",
       "fix": "Rewrote generated primitive imports to `@base-ui/react/*`, local component imports to `@renderer/components/ui/*`, and cn imports to `@renderer/utils/cn`.",
-      "tags": ["coss", "base-ui", "typescript", "registry", "imports"],
+      "tags": [
+        "coss",
+        "base-ui",
+        "typescript",
+        "registry",
+        "imports"
+      ],
       "related_bugs": [],
       "occurrences": 1,
       "last_seen": "2026-04-28T18:05:54+02:00"
@@ -440,7 +634,12 @@
       "file": ".prettierignore",
       "root_cause": "Repo-wide Prettier traversed local read-only skill directories mounted under the workspace.",
       "fix": "Added `.agents`, `.claude/skills`, and `.pi` to `.prettierignore`, then reran `bun run format` successfully.",
-      "tags": ["format", "prettier", "tooling", "read-only"],
+      "tags": [
+        "format",
+        "prettier",
+        "tooling",
+        "read-only"
+      ],
       "related_bugs": [],
       "occurrences": 1,
       "last_seen": "2026-04-28T18:05:54+02:00"
@@ -452,7 +651,13 @@
       "file": "src/renderer/src/components/ui/sidebar.tsx",
       "root_cause": "Generated coss sidebar skeleton computed a random width during render via `Math.random()`.",
       "fix": "Replaced the random skeleton width with deterministic widths based on whether the skeleton includes an icon.",
-      "tags": ["lint", "react", "coss", "sidebar", "purity"],
+      "tags": [
+        "lint",
+        "react",
+        "coss",
+        "sidebar",
+        "purity"
+      ],
       "related_bugs": [],
       "occurrences": 1,
       "last_seen": "2026-04-28T18:05:54+02:00"
@@ -464,7 +669,13 @@
       "file": "src/renderer/src/components/layout/SearchSortBar.tsx",
       "root_cause": "The coss PopoverTrigger rendered through the local Button component, which does not forward a DOM ref for Base UI to anchor the popover positioner reliably.",
       "fix": "Changed the popover trigger render target to a native button styled with `buttonVariants`, preserving the same appearance while giving Base UI a real DOM anchor.",
-      "tags": ["coss", "base-ui", "popover", "positioning", "ref"],
+      "tags": [
+        "coss",
+        "base-ui",
+        "popover",
+        "positioning",
+        "ref"
+      ],
       "related_bugs": [],
       "occurrences": 1,
       "last_seen": "2026-04-28T18:44:00+02:00"
@@ -476,7 +687,11 @@
       "file": "src/renderer/src/components/project/ProjectPanel.tsx",
       "root_cause": "Used \"SheetFooter\" instead of \"DialogFooter\"",
       "fix": "Changed SheetFooter → DialogFooter",
-      "tags": ["auto-detected", "wrong-reference", "tsx"],
+      "tags": [
+        "auto-detected",
+        "wrong-reference",
+        "tsx"
+      ],
       "related_bugs": [],
       "occurrences": 1,
       "last_seen": "2026-04-28T17:00:23.827Z"
@@ -488,7 +703,11 @@
       "file": "src/renderer/src/components/ui/dialog.tsx",
       "root_cause": "Had 'relative row-start-2 flex max-h-full min-h-0 w-fu",
       "fix": "Changed to 'relative row-start-2 flex max-h-full min-h-0 w-fu",
-      "tags": ["auto-detected", "wrong-value", "tsx"],
+      "tags": [
+        "auto-detected",
+        "wrong-value",
+        "tsx"
+      ],
       "related_bugs": [],
       "occurrences": 5,
       "last_seen": "2026-04-28T17:08:33.276Z"
@@ -500,7 +719,11 @@
       "file": "src/renderer/src/components/ui/dialog.tsx",
       "root_cause": "not-dark: bg-clip-padding text-app-text opacity-[calc(1-var(--nested-dialogs))] → bg-clip-padding text-popover-foreground opacity-[calc(1-var(--nested-dialogs))]",
       "fix": "Changed not-dark: bg-clip-padding text-app-text opacity-[calc(1-var(--nested-dialogs))] → bg-clip-padding text-popover-foreground opacity-[calc(1-var(--nested-dialogs))]",
-      "tags": ["auto-detected", "style-fix", "tsx"],
+      "tags": [
+        "auto-detected",
+        "style-fix",
+        "tsx"
+      ],
       "related_bugs": [],
       "occurrences": 1,
       "last_seen": "2026-04-28T17:08:22.534Z"
@@ -512,8 +735,17 @@
       "file": "src/renderer/src/components/ui/dialog.tsx",
       "root_cause": "Dialog backdrop and viewport used `fixed inset-0`, so the Base UI overlay covered the custom Electron title bar as well as the app body.",
       "fix": "Constrained dialog backdrop and viewport with `top-[var(--app-overlay-top,1.75rem)]`, and set `--app-overlay-top` from `App.tsx` so fullscreen can use `0px`.",
-      "tags": ["dialog", "backdrop", "blur", "titlebar", "electron"],
-      "related_bugs": ["bug-041", "bug-042"],
+      "tags": [
+        "dialog",
+        "backdrop",
+        "blur",
+        "titlebar",
+        "electron"
+      ],
+      "related_bugs": [
+        "bug-041",
+        "bug-042"
+      ],
       "occurrences": 1,
       "last_seen": "2026-04-28T19:27:13+02:00"
     },
@@ -524,7 +756,12 @@
       "file": "src/renderer/src/components/layout/SearchSortBar.tsx",
       "root_cause": "Stale lucide icon imports remained after the filter button implementation changed.",
       "fix": "Removed the unused icon imports, leaving only `ListFilter`, `Plus`, and `Search`; `bun run build` then passed.",
-      "tags": ["typescript", "build", "unused-imports", "search-sort-bar"],
+      "tags": [
+        "typescript",
+        "build",
+        "unused-imports",
+        "search-sort-bar"
+      ],
       "related_bugs": [],
       "occurrences": 1,
       "last_seen": "2026-04-28T19:27:13+02:00"
@@ -536,7 +773,11 @@
       "file": "src/renderer/src/components/layout/Sidebar.tsx",
       "root_cause": "Had '3rem'",
       "fix": "Changed to '56px'",
-      "tags": ["auto-detected", "wrong-value", "tsx"],
+      "tags": [
+        "auto-detected",
+        "wrong-value",
+        "tsx"
+      ],
       "related_bugs": [],
       "occurrences": 1,
       "last_seen": "2026-04-28T22:08:46.645Z"
@@ -548,7 +789,11 @@
       "file": "src/renderer/src/pages/SessionsPage.tsx",
       "root_cause": "Missing or incorrect type annotation",
       "fix": "Added type assertion/annotation",
-      "tags": ["auto-detected", "type-fix", "tsx"],
+      "tags": [
+        "auto-detected",
+        "type-fix",
+        "tsx"
+      ],
       "related_bugs": [],
       "occurrences": 1,
       "last_seen": "2026-04-28T22:23:18.813Z"
@@ -560,7 +805,11 @@
       "file": "src/renderer/src/components/task-panel/TaskCreatePanel.tsx",
       "root_cause": "sm: grid-cols-[minmax(0,1fr)_13.5rem]\"> → grid-cols-[minmax(0,1fr)_auto_13.5rem]\">",
       "fix": "Changed sm: grid-cols-[minmax(0,1fr)_13.5rem]\"> → grid-cols-[minmax(0,1fr)_auto_13.5rem]\">",
-      "tags": ["auto-detected", "style-fix", "tsx"],
+      "tags": [
+        "auto-detected",
+        "style-fix",
+        "tsx"
+      ],
       "related_bugs": [],
       "occurrences": 1,
       "last_seen": "2026-04-29T06:49:50.742Z"
@@ -572,7 +821,11 @@
       "file": "src/renderer/src/assets/main.css",
       "root_cause": "3 lines replaced/restructured",
       "fix": "Rewrote 21→11 lines (3 removed)",
-      "tags": ["auto-detected", "refactor", "css"],
+      "tags": [
+        "auto-detected",
+        "refactor",
+        "css"
+      ],
       "related_bugs": [],
       "occurrences": 1,
       "last_seen": "2026-04-29T07:01:27.287Z"
@@ -584,7 +837,11 @@
       "file": "src/renderer/src/components/task-list/task-context-menu.tsx",
       "root_cause": "Had 'flex h-8 cursor-default select-none items-center ",
       "fix": "Changed to 'flex h-8 cursor-default select-none items-center ",
-      "tags": ["auto-detected", "wrong-value", "tsx"],
+      "tags": [
+        "auto-detected",
+        "wrong-value",
+        "tsx"
+      ],
       "related_bugs": [],
       "occurrences": 3,
       "last_seen": "2026-04-29T07:08:56.606Z"
@@ -596,7 +853,11 @@
       "file": "src/renderer/src/components/task-list/TaskRow.tsx",
       "root_cause": "Property access on potentially null/undefined value",
       "fix": "Added null safety (optional chaining or null check)",
-      "tags": ["auto-detected", "null-safety", "tsx"],
+      "tags": [
+        "auto-detected",
+        "null-safety",
+        "tsx"
+      ],
       "related_bugs": [],
       "occurrences": 1,
       "last_seen": "2026-04-29T07:37:40.823Z"
@@ -608,7 +869,11 @@
       "file": "src/renderer/src/pages/health/EffectChart.tsx",
       "root_cause": "4 lines replaced/restructured",
       "fix": "Rewrote 6→3 lines (4 removed)",
-      "tags": ["auto-detected", "refactor", "tsx"],
+      "tags": [
+        "auto-detected",
+        "refactor",
+        "tsx"
+      ],
       "related_bugs": [],
       "occurrences": 1,
       "last_seen": "2026-04-29T07:41:46.760Z"
@@ -620,7 +885,11 @@
       "file": "src/renderer/src/store/tests/persist.test.ts",
       "root_cause": "The test compared a raw task fixture against stateFromPersisted output, but persistence normalization adds optional task fields with undefined values.",
       "fix": "Changed the reload test to assert stable persisted fields (length, id, title) instead of raw object equality.",
-      "tags": ["test", "persistence", "normalization"],
+      "tags": [
+        "test",
+        "persistence",
+        "normalization"
+      ],
       "related_bugs": [],
       "occurrences": 1,
       "last_seen": "2026-04-29T10:06:00+02:00"
@@ -632,7 +901,12 @@
       "file": "src/renderer/src/store/domain/persist.ts",
       "root_cause": "The Node test runner resolved a static alias import to a TSX component path without bundler extension resolution.",
       "fix": "Split Base UI toast manager singletons into src/renderer/src/components/ui/toast-manager.ts and imported that TS module from the persistence adapter.",
-      "tags": ["test", "module-resolution", "toast", "persistence"],
+      "tags": [
+        "test",
+        "module-resolution",
+        "toast",
+        "persistence"
+      ],
       "related_bugs": [],
       "occurrences": 1,
       "last_seen": "2026-04-29T10:06:00+02:00"
@@ -644,7 +918,11 @@
       "file": "src/renderer/src/store/tests/persist.test.ts",
       "root_cause": "A reusable test storage value widened uiScale from literal 125 to number.",
       "fix": "Pinned uiScale and version as const literals in the test value.",
-      "tags": ["typecheck", "test", "ui-scale"],
+      "tags": [
+        "typecheck",
+        "test",
+        "ui-scale"
+      ],
       "related_bugs": [],
       "occurrences": 1,
       "last_seen": "2026-04-29T10:06:00+02:00"
@@ -656,7 +934,12 @@
       "file": "src/main/storage/sqlite.ts; src/shared/types.ts",
       "root_cause": "New SQLite child-diff helper was not re-exported from the storage barrel, and re-exporting UiScale from defaults did not create a local type binding for AppState.",
       "fix": "Re-exported changedTaskChildIds from src/main/storage/sqlite.ts and imported UiScale as a type before re-exporting it from src/shared/types.ts.",
-      "tags": ["typecheck", "exports", "ui-scale", "sqlite"],
+      "tags": [
+        "typecheck",
+        "exports",
+        "ui-scale",
+        "sqlite"
+      ],
       "related_bugs": [],
       "occurrences": 1,
       "last_seen": "2026-04-29T10:45:00+02:00"
@@ -668,10 +951,48 @@
       "file": "src/renderer/src/components/task-panel/TaskEditPanel.tsx; src/renderer/src/components/sessions-calendar/useCalendarDrag.ts",
       "root_cause": "Task switch reset used synchronous setState inside an effect, and CALENDAR_PX_PER_MIN removal left PX_PER_MIN imported only for the removed export.",
       "fix": "Keyed TaskEditPanel by task id so cleanup flushes pending commits on remount, removed the reset effect, and removed the unused PX_PER_MIN import.",
-      "tags": ["lint", "react-hooks", "sessions-calendar", "task-edit"],
+      "tags": [
+        "lint",
+        "react-hooks",
+        "sessions-calendar",
+        "task-edit"
+      ],
       "related_bugs": [],
       "occurrences": 1,
       "last_seen": "2026-04-29T10:45:00+02:00"
+    },
+    {
+      "id": "bug-057",
+      "timestamp": "2026-04-29T10:16:02.461Z",
+      "error_message": "Incorrect value in code",
+      "file": "src/renderer/src/components/kanban/KanbanCard.tsx",
+      "root_cause": "Had \"flex items-start items-center gap-2\"",
+      "fix": "Changed to \"flex items-center gap-2\"",
+      "tags": [
+        "auto-detected",
+        "wrong-value",
+        "tsx"
+      ],
+      "related_bugs": [],
+      "occurrences": 1,
+      "last_seen": "2026-04-29T10:16:02.461Z"
+    },
+    {
+      "id": "bug-058",
+      "timestamp": "2026-04-29T12:28:22+02:00",
+      "error_message": "biome formatter failed on SearchSortBar.tsx after adding priority dot markup",
+      "file": "src/renderer/src/components/layout/SearchSortBar.tsx",
+      "root_cause": "Inline priority dot JSX in SelectItem needed formatter-friendly wrapping after the new span was added.",
+      "fix": "Reformatted the priority option render block with Biome so lint passed.",
+      "tags": [
+        "lint",
+        "biome",
+        "search-sort-bar",
+        "priority-filter"
+      ],
+      "related_bugs": [],
+      "occurrences": 1,
+      "last_seen": "2026-04-29T12:28:22+02:00"
     }
   ]
 }

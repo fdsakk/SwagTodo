@@ -91,6 +91,13 @@ export function SearchSortBar(): React.JSX.Element {
     ],
     [projects]
   )
+  const selectedPriorityFilter = useMemo(
+    () =>
+      PRIORITY_FILTER_OPTIONS.find(
+        (option) => option.value === inboxPriorityFilter
+      ),
+    [inboxPriorityFilter]
+  )
   const activeFilterCount =
     (showInboxFilters && inboxStatusFilter !== "all" ? 1 : 0) +
     (showInboxFilters && inboxProjectFilter !== "all" ? 1 : 0) +
@@ -225,14 +232,41 @@ export function SearchSortBar(): React.JSX.Element {
                     }}
                     value={inboxPriorityFilter}
                   >
-                    <SelectTrigger size="sm" className="w-full">
+                    <SelectTrigger
+                      size="sm"
+                      className="w-full justify-start gap-2"
+                    >
+                      {inboxPriorityFilter !== "all" &&
+                        selectedPriorityFilter && (
+                          <span
+                            aria-hidden="true"
+                            className="size-2 shrink-0 rounded-full"
+                            style={{
+                              background:
+                                PRIORITY_META[selectedPriorityFilter.value]
+                                  .color
+                            }}
+                          />
+                        )}
                       <SelectValue />
                     </SelectTrigger>
                     <SelectPopup alignItemWithTrigger={false}>
                       <SelectGroup>
                         {PRIORITY_FILTER_OPTIONS.map((option) => (
                           <SelectItem key={option.value} value={option.value}>
-                            {option.label}
+                            <span className="flex items-center gap-2">
+                              {option.value !== "all" && (
+                                <span
+                                  aria-hidden="true"
+                                  className="size-2 rounded-full"
+                                  style={{
+                                    background:
+                                      PRIORITY_META[option.value].color
+                                  }}
+                                />
+                              )}
+                              {option.label}
+                            </span>
                           </SelectItem>
                         ))}
                       </SelectGroup>
