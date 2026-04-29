@@ -1,7 +1,7 @@
-import { useState } from 'react'
-import { Trash2 } from 'lucide-react'
-import type { MedicationLog } from '@renderer/types'
-import { isoToTimeInput, timeInputToIso, today } from './utils'
+import type { MedicationLog } from "@renderer/types"
+import { Trash2 } from "lucide-react"
+import { useState } from "react"
+import { isoToTimeInput, timeInputToIso, today } from "./utils"
 
 interface MedLogListProps {
   logs: MedicationLog[]
@@ -26,7 +26,7 @@ export function MedLogList({
   return (
     <div className="w-1/2">
       <p className="mb-2 text-xs font-medium text-app-text-muted">
-        Taken {selectedDate === today() ? 'today' : `on ${selectedDate}`}
+        Taken {selectedDate === today() ? "today" : `on ${selectedDate}`}
       </p>
       {logs.length === 0 ? (
         <p className="text-xs text-app-text-muted">No medications logged.</p>
@@ -44,7 +44,6 @@ export function MedLogList({
                 {editingId === log.id ? (
                   <input
                     type="time"
-                    autoFocus
                     defaultValue={isoToTimeInput(log.takenAt)}
                     onChange={(e) => handleTimeChange(log.id, e.target.value)}
                     onBlur={() => setEditingId(null)}

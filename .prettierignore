@@ -1,9 +1,0 @@
-out
-dist
-.agents
-.claude/skills
-.pi
-pnpm-lock.yaml
-LICENSE.md
-tsconfig.json
-tsconfig.*.json

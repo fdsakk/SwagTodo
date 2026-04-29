@@ -1,9 +1,9 @@
-export type { SqliteStateSnapshot } from './sqlite/types'
 export {
   changedTaskChildIds,
   changedTaskIds,
   deserializeAppState,
   parseLegacyElectronStore,
   serializeAppState
-} from './sqlite/serialize'
-export { SqliteAppStorage, createSqliteAppStorage } from './sqlite/storage'
+} from "./sqlite/serialize"
+export { createSqliteAppStorage, SqliteAppStorage } from "./sqlite/storage"
+export type { SqliteStateSnapshot } from "./sqlite/types"

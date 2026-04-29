@@ -1,23 +1,23 @@
-import { useState } from 'react'
-import { Trash2 } from 'lucide-react'
-import { Button } from '@renderer/components/ui/button'
-import { Field, FieldLabel } from '@renderer/components/ui/field'
-import { Input } from '@renderer/components/ui/input'
+import { Button } from "@renderer/components/ui/button"
 import {
   DialogDescription,
   DialogFooter,
   DialogHeader,
   DialogPanel,
   DialogTitle
-} from '@renderer/components/ui/dialog'
-import { Textarea } from '@renderer/components/ui/textarea'
-import type { Project } from '@renderer/types'
-import { PROJECT_COLOR_SWATCHES } from '@renderer/utils/task'
-import { ColorSelector } from './color-selector'
-import { CustomColorInput } from './custom-color-input'
-import { EmojiPicker } from './emoji-picker'
-import { useShallow } from 'zustand/react/shallow'
-import { useDomainStore, useUiStore } from '@renderer/store'
+} from "@renderer/components/ui/dialog"
+import { Field, FieldLabel } from "@renderer/components/ui/field"
+import { Input } from "@renderer/components/ui/input"
+import { Textarea } from "@renderer/components/ui/textarea"
+import { useDomainStore, useUiStore } from "@renderer/store"
+import type { Project } from "@renderer/types"
+import { PROJECT_COLOR_SWATCHES } from "@renderer/utils/task"
+import { Trash2 } from "lucide-react"
+import { useState } from "react"
+import { useShallow } from "zustand/react/shallow"
+import { ColorSelector } from "./color-selector"
+import { CustomColorInput } from "./custom-color-input"
+import { EmojiPicker } from "./emoji-picker"
 
 interface FormState {
   name: string
@@ -31,7 +31,10 @@ interface ProjectPanelProps {
   onClose: () => void
 }
 
-export function ProjectPanel({ project, onClose }: ProjectPanelProps): React.JSX.Element {
+export function ProjectPanel({
+  project,
+  onClose
+}: ProjectPanelProps): React.JSX.Element {
   const { addProject, updateProject, deleteProject } = useDomainStore(
     useShallow((state) => ({
       addProject: state.addProject,
@@ -42,12 +45,13 @@ export function ProjectPanel({ project, onClose }: ProjectPanelProps): React.JSX
   const selectProject = useUiStore((state) => state.selectProject)
 
   const [form, setForm] = useState<FormState>({
-    name: project?.name ?? '',
-    emoji: project?.emoji ?? '📁',
+    name: project?.name ?? "",
+    emoji: project?.emoji ?? "📁",
     color: project?.color ?? PROJECT_COLOR_SWATCHES[0],
-    description: project?.description ?? ''
+    description: project?.description ?? ""
   })
-  const patch = (updates: Partial<FormState>): void => setForm((f) => ({ ...f, ...updates }))
+  const patch = (updates: Partial<FormState>): void =>
+    setForm((f) => ({ ...f, ...updates }))
 
   const isEdit = Boolean(project)
 
@@ -72,7 +76,7 @@ export function ProjectPanel({ project, onClose }: ProjectPanelProps): React.JSX
 
   const handleDelete = (): void => {
     if (!project) return
-    if (window.confirm('Delete this project?')) {
+    if (window.confirm("Delete this project?")) {
       deleteProject(project.id)
       onClose()
     }
@@ -81,9 +85,11 @@ export function ProjectPanel({ project, onClose }: ProjectPanelProps): React.JSX
   return (
     <>
       <DialogHeader>
-        <DialogTitle>{isEdit ? 'Edit project' : 'New project'}</DialogTitle>
+        <DialogTitle>{isEdit ? "Edit project" : "New project"}</DialogTitle>
         <DialogDescription>
-          {isEdit ? 'Update project name, emoji, and color.' : 'Create a new project.'}
+          {isEdit
+            ? "Update project name, emoji, and color."
+            : "Create a new project."}
         </DialogDescription>
       </DialogHeader>
 
@@ -94,7 +100,7 @@ export function ProjectPanel({ project, onClose }: ProjectPanelProps): React.JSX
             autoFocus
             onChange={(event) => patch({ name: event.target.value })}
             onKeyDown={(event) => {
-              if (event.key === 'Enter') {
+              if (event.key === "Enter") {
                 event.preventDefault()
                 handleSave()
               }
@@ -115,7 +121,10 @@ export function ProjectPanel({ project, onClose }: ProjectPanelProps): React.JSX
 
         <Field>
           <FieldLabel>Emoji</FieldLabel>
-          <EmojiPicker onSelect={(emoji) => patch({ emoji })} value={form.emoji} />
+          <EmojiPicker
+            onSelect={(emoji) => patch({ emoji })}
+            value={form.emoji}
+          />
         </Field>
 
         <Field>
@@ -128,7 +137,10 @@ export function ProjectPanel({ project, onClose }: ProjectPanelProps): React.JSX
             />
             <div className="space-y-2">
               <p className="text-xs text-app-text-muted">Custom</p>
-              <CustomColorInput onChange={(color) => patch({ color })} value={form.color} />
+              <CustomColorInput
+                onChange={(color) => patch({ color })}
+                value={form.color}
+              />
             </div>
           </div>
         </Field>
@@ -136,7 +148,12 @@ export function ProjectPanel({ project, onClose }: ProjectPanelProps): React.JSX
 
       <DialogFooter className="justify-between sm:justify-between">
         {isEdit ? (
-          <Button onClick={handleDelete} size="sm" type="button" variant="destructive-outline">
+          <Button
+            onClick={handleDelete}
+            size="sm"
+            type="button"
+            variant="destructive-outline"
+          >
             <Trash2 size={12} />
             Delete
           </Button>
@@ -147,8 +164,13 @@ export function ProjectPanel({ project, onClose }: ProjectPanelProps): React.JSX
           <Button onClick={onClose} size="sm" type="button" variant="outline">
             Cancel
           </Button>
-          <Button disabled={!form.name.trim()} onClick={handleSave} size="sm" type="button">
-            {isEdit ? 'Save' : 'Add project'}
+          <Button
+            disabled={!form.name.trim()}
+            onClick={handleSave}
+            size="sm"
+            type="button"
+          >
+            {isEdit ? "Save" : "Add project"}
           </Button>
         </div>
       </DialogFooter>

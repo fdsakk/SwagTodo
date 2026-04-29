@@ -1,4 +1,5 @@
-import { DEFAULT_UI_SCALE, UI_SCALE_OPTIONS } from '../../shared/defaults'
+import { z } from "zod"
+import { DEFAULT_UI_SCALE, UI_SCALE_OPTIONS } from "../../shared/defaults"
 import {
   labelSchema,
   medicationSchema,
@@ -7,9 +8,13 @@ import {
   sharedAppearanceSchema,
   taskSchema,
   timeBlockSchema
-} from '../../shared/stateSchema'
-import { type AppState, type AppearanceSettings, type Task, type UiScale } from '../../shared/types'
-import { z } from 'zod'
+} from "../../shared/stateSchema"
+import type {
+  AppearanceSettings,
+  AppState,
+  Task,
+  UiScale
+} from "../../shared/types"
 
 const UI_SCALE_SET: ReadonlySet<number> = new Set(UI_SCALE_OPTIONS)
 
@@ -25,25 +30,28 @@ export const defaultAppState: AppState = {
 }
 
 export const APP_STATE_KEYS: ReadonlySet<string> = new Set([
-  'tasks',
-  'projects',
-  'labels',
-  'sessions',
-  'timeBlocks',
-  'medications',
-  'pkSettings',
-  'uiScale',
-  'isSidebarCollapsed',
-  'appearance'
+  "tasks",
+  "projects",
+  "labels",
+  "sessions",
+  "timeBlocks",
+  "medications",
+  "pkSettings",
+  "uiScale",
+  "isSidebarCollapsed",
+  "appearance"
 ])
 
-export const isUiScale = (v: unknown): v is UiScale => typeof v === 'number' && UI_SCALE_SET.has(v)
+export const isUiScale = (v: unknown): v is UiScale =>
+  typeof v === "number" && UI_SCALE_SET.has(v)
 
-const UUID_RE = /^[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}$/i
-export const isSafeId = (v: unknown): v is string => typeof v === 'string' && UUID_RE.test(v)
+const UUID_RE =
+  /^[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}$/i
+export const isSafeId = (v: unknown): v is string =>
+  typeof v === "string" && UUID_RE.test(v)
 
 const isEntityWithSafeId = (item: unknown): boolean =>
-  !!item && typeof item === 'object' && isSafeId((item as { id?: unknown }).id)
+  !!item && typeof item === "object" && isSafeId((item as { id?: unknown }).id)
 
 const isValidEntityArray = (v: unknown): v is unknown[] =>
   Array.isArray(v) && v.every(isEntityWithSafeId)
@@ -63,17 +71,23 @@ const appStateSchema = z
   })
   .passthrough()
 
-export const normalizeAppearance = (raw: unknown): AppearanceSettings | undefined => {
+export const normalizeAppearance = (
+  raw: unknown
+): AppearanceSettings | undefined => {
   const parsed = sharedAppearanceSchema.safeParse(raw)
   return parsed.success ? parsed.data : undefined
 }
 
 const normalizeTask = (task: Task): Task => {
-  const completed = task.status === 'done' || task.completed
+  const completed = task.status === "done" || task.completed
   return {
     ...task,
     completed,
-    status: completed ? 'done' : task.status === 'in_progress' ? 'in_progress' : 'todo',
+    status: completed
+      ? "done"
+      : task.status === "in_progress"
+        ? "in_progress"
+        : "todo",
     completedAt: completed ? (task.completedAt ?? task.updatedAt) : undefined,
     archivedAt: task.archivedAt
   }
@@ -92,14 +106,14 @@ export const normalizeAppState = (state: unknown): AppState => {
     isSidebarCollapsed: data.isSidebarCollapsed ?? false
   }
 
-  if ('pkSettings' in data) next.pkSettings = data.pkSettings
+  if ("pkSettings" in data) next.pkSettings = data.pkSettings
   if (data.appearance) next.appearance = data.appearance
 
   return next
 }
 
 export const isAppState = (v: unknown): v is AppState => {
-  if (!v || typeof v !== 'object') return false
+  if (!v || typeof v !== "object") return false
   const d = v as Partial<AppState>
   if (
     !isValidEntityArray(d.tasks) ||
@@ -110,43 +124,64 @@ export const isAppState = (v: unknown): v is AppState => {
   ) {
     return false
   }
-  if (d.medications !== undefined && !isValidEntityArray(d.medications)) return false
+  if (d.medications !== undefined && !isValidEntityArray(d.medications))
+    return false
   if (d.uiScale !== undefined && !isUiScale(d.uiScale)) return false
-  if (d.isSidebarCollapsed !== undefined && typeof d.isSidebarCollapsed !== 'boolean') return false
-  if (d.appearance !== undefined && !normalizeAppearance(d.appearance)) return false
+  if (
+    d.isSidebarCollapsed !== undefined &&
+    typeof d.isSidebarCollapsed !== "boolean"
+  )
+    return false
+  if (d.appearance !== undefined && !normalizeAppearance(d.appearance))
+    return false
   return true
 }
 
 export const isAppStatePatch = (v: unknown): v is Partial<AppState> => {
-  if (!v || typeof v !== 'object' || Array.isArray(v)) return false
+  if (!v || typeof v !== "object" || Array.isArray(v)) return false
   const patch = v as Record<string, unknown>
   for (const key of Object.keys(patch)) {
     if (!APP_STATE_KEYS.has(key)) return false
   }
-  const arrayKeys = ['tasks', 'projects', 'labels', 'sessions', 'timeBlocks'] as const
+  const arrayKeys = [
+    "tasks",
+    "projects",
+    "labels",
+    "sessions",
+    "timeBlocks"
+  ] as const
   for (const key of arrayKeys) {
     if (key in patch && !isValidEntityArray(patch[key])) return false
   }
   if (
-    'medications' in patch &&
+    "medications" in patch &&
     patch.medications !== undefined &&
     !isValidEntityArray(patch.medications)
   ) {
     return false
   }
-  if ('uiScale' in patch && patch.uiScale !== undefined && !isUiScale(patch.uiScale)) return false
   if (
-    'isSidebarCollapsed' in patch &&
+    "uiScale" in patch &&
+    patch.uiScale !== undefined &&
+    !isUiScale(patch.uiScale)
+  )
+    return false
+  if (
+    "isSidebarCollapsed" in patch &&
     patch.isSidebarCollapsed !== undefined &&
-    typeof patch.isSidebarCollapsed !== 'boolean'
+    typeof patch.isSidebarCollapsed !== "boolean"
   ) {
     return false
   }
-  if (patch.appearance !== undefined && !normalizeAppearance(patch.appearance)) return false
+  if (patch.appearance !== undefined && !normalizeAppearance(patch.appearance))
+    return false
   return true
 }
 
-export const mergeAppState = (current: AppState, patch: Partial<AppState>): AppState => {
+export const mergeAppState = (
+  current: AppState,
+  patch: Partial<AppState>
+): AppState => {
   const next: AppState = { ...current, ...patch }
   return patch.tasks !== undefined ? normalizeAppState(next) : next
 }

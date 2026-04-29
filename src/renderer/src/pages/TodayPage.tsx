@@ -1,9 +1,13 @@
-import { useMemo } from 'react'
-import { TaskList } from '@renderer/components/task-list'
-import { selectTodayTaskGroups, useDomainStore, useUiStore } from '@renderer/store'
-import { useVisibleTasks } from '@renderer/utils/task'
-import { useShallow } from 'zustand/react/shallow'
-import { useTaskComplete } from '@renderer/hooks/useTaskComplete'
+import { TaskList } from "@renderer/components/task-list"
+import { useTaskComplete } from "@renderer/hooks/useTaskComplete"
+import {
+  selectTodayTaskGroups,
+  useDomainStore,
+  useUiStore
+} from "@renderer/store"
+import { useVisibleTasks } from "@renderer/utils/task"
+import { useMemo } from "react"
+import { useShallow } from "zustand/react/shallow"
 
 export default function TodayPage(): React.JSX.Element {
   const { projects, labels, actions } = useDomainStore(

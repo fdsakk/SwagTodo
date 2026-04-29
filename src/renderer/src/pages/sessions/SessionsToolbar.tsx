@@ -1,5 +1,5 @@
-import { ChevronLeft, ChevronRight } from 'lucide-react'
-import { Tabs, TabsList, TabsTab } from '@renderer/components/ui/tabs'
+import { Tabs, TabsList, TabsTab } from "@renderer/components/ui/tabs"
+import { ChevronLeft, ChevronRight } from "lucide-react"
 
 export type DayCount = 1 | 3 | 5 | 7
 export const DAY_OPTIONS: readonly DayCount[] = [1, 3, 5, 7] as const
@@ -55,7 +55,7 @@ export function SessionsToolbar({
         <TabsList>
           {DAY_OPTIONS.map((opt) => (
             <TabsTab key={opt} value={String(opt)}>
-              {opt} {opt === 1 ? 'day' : 'days'}
+              {opt} {opt === 1 ? "day" : "days"}
             </TabsTab>
           ))}
         </TabsList>

@@ -1,9 +1,18 @@
-import { existsSync } from 'node:fs'
-import Database from 'better-sqlite3'
-import type { AppState } from '../../../shared/types'
-import { DEFAULT_UI_SCALE } from '../../../shared/defaults'
-import { defaultAppState, mergeAppState, normalizeAppState } from '../appState'
-import { SCHEMA } from './schema'
+import { existsSync } from "node:fs"
+import Database from "better-sqlite3"
+import { DEFAULT_UI_SCALE } from "../../../shared/defaults"
+import type { AppState } from "../../../shared/types"
+import { defaultAppState, mergeAppState, normalizeAppState } from "../appState"
+import { SCHEMA } from "./schema"
+import {
+  changedIds,
+  changedTaskChildIds,
+  changedTaskIds,
+  inflateTaskRows,
+  parseSetting,
+  readLegacyElectronStore,
+  serializeAppState
+} from "./serialize"
 import {
   EMPTY_SNAPSHOT,
   type SqliteStateSnapshot,
@@ -14,22 +23,16 @@ import {
   type StoredSettingRow,
   type StoredTaskAggregateRow,
   type StoredTimeBlockRow
-} from './types'
-import {
-  changedIds,
-  changedTaskChildIds,
-  changedTaskIds,
-  inflateTaskRows,
-  parseSetting,
-  readLegacyElectronStore,
-  serializeAppState
-} from './serialize'
+} from "./types"
 
 type SqliteDatabase = Database.Database
 
 export class SqliteAppStorage {
   private readonly db: SqliteDatabase
-  private readonly writeDeltaTx: (prev: SqliteStateSnapshot, next: SqliteStateSnapshot) => void
+  private readonly writeDeltaTx: (
+    prev: SqliteStateSnapshot,
+    next: SqliteStateSnapshot
+  ) => void
   private cachedState: AppState = defaultAppState
   private cachedSnapshot: SqliteStateSnapshot = EMPTY_SNAPSHOT
 
@@ -38,11 +41,11 @@ export class SqliteAppStorage {
     this.db = new Database(path)
     this.db.exec(SCHEMA)
     const taskColumns = this.db
-      .prepare<[], { name: string }>('PRAGMA table_info(tasks)')
+      .prepare<[], { name: string }>("PRAGMA table_info(tasks)")
       .all()
       .map((column) => column.name)
-    if (!taskColumns.includes('archived_at')) {
-      this.db.exec('ALTER TABLE tasks ADD COLUMN archived_at TEXT')
+    if (!taskColumns.includes("archived_at")) {
+      this.db.exec("ALTER TABLE tasks ADD COLUMN archived_at TEXT")
     }
 
     const selectTasks = this.db.prepare<[], StoredTaskAggregateRow>(`
@@ -76,25 +79,29 @@ export class SqliteAppStorage {
       ORDER BY position ASC
     `)
     const selectProjects = this.db.prepare<[], StoredProjectRow>(
-      'SELECT * FROM projects ORDER BY position ASC'
+      "SELECT * FROM projects ORDER BY position ASC"
     )
     const selectLabels = this.db.prepare<[], StoredLabelRow>(
-      'SELECT * FROM labels ORDER BY position ASC'
+      "SELECT * FROM labels ORDER BY position ASC"
     )
     const selectSessions = this.db.prepare<[], StoredSessionRow>(
-      'SELECT * FROM sessions ORDER BY position ASC'
+      "SELECT * FROM sessions ORDER BY position ASC"
     )
     const selectTimeBlocks = this.db.prepare<[], StoredTimeBlockRow>(
-      'SELECT * FROM time_blocks ORDER BY position ASC'
+      "SELECT * FROM time_blocks ORDER BY position ASC"
     )
     const selectMedications = this.db.prepare<[], StoredMedicationRow>(
-      'SELECT * FROM medications ORDER BY position ASC'
+      "SELECT * FROM medications ORDER BY position ASC"
     )
-    const selectSettings = this.db.prepare<[], StoredSettingRow>('SELECT * FROM settings')
+    const selectSettings = this.db.prepare<[], StoredSettingRow>(
+      "SELECT * FROM settings"
+    )
 
     const readStateFromDb = (): AppState => {
       const settings = new Map<string, string>(
-        selectSettings.all().map((row): [string, string] => [row.key, row.value])
+        selectSettings
+          .all()
+          .map((row): [string, string] => [row.key, row.value])
       )
 
       return normalizeAppState({
@@ -137,10 +144,10 @@ export class SqliteAppStorage {
           takenAt: medication.taken_at,
           createdAt: medication.created_at
         })),
-        pkSettings: parseSetting(settings, 'pkSettings'),
-        uiScale: parseSetting(settings, 'uiScale'),
-        isSidebarCollapsed: parseSetting(settings, 'isSidebarCollapsed'),
-        appearance: parseSetting(settings, 'appearance')
+        pkSettings: parseSetting(settings, "pkSettings"),
+        uiScale: parseSetting(settings, "uiScale"),
+        isSidebarCollapsed: parseSetting(settings, "isSidebarCollapsed"),
+        appearance: parseSetting(settings, "appearance")
       })
     }
 
@@ -156,12 +163,16 @@ export class SqliteAppStorage {
     const deleteTasksNotIn = this.db.prepare(
       `DELETE FROM tasks WHERE id NOT IN (SELECT value FROM json_each(?))`
     )
-    const deleteSubtasksForTask = this.db.prepare('DELETE FROM task_subtasks WHERE task_id = ?')
+    const deleteSubtasksForTask = this.db.prepare(
+      "DELETE FROM task_subtasks WHERE task_id = ?"
+    )
     const insertSubTask = this.db.prepare(`
       INSERT INTO task_subtasks (task_id, id, title, completed, position)
       VALUES (@task_id, @id, @title, @completed, @position)
     `)
-    const deleteLabelsForTask = this.db.prepare('DELETE FROM task_labels WHERE task_id = ?')
+    const deleteLabelsForTask = this.db.prepare(
+      "DELETE FROM task_labels WHERE task_id = ?"
+    )
     const insertTaskLabel = this.db.prepare(`
       INSERT INTO task_labels (task_id, label_id, position)
       VALUES (@task_id, @label_id, @position)
@@ -206,7 +217,7 @@ export class SqliteAppStorage {
     )
 
     const idsJson = <T extends { id: string }>(rows: T[]): string =>
-      rows.length ? JSON.stringify(rows.map((r) => r.id)) : '[]'
+      rows.length ? JSON.stringify(rows.map((r) => r.id)) : "[]"
 
     this.writeDeltaTx = this.db.transaction(
       (prev: SqliteStateSnapshot, next: SqliteStateSnapshot) => {
@@ -216,7 +227,7 @@ export class SqliteAppStorage {
         for (const t of next.tasks) {
           if (changed.has(t.id)) upsertTask.run(t)
         }
-        deleteTasksNotIn.run(next.tasks.length ? taskIds : '[]')
+        deleteTasksNotIn.run(next.tasks.length ? taskIds : "[]")
         for (const taskId of changedChildren) {
           deleteSubtasksForTask.run(taskId)
           deleteLabelsForTask.run(taskId)
@@ -267,7 +278,7 @@ export class SqliteAppStorage {
     return this.cachedState
   }
 
-  loadUiScale(): AppState['uiScale'] {
+  loadUiScale(): AppState["uiScale"] {
     return this.cachedState.uiScale ?? DEFAULT_UI_SCALE
   }
 
@@ -292,4 +303,5 @@ export class SqliteAppStorage {
   }
 }
 
-export const createSqliteAppStorage = (path: string): SqliteAppStorage => new SqliteAppStorage(path)
+export const createSqliteAppStorage = (path: string): SqliteAppStorage =>
+  new SqliteAppStorage(path)

@@ -1,7 +1,7 @@
-import type { PointerEvent as ReactPointerEvent } from 'react'
-import { X } from 'lucide-react'
-import { PX_PER_MIN, SLOT_MIN, formatHM } from '@renderer/utils/calendar'
-import type { TimeBlockDisplayBlock } from './types'
+import { formatHM, PX_PER_MIN, SLOT_MIN } from "@renderer/utils/calendar"
+import { X } from "lucide-react"
+import type { PointerEvent as ReactPointerEvent } from "react"
+import type { TimeBlockDisplayBlock } from "./types"
 
 interface TimeBlockViewProps {
   tb: TimeBlockDisplayBlock
@@ -21,7 +21,10 @@ export function TimeBlockView({
   onDelete
 }: TimeBlockViewProps): React.JSX.Element {
   const top = startMin * PX_PER_MIN
-  const height = Math.max(PX_PER_MIN * SLOT_MIN, (endMin - startMin) * PX_PER_MIN)
+  const height = Math.max(
+    PX_PER_MIN * SLOT_MIN,
+    (endMin - startMin) * PX_PER_MIN
+  )
   return (
     <div
       data-session-block
@@ -34,7 +37,9 @@ export function TimeBlockView({
           {formatHM(startMin)}–{formatHM(endMin)}
         </span>
       </div>
-      <div className="truncate text-[11px] font-medium text-zinc-300">{tb.block.label}</div>
+      <div className="truncate text-[11px] font-medium text-zinc-300">
+        {tb.block.label}
+      </div>
       <button
         type="button"
         onPointerDown={(e) => e.stopPropagation()}

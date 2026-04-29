@@ -1,7 +1,11 @@
-import type { IpcMainInvokeEvent } from 'electron'
-import { DEFAULT_UI_SCALE, UI_SCALE_OPTIONS, type UiScale } from '../shared/defaults'
-import type { AppState } from '../shared/types'
-import { isAppState, isAppStatePatch, isUiScale } from './storage/appState'
+import type { IpcMainInvokeEvent } from "electron"
+import {
+  DEFAULT_UI_SCALE,
+  UI_SCALE_OPTIONS,
+  type UiScale
+} from "../shared/defaults"
+import type { AppState } from "../shared/types"
+import { isAppState, isAppStatePatch, isUiScale } from "./storage/appState"
 
 const MIN_ZOOM_FACTOR = UI_SCALE_OPTIONS[0] / 100
 const MAX_ZOOM_FACTOR = UI_SCALE_OPTIONS[UI_SCALE_OPTIONS.length - 1] / 100
@@ -40,19 +44,21 @@ interface RegisterIpcHandlersArgs {
 }
 
 export const isZoomFactor = (v: unknown): v is number =>
-  typeof v === 'number' && v >= MIN_ZOOM_FACTOR && v <= MAX_ZOOM_FACTOR
+  typeof v === "number" && v >= MIN_ZOOM_FACTOR && v <= MAX_ZOOM_FACTOR
 
-export const getPersistedUiScale = (storage: Pick<IpcStorage, 'loadUiScale'>): UiScale => {
+export const getPersistedUiScale = (
+  storage: Pick<IpcStorage, "loadUiScale">
+): UiScale => {
   const s = storage.loadUiScale()
   return isUiScale(s) ? s : DEFAULT_UI_SCALE
 }
 
 const senderWindow = (
   event: IpcMainInvokeEvent,
-  resolveSenderWindow: RegisterIpcHandlersArgs['resolveSenderWindow']
+  resolveSenderWindow: RegisterIpcHandlersArgs["resolveSenderWindow"]
 ): SenderWindow => {
   const w = resolveSenderWindow(event)
-  if (!w) throw new Error('Unable to resolve sender window')
+  if (!w) throw new Error("Unable to resolve sender window")
   return w
 }
 
@@ -61,41 +67,45 @@ export function registerIpcHandlers({
   getAppStorage,
   resolveSenderWindow
 }: RegisterIpcHandlersArgs): void {
-  ipcMain.handle('store:load', async () => getAppStorage().loadState())
+  ipcMain.handle("store:load", async () => getAppStorage().loadState())
 
-  ipcMain.handle('store:save', async (_, nextState: unknown) => {
-    if (!isAppState(nextState)) throw new Error('Invalid app state payload')
+  ipcMain.handle("store:save", async (_, nextState: unknown) => {
+    if (!isAppState(nextState)) throw new Error("Invalid app state payload")
     getAppStorage().saveState(nextState)
   })
 
-  ipcMain.handle('store:savePartial', async (_, patch: unknown) => {
-    if (!isAppStatePatch(patch)) throw new Error('Invalid app state patch payload')
+  ipcMain.handle("store:savePartial", async (_, patch: unknown) => {
+    if (!isAppStatePatch(patch))
+      throw new Error("Invalid app state patch payload")
     getAppStorage().savePartial(patch)
   })
 
-  ipcMain.handle('ui:getZoomFactor', (event) =>
+  ipcMain.handle("ui:getZoomFactor", (event) =>
     senderWindow(event, resolveSenderWindow).webContents.getZoomFactor()
   )
 
-  ipcMain.handle('ui:setZoomFactor', (event, nextZoomFactor: unknown) => {
-    if (!isZoomFactor(nextZoomFactor)) throw new Error('Invalid zoom factor payload')
-    senderWindow(event, resolveSenderWindow).webContents.setZoomFactor(nextZoomFactor)
+  ipcMain.handle("ui:setZoomFactor", (event, nextZoomFactor: unknown) => {
+    if (!isZoomFactor(nextZoomFactor))
+      throw new Error("Invalid zoom factor payload")
+    senderWindow(event, resolveSenderWindow).webContents.setZoomFactor(
+      nextZoomFactor
+    )
   })
 
-  ipcMain.handle('window:minimize', (event) => {
+  ipcMain.handle("window:minimize", (event) => {
     senderWindow(event, resolveSenderWindow).minimize()
   })
 
-  ipcMain.handle('window:toggleMaximize', (event) => {
+  ipcMain.handle("window:toggleMaximize", (event) => {
     const w = senderWindow(event, resolveSenderWindow)
     w.isMaximized() ? w.unmaximize() : w.maximize()
   })
 
-  ipcMain.handle('window:close', (event) => {
+  ipcMain.handle("window:close", (event) => {
     senderWindow(event, resolveSenderWindow).close()
   })
 
-  ipcMain.handle('window:getState', (event) => {
+  ipcMain.handle("window:getState", (event) => {
     const w = resolveSenderWindow(event)
     return w
       ? { isMaximized: w.isMaximized(), isFullScreen: w.isFullScreen() }

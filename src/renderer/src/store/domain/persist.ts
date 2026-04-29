@@ -1,11 +1,13 @@
-import { type PersistStorage } from 'zustand/middleware'
+import { toastManager } from "@renderer/components/ui/toast-manager"
 import {
+  type AppState,
   DEFAULT_APPEARANCE,
   DEFAULT_PK_SETTINGS,
   normalizeAppearance,
-  type AppState,
   type PkSettings
-} from '@renderer/types'
+} from "@renderer/types"
+import { z } from "zod"
+import type { PersistStorage } from "zustand/middleware"
 import {
   labelSchema,
   medicationSchema,
@@ -13,32 +15,41 @@ import {
   sessionSchema,
   taskSchema,
   timeBlockSchema
-} from '../../../../shared/stateSchema'
-import { normalizeStoredTask } from '../shared/normalize'
-import type { DomainState, PersistedDomainState } from '../shared/types'
-import { isUiScale } from '../shared/utils'
-import { createInitialDomainState } from './state'
-import { toastManager } from '@renderer/components/ui/toast-manager'
-import { z } from 'zod'
+} from "../../../../shared/stateSchema"
+import { normalizeStoredTask } from "../shared/normalize"
+import type { DomainState, PersistedDomainState } from "../shared/types"
+import { isUiScale } from "../shared/utils"
+import { createInitialDomainState } from "./state"
 
 const defaultPersistedState = pickPersistedState(createInitialDomainState())
 
-export const PERSISTED_KEYS = Object.keys(defaultPersistedState) as (keyof PersistedDomainState)[]
+export const PERSISTED_KEYS = Object.keys(
+  defaultPersistedState
+) as (keyof PersistedDomainState)[]
 
 const normalizePkSettings = (raw: unknown): PkSettings => {
   const defaults = DEFAULT_PK_SETTINGS
-  if (raw && typeof raw === 'object' && !Array.isArray(raw)) {
+  if (raw && typeof raw === "object" && !Array.isArray(raw)) {
     const record = raw as Record<string, unknown>
     return {
-      peakScale: typeof record.peakScale === 'number' ? record.peakScale : defaults.peakScale,
+      peakScale:
+        typeof record.peakScale === "number"
+          ? record.peakScale
+          : defaults.peakScale,
       tMaxOffsetH:
-        typeof record.tMaxOffsetH === 'number' ? record.tMaxOffsetH : defaults.tMaxOffsetH,
+        typeof record.tMaxOffsetH === "number"
+          ? record.tMaxOffsetH
+          : defaults.tMaxOffsetH,
       keMultiplier:
-        typeof record.keMultiplier === 'number' ? record.keMultiplier : defaults.keMultiplier,
-      mec: typeof record.mec === 'number' ? record.mec : defaults.mec,
-      mtc: typeof record.mtc === 'number' ? record.mtc : defaults.mtc,
+        typeof record.keMultiplier === "number"
+          ? record.keMultiplier
+          : defaults.keMultiplier,
+      mec: typeof record.mec === "number" ? record.mec : defaults.mec,
+      mtc: typeof record.mtc === "number" ? record.mtc : defaults.mtc,
       crashThreshold:
-        typeof record.crashThreshold === 'number' ? record.crashThreshold : defaults.crashThreshold
+        typeof record.crashThreshold === "number"
+          ? record.crashThreshold
+          : defaults.crashThreshold
     }
   }
   return defaults
@@ -46,22 +57,33 @@ const normalizePkSettings = (raw: unknown): PkSettings => {
 
 const persistedDomainSchema = z
   .object({
-    tasks: z.array(taskSchema.or(z.unknown().transform(normalizeStoredTask))).catch([]),
+    tasks: z
+      .array(taskSchema.or(z.unknown().transform(normalizeStoredTask)))
+      .catch([]),
     projects: z.array(projectSchema).catch([]),
     labels: z.array(labelSchema).catch([]),
     sessions: z.array(sessionSchema).catch([]),
     timeBlocks: z.array(timeBlockSchema).catch([]),
     medications: z.array(medicationSchema).catch([]),
     pkSettings: z.unknown().optional(),
-    uiScale: z.number().refine(isUiScale).optional().catch(defaultPersistedState.uiScale),
-    isSidebarCollapsed: z.boolean().optional().catch(defaultPersistedState.isSidebarCollapsed),
+    uiScale: z
+      .number()
+      .refine(isUiScale)
+      .optional()
+      .catch(defaultPersistedState.uiScale),
+    isSidebarCollapsed: z
+      .boolean()
+      .optional()
+      .catch(defaultPersistedState.isSidebarCollapsed),
     appearance: z.unknown().optional()
   })
   .passthrough()
 
-export const stateFromPersisted = (persisted: unknown): PersistedDomainState => {
+export const stateFromPersisted = (
+  persisted: unknown
+): PersistedDomainState => {
   const data = persistedDomainSchema.parse(
-    persisted && typeof persisted === 'object'
+    persisted && typeof persisted === "object"
       ? (persisted as Partial<AppState> & { appearance?: unknown })
       : {}
   )
@@ -76,7 +98,8 @@ export const stateFromPersisted = (persisted: unknown): PersistedDomainState => 
     medications: data.medications,
     pkSettings: normalizePkSettings(data.pkSettings),
     uiScale: data.uiScale ?? defaultPersistedState.uiScale,
-    isSidebarCollapsed: data.isSidebarCollapsed ?? defaultPersistedState.isSidebarCollapsed,
+    isSidebarCollapsed:
+      data.isSidebarCollapsed ?? defaultPersistedState.isSidebarCollapsed,
     appearance: normalizeAppearance(data.appearance ?? DEFAULT_APPEARANCE)
   }
 }
@@ -114,24 +137,26 @@ type PersistenceErrorReporter = (error: unknown) => void | Promise<void>
 let lastPersistedJson: PersistedJson | undefined
 let persistenceErrorReporter: PersistenceErrorReporter = (error) => {
   toastManager.add({
-    id: 'storage-save-failed',
-    type: 'error',
-    title: 'Changes were not saved',
+    id: "storage-save-failed",
+    type: "error",
+    title: "Changes were not saved",
     description: getPersistenceErrorMessage(error),
-    priority: 'high'
+    priority: "high"
   })
 }
 
 const getPersistenceErrorMessage = (error: unknown): string => {
   if (error instanceof Error && error.message) return error.message
-  if (typeof error === 'string' && error) return error
-  return 'SQLite save failed. Your latest change will be retried on the next update.'
+  if (typeof error === "string" && error) return error
+  return "SQLite save failed. Your latest change will be retried on the next update."
 }
 
 const buildPersistedJson = (state: PersistedDomainState): PersistedJson =>
   new Map(PERSISTED_KEYS.map((k) => [k, JSON.stringify(state[k])]))
 
-export const setPersistenceErrorReporter = (reporter: PersistenceErrorReporter): (() => void) => {
+export const setPersistenceErrorReporter = (
+  reporter: PersistenceErrorReporter
+): (() => void) => {
   const previous = persistenceErrorReporter
   persistenceErrorReporter = reporter
   return () => {
@@ -154,7 +179,10 @@ export const persistedStorage: PersistStorage<PersistedDomainState> = {
     const patch = {} as Partial<PersistedDomainState>
 
     for (const key of PERSISTED_KEYS) {
-      if (!lastPersistedJson || lastPersistedJson.get(key) !== nextJson.get(key)) {
+      if (
+        !lastPersistedJson ||
+        lastPersistedJson.get(key) !== nextJson.get(key)
+      ) {
         patch[key] = nextState[key] as never
       }
     }

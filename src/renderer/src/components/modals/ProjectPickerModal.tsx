@@ -1,4 +1,3 @@
-import { useEffect } from 'react'
 import {
   Dialog,
   DialogDescription,
@@ -6,9 +5,10 @@ import {
   DialogPanel,
   DialogPopup,
   DialogTitle
-} from '@renderer/components/ui/dialog'
-import { Kbd } from '@renderer/components/ui/kbd'
-import type { Project } from '@renderer/types'
+} from "@renderer/components/ui/dialog"
+import { Kbd } from "@renderer/components/ui/kbd"
+import type { Project } from "@renderer/types"
+import { useEffect } from "react"
 
 interface ProjectPickerModalProps {
   open: boolean
@@ -26,7 +26,7 @@ export function ProjectPickerModal({
   useEffect(() => {
     if (!open) return
     const onKeyDown = (event: KeyboardEvent): void => {
-      if (event.key === 'Escape') {
+      if (event.key === "Escape") {
         event.preventDefault()
         onClose()
         return
@@ -40,13 +40,13 @@ export function ProjectPickerModal({
       onSelect(target.id)
       onClose()
     }
-    window.addEventListener('keydown', onKeyDown, true)
-    return () => window.removeEventListener('keydown', onKeyDown, true)
+    window.addEventListener("keydown", onKeyDown, true)
+    return () => window.removeEventListener("keydown", onKeyDown, true)
   }, [open, projects, onClose, onSelect])
 
   return (
     <Dialog open={open} onOpenChange={(next) => !next && onClose()}>
-      <DialogPopup>
+      <DialogPopup finalFocus={() => false}>
         <DialogHeader>
           <DialogTitle>Go to project</DialogTitle>
           <DialogDescription>Pick a project to navigate to.</DialogDescription>
@@ -70,7 +70,7 @@ export function ProjectPickerModal({
                 >
                   <Kbd>{idx + 1}</Kbd>
                   <span className="flex h-4 w-4 items-center justify-center text-xs">
-                    {project.emoji || '#'}
+                    {project.emoji || "#"}
                   </span>
                   <span className="flex-1 truncate">{project.name}</span>
                 </button>

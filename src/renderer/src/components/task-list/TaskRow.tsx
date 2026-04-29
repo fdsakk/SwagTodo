@@ -1,12 +1,18 @@
-import { Fragment, memo, useEffect, useRef, useState } from 'react'
-import { Flag } from 'lucide-react'
-import { AnimatedCheckbox } from './animated-checkbox'
-import { SubtaskProgressRing } from './subtask-progress-ring'
-import { TaskContextMenu } from './task-context-menu'
-import type { Label, Priority, Project, Task, TaskStatus } from '@renderer/types'
-import { isTaskOverdue } from '@renderer/store'
-import { PRIORITY_META, formatDueDate } from '@renderer/utils/task'
-import { cn } from '@renderer/utils/cn'
+import { isTaskOverdue } from "@renderer/store"
+import type {
+  Label,
+  Priority,
+  Project,
+  Task,
+  TaskStatus
+} from "@renderer/types"
+import { cn } from "@renderer/utils/cn"
+import { formatDueDate, PRIORITY_META } from "@renderer/utils/task"
+import { Flag } from "lucide-react"
+import { Fragment, memo, useEffect, useRef, useState } from "react"
+import { AnimatedCheckbox } from "./animated-checkbox"
+import { SubtaskProgressRing } from "./subtask-progress-ring"
+import { TaskContextMenu } from "./task-context-menu"
 
 interface TaskRowProps {
   task: Task
@@ -22,7 +28,11 @@ interface TaskRowProps {
   onDelete?: (taskId: string) => void
   onUpdate?: (
     taskId: string,
-    updates: { priority?: Priority; dueDate?: string | undefined; status?: TaskStatus }
+    updates: {
+      priority?: Priority
+      dueDate?: string | undefined
+      status?: TaskStatus
+    }
   ) => void
 }
 
@@ -33,10 +43,13 @@ function TaskRowBase(props: TaskRowProps): React.JSX.Element {
   const resetTimerRef = useRef<number | null>(null)
   const overdue = isTaskOverdue(props.task)
   const priorityMeta = PRIORITY_META[props.task.priority]
-  const showFlag = props.task.priority !== 'p4'
+  const showFlag = props.task.priority !== "p4"
   const subTaskTotal = props.task.subTasks.length
-  const subTaskDone = subTaskTotal > 0 ? props.task.subTasks.filter((s) => s.completed).length : 0
-  const projectContext = props.showProjectContext ? (props.project?.name ?? 'Inbox') : undefined
+  const subTaskDone =
+    subTaskTotal > 0 ? props.task.subTasks.filter((s) => s.completed).length : 0
+  const projectContext = props.showProjectContext
+    ? (props.project?.name ?? "Inbox")
+    : undefined
   const isVisuallyCompleted = props.task.completed || isCompleting
   const metaParts: React.JSX.Element[] = []
 
@@ -58,7 +71,9 @@ function TaskRowBase(props: TaskRowProps): React.JSX.Element {
         setIsCompleting(false)
         resetTimerRef.current = null
       }, COMPLETE_TOGGLE_DELAY_MS)
-      props.onToggleComplete(props.task.id, { delayMs: COMPLETE_TOGGLE_DELAY_MS })
+      props.onToggleComplete(props.task.id, {
+        delayMs: COMPLETE_TOGGLE_DELAY_MS
+      })
       return
     }
 
@@ -67,7 +82,7 @@ function TaskRowBase(props: TaskRowProps): React.JSX.Element {
 
   if (props.task.dueDate) {
     metaParts.push(
-      <span className={cn(overdue && 'text-red-400/80')} key="due-date">
+      <span className={cn(overdue && "text-red-400/80")} key="due-date">
         {formatDueDate(props.task.dueDate)}
       </span>
     )
@@ -95,15 +110,17 @@ function TaskRowBase(props: TaskRowProps): React.JSX.Element {
       onArchive={props.onArchive ?? (() => {})}
       onDelete={props.onDelete ?? (() => {})}
       onSetDueDate={(taskId, dueDate) => props.onUpdate?.(taskId, { dueDate })}
-      onSetPriority={(taskId, priority) => props.onUpdate?.(taskId, { priority })}
+      onSetPriority={(taskId, priority) =>
+        props.onUpdate?.(taskId, { priority })
+      }
       onSetStatus={(taskId, status) => props.onUpdate?.(taskId, { status })}
       onUnarchive={props.onUnarchive ?? (() => {})}
     >
       <li>
         <div
           className={cn(
-            'group flex cursor-pointer items-center gap-3.5 rounded-lg border border-app-border bg-app-card px-3.5 py-2.5 transition-colors hover:bg-app-hover',
-            isVisuallyCompleted && 'opacity-40'
+            "group flex cursor-pointer items-center gap-3.5 rounded-lg border border-app-border bg-app-card px-3.5 py-2.5 transition-colors hover:bg-app-hover",
+            isVisuallyCompleted && "opacity-40"
           )}
           onClick={() => {
             if (isCompleting) return
@@ -120,8 +137,8 @@ function TaskRowBase(props: TaskRowProps): React.JSX.Element {
           <div className="min-w-0 flex-1">
             <div
               className={cn(
-                'truncate text-sm leading-snug text-app-text',
-                isVisuallyCompleted && 'line-through text-app-text-muted'
+                "truncate text-sm leading-snug text-app-text",
+                isVisuallyCompleted && "line-through text-app-text-muted"
               )}
             >
               {props.task.title}
@@ -149,7 +166,9 @@ function TaskRowBase(props: TaskRowProps): React.JSX.Element {
             />
           )}
 
-          {subTaskTotal > 0 && <SubtaskProgressRing completed={subTaskDone} total={subTaskTotal} />}
+          {subTaskTotal > 0 && (
+            <SubtaskProgressRing completed={subTaskDone} total={subTaskTotal} />
+          )}
         </div>
       </li>
     </TaskContextMenu>

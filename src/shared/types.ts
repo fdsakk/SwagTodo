@@ -1,8 +1,8 @@
-import type { UiScale } from './defaults'
+import type { UiScale } from "./defaults"
 
-export type Priority = 'p1' | 'p2' | 'p3' | 'p4'
-export type TaskStatus = 'todo' | 'in_progress' | 'done'
-export type { UiScale } from './defaults'
+export type Priority = "p1" | "p2" | "p3" | "p4"
+export type TaskStatus = "todo" | "in_progress" | "done"
+export type { UiScale } from "./defaults"
 
 export interface SubTask {
   id: string

@@ -1,6 +1,6 @@
-import { useMemo, useState } from 'react'
-import { X } from 'lucide-react'
-import { formatHM } from '@renderer/utils/calendar'
+import { formatHM } from "@renderer/utils/calendar"
+import { X } from "lucide-react"
+import { useMemo, useState } from "react"
 
 export interface DraftCreate {
   dayIso: string
@@ -11,7 +11,10 @@ export interface DraftCreate {
 interface TaskPickerDialogProps {
   draft: DraftCreate
   tasks: ReadonlyArray<{ id: string; title: string; projectId?: string }>
-  projectById: Map<string, { id: string; name: string; color: string; emoji?: string }>
+  projectById: Map<
+    string,
+    { id: string; name: string; color: string; emoji?: string }
+  >
   onCancel: () => void
   onPick: (taskId: string) => void
   onSwitchToGhost: () => void
@@ -30,7 +33,7 @@ export function TaskPickerDialog({
   onPick,
   onSwitchToGhost
 }: TaskPickerDialogProps): React.JSX.Element {
-  const [query, setQuery] = useState('')
+  const [query, setQuery] = useState("")
   const filtered = useMemo(() => {
     const q = query.trim().toLowerCase()
     if (!q) return tasks
@@ -40,9 +43,9 @@ export function TaskPickerDialog({
   const startMin = minutesFromIso(draft.startAt)
   const endMin = minutesFromIso(draft.endAt)
   const day = new Date(draft.dayIso).toLocaleDateString(undefined, {
-    weekday: 'short',
-    month: 'short',
-    day: 'numeric'
+    weekday: "short",
+    month: "short",
+    day: "numeric"
   })
 
   return (
@@ -81,10 +84,9 @@ export function TaskPickerDialog({
         </div>
         <div className="border-b border-app-border px-4 py-2">
           <input
-            autoFocus
             value={query}
             onChange={(e) => setQuery(e.target.value)}
-            onKeyDown={(e) => e.key === 'Escape' && onCancel()}
+            onKeyDown={(e) => e.key === "Escape" && onCancel()}
             placeholder="Search tasks..."
             className="h-8 w-full bg-transparent text-sm text-app-text placeholder:text-app-text-muted focus:outline-none"
           />
@@ -96,7 +98,9 @@ export function TaskPickerDialog({
             </div>
           ) : (
             filtered.map((task) => {
-              const project = task.projectId ? projectById.get(task.projectId) : undefined
+              const project = task.projectId
+                ? projectById.get(task.projectId)
+                : undefined
               return (
                 <button
                   key={task.id}
@@ -113,7 +117,7 @@ export function TaskPickerDialog({
                   <span className="flex-1 truncate">{task.title}</span>
                   {project && (
                     <span className="text-[11px] text-app-text-muted">
-                      {project.emoji ?? ''} {project.name}
+                      {project.emoji ?? ""} {project.name}
                     </span>
                   )}
                 </button>

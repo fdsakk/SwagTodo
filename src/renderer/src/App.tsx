@@ -1,26 +1,31 @@
-import { useEffect, useState } from 'react'
-import { TitleBar, Sidebar, SearchSortBar, ThemeProvider } from '@renderer/components/layout'
-import { TaskDetailPanel } from '@renderer/components/task-panel'
+import {
+  SearchSortBar,
+  Sidebar,
+  ThemeProvider,
+  TitleBar
+} from "@renderer/components/layout"
 import {
   LabelManagerModal,
-  ShortcutsHelpModal,
-  ProjectPickerModal
-} from '@renderer/components/modals'
-import InboxPage from '@renderer/pages/InboxPage'
-import TodayPage from '@renderer/pages/TodayPage'
-import ActivityPage from '@renderer/pages/ActivityPage'
-import ArchivePage from '@renderer/pages/ArchivePage'
-import ProjectPage from '@renderer/pages/ProjectPage'
-import SessionsPage from '@renderer/pages/SessionsPage'
-import SettingsPage from '@renderer/pages/SettingsPage'
-import { HealthPage } from '@renderer/pages/HealthPage'
-import { useKeyboardShortcuts } from '@renderer/hooks/useKeyboardShortcuts'
-import { useShallow } from 'zustand/react/shallow'
-import { UI_SCALE_OPTIONS, type ViewName } from '@renderer/types'
-import { useDomainStore, useUiStore } from '@renderer/store'
-import { cn } from '@renderer/utils/cn'
+  ProjectPickerModal,
+  ShortcutsHelpModal
+} from "@renderer/components/modals"
+import { TaskDetailPanel } from "@renderer/components/task-panel"
+import { useKeyboardShortcuts } from "@renderer/hooks/useKeyboardShortcuts"
+import ActivityPage from "@renderer/pages/ActivityPage"
+import ArchivePage from "@renderer/pages/ArchivePage"
+import { HealthPage } from "@renderer/pages/HealthPage"
+import InboxPage from "@renderer/pages/InboxPage"
+import ProjectPage from "@renderer/pages/ProjectPage"
+import SessionsPage from "@renderer/pages/SessionsPage"
+import SettingsPage from "@renderer/pages/SettingsPage"
+import TodayPage from "@renderer/pages/TodayPage"
+import { useDomainStore, useUiStore } from "@renderer/store"
+import { UI_SCALE_OPTIONS, type ViewName } from "@renderer/types"
+import { cn } from "@renderer/utils/cn"
+import { useCallback, useEffect, useRef, useState } from "react"
+import { useShallow } from "zustand/react/shallow"
 
-const FULL_HEIGHT_VIEWS = new Set<ViewName>(['sessions', 'settings', 'health'])
+const FULL_HEIGHT_VIEWS = new Set<ViewName>(["sessions", "settings", "health"])
 
 function App(): React.JSX.Element {
   const [isFullScreen, setIsFullScreen] = useState(false)
@@ -28,14 +33,18 @@ function App(): React.JSX.Element {
   useEffect(() => {
     const windowApi = window.api?.window
     if (!windowApi) return
-    void windowApi.getState().then((state) => setIsFullScreen(state.isFullScreen))
-    return windowApi.onStateChange((state) => setIsFullScreen(state.isFullScreen))
+    void windowApi
+      .getState()
+      .then((state) => setIsFullScreen(state.isFullScreen))
+    return windowApi.onStateChange((state) =>
+      setIsFullScreen(state.isFullScreen)
+    )
   }, [])
 
   useEffect(() => {
     document.documentElement.style.setProperty(
-      '--app-overlay-top',
-      isFullScreen ? '0px' : '1.75rem'
+      "--app-overlay-top",
+      isFullScreen ? "0px" : "1.75rem"
     )
   }, [isFullScreen])
 
@@ -83,6 +92,11 @@ function App(): React.JSX.Element {
   const [helpOpen, setHelpOpen] = useState(false)
   const [projectPickerOpen, setProjectPickerOpen] = useState(false)
 
+  const contentRef = useRef<HTMLDivElement>(null)
+  const focusContent = useCallback((): void => {
+    contentRef.current?.focus({ preventScroll: true })
+  }, [])
+
   useEffect(() => {
     if (!hydrated || !window.api?.ui) return
     void window.api.ui.setZoomFactor(uiScale / 100)
@@ -94,6 +108,7 @@ function App(): React.JSX.Element {
       else if (helpOpen) setHelpOpen(false)
       else if (labelModalOpen) setLabelModalOpen(false)
       else closeTaskPanel()
+      focusContent()
     },
     onFocusSearch: triggerSearchFocus,
     onNewTask: openCreatePanelForCurrentView,
@@ -109,11 +124,12 @@ function App(): React.JSX.Element {
     onGoSessions: selectSessions,
     onGoSettings: selectSettings,
     onGoProjects: () => setProjectPickerOpen(true),
-    onProjectTabList: () => setProjectTab('list'),
-    onProjectTabKanban: () => setProjectTab('kanban'),
+    onProjectTabList: () => setProjectTab("list"),
+    onProjectTabKanban: () => setProjectTab("kanban"),
     onZoomIn: () => {
       const idx = UI_SCALE_OPTIONS.indexOf(uiScale)
-      if (idx < UI_SCALE_OPTIONS.length - 1) setUiScale(UI_SCALE_OPTIONS[idx + 1])
+      if (idx < UI_SCALE_OPTIONS.length - 1)
+        setUiScale(UI_SCALE_OPTIONS[idx + 1])
     },
     onZoomOut: () => {
       const idx = UI_SCALE_OPTIONS.indexOf(uiScale)
@@ -126,15 +142,15 @@ function App(): React.JSX.Element {
     return (
       <div
         className={cn(
-          'flex h-full flex-col overflow-hidden bg-[#070708] px-[2px] pb-[2px] ring-1 ring-white/5',
-          !isFullScreen && 'rounded-lg'
+          "flex h-full flex-col overflow-hidden bg-[#070708] px-[2px] pb-[2px] ring-1 ring-white/5",
+          !isFullScreen && "rounded-lg"
         )}
       >
         <TitleBar />
         <div
           className={cn(
-            'flex flex-1 items-center justify-center overflow-hidden bg-app-bg text-sm text-app-text-muted',
-            !isFullScreen && 'rounded-b-[10px]'
+            "flex flex-1 items-center justify-center overflow-hidden bg-app-bg text-sm text-app-text-muted",
+            !isFullScreen && "rounded-b-[10px]"
           )}
         >
           Loading workspace...
@@ -151,23 +167,27 @@ function App(): React.JSX.Element {
     sessions: <SessionsPage />,
     settings: <SettingsPage />,
     health: <HealthPage />,
-    project: <ProjectPage onEditProject={(project) => openEditProjectPanel(project.id)} />
+    project: (
+      <ProjectPage
+        onEditProject={(project) => openEditProjectPanel(project.id)}
+      />
+    )
   }
   const isFullHeightView = FULL_HEIGHT_VIEWS.has(selectedView)
 
   return (
     <div
       className={cn(
-        'flex h-full flex-col overflow-hidden bg-app-titlebar px-1.5 pb-1.5',
-        !isFullScreen && 'rounded-lg'
+        "flex h-full flex-col overflow-hidden bg-app-titlebar px-1.5 pb-1.5",
+        !isFullScreen && "rounded-lg"
       )}
     >
       <ThemeProvider />
       <TitleBar />
       <div
         className={cn(
-          'relative flex min-h-0 flex-1 overflow-hidden bg-app-bg',
-          !isFullScreen && 'rounded-lg'
+          "relative flex min-h-0 flex-1 overflow-hidden bg-app-bg",
+          !isFullScreen && "rounded-lg"
         )}
       >
         <Sidebar
@@ -175,9 +195,18 @@ function App(): React.JSX.Element {
           onOpenProjectPanel={openCreateProjectPanel}
         />
 
-        <div className="relative flex min-w-0 flex-1 flex-col overflow-hidden bg-app-content">
+        <div
+          ref={contentRef}
+          tabIndex={-1}
+          className="relative flex min-w-0 flex-1 flex-col overflow-hidden bg-app-content outline-none"
+        >
           {!isFullHeightView && <SearchSortBar />}
-          <div className={cn('min-h-0 flex-1', isFullHeightView ? 'overflow-y-auto' : 'mt-4')}>
+          <div
+            className={cn(
+              "min-h-0 flex-1",
+              isFullHeightView ? "overflow-y-auto" : "mt-4"
+            )}
+          >
             {viewContent[selectedView]}
           </div>
         </div>

@@ -1,56 +1,86 @@
-import { getCreatePanelDefaults } from '../shared/utils'
-import type { UiActions, UiStoreGet, UiStoreSet } from '../shared/types'
+import type { UiActions, UiStoreGet, UiStoreSet } from "../shared/types"
+import { getCreatePanelDefaults } from "../shared/utils"
 
 const createViewSelector =
   (
     set: UiStoreSet,
-    selectedView: 'inbox' | 'today' | 'activity' | 'sessions' | 'settings' | 'health' | 'archive'
+    selectedView:
+      | "inbox"
+      | "today"
+      | "activity"
+      | "sessions"
+      | "settings"
+      | "health"
+      | "archive"
   ) =>
   (): void =>
     set({ selectedView, selectedProjectId: undefined })
 
-export const createUiActions = (set: UiStoreSet, get: UiStoreGet): UiActions => ({
-  selectInbox: createViewSelector(set, 'inbox'),
-  selectToday: createViewSelector(set, 'today'),
-  selectActivity: createViewSelector(set, 'activity'),
-  selectSessions: createViewSelector(set, 'sessions'),
-  selectSettings: createViewSelector(set, 'settings'),
-  selectHealth: createViewSelector(set, 'health'),
-  selectArchive: createViewSelector(set, 'archive'),
-  selectProject: (projectId) => set({ selectedView: 'project', selectedProjectId: projectId }),
+export const createUiActions = (
+  set: UiStoreSet,
+  get: UiStoreGet
+): UiActions => ({
+  selectInbox: createViewSelector(set, "inbox"),
+  selectToday: createViewSelector(set, "today"),
+  selectActivity: createViewSelector(set, "activity"),
+  selectSessions: createViewSelector(set, "sessions"),
+  selectSettings: createViewSelector(set, "settings"),
+  selectHealth: createViewSelector(set, "health"),
+  selectArchive: createViewSelector(set, "archive"),
+  selectProject: (projectId) =>
+    set({ selectedView: "project", selectedProjectId: projectId }),
   setProjectTab: (projectTab) =>
     set((state) => (state.projectTab === projectTab ? state : { projectTab })),
   setSearchQuery: (searchQuery) =>
-    set((state) => (state.searchQuery === searchQuery ? state : { searchQuery })),
-  setSortMode: (sortMode) => set((state) => (state.sortMode === sortMode ? state : { sortMode })),
+    set((state) =>
+      state.searchQuery === searchQuery ? state : { searchQuery }
+    ),
+  setSortMode: (sortMode) =>
+    set((state) => (state.sortMode === sortMode ? state : { sortMode })),
   setShowCompleted: (showCompleted) =>
-    set((state) => (state.showCompleted === showCompleted ? state : { showCompleted })),
+    set((state) =>
+      state.showCompleted === showCompleted ? state : { showCompleted }
+    ),
   setInboxStatusFilter: (inboxStatusFilter) =>
-    set((state) => (state.inboxStatusFilter === inboxStatusFilter ? state : { inboxStatusFilter })),
+    set((state) =>
+      state.inboxStatusFilter === inboxStatusFilter
+        ? state
+        : { inboxStatusFilter }
+    ),
   setInboxProjectFilter: (inboxProjectFilter) =>
     set((state) =>
-      state.inboxProjectFilter === inboxProjectFilter ? state : { inboxProjectFilter }
+      state.inboxProjectFilter === inboxProjectFilter
+        ? state
+        : { inboxProjectFilter }
     ),
   setInboxPriorityFilter: (inboxPriorityFilter) =>
     set((state) =>
-      state.inboxPriorityFilter === inboxPriorityFilter ? state : { inboxPriorityFilter }
+      state.inboxPriorityFilter === inboxPriorityFilter
+        ? state
+        : { inboxPriorityFilter }
     ),
-  triggerSearchFocus: () => set((state) => ({ searchFocusSignal: state.searchFocusSignal + 1 })),
-  openCreatePanel: (defaults = {}) => set({ taskPanel: { open: true, mode: 'create', defaults } }),
+  triggerSearchFocus: () =>
+    set((state) => ({ searchFocusSignal: state.searchFocusSignal + 1 })),
+  openCreatePanel: (defaults = {}) =>
+    set({ taskPanel: { open: true, mode: "create", defaults } }),
   openCreatePanelForCurrentView: () => {
     const { selectedView, selectedProjectId } = get()
     set({
       taskPanel: {
         open: true,
-        mode: 'create',
+        mode: "create",
         defaults: getCreatePanelDefaults(selectedView, selectedProjectId)
       }
     })
   },
-  openCreateProjectPanel: () => set({ taskPanel: { open: true, mode: 'create_project' } }),
+  openCreateProjectPanel: () =>
+    set({ taskPanel: { open: true, mode: "create_project" } }),
   openEditProjectPanel: (projectId) =>
-    set({ taskPanel: { open: true, mode: 'edit_project', projectId } }),
-  openEditPanel: (taskId) => set({ taskPanel: { open: true, mode: 'edit', taskId } }),
+    set({ taskPanel: { open: true, mode: "edit_project", projectId } }),
+  openEditPanel: (taskId) =>
+    set({ taskPanel: { open: true, mode: "edit", taskId } }),
   closeTaskPanel: () =>
-    set((state) => (state.taskPanel.open ? { taskPanel: { open: false } } : state))
+    set((state) =>
+      state.taskPanel.open ? { taskPanel: { open: false } } : state
+    )
 })

@@ -1,5 +1,9 @@
-import { DEFAULT_APPEARANCE, DEFAULT_PK_SETTINGS, UI_SCALE_OPTIONS } from '@renderer/types'
-import type { DomainState } from '../shared/types'
+import {
+  DEFAULT_APPEARANCE,
+  DEFAULT_PK_SETTINGS,
+  UI_SCALE_OPTIONS
+} from "@renderer/types"
+import type { DomainState } from "../shared/types"
 
 export const createInitialDomainState = (): DomainState => ({
   tasks: [],

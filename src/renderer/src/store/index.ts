@@ -1,8 +1,9 @@
+export { useDomainStore } from "./domain/domainStore"
 export {
   isTaskDueToday,
   isTaskOverdue,
-  selectEditingProjectById,
   selectArchivedTaskGroups,
+  selectEditingProjectById,
   selectInboxCounts,
   selectInboxTaskGroups,
   selectProjectById,
@@ -11,7 +12,7 @@ export {
   selectTasksForProject,
   selectTodayTaskGroups,
   selectVisibleTasks
-} from './domain/selectors'
+} from "./domain/selectors"
 export type {
   DomainActions,
   DomainState,
@@ -23,6 +24,5 @@ export type {
   UiState,
   UiStore,
   UpdateTaskInput
-} from './shared/types'
-export { useUiStore } from './ui/uiStore'
-export { useDomainStore } from './domain/domainStore'
+} from "./shared/types"
+export { useUiStore } from "./ui/uiStore"

@@ -1,21 +1,21 @@
-import { useCallback, useEffect, useMemo, useRef, useState } from 'react'
-import { Trash2 } from 'lucide-react'
-import { Button } from '@renderer/components/ui/button'
-import { Separator } from '@renderer/components/ui/separator'
+import { SessionStats } from "@renderer/components/task-edit/SessionStats"
+import { SubtaskList } from "@renderer/components/task-edit/SubtaskList"
+import { Button } from "@renderer/components/ui/button"
 import {
   DialogFooter,
   DialogHeader,
   DialogPanel,
   DialogTitle
-} from '@renderer/components/ui/dialog'
-import { Textarea } from '@renderer/components/ui/textarea'
-import type { Priority, Task, TaskStatus } from '@renderer/types'
-import { TaskFormFields } from './task-form-fields'
-import { useShallow } from 'zustand/react/shallow'
-import { computeTaskStats } from '@renderer/utils/sessions'
-import { SessionStats } from '@renderer/components/task-edit/SessionStats'
-import { SubtaskList } from '@renderer/components/task-edit/SubtaskList'
-import { useDomainStore } from '@renderer/store'
+} from "@renderer/components/ui/dialog"
+import { Separator } from "@renderer/components/ui/separator"
+import { Textarea } from "@renderer/components/ui/textarea"
+import { useDomainStore } from "@renderer/store"
+import type { Priority, Task, TaskStatus } from "@renderer/types"
+import { computeTaskStats } from "@renderer/utils/sessions"
+import { Trash2 } from "lucide-react"
+import { useCallback, useEffect, useMemo, useRef, useState } from "react"
+import { useShallow } from "zustand/react/shallow"
+import { TaskFormFields } from "./task-form-fields"
 
 interface TaskEditPanelProps {
   task: Task
@@ -25,7 +25,10 @@ interface TaskEditPanelProps {
 const TEXT_COMMIT_DEBOUNCE_MS = 200
 type PendingTextCommit = { taskId: string; value: string }
 
-export function TaskEditPanel({ task, onClose }: TaskEditPanelProps): React.JSX.Element {
+export function TaskEditPanel({
+  task,
+  onClose
+}: TaskEditPanelProps): React.JSX.Element {
   const {
     projects,
     labels,
@@ -48,11 +51,14 @@ export function TaskEditPanel({ task, onClose }: TaskEditPanelProps): React.JSX.
     }))
   )
 
-  const stats = useMemo(() => computeTaskStats(sessions, task.id), [sessions, task.id])
+  const stats = useMemo(
+    () => computeTaskStats(sessions, task.id),
+    [sessions, task.id]
+  )
 
   const [title, setTitle] = useState(task.title)
-  const [description, setDescription] = useState(task.description ?? '')
-  const [newSubTaskTitle, setNewSubTaskTitle] = useState('')
+  const [description, setDescription] = useState(task.description ?? "")
+  const [newSubTaskTitle, setNewSubTaskTitle] = useState("")
 
   const titleTimerRef = useRef<ReturnType<typeof setTimeout> | null>(null)
   const descTimerRef = useRef<ReturnType<typeof setTimeout> | null>(null)
@@ -76,7 +82,8 @@ export function TaskEditPanel({ task, onClose }: TaskEditPanelProps): React.JSX.
     if (!pending) return
     clearTitleTimer()
     pendingTitleRef.current = null
-    if (pending.value.trim()) updateTask(pending.taskId, { title: pending.value })
+    if (pending.value.trim())
+      updateTask(pending.taskId, { title: pending.value })
   }, [clearTitleTimer, updateTask])
 
   const flushPendingDescription = useCallback((): void => {
@@ -91,7 +98,10 @@ export function TaskEditPanel({ task, onClose }: TaskEditPanelProps): React.JSX.
     (value: string) => {
       clearTitleTimer()
       pendingTitleRef.current = { taskId: task.id, value }
-      titleTimerRef.current = setTimeout(flushPendingTitle, TEXT_COMMIT_DEBOUNCE_MS)
+      titleTimerRef.current = setTimeout(
+        flushPendingTitle,
+        TEXT_COMMIT_DEBOUNCE_MS
+      )
     },
     [clearTitleTimer, flushPendingTitle, task.id]
   )
@@ -100,7 +110,10 @@ export function TaskEditPanel({ task, onClose }: TaskEditPanelProps): React.JSX.
     (value: string) => {
       clearDescriptionTimer()
       pendingDescriptionRef.current = { taskId: task.id, value }
-      descTimerRef.current = setTimeout(flushPendingDescription, TEXT_COMMIT_DEBOUNCE_MS)
+      descTimerRef.current = setTimeout(
+        flushPendingDescription,
+        TEXT_COMMIT_DEBOUNCE_MS
+      )
     },
     [clearDescriptionTimer, flushPendingDescription, task.id]
   )
@@ -151,16 +164,16 @@ export function TaskEditPanel({ task, onClose }: TaskEditPanelProps): React.JSX.
 
   const handleAddSubTask = useCallback(
     (e: React.KeyboardEvent<HTMLInputElement>) => {
-      if (e.key === 'Enter' && newSubTaskTitle.trim()) {
+      if (e.key === "Enter" && newSubTaskTitle.trim()) {
         addSubTask(task.id, newSubTaskTitle)
-        setNewSubTaskTitle('')
+        setNewSubTaskTitle("")
       }
     },
     [addSubTask, newSubTaskTitle, task.id]
   )
 
   const handleDelete = useCallback(() => {
-    if (window.confirm('Delete this task?')) {
+    if (window.confirm("Delete this task?")) {
       deleteTask(task.id)
       onClose()
     }
@@ -177,7 +190,8 @@ export function TaskEditPanel({ task, onClose }: TaskEditPanelProps): React.JSX.
   )
 
   const handleProjectChange = useCallback(
-    (v: string | undefined) => updateTask(task.id, { projectId: v ?? undefined }),
+    (v: string | undefined) =>
+      updateTask(task.id, { projectId: v ?? undefined }),
     [task.id, updateTask]
   )
 
@@ -253,7 +267,12 @@ export function TaskEditPanel({ task, onClose }: TaskEditPanelProps): React.JSX.
       </DialogPanel>
 
       <DialogFooter className="justify-between sm:justify-between">
-        <Button onClick={handleDelete} type="button" variant="destructive-outline" size="sm">
+        <Button
+          onClick={handleDelete}
+          type="button"
+          variant="destructive-outline"
+          size="sm"
+        >
           <Trash2 size={12} />
           Delete
         </Button>

@@ -1,6 +1,10 @@
-import { useState } from 'react'
-import { Popover, PopoverPopup, PopoverTrigger } from '@renderer/components/ui/popover'
-import { cn } from '@renderer/utils/cn'
+import {
+  Popover,
+  PopoverPopup,
+  PopoverTrigger
+} from "@renderer/components/ui/popover"
+import { cn } from "@renderer/utils/cn"
+import { useState } from "react"
 
 interface EmojiPickerProps {
   value: string
@@ -10,28 +14,71 @@ interface EmojiPickerProps {
 
 const EMOJI_GROUPS: { label: string; emojis: string[] }[] = [
   {
-    label: 'Work',
-    emojis: ['📁', '📂', '🗂️', '📋', '📝', '📌', '📍', '🗓️', '🗒️', '🗃️', '💼', '📎']
+    label: "Work",
+    emojis: ["📁", "📂", "🗂️", "📋", "📝", "📌", "📍", "🗓️", "🗒️", "🗃️", "💼", "📎"]
   },
   {
-    label: 'Tech',
-    emojis: ['💻', '🖥️', '⌨️', '🖱️', '📱', '🔌', '🔋', '💾', '💿', '🛠️', '⚙️', '🧰']
+    label: "Tech",
+    emojis: ["💻", "🖥️", "⌨️", "🖱️", "📱", "🔌", "🔋", "💾", "💿", "🛠️", "⚙️", "🧰"]
   },
   {
-    label: 'Life',
-    emojis: ['🏠', '🛒', '🧺', '🍳', '🥗', '☕', '🍽️', '🧹', '🛌', '👕', '🚿', '🪴']
+    label: "Life",
+    emojis: [
+      "🏠",
+      "🛒",
+      "🧺",
+      "🍳",
+      "🥗",
+      "☕",
+      "🍽️",
+      "🧹",
+      "🛌",
+      "👕",
+      "🚿",
+      "🪴"
+    ]
   },
   {
-    label: 'Fun',
-    emojis: ['🎯', '🎨', '🎮', '🎵', '🎬', '📚', '✈️', '🏖️', '🏕️', '🎁', '🎉', '🏆']
+    label: "Fun",
+    emojis: [
+      "🎯",
+      "🎨",
+      "🎮",
+      "🎵",
+      "🎬",
+      "📚",
+      "✈️",
+      "🏖️",
+      "🏕️",
+      "🎁",
+      "🎉",
+      "🏆"
+    ]
   },
   {
-    label: 'Misc',
-    emojis: ['⭐', '🔥', '💡', '❤️', '✅', '⚡', '🌟', '🚀', '🧠', '💪', '🧩', '🌱']
+    label: "Misc",
+    emojis: [
+      "⭐",
+      "🔥",
+      "💡",
+      "❤️",
+      "✅",
+      "⚡",
+      "🌟",
+      "🚀",
+      "🧠",
+      "💪",
+      "🧩",
+      "🌱"
+    ]
   }
 ]
 
-export function EmojiPicker({ value, onSelect, className }: EmojiPickerProps): React.JSX.Element {
+export function EmojiPicker({
+  value,
+  onSelect,
+  className
+}: EmojiPickerProps): React.JSX.Element {
   const [open, setOpen] = useState(false)
 
   return (
@@ -39,11 +86,11 @@ export function EmojiPicker({ value, onSelect, className }: EmojiPickerProps): R
       <PopoverTrigger
         aria-label="Pick emoji"
         className={cn(
-          'flex h-9 w-9 items-center justify-center rounded-md border border-input bg-popover text-lg transition-colors hover:bg-accent',
+          "flex h-9 w-9 items-center justify-center rounded-md border border-input bg-popover text-lg transition-colors hover:bg-accent",
           className
         )}
       >
-        {value || '📁'}
+        {value || "📁"}
       </PopoverTrigger>
       <PopoverPopup align="start" className="w-64">
         <div className="max-h-64 space-y-2 overflow-y-auto pr-1">
@@ -57,8 +104,8 @@ export function EmojiPicker({ value, onSelect, className }: EmojiPickerProps): R
                   <button
                     aria-label={`Select emoji ${emoji}`}
                     className={cn(
-                      'flex h-8 w-8 items-center justify-center rounded-md text-base transition-colors hover:bg-accent',
-                      value === emoji && 'bg-accent ring-1 ring-input'
+                      "flex h-8 w-8 items-center justify-center rounded-md text-base transition-colors hover:bg-accent",
+                      value === emoji && "bg-accent ring-1 ring-input"
                     )}
                     key={emoji}
                     onClick={() => {

@@ -1,24 +1,31 @@
-import { useEffect, useMemo } from 'react'
-import { Pencil } from 'lucide-react'
-import { KanbanBoard } from '@renderer/components/kanban'
-import { TaskList } from '@renderer/components/task-list'
-import { Tabs, TabsList, TabsPanel, TabsTab } from '@renderer/components/ui/tabs'
-import type { Project } from '@renderer/types'
-import { useShallow } from 'zustand/react/shallow'
-import { useTaskComplete } from '@renderer/hooks/useTaskComplete'
+import { KanbanBoard } from "@renderer/components/kanban"
+import { TaskList } from "@renderer/components/task-list"
+import {
+  Tabs,
+  TabsList,
+  TabsPanel,
+  TabsTab
+} from "@renderer/components/ui/tabs"
+import { useTaskComplete } from "@renderer/hooks/useTaskComplete"
 import {
   selectProjectById,
   selectProjectTaskGroups,
   selectTasksForProject,
   useDomainStore,
   useUiStore
-} from '@renderer/store'
+} from "@renderer/store"
+import type { Project } from "@renderer/types"
+import { Pencil } from "lucide-react"
+import { useEffect, useMemo } from "react"
+import { useShallow } from "zustand/react/shallow"
 
 interface ProjectPageProps {
   onEditProject: (project: Project) => void
 }
 
-export default function ProjectPage(props: ProjectPageProps): React.JSX.Element {
+export default function ProjectPage(
+  props: ProjectPageProps
+): React.JSX.Element {
   const { tasks, projects, labels, actions } = useDomainStore(
     useShallow((state) => ({
       tasks: state.tasks,
@@ -52,7 +59,9 @@ export default function ProjectPage(props: ProjectPageProps): React.JSX.Element 
   )
   const toggleTaskComplete = useTaskComplete()
 
-  const project = useDomainStore((state) => selectProjectById(state, selectedProjectId))
+  const project = useDomainStore((state) =>
+    selectProjectById(state, selectedProjectId)
+  )
 
   const projectTasks = useMemo(
     () =>
@@ -62,7 +71,14 @@ export default function ProjectPage(props: ProjectPageProps): React.JSX.Element 
         showCompleted,
         selectedView
       }),
-    [tasks, searchQuery, selectedProjectId, selectedView, showCompleted, sortMode]
+    [
+      tasks,
+      searchQuery,
+      selectedProjectId,
+      selectedView,
+      showCompleted,
+      sortMode
+    ]
   )
 
   useEffect(() => {
@@ -79,7 +95,14 @@ export default function ProjectPage(props: ProjectPageProps): React.JSX.Element 
             selectedView
           })
         : [],
-    [tasks, searchQuery, selectedProjectId, selectedView, showCompleted, sortMode]
+    [
+      tasks,
+      searchQuery,
+      selectedProjectId,
+      selectedView,
+      showCompleted,
+      sortMode
+    ]
   )
 
   if (!project) {
@@ -95,20 +118,26 @@ export default function ProjectPage(props: ProjectPageProps): React.JSX.Element 
       className="flex h-full flex-col gap-0"
       value={projectTab}
       onValueChange={(value) => {
-        if (value === 'list' || value === 'kanban') setProjectTab(value)
+        if (value === "list" || value === "kanban") setProjectTab(value)
       }}
     >
       <div className="mb-4 flex items-center justify-between px-6">
         <h2 className="text-base font-semibold text-app-text">
-          {project.emoji || '#'} {project.name}
+          {project.emoji || "#"} {project.name}
         </h2>
 
         <div className="flex items-center gap-2">
           <TabsList className="bg-app-hover">
-            <TabsTab className="px-2 text-sm data-active:bg-app-active" value="list">
+            <TabsTab
+              className="px-2 text-sm data-active:bg-app-active"
+              value="list"
+            >
               List
             </TabsTab>
-            <TabsTab className="px-2 text-sm data-active:bg-app-active" value="kanban">
+            <TabsTab
+              className="px-2 text-sm data-active:bg-app-active"
+              value="kanban"
+            >
               Board
             </TabsTab>
           </TabsList>

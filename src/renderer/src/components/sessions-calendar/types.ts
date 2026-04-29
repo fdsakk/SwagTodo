@@ -1,4 +1,4 @@
-import type { Project, Task, TaskSession, TimeBlock } from '@renderer/types'
+import type { Project, Task, TaskSession, TimeBlock } from "@renderer/types"
 
 export const DAY_MS = 24 * 60 * 60 * 1000
 
@@ -19,14 +19,14 @@ export interface TimeBlockDisplayBlock {
 }
 
 export type DraftCreate = {
-  kind: 'create'
+  kind: "create"
   dayIndex: number
   startMin: number
   endMin: number
 }
 
 export type DraftMove = {
-  kind: 'move'
+  kind: "move"
   sessionId: string
   dayIndex: number
   startMin: number
@@ -34,7 +34,7 @@ export type DraftMove = {
 }
 
 export type DraftResize = {
-  kind: 'resize'
+  kind: "resize"
   sessionId: string
   dayIndex: number
   startMin: number
@@ -42,7 +42,7 @@ export type DraftResize = {
 }
 
 export type DraftTimeBlockMove = {
-  kind: 'tb_move'
+  kind: "tb_move"
   blockId: string
   dayIndex: number
   startMin: number
@@ -50,7 +50,7 @@ export type DraftTimeBlockMove = {
 }
 
 export type DraftTimeBlockResize = {
-  kind: 'tb_resize'
+  kind: "tb_resize"
   blockId: string
   dayIndex: number
   startMin: number

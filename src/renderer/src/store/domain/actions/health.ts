@@ -1,17 +1,22 @@
-import { v4 as uuidv4 } from 'uuid'
-import type { DomainActions, DomainStoreSet } from '../../shared/types'
-import { nowIso, removeById } from '../../shared/utils'
+import { v4 as uuidv4 } from "uuid"
+import type { DomainActions, DomainStoreSet } from "../../shared/types"
+import { nowIso, removeById } from "../../shared/utils"
 
 type HealthActions = Pick<
   DomainActions,
-  'addMedicationLog' | 'updateMedicationLog' | 'deleteMedicationLog' | 'updateChartSettings'
+  | "addMedicationLog"
+  | "updateMedicationLog"
+  | "deleteMedicationLog"
+  | "updateChartSettings"
 >
 
 const hasChartPatchChanges = (
-  current: Parameters<HealthActions['updateChartSettings']>[0],
-  patch: Parameters<HealthActions['updateChartSettings']>[0]
+  current: Parameters<HealthActions["updateChartSettings"]>[0],
+  patch: Parameters<HealthActions["updateChartSettings"]>[0]
 ): boolean =>
-  Object.entries(patch).some(([key, value]) => current[key as keyof typeof current] !== value)
+  Object.entries(patch).some(
+    ([key, value]) => current[key as keyof typeof current] !== value
+  )
 
 export const createHealthActions = (set: DomainStoreSet): HealthActions => ({
   addMedicationLog: (input) => {
@@ -20,7 +25,9 @@ export const createHealthActions = (set: DomainStoreSet): HealthActions => ({
   },
   updateMedicationLog: (id, takenAt) =>
     set((state) => {
-      const index = state.medications.findIndex((medication) => medication.id === id)
+      const index = state.medications.findIndex(
+        (medication) => medication.id === id
+      )
       if (index === -1) return state
       if (state.medications[index].takenAt === takenAt) return state
 

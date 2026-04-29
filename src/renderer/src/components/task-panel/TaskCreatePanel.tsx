@@ -1,17 +1,17 @@
-import { useCallback, useState } from 'react'
-import { Button } from '@renderer/components/ui/button'
+import { Button } from "@renderer/components/ui/button"
 import {
   DialogFooter,
   DialogHeader,
   DialogPanel,
   DialogTitle
-} from '@renderer/components/ui/dialog'
-import { Separator } from '@renderer/components/ui/separator'
-import { Textarea } from '@renderer/components/ui/textarea'
-import type { Priority, TaskStatus } from '@renderer/types'
-import { TaskFormFields } from './task-form-fields'
-import { useShallow } from 'zustand/react/shallow'
-import { useDomainStore } from '@renderer/store'
+} from "@renderer/components/ui/dialog"
+import { Separator } from "@renderer/components/ui/separator"
+import { Textarea } from "@renderer/components/ui/textarea"
+import { useDomainStore } from "@renderer/store"
+import type { Priority, TaskStatus } from "@renderer/types"
+import { useCallback, useState } from "react"
+import { useShallow } from "zustand/react/shallow"
+import { TaskFormFields } from "./task-form-fields"
 
 interface FormState {
   title: string
@@ -31,16 +31,18 @@ interface TaskCreatePanelProps {
 }
 
 const INITIAL_STATE = (props: TaskCreatePanelProps): FormState => ({
-  title: '',
-  description: '',
-  priority: 'p4',
-  dueDate: props.defaultDueDate ?? '',
-  projectId: props.defaultProjectId ?? '',
-  status: props.defaultStatus ?? 'todo',
+  title: "",
+  description: "",
+  priority: "p4",
+  dueDate: props.defaultDueDate ?? "",
+  projectId: props.defaultProjectId ?? "",
+  status: props.defaultStatus ?? "todo",
   labels: []
 })
 
-export function TaskCreatePanel(props: TaskCreatePanelProps): React.JSX.Element {
+export function TaskCreatePanel(
+  props: TaskCreatePanelProps
+): React.JSX.Element {
   const { projects, labels, addTask } = useDomainStore(
     useShallow((state) => ({
       projects: state.projects,
@@ -52,14 +54,17 @@ export function TaskCreatePanel(props: TaskCreatePanelProps): React.JSX.Element 
   const [form, setForm] = useState<FormState>(() => INITIAL_STATE(props))
 
   const patch = useCallback(
-    (updates: Partial<FormState>): void => setForm((f) => ({ ...f, ...updates })),
+    (updates: Partial<FormState>): void =>
+      setForm((f) => ({ ...f, ...updates })),
     []
   )
 
   const toggleLabel = useCallback((id: string): void => {
     setForm((f) => ({
       ...f,
-      labels: f.labels.includes(id) ? f.labels.filter((x) => x !== id) : [...f.labels, id]
+      labels: f.labels.includes(id)
+        ? f.labels.filter((x) => x !== id)
+        : [...f.labels, id]
     }))
   }, [])
 
@@ -80,7 +85,7 @@ export function TaskCreatePanel(props: TaskCreatePanelProps): React.JSX.Element 
 
   const handleTitleKeyDown = useCallback(
     (event: React.KeyboardEvent<HTMLInputElement>): void => {
-      if (event.key === 'Enter') {
+      if (event.key === "Enter") {
         event.preventDefault()
         handleCreate()
       }
@@ -122,9 +127,9 @@ export function TaskCreatePanel(props: TaskCreatePanelProps): React.JSX.Element 
           <TaskFormFields
             dueDate={form.dueDate || undefined}
             labels={labels}
-            onDueDateChange={(v) => patch({ dueDate: v ?? '' })}
+            onDueDateChange={(v) => patch({ dueDate: v ?? "" })}
             onPriorityChange={(v) => patch({ priority: v })}
-            onProjectChange={(v) => patch({ projectId: v ?? '' })}
+            onProjectChange={(v) => patch({ projectId: v ?? "" })}
             onStatusChange={(v) => patch({ status: v })}
             onToggleLabel={toggleLabel}
             priority={form.priority}

@@ -1,4 +1,4 @@
-import type { MedicationLog, PkSettings } from '@renderer/types'
+import type { MedicationLog, PkSettings } from "@renderer/types"
 
 export interface MedPreset {
   id: string
@@ -38,13 +38,13 @@ const EFFECT_CURVE_CACHE = new Map<string, EffectCurveCacheEntry>()
  * refDoseMg = lowest commonly prescribed dose for that formulation.
  */
 const PK_DEFS: Record<string, PkDef> = {
-  'medikinet-ir': {
+  "medikinet-ir": {
     components: [{ fraction: 1.0, ka: 2.0, ke: 0.55 }],
     baseDurationH: 3.5,
     defaultKe0: 1.5,
     refDoseMg: 10
   },
-  'medikinet-cr': {
+  "medikinet-cr": {
     components: [
       { fraction: 0.5, ka: 2.0, ke: 0.55 },
       { fraction: 0.5, ka: 0.7, ke: 0.32 }
@@ -145,7 +145,7 @@ export interface ChartPoint {
   /** True if dC/dt < crashThreshold at this point. */
   crashRisk: boolean
   /** "below" | "therapeutic" | "above" — position relative to MEC/MTC band. */
-  band: 'below' | 'therapeutic' | 'above'
+  band: "below" | "therapeutic" | "above"
 }
 
 /**
@@ -198,7 +198,10 @@ interface GenerateChartOptions {
  * - faster rise → keeps onset responsive
  * - slower fall → smooths peaks and stretches offset
  */
-function smoothSummedEffect(rawEffects: number[], stepMinutes: number): number[] {
+function smoothSummedEffect(
+  rawEffects: number[],
+  stepMinutes: number
+): number[] {
   if (rawEffects.length === 0) return []
 
   const riseTauMin = 22
@@ -225,7 +228,8 @@ export function generateDailyChartData(
   pkSettings: PkSettings,
   options: GenerateChartOptions = {}
 ): ChartPoint[] {
-  const { peakScale, tMaxOffsetH, keMultiplier, mec, mtc, crashThreshold } = pkSettings
+  const { peakScale, tMaxOffsetH, keMultiplier, mec, mtc, crashThreshold } =
+    pkSettings
   const stepMinutes = options.stepMinutes ?? 5
   const dayStart = new Date(`${date}T00:00:00`).getTime()
   const STEP_H = stepMinutes / 60
@@ -278,13 +282,14 @@ export function generateDailyChartData(
     const c = shapedEffects[i]
     const slope = smoothSlope[i]
     const crashRisk = slope < crashThreshold && c > mec * 0.5
-    const band: ChartPoint['band'] = c >= mtc ? 'above' : c >= mec ? 'therapeutic' : 'below'
+    const band: ChartPoint["band"] =
+      c >= mtc ? "above" : c >= mec ? "therapeutic" : "below"
 
     const minute = i * stepMinutes
     const h = Math.floor(minute / 60)
     const m = minute % 60
     points.push({
-      timeLabel: `${String(h).padStart(2, '0')}:${String(m).padStart(2, '0')}`,
+      timeLabel: `${String(h).padStart(2, "0")}:${String(m).padStart(2, "0")}`,
       minuteOfDay: minute,
       concentration: c,
       crashRisk,
@@ -296,23 +301,23 @@ export function generateDailyChartData(
 }
 
 export const MED_PRESETS: MedPreset[] = [
-  { id: 'medikinet-ir', name: 'Medikinet IR', dose: 10, unit: 'mg' },
-  { id: 'medikinet-ir', name: 'Medikinet IR', dose: 20, unit: 'mg' },
-  { id: 'medikinet-cr', name: 'Medikinet CR', dose: 20, unit: 'mg' },
-  { id: 'medikinet-cr', name: 'Medikinet CR', dose: 30, unit: 'mg' },
-  { id: 'concerta', name: 'Concerta', dose: 18, unit: 'mg' },
-  { id: 'concerta', name: 'Concerta', dose: 36, unit: 'mg' },
-  { id: 'elvanse', name: 'Elvanse', dose: 20, unit: 'mg' },
-  { id: 'elvanse', name: 'Elvanse', dose: 30, unit: 'mg' },
-  { id: 'elvanse', name: 'Elvanse', dose: 40, unit: 'mg' }
+  { id: "medikinet-ir", name: "Medikinet IR", dose: 10, unit: "mg" },
+  { id: "medikinet-ir", name: "Medikinet IR", dose: 20, unit: "mg" },
+  { id: "medikinet-cr", name: "Medikinet CR", dose: 20, unit: "mg" },
+  { id: "medikinet-cr", name: "Medikinet CR", dose: 30, unit: "mg" },
+  { id: "concerta", name: "Concerta", dose: 18, unit: "mg" },
+  { id: "concerta", name: "Concerta", dose: 36, unit: "mg" },
+  { id: "elvanse", name: "Elvanse", dose: 20, unit: "mg" },
+  { id: "elvanse", name: "Elvanse", dose: 30, unit: "mg" },
+  { id: "elvanse", name: "Elvanse", dose: 40, unit: "mg" }
 ]
 
 export const MED_IDS = [...new Set(MED_PRESETS.map((p) => p.id))]
 
 export const MED_DISPLAY_NAME: Record<string, string> = {
-  'medikinet-ir': 'Medikinet IR',
-  'medikinet-cr': 'Medikinet CR',
-  concerta: 'Concerta',
-  dexamp: 'Dexamphetamine',
-  elvanse: 'Elvanse'
+  "medikinet-ir": "Medikinet IR",
+  "medikinet-cr": "Medikinet CR",
+  concerta: "Concerta",
+  dexamp: "Dexamphetamine",
+  elvanse: "Elvanse"
 }

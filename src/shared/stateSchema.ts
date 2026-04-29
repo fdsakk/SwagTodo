@@ -1,29 +1,29 @@
-import { z } from 'zod'
-import type { AppearanceSettings, Task } from './types'
+import { z } from "zod"
+import type { AppearanceSettings, Task } from "./types"
 
 const EPOCH_ISO = new Date(0).toISOString()
 const storedBooleanSchema = z.preprocess(
-  (value) => (typeof value === 'number' ? value !== 0 : value),
+  (value) => (typeof value === "number" ? value !== 0 : value),
   z.boolean().catch(false)
 )
 
-export const prioritySchema = z.enum(['p1', 'p2', 'p3', 'p4'])
-export const taskStatusSchema = z.enum(['todo', 'in_progress', 'done'])
+export const prioritySchema = z.enum(["p1", "p2", "p3", "p4"])
+export const taskStatusSchema = z.enum(["todo", "in_progress", "done"])
 
 export const subTaskSchema = z
   .object({
-    id: z.string().catch(''),
-    title: z.string().catch(''),
+    id: z.string().catch(""),
+    title: z.string().catch(""),
     completed: storedBooleanSchema
   })
   .passthrough()
 
 export const taskSchema = z
   .object({
-    id: z.string().catch(''),
-    title: z.string().catch(''),
+    id: z.string().catch(""),
+    title: z.string().catch(""),
     description: z.string().optional().catch(undefined),
-    priority: prioritySchema.catch('p4'),
+    priority: prioritySchema.catch("p4"),
     dueDate: z.string().optional().catch(undefined),
     projectId: z.string().optional().catch(undefined),
     labels: z.array(z.string()).catch([]),
@@ -40,12 +40,12 @@ export const taskSchema = z
   .transform<Task>((task) => {
     const updatedAt = task.updatedAt ?? task.createdAt ?? EPOCH_ISO
     const status =
-      task.status === 'done' || task.completed
-        ? 'done'
-        : task.status === 'in_progress'
-          ? 'in_progress'
-          : 'todo'
-    const completed = status === 'done'
+      task.status === "done" || task.completed
+        ? "done"
+        : task.status === "in_progress"
+          ? "in_progress"
+          : "todo"
+    const completed = status === "done"
 
     return {
       id: task.id,
@@ -68,9 +68,9 @@ export const taskSchema = z
 
 export const projectSchema = z
   .object({
-    id: z.string().catch(''),
-    name: z.string().catch(''),
-    color: z.string().catch(''),
+    id: z.string().catch(""),
+    name: z.string().catch(""),
+    color: z.string().catch(""),
     emoji: z.string().optional().catch(undefined),
     description: z.string().optional().catch(undefined),
     createdAt: z.string().catch(EPOCH_ISO)
@@ -79,17 +79,17 @@ export const projectSchema = z
 
 export const labelSchema = z
   .object({
-    id: z.string().catch(''),
-    name: z.string().catch(''),
-    color: z.string().catch('')
+    id: z.string().catch(""),
+    name: z.string().catch(""),
+    color: z.string().catch("")
   })
   .passthrough()
 
 export const sessionSchema = z
   .object({
-    id: z.string().catch(''),
-    taskId: z.string().catch(''),
-    projectId: z.string().catch(''),
+    id: z.string().catch(""),
+    taskId: z.string().catch(""),
+    projectId: z.string().catch(""),
     startAt: z.string().catch(EPOCH_ISO),
     endAt: z.string().catch(EPOCH_ISO),
     createdAt: z.string().catch(EPOCH_ISO),
@@ -99,8 +99,8 @@ export const sessionSchema = z
 
 export const timeBlockSchema = z
   .object({
-    id: z.string().catch(''),
-    label: z.string().catch(''),
+    id: z.string().catch(""),
+    label: z.string().catch(""),
     startAt: z.string().catch(EPOCH_ISO),
     endAt: z.string().catch(EPOCH_ISO),
     createdAt: z.string().catch(EPOCH_ISO)
@@ -109,9 +109,9 @@ export const timeBlockSchema = z
 
 export const medicationSchema = z
   .object({
-    id: z.string().catch(''),
-    medId: z.string().catch(''),
-    medName: z.string().catch(''),
+    id: z.string().catch(""),
+    medId: z.string().catch(""),
+    medName: z.string().catch(""),
     dose: z.number().catch(0),
     takenAt: z.string().catch(EPOCH_ISO),
     createdAt: z.string().catch(EPOCH_ISO)
@@ -122,7 +122,10 @@ export const sharedAppearanceSchema = z
   .object({
     themeId: z.string(),
     customTokens: z.record(z.string(), z.string()).optional().catch({}),
-    customTokensByTheme: z.record(z.string(), z.record(z.string(), z.string())).optional().catch({})
+    customTokensByTheme: z
+      .record(z.string(), z.record(z.string(), z.string()))
+      .optional()
+      .catch({})
   })
   .passthrough()
   .transform<AppearanceSettings>((appearance) => ({

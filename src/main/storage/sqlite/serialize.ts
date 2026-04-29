@@ -1,13 +1,13 @@
-import { existsSync, readFileSync } from 'node:fs'
-import { dirname, join } from 'node:path'
-import type { AppState, Task } from '../../../shared/types'
-import { defaultAppState, normalizeAppState } from '../appState'
+import { existsSync, readFileSync } from "node:fs"
+import { dirname, join } from "node:path"
+import type { AppState, Task } from "../../../shared/types"
+import { defaultAppState, normalizeAppState } from "../appState"
 import {
   LEGACY_STORE_FILES,
   SETTINGS_KEYS,
   type SqliteStateSnapshot,
   type StoredTaskAggregateRow
-} from './types'
+} from "./types"
 
 type LegacyElectronStore = { appState?: unknown }
 
@@ -20,12 +20,16 @@ export const parseSetting = <T>(
   try {
     return JSON.parse(raw) as T
   } catch (error) {
-    console.error('[storage] failed to parse SQLite setting', { key, error })
+    console.error("[storage] failed to parse SQLite setting", { key, error })
     return undefined
   }
 }
 
-export const parseJsonArray = <T>(raw: string, fallback: T[], context: string): T[] => {
+export const parseJsonArray = <T>(
+  raw: string,
+  fallback: T[],
+  context: string
+): T[] => {
   try {
     const parsed = JSON.parse(raw) as unknown
     return Array.isArray(parsed) ? (parsed as T[]) : fallback
@@ -43,7 +47,11 @@ export const inflateTaskRows = (rows: StoredTaskAggregateRow[]): Task[] =>
     priority: task.priority,
     dueDate: task.due_date ?? undefined,
     projectId: task.project_id ?? undefined,
-    labels: parseJsonArray<string>(task.labels_json, [], `task labels for ${task.id}`),
+    labels: parseJsonArray<string>(
+      task.labels_json,
+      [],
+      `task labels for ${task.id}`
+    ),
     completed: Boolean(task.completed),
     status: task.status,
     completedAt: task.completed_at ?? undefined,
@@ -51,7 +59,7 @@ export const inflateTaskRows = (rows: StoredTaskAggregateRow[]): Task[] =>
     createdAt: task.created_at,
     updatedAt: task.updated_at,
     order: task.sort_order,
-    subTasks: parseJsonArray<Task['subTasks'][number]>(
+    subTasks: parseJsonArray<Task["subTasks"][number]>(
       task.subtasks_json,
       [],
       `task subtasks for ${task.id}`
@@ -61,10 +69,14 @@ export const inflateTaskRows = (rows: StoredTaskAggregateRow[]): Task[] =>
 export const parseLegacyElectronStore = (raw: string): AppState | null => {
   try {
     const parsed = JSON.parse(raw) as LegacyElectronStore
-    if (!parsed || typeof parsed !== 'object' || !('appState' in parsed)) return null
+    if (!parsed || typeof parsed !== "object" || !("appState" in parsed))
+      return null
     return normalizeAppState(parsed.appState)
   } catch (error) {
-    console.error('[storage] failed to parse legacy electron-store payload', error)
+    console.error(
+      "[storage] failed to parse legacy electron-store payload",
+      error
+    )
     return null
   }
 }
@@ -76,18 +88,24 @@ export const readLegacyElectronStore = (dbPath: string): AppState | null => {
     const filePath = join(userDataDir, fileName)
     if (!existsSync(filePath)) continue
 
-    let raw = ''
+    let raw = ""
     try {
-      raw = readFileSync(filePath, 'utf8')
+      raw = readFileSync(filePath, "utf8")
     } catch (error) {
-      console.error('[storage] failed to read legacy electron-store file', { filePath, error })
+      console.error("[storage] failed to read legacy electron-store file", {
+        filePath,
+        error
+      })
       continue
     }
 
     const state = parseLegacyElectronStore(raw)
     if (!state) continue
 
-    console.info('[storage] migrated legacy electron-store data', { from: filePath, to: dbPath })
+    console.info("[storage] migrated legacy electron-store data", {
+      from: filePath,
+      to: dbPath
+    })
     return state
   }
 
@@ -206,8 +224,10 @@ export const serializeAppState = (state: AppState): SqliteStateSnapshot => {
   return snapshot
 }
 
-export const deserializeAppState = (snapshot: SqliteStateSnapshot): AppState => {
-  const subTasksByTaskId = new Map<string, Task['subTasks']>()
+export const deserializeAppState = (
+  snapshot: SqliteStateSnapshot
+): AppState => {
+  const subTasksByTaskId = new Map<string, Task["subTasks"]>()
   snapshot.taskSubtasks.forEach((subTask) => {
     const list = subTasksByTaskId.get(subTask.task_id) ?? []
     list.push({
@@ -285,10 +305,10 @@ export const deserializeAppState = (snapshot: SqliteStateSnapshot): AppState => 
       takenAt: medication.taken_at,
       createdAt: medication.created_at
     })),
-    pkSettings: parseSetting(settings, 'pkSettings'),
-    uiScale: parseSetting(settings, 'uiScale'),
-    isSidebarCollapsed: parseSetting(settings, 'isSidebarCollapsed'),
-    appearance: parseSetting(settings, 'appearance')
+    pkSettings: parseSetting(settings, "pkSettings"),
+    uiScale: parseSetting(settings, "uiScale"),
+    isSidebarCollapsed: parseSetting(settings, "isSidebarCollapsed"),
+    appearance: parseSetting(settings, "appearance")
   })
 }
 
@@ -298,7 +318,7 @@ const buildChildJson = (
 ): Map<string, string> => {
   const m = new Map<string, string>()
   for (const row of rows) {
-    m.set(row.task_id, (m.get(row.task_id) ?? '') + stringify(row))
+    m.set(row.task_id, (m.get(row.task_id) ?? "") + stringify(row))
   }
   return m
 }
@@ -326,8 +346,8 @@ export const changedTaskIds = (
     if (
       !prevTask ||
       !isSameRow(prevTask, t) ||
-      (prevSubJson.get(t.id) ?? '') !== (nextSubJson.get(t.id) ?? '') ||
-      (prevLblJson.get(t.id) ?? '') !== (nextLblJson.get(t.id) ?? '')
+      (prevSubJson.get(t.id) ?? "") !== (nextSubJson.get(t.id) ?? "") ||
+      (prevLblJson.get(t.id) ?? "") !== (nextLblJson.get(t.id) ?? "")
     ) {
       changed.add(t.id)
     }
@@ -351,8 +371,8 @@ export const changedTaskChildIds = (
 
   for (const task of next.tasks) {
     if (
-      (prevSubJson.get(task.id) ?? '') !== (nextSubJson.get(task.id) ?? '') ||
-      (prevLblJson.get(task.id) ?? '') !== (nextLblJson.get(task.id) ?? '')
+      (prevSubJson.get(task.id) ?? "") !== (nextSubJson.get(task.id) ?? "") ||
+      (prevLblJson.get(task.id) ?? "") !== (nextLblJson.get(task.id) ?? "")
     ) {
       ids.add(task.id)
     }
@@ -361,13 +381,20 @@ export const changedTaskChildIds = (
   return ids
 }
 
-export const changedIds = <T extends { id: string }>(prev: T[], next: T[]): boolean => {
+export const changedIds = <T extends { id: string }>(
+  prev: T[],
+  next: T[]
+): boolean => {
   if (prev.length !== next.length) return true
   const prevMap = new Map(prev.map((r) => [r.id, r]))
   return next.some((r) => {
     const previous = prevMap.get(r.id)
     return (
-      !previous || !isSameRow(previous as Record<string, unknown>, r as Record<string, unknown>)
+      !previous ||
+      !isSameRow(
+        previous as Record<string, unknown>,
+        r as Record<string, unknown>
+      )
     )
   })
 }

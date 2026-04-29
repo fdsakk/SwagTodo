@@ -1,8 +1,12 @@
-import { useMemo } from 'react'
-import { TaskList } from '@renderer/components/task-list'
-import { selectInboxTaskGroups, useDomainStore, useUiStore } from '@renderer/store'
-import { useShallow } from 'zustand/react/shallow'
-import { useTaskComplete } from '@renderer/hooks/useTaskComplete'
+import { TaskList } from "@renderer/components/task-list"
+import { useTaskComplete } from "@renderer/hooks/useTaskComplete"
+import {
+  selectInboxTaskGroups,
+  useDomainStore,
+  useUiStore
+} from "@renderer/store"
+import { useMemo } from "react"
+import { useShallow } from "zustand/react/shallow"
 
 export default function InboxPage(): React.JSX.Element {
   const { projects, labels, actions } = useDomainStore(

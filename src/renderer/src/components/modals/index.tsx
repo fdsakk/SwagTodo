@@ -1,3 +1,3 @@
-export { LabelManagerModal } from './LabelManagerModal'
-export { ShortcutsHelpModal } from './ShortcutsHelpModal'
-export { ProjectPickerModal } from './ProjectPickerModal'
+export { LabelManagerModal } from "./LabelManagerModal"
+export { ProjectPickerModal } from "./ProjectPickerModal"
+export { ShortcutsHelpModal } from "./ShortcutsHelpModal"

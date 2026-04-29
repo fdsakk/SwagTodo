@@ -1,11 +1,11 @@
-import { useMemo, useState } from 'react'
-import { useShallow } from 'zustand/react/shallow'
-import { useDomainStore } from '@renderer/store'
-import { EffectChart } from './health/EffectChart'
-import { MedLogList } from './health/MedLogList'
-import { PkParams } from './health/PkParams'
-import { QuickAddButtons } from './health/QuickAddButtons'
-import { today } from './health/utils'
+import { useDomainStore } from "@renderer/store"
+import { useMemo, useState } from "react"
+import { useShallow } from "zustand/react/shallow"
+import { EffectChart } from "./health/EffectChart"
+import { MedLogList } from "./health/MedLogList"
+import { PkParams } from "./health/PkParams"
+import { QuickAddButtons } from "./health/QuickAddButtons"
+import { today } from "./health/utils"
 
 export function HealthPage(): React.JSX.Element {
   const {
@@ -62,7 +62,11 @@ export function HealthPage(): React.JSX.Element {
       </section>
 
       <div className="rounded-xl border border-app-border bg-app-card p-4 [&_*]:outline-none">
-        <EffectChart logs={todayLogs} selectedDate={selectedDate} pkSettings={pkSettings} />
+        <EffectChart
+          logs={todayLogs}
+          selectedDate={selectedDate}
+          pkSettings={pkSettings}
+        />
         <PkParams pkSettings={pkSettings} onChange={updateChartSettings} />
       </div>
     </div>

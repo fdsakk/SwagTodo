@@ -1,13 +1,17 @@
-import { useCallback, useEffect, useMemo, useState } from 'react'
-import { useShallow } from 'zustand/react/shallow'
-import { SessionsCalendar } from '@renderer/components/sessions-calendar'
-import { addDays, buildIsoAtMinutes, isSameDay, startOfDay } from '@renderer/utils/calendar'
-
-import { TaskPickerDialog, type DraftCreate } from './sessions/TaskPickerDialog'
-import { GhostBlockDialog } from './sessions/GhostBlockDialog'
-import { SessionsToolbar, type DayCount } from './sessions/SessionsToolbar'
-import { useSessionsKeyboard } from './sessions/useSessionsKeyboard'
-import { useDomainStore, useUiStore } from '@renderer/store'
+import { SessionsCalendar } from "@renderer/components/sessions-calendar"
+import { useDomainStore, useUiStore } from "@renderer/store"
+import {
+  addDays,
+  buildIsoAtMinutes,
+  isSameDay,
+  startOfDay
+} from "@renderer/utils/calendar"
+import { useCallback, useEffect, useMemo, useState } from "react"
+import { useShallow } from "zustand/react/shallow"
+import { GhostBlockDialog } from "./sessions/GhostBlockDialog"
+import { type DayCount, SessionsToolbar } from "./sessions/SessionsToolbar"
+import { type DraftCreate, TaskPickerDialog } from "./sessions/TaskPickerDialog"
+import { useSessionsKeyboard } from "./sessions/useSessionsKeyboard"
 
 const NOW_TICK_MS = 60 * 1000
 
@@ -44,7 +48,7 @@ export default function SessionsPage(): React.JSX.Element {
   const [now, setNow] = useState<Date>(() => new Date())
   const [error, setError] = useState<string | null>(null)
   const [draftCreate, setDraftCreate] = useState<DraftCreate | null>(null)
-  const [draftMode, setDraftMode] = useState<'task' | 'ghost'>('task')
+  const [draftMode, setDraftMode] = useState<"task" | "ghost">("task")
 
   useEffect(() => {
     const interval = setInterval(() => setNow(new Date()), NOW_TICK_MS)
@@ -96,7 +100,8 @@ export default function SessionsPage(): React.JSX.Element {
   }, [projects])
 
   const shiftRange = useCallback(
-    (direction: -1 | 1) => setAnchor((current) => addDays(current, direction * dayCount)),
+    (direction: -1 | 1) =>
+      setAnchor((current) => addDays(current, direction * dayCount)),
     [dayCount]
   )
 
@@ -105,9 +110,9 @@ export default function SessionsPage(): React.JSX.Element {
   const rangeLabel = useMemo(() => {
     const first = days[0]
     const last = days[days.length - 1]
-    if (!first || !last) return ''
+    if (!first || !last) return ""
     const fmt = (d: Date): string =>
-      d.toLocaleDateString(undefined, { month: 'short', day: 'numeric' })
+      d.toLocaleDateString(undefined, { month: "short", day: "numeric" })
     const year = last.getFullYear()
     if (isSameDay(first, last)) return `${fmt(first)} ${year}`
     return `${fmt(first)} – ${fmt(last)} ${year}`
@@ -119,7 +124,7 @@ export default function SessionsPage(): React.JSX.Element {
       if (!day) return
       const startAt = buildIsoAtMinutes(day, startMin)
       const endAt = buildIsoAtMinutes(day, endMin)
-      setDraftMode('task')
+      setDraftMode("task")
       setDraftCreate({ dayIso: day.toISOString(), startAt, endAt })
     },
     [days]
@@ -147,7 +152,11 @@ export default function SessionsPage(): React.JSX.Element {
   const handlePickTask = useCallback(
     (taskId: string) => {
       if (!draftCreate) return
-      const result = addSession({ taskId, startAt: draftCreate.startAt, endAt: draftCreate.endAt })
+      const result = addSession({
+        taskId,
+        startAt: draftCreate.startAt,
+        endAt: draftCreate.endAt
+      })
       if (!result.ok) {
         setError(result.error)
         return
@@ -168,7 +177,11 @@ export default function SessionsPage(): React.JSX.Element {
   const handlePickGhostBlock = useCallback(
     (label: string) => {
       if (!draftCreate) return
-      const result = addTimeBlock({ label, startAt: draftCreate.startAt, endAt: draftCreate.endAt })
+      const result = addTimeBlock({
+        label,
+        startAt: draftCreate.startAt,
+        endAt: draftCreate.endAt
+      })
       if (!result.ok) {
         setError(result.error)
         return
@@ -196,7 +209,8 @@ export default function SessionsPage(): React.JSX.Element {
 
       {projectTasks.length === 0 && (
         <div className="mx-4 mb-2 rounded-md border border-app-border bg-app-hover px-3 py-1.5 text-xs text-app-text-secondary">
-          Only tasks that belong to a project can be scheduled. Add a project first, then a task.
+          Only tasks that belong to a project can be scheduled. Add a project
+          first, then a task.
         </div>
       )}
 
@@ -218,23 +232,23 @@ export default function SessionsPage(): React.JSX.Element {
         />
       </div>
 
-      {draftCreate && draftMode === 'task' && (
+      {draftCreate && draftMode === "task" && (
         <TaskPickerDialog
           draft={draftCreate}
           tasks={projectTasks}
           projectById={projectById}
           onCancel={() => setDraftCreate(null)}
           onPick={handlePickTask}
-          onSwitchToGhost={() => setDraftMode('ghost')}
+          onSwitchToGhost={() => setDraftMode("ghost")}
         />
       )}
 
-      {draftCreate && draftMode === 'ghost' && (
+      {draftCreate && draftMode === "ghost" && (
         <GhostBlockDialog
           draft={draftCreate}
           onCancel={() => setDraftCreate(null)}
           onCreate={handlePickGhostBlock}
-          onSwitchToTask={() => setDraftMode('task')}
+          onSwitchToTask={() => setDraftMode("task")}
         />
       )}
     </div>

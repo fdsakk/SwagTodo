@@ -1,10 +1,11 @@
-import { memo, useCallback, useMemo } from 'react'
-import { format, parseISO } from 'date-fns'
-import { CalendarIcon, ChevronDownIcon, X } from 'lucide-react'
-import { Button, buttonVariants } from '@renderer/components/ui/button'
-import { Calendar } from '@renderer/components/ui/calendar'
-import { Field, FieldLabel } from '@renderer/components/ui/field'
-import { Popover, PopoverPopup, PopoverTrigger } from '@renderer/components/ui/popover'
+import { Button, buttonVariants } from "@renderer/components/ui/button"
+import { Calendar } from "@renderer/components/ui/calendar"
+import { Field, FieldLabel } from "@renderer/components/ui/field"
+import {
+  Popover,
+  PopoverPopup,
+  PopoverTrigger
+} from "@renderer/components/ui/popover"
 import {
   Select,
   SelectGroup,
@@ -12,18 +13,21 @@ import {
   SelectPopup,
   SelectTrigger,
   SelectValue
-} from '@renderer/components/ui/select'
-import type { Label, Priority, Project, TaskStatus } from '@renderer/types'
-import { PRIORITY_META } from '@renderer/utils/task'
-import { cn } from '@renderer/utils/cn'
+} from "@renderer/components/ui/select"
+import type { Label, Priority, Project, TaskStatus } from "@renderer/types"
+import { cn } from "@renderer/utils/cn"
+import { PRIORITY_META } from "@renderer/utils/task"
+import { format, parseISO } from "date-fns"
+import { CalendarIcon, ChevronDownIcon, X } from "lucide-react"
+import { memo, useCallback, useMemo } from "react"
 
-const INBOX_VALUE = '__inbox__'
-const PRIORITIES: readonly Priority[] = ['p1', 'p2', 'p3', 'p4'] as const
+const INBOX_VALUE = "__inbox__"
+const PRIORITIES: readonly Priority[] = ["p1", "p2", "p3", "p4"] as const
 
 const STATUS_OPTIONS: readonly { value: TaskStatus; label: string }[] = [
-  { value: 'todo', label: 'To Do' },
-  { value: 'in_progress', label: 'In Progress' },
-  { value: 'done', label: 'Done' }
+  { value: "todo", label: "To Do" },
+  { value: "in_progress", label: "In Progress" },
+  { value: "done", label: "Done" }
 ] as const
 
 const PRIORITY_OPTIONS = PRIORITIES.map((value) => ({
@@ -34,10 +38,10 @@ const PRIORITY_OPTIONS = PRIORITIES.map((value) => ({
 const buildProjectOptions = (
   projects: readonly Project[]
 ): readonly { value: string; label: string }[] => [
-  { value: INBOX_VALUE, label: 'Inbox' },
+  { value: INBOX_VALUE, label: "Inbox" },
   ...projects.map((project) => ({
     value: project.id,
-    label: `${project.emoji || '#'} ${project.name}`
+    label: `${project.emoji || "#"} ${project.name}`
   }))
 ]
 
@@ -52,14 +56,17 @@ const LabelChip = memo(function LabelChip({
   selected,
   onToggle
 }: LabelChipProps): React.JSX.Element {
-  const handleClick = useCallback(() => onToggle(label.id), [onToggle, label.id])
+  const handleClick = useCallback(
+    () => onToggle(label.id),
+    [onToggle, label.id]
+  )
   return (
     <button
       className={cn(
-        'h-6 rounded-md px-2 text-xs transition-colors',
+        "h-6 rounded-md px-2 text-xs transition-colors",
         selected
-          ? 'bg-app-active text-app-text'
-          : 'bg-app-hover text-app-text-muted hover:bg-app-active hover:text-app-text-secondary'
+          ? "bg-app-active text-app-text"
+          : "bg-app-hover text-app-text-muted hover:bg-app-active hover:text-app-text-secondary"
       )}
       onClick={handleClick}
       type="button"
@@ -102,8 +109,14 @@ function TaskFormFieldsImpl({
 }: TaskFormFieldsProps): React.JSX.Element {
   const selectedDate = dueDate ? parseISO(dueDate) : undefined
   const projectValue = projectId ?? INBOX_VALUE
-  const selectedLabelSet = useMemo(() => new Set(selectedLabelIds), [selectedLabelIds])
-  const projectOptions = useMemo(() => buildProjectOptions(projects), [projects])
+  const selectedLabelSet = useMemo(
+    () => new Set(selectedLabelIds),
+    [selectedLabelIds]
+  )
+  const projectOptions = useMemo(
+    () => buildProjectOptions(projects),
+    [projects]
+  )
 
   const handlePriority = useCallback(
     (value: Priority | null) => {
@@ -118,12 +131,17 @@ function TaskFormFieldsImpl({
     [onStatusChange]
   )
   const handleProject = useCallback(
-    (value: string | null) => onProjectChange(value === INBOX_VALUE || !value ? undefined : value),
+    (value: string | null) =>
+      onProjectChange(value === INBOX_VALUE || !value ? undefined : value),
     [onProjectChange]
   )
-  const clearDate = useCallback(() => onDueDateChange(undefined), [onDueDateChange])
+  const clearDate = useCallback(
+    () => onDueDateChange(undefined),
+    [onDueDateChange]
+  )
   const handleCalendarSelect = useCallback(
-    (date: Date | undefined) => onDueDateChange(date ? format(date, 'yyyy-MM-dd') : undefined),
+    (date: Date | undefined) =>
+      onDueDateChange(date ? format(date, "yyyy-MM-dd") : undefined),
     [onDueDateChange]
   )
 
@@ -131,7 +149,11 @@ function TaskFormFieldsImpl({
     <div className="space-y-3">
       <Field>
         <FieldLabel>Priority</FieldLabel>
-        <Select items={PRIORITY_OPTIONS} onValueChange={handlePriority} value={priority}>
+        <Select
+          items={PRIORITY_OPTIONS}
+          onValueChange={handlePriority}
+          value={priority}
+        >
           <SelectTrigger className="w-full">
             <SelectValue />
           </SelectTrigger>
@@ -161,8 +183,8 @@ function TaskFormFieldsImpl({
               render={
                 <button
                   className={cn(
-                    buttonVariants({ size: 'sm', variant: 'outline' }),
-                    'flex-1 justify-between font-normal'
+                    buttonVariants({ size: "sm", variant: "outline" }),
+                    "flex-1 justify-between font-normal"
                   )}
                   data-empty={!selectedDate}
                   type="button"
@@ -171,7 +193,7 @@ function TaskFormFieldsImpl({
             >
               <span className="flex items-center gap-2">
                 <CalendarIcon size={14} />
-                {selectedDate ? format(selectedDate, 'PPP') : 'Pick a date'}
+                {selectedDate ? format(selectedDate, "PPP") : "Pick a date"}
               </span>
               <ChevronDownIcon size={14} />
             </PopoverTrigger>
@@ -200,7 +222,11 @@ function TaskFormFieldsImpl({
 
       <Field>
         <FieldLabel>Project</FieldLabel>
-        <Select items={projectOptions} onValueChange={handleProject} value={projectValue}>
+        <Select
+          items={projectOptions}
+          onValueChange={handleProject}
+          value={projectValue}
+        >
           <SelectTrigger className="w-full">
             <SelectValue placeholder="Inbox" />
           </SelectTrigger>
@@ -209,7 +235,7 @@ function TaskFormFieldsImpl({
               <SelectItem value={INBOX_VALUE}>Inbox</SelectItem>
               {projects.map((project) => (
                 <SelectItem key={project.id} value={project.id}>
-                  {project.emoji || '#'} {project.name}
+                  {project.emoji || "#"} {project.name}
                 </SelectItem>
               ))}
             </SelectGroup>
@@ -219,7 +245,11 @@ function TaskFormFieldsImpl({
 
       <Field>
         <FieldLabel>Status</FieldLabel>
-        <Select items={STATUS_OPTIONS} onValueChange={handleStatus} value={status}>
+        <Select
+          items={STATUS_OPTIONS}
+          onValueChange={handleStatus}
+          value={status}
+        >
           <SelectTrigger className="w-full">
             <SelectValue />
           </SelectTrigger>

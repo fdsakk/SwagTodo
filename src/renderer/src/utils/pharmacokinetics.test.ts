@@ -1,31 +1,34 @@
-import test from 'node:test'
-import assert from 'node:assert/strict'
-import { DEFAULT_PK_SETTINGS, type MedicationLog } from '@renderer/types'
-import { generateDailyChartData } from './pharmacokinetics'
+import assert from "node:assert/strict"
+import test from "node:test"
+import { DEFAULT_PK_SETTINGS, type MedicationLog } from "@renderer/types"
+import { generateDailyChartData } from "./pharmacokinetics"
 
-const logAt = (takenAt: string, overrides: Partial<MedicationLog> = {}): MedicationLog => ({
-  id: overrides.id ?? 'log-1',
-  medId: overrides.medId ?? 'medikinet-ir',
-  medName: overrides.medName ?? 'Medikinet IR',
+const logAt = (
+  takenAt: string,
+  overrides: Partial<MedicationLog> = {}
+): MedicationLog => ({
+  id: overrides.id ?? "log-1",
+  medId: overrides.medId ?? "medikinet-ir",
+  medName: overrides.medName ?? "Medikinet IR",
   dose: overrides.dose ?? 10,
   takenAt,
   createdAt: overrides.createdAt ?? takenAt
 })
 
-test('generateDailyChartData creates full-day 5 minute curve with effect after dose', () => {
+test("generateDailyChartData creates full-day 5 minute curve with effect after dose", () => {
   const points = generateDailyChartData(
-    [logAt('2026-04-29T08:00:00')],
-    '2026-04-29',
+    [logAt("2026-04-29T08:00:00")],
+    "2026-04-29",
     DEFAULT_PK_SETTINGS
   )
 
   assert.equal(points.length, 289)
   assert.deepEqual(points[0], {
-    timeLabel: '00:00',
+    timeLabel: "00:00",
     minuteOfDay: 0,
     concentration: 0,
     crashRisk: false,
-    band: 'below'
+    band: "below"
   })
 
   const maxPoint = points.reduce((max, point) =>
@@ -33,19 +36,19 @@ test('generateDailyChartData creates full-day 5 minute curve with effect after d
   )
   assert.ok(maxPoint.minuteOfDay > 8 * 60)
   assert.ok(maxPoint.concentration > 0.2)
-  assert.ok(points.some((point) => point.band === 'therapeutic'))
+  assert.ok(points.some((point) => point.band === "therapeutic"))
 })
 
-test('generateDailyChartData supports 10 minute step and dose scaling', () => {
+test("generateDailyChartData supports 10 minute step and dose scaling", () => {
   const lowDose = generateDailyChartData(
-    [logAt('2026-04-29T08:00:00', { dose: 10 })],
-    '2026-04-29',
+    [logAt("2026-04-29T08:00:00", { dose: 10 })],
+    "2026-04-29",
     DEFAULT_PK_SETTINGS,
     { stepMinutes: 10 }
   )
   const highDose = generateDailyChartData(
-    [logAt('2026-04-29T08:00:00', { dose: 20 })],
-    '2026-04-29',
+    [logAt("2026-04-29T08:00:00", { dose: 20 })],
+    "2026-04-29",
     DEFAULT_PK_SETTINGS,
     { stepMinutes: 10 }
   )
@@ -58,13 +61,13 @@ test('generateDailyChartData supports 10 minute step and dose scaling', () => {
   assert.ok(highMax > lowMax * 1.8)
 })
 
-test('generateDailyChartData ignores unknown medication ids', () => {
+test("generateDailyChartData ignores unknown medication ids", () => {
   const points = generateDailyChartData(
-    [logAt('2026-04-29T08:00:00', { medId: 'unknown', medName: 'Unknown' })],
-    '2026-04-29',
+    [logAt("2026-04-29T08:00:00", { medId: "unknown", medName: "Unknown" })],
+    "2026-04-29",
     DEFAULT_PK_SETTINGS
   )
 
   assert.ok(points.every((point) => point.concentration === 0))
-  assert.ok(points.every((point) => point.band === 'below'))
+  assert.ok(points.every((point) => point.band === "below"))
 })

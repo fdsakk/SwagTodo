@@ -1,10 +1,10 @@
-import { memo, useCallback, useMemo, useState } from 'react'
-import { Plus } from 'lucide-react'
-import { SortableContext, verticalListSortingStrategy } from '@dnd-kit/sortable'
-import { useDroppable } from '@dnd-kit/core'
-import type { Label, Task, TaskStatus } from '@renderer/types'
-import { COLUMN_PREFIX, resolveTaskLabels } from './types'
-import { SortableCard } from './KanbanCard'
+import { useDroppable } from "@dnd-kit/core"
+import { SortableContext, verticalListSortingStrategy } from "@dnd-kit/sortable"
+import type { Label, Task, TaskStatus } from "@renderer/types"
+import { Plus } from "lucide-react"
+import { memo, useCallback, useMemo, useState } from "react"
+import { SortableCard } from "./KanbanCard"
+import { COLUMN_PREFIX, resolveTaskLabels } from "./types"
 
 interface KanbanColumnProps {
   status: TaskStatus
@@ -28,7 +28,7 @@ export const KanbanColumn = memo(function KanbanColumn({
   onOpenTask
 }: KanbanColumnProps): React.JSX.Element {
   const { setNodeRef } = useDroppable({ id: `${COLUMN_PREFIX}${status}` })
-  const [titleInput, setTitleInput] = useState('')
+  const [titleInput, setTitleInput] = useState("")
 
   const items = useMemo(() => tasks.map((t) => t.id), [tasks])
 
@@ -36,12 +36,12 @@ export const KanbanColumn = memo(function KanbanColumn({
     const trimmed = titleInput.trim()
     if (!trimmed) return
     onAddTask(status, trimmed)
-    setTitleInput('')
+    setTitleInput("")
     onToggleAdd(status)
   }, [titleInput, onAddTask, status, onToggleAdd])
 
   const cancel = useCallback(() => {
-    setTitleInput('')
+    setTitleInput("")
     onToggleAdd(status)
   }, [onToggleAdd, status])
 
@@ -66,12 +66,11 @@ export const KanbanColumn = memo(function KanbanColumn({
       {adding && (
         <div className="mb-2 rounded-md border border-app-border bg-app-hover p-2">
           <input
-            autoFocus
             className="w-full bg-transparent text-sm text-app-text placeholder:text-app-text-muted focus:outline-none"
             onChange={(event) => setTitleInput(event.target.value)}
             onKeyDown={(event) => {
-              if (event.key === 'Enter') commit()
-              else if (event.key === 'Escape') cancel()
+              if (event.key === "Enter") commit()
+              else if (event.key === "Escape") cancel()
             }}
             placeholder="Task title"
             value={titleInput}

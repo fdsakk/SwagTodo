@@ -1,43 +1,50 @@
-import { v4 as uuidv4 } from 'uuid'
-import { TASK_STATUSES, type Task, type TaskStatus } from '@renderer/types'
-import { normalizeTaskPatch } from '../../shared/normalize'
-import type { DomainActions, DomainStoreGet, DomainStoreSet } from '../../shared/types'
+import { TASK_STATUSES, type Task, type TaskStatus } from "@renderer/types"
+import { v4 as uuidv4 } from "uuid"
+import { normalizeTaskPatch } from "../../shared/normalize"
+import type {
+  DomainActions,
+  DomainStoreGet,
+  DomainStoreSet
+} from "../../shared/types"
 import {
   appendIfValid,
   nextOrder,
   nowIso,
   removeById,
   replaceByIdIfChanged
-} from '../../shared/utils'
-import { removeTaskRelations } from '../helpers/relations'
+} from "../../shared/utils"
+import { removeTaskRelations } from "../helpers/relations"
 
 type TaskActions = Pick<
   DomainActions,
-  | 'addTask'
-  | 'updateTask'
-  | 'toggleTaskComplete'
-  | 'archiveTask'
-  | 'unarchiveTask'
-  | 'deleteTask'
-  | 'addSubTask'
-  | 'toggleSubTask'
-  | 'deleteSubTask'
-  | 'applyKanbanOrder'
+  | "addTask"
+  | "updateTask"
+  | "toggleTaskComplete"
+  | "archiveTask"
+  | "unarchiveTask"
+  | "deleteTask"
+  | "addSubTask"
+  | "toggleSubTask"
+  | "deleteSubTask"
+  | "applyKanbanOrder"
 >
 
-export const createTaskActions = (set: DomainStoreSet, get: DomainStoreGet): TaskActions => ({
+export const createTaskActions = (
+  set: DomainStoreSet,
+  get: DomainStoreGet
+): TaskActions => ({
   addTask: (input) => {
     const title = input.title.trim()
     if (!title) return
 
     const timestamp = nowIso()
-    const status = input.status ?? 'todo'
-    const completed = status === 'done'
+    const status = input.status ?? "todo"
+    const completed = status === "done"
     const task: Task = {
       id: uuidv4(),
       title,
       description: input.description?.trim() || undefined,
-      priority: input.priority ?? 'p4',
+      priority: input.priority ?? "p4",
       dueDate: input.dueDate,
       projectId: input.projectId,
       labels: input.labels ?? [],
@@ -65,7 +72,11 @@ export const createTaskActions = (set: DomainStoreSet, get: DomainStoreGet): Tas
     const updatedAt = nowIso()
     set((state) => ({
       tasks: replaceByIdIfChanged(state.tasks, taskId, (task) => {
-        const patch = normalizeTaskPatch(task, { completed: !task.completed }, updatedAt)
+        const patch = normalizeTaskPatch(
+          task,
+          { completed: !task.completed },
+          updatedAt
+        )
         return patch ? { ...task, ...patch } : task
       })
     }))
@@ -74,7 +85,11 @@ export const createTaskActions = (set: DomainStoreSet, get: DomainStoreGet): Tas
     const updatedAt = nowIso()
     set((state) => ({
       tasks: replaceByIdIfChanged(state.tasks, taskId, (task) => {
-        const patch = normalizeTaskPatch(task, { archivedAt: updatedAt }, updatedAt)
+        const patch = normalizeTaskPatch(
+          task,
+          { archivedAt: updatedAt },
+          updatedAt
+        )
         return patch ? { ...task, ...patch } : task
       })
     }))
@@ -83,7 +98,11 @@ export const createTaskActions = (set: DomainStoreSet, get: DomainStoreGet): Tas
     const updatedAt = nowIso()
     set((state) => ({
       tasks: replaceByIdIfChanged(state.tasks, taskId, (task) => {
-        const patch = normalizeTaskPatch(task, { archivedAt: undefined }, updatedAt)
+        const patch = normalizeTaskPatch(
+          task,
+          { archivedAt: undefined },
+          updatedAt
+        )
         return patch ? { ...task, ...patch } : task
       })
     }))
@@ -105,7 +124,10 @@ export const createTaskActions = (set: DomainStoreSet, get: DomainStoreGet): Tas
       tasks: replaceByIdIfChanged(state.tasks, taskId, (task) => ({
         ...task,
         updatedAt,
-        subTasks: [...task.subTasks, { id: uuidv4(), title: trimmedTitle, completed: false }]
+        subTasks: [
+          ...task.subTasks,
+          { id: uuidv4(), title: trimmedTitle, completed: false }
+        ]
       }))
     }))
   },
@@ -113,19 +135,24 @@ export const createTaskActions = (set: DomainStoreSet, get: DomainStoreGet): Tas
     const updatedAt = nowIso()
     set((state) => ({
       tasks: replaceByIdIfChanged(state.tasks, taskId, (task) => {
-        const subTaskIndex = task.subTasks.findIndex((subTask) => subTask.id === subTaskId)
+        const subTaskIndex = task.subTasks.findIndex(
+          (subTask) => subTask.id === subTaskId
+        )
         if (subTaskIndex === -1) return task
 
         const subTasks = task.subTasks.slice()
         const nextCompleted = !subTasks[subTaskIndex].completed
-        subTasks[subTaskIndex] = { ...subTasks[subTaskIndex], completed: nextCompleted }
+        subTasks[subTaskIndex] = {
+          ...subTasks[subTaskIndex],
+          completed: nextCompleted
+        }
 
         return {
           ...task,
           updatedAt,
           subTasks,
-          ...(nextCompleted && task.status === 'todo'
-            ? { status: 'in_progress' as const, completed: false }
+          ...(nextCompleted && task.status === "todo"
+            ? { status: "in_progress" as const, completed: false }
             : {})
         }
       })
@@ -135,8 +162,12 @@ export const createTaskActions = (set: DomainStoreSet, get: DomainStoreGet): Tas
     const updatedAt = nowIso()
     set((state) => ({
       tasks: replaceByIdIfChanged(state.tasks, taskId, (task) => {
-        const subTasks = task.subTasks.filter((subTask) => subTask.id !== subTaskId)
-        return subTasks.length === task.subTasks.length ? task : { ...task, updatedAt, subTasks }
+        const subTasks = task.subTasks.filter(
+          (subTask) => subTask.id !== subTaskId
+        )
+        return subTasks.length === task.subTasks.length
+          ? task
+          : { ...task, updatedAt, subTasks }
       })
     }))
   },
@@ -144,7 +175,11 @@ export const createTaskActions = (set: DomainStoreSet, get: DomainStoreGet): Tas
     const updatedAt = nowIso()
     const byTaskId = new Map<string, { status: TaskStatus; order: number }>()
 
-    for (let statusIndex = 0; statusIndex < TASK_STATUSES.length; statusIndex++) {
+    for (
+      let statusIndex = 0;
+      statusIndex < TASK_STATUSES.length;
+      statusIndex++
+    ) {
       const status = TASK_STATUSES[statusIndex]
       const ids = columns[status]
       for (let orderIndex = 0; orderIndex < ids.length; orderIndex++) {
@@ -159,12 +194,13 @@ export const createTaskActions = (set: DomainStoreSet, get: DomainStoreGet): Tas
 
         const next = byTaskId.get(task.id)
         if (!next) return task
-        if (task.status === next.status && task.order === next.order) return task
+        if (task.status === next.status && task.order === next.order)
+          return task
 
         changed = true
         const patch = normalizeTaskPatch(
           task,
-          { status: next.status, completed: next.status === 'done' },
+          { status: next.status, completed: next.status === "done" },
           updatedAt
         )
 

@@ -1,27 +1,27 @@
-import { cn } from '@renderer/utils/cn'
+import { cn } from "@renderer/utils/cn"
 
 interface ColorSelectorProps {
   colors: string[]
-  size?: 'sm' | 'default' | 'lg'
+  size?: "sm" | "default" | "lg"
   value: string
   onColorSelect?: (color: string) => void
   className?: string
 }
 
-function sizeClass(size: 'sm' | 'default' | 'lg'): string {
+function sizeClass(size: "sm" | "default" | "lg"): string {
   switch (size) {
-    case 'sm':
-      return 'size-4'
-    case 'lg':
-      return 'size-6'
+    case "sm":
+      return "size-4"
+    case "lg":
+      return "size-6"
     default:
-      return 'size-5'
+      return "size-5"
   }
 }
 
 export function ColorSelector({
   colors,
-  size = 'default',
+  size = "default",
   value,
   onColorSelect,
   className
@@ -30,7 +30,7 @@ export function ColorSelector({
   const normalized = value.toLowerCase()
 
   return (
-    <div className={cn('grid grid-cols-8 gap-1.5', className)}>
+    <div className={cn("grid grid-cols-8 gap-1.5", className)}>
       {colors.map((color) => {
         const selected = color.toLowerCase() === normalized
         return (
@@ -39,8 +39,9 @@ export function ColorSelector({
             aria-pressed={selected}
             className={cn(
               dim,
-              'rounded-full cursor-pointer transition-transform duration-150 active:scale-90 hover:scale-110',
-              selected && 'ring-2 ring-white/70 ring-offset-2 ring-offset-app-bg'
+              "rounded-full cursor-pointer transition-transform duration-150 active:scale-90 hover:scale-110",
+              selected &&
+                "ring-2 ring-white/70 ring-offset-2 ring-offset-app-bg"
             )}
             key={color}
             onClick={() => onColorSelect?.(color)}

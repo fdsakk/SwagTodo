@@ -1,18 +1,18 @@
-import { useEffect, useMemo, useRef, useState } from 'react'
+import type { MedicationLog, PkSettings } from "@renderer/types"
+import { generateDailyChartData } from "@renderer/utils/pharmacokinetics"
+import { useEffect, useMemo, useRef, useState } from "react"
 import {
-  ResponsiveContainer,
-  ComposedChart,
   Area,
-  XAxis,
-  YAxis,
-  Tooltip,
   CartesianGrid,
+  ComposedChart,
+  ReferenceArea,
   ReferenceLine,
-  ReferenceArea
-} from 'recharts'
-import type { MedicationLog, PkSettings } from '@renderer/types'
-import { generateDailyChartData } from '@renderer/utils/pharmacokinetics'
-import { today } from './utils'
+  ResponsiveContainer,
+  Tooltip,
+  XAxis,
+  YAxis
+} from "recharts"
+import { today } from "./utils"
 
 interface EffectChartProps {
   logs: MedicationLog[]
@@ -31,7 +31,9 @@ export function EffectChart({
   useEffect(() => {
     const node = containerRef.current
     if (!node) return
-    const observer = new ResizeObserver(([entry]) => setChartWidth(entry.contentRect.width))
+    const observer = new ResizeObserver(([entry]) =>
+      setChartWidth(entry.contentRect.width)
+    )
     observer.observe(node)
     return () => observer.disconnect()
   }, [])
@@ -39,7 +41,10 @@ export function EffectChart({
   const chartStepMinutes = chartWidth < 700 ? 10 : 5
 
   const chartData = useMemo(
-    () => generateDailyChartData(logs, selectedDate, pkSettings, { stepMinutes: chartStepMinutes }),
+    () =>
+      generateDailyChartData(logs, selectedDate, pkSettings, {
+        stepMinutes: chartStepMinutes
+      }),
     [logs, selectedDate, pkSettings, chartStepMinutes]
   )
 
@@ -48,10 +53,11 @@ export function EffectChart({
   const nowLabel = useMemo(() => {
     if (selectedDate !== today()) return null
     const n = new Date()
-    const roundedMin = Math.round(n.getMinutes() / chartStepMinutes) * chartStepMinutes
+    const roundedMin =
+      Math.round(n.getMinutes() / chartStepMinutes) * chartStepMinutes
     const h = roundedMin === 60 ? n.getHours() + 1 : n.getHours()
     const m = roundedMin === 60 ? 0 : roundedMin
-    return `${String(h).padStart(2, '0')}:${String(m).padStart(2, '0')}`
+    return `${String(h).padStart(2, "0")}:${String(m).padStart(2, "0")}`
   }, [selectedDate, chartStepMinutes])
 
   const { yDomain, yTicks, crashSegments } = useMemo(() => {
@@ -94,14 +100,21 @@ export function EffectChart({
     const segments: { x1: string; x2: string }[] = []
     for (let j = 0; j < rawSegments.length; j++) {
       let seg = rawSegments[j]
-      while (j + 1 < rawSegments.length && rawSegments[j + 1].i1 - seg.i2 <= MERGE_GAP) {
+      while (
+        j + 1 < rawSegments.length &&
+        rawSegments[j + 1].i1 - seg.i2 <= MERGE_GAP
+      ) {
         j++
         seg = { ...seg, x2: rawSegments[j].x2, i2: rawSegments[j].i2 }
       }
       segments.push({ x1: seg.x1, x2: seg.x2 })
     }
 
-    return { yDomain: [0, ceiling] as [number, number], yTicks: ticks, crashSegments: segments }
+    return {
+      yDomain: [0, ceiling] as [number, number],
+      yTicks: ticks,
+      crashSegments: segments
+    }
   }, [chartData])
 
   return (
@@ -126,14 +139,29 @@ export function EffectChart({
         </div>
       </div>
       <ResponsiveContainer width="100%" height={280}>
-        <ComposedChart data={chartData} margin={{ top: 8, right: 8, bottom: 0, left: -16 }}>
+        <ComposedChart
+          data={chartData}
+          margin={{ top: 8, right: 8, bottom: 0, left: -16 }}
+        >
           <defs>
             <linearGradient id="concGrad" x1="0" y1="0" x2="0" y2="1">
-              <stop offset="5%" stopColor="var(--app-accent)" stopOpacity={0.35} />
-              <stop offset="95%" stopColor="var(--app-accent)" stopOpacity={0} />
+              <stop
+                offset="5%"
+                stopColor="var(--app-accent)"
+                stopOpacity={0.35}
+              />
+              <stop
+                offset="95%"
+                stopColor="var(--app-accent)"
+                stopOpacity={0}
+              />
             </linearGradient>
           </defs>
-          <CartesianGrid strokeDasharray="2 4" stroke="var(--app-chart-grid)" vertical={false} />
+          <CartesianGrid
+            strokeDasharray="2 4"
+            stroke="var(--app-chart-grid)"
+            vertical={false}
+          />
 
           <ReferenceArea
             y1={pkSettings.mec}
@@ -158,7 +186,8 @@ export function EffectChart({
             dataKey="timeLabel"
             tick={({ x, y, payload, index }) => {
               if (index % (xTickInterval + 1) !== 0) return <g />
-              if (payload.value === '00:00' || payload.value === '24:00') return <g />
+              if (payload.value === "00:00" || payload.value === "24:00")
+                return <g />
               return (
                 <text
                   x={x}
@@ -178,7 +207,7 @@ export function EffectChart({
           <YAxis
             domain={yDomain}
             ticks={yTicks}
-            tick={{ fontSize: 10, fill: 'var(--app-chart-muted)' }}
+            tick={{ fontSize: 10, fill: "var(--app-chart-muted)" }}
             tickLine={false}
             axisLine={false}
             width={24}
@@ -191,10 +220,10 @@ export function EffectChart({
             strokeDasharray="3 3"
             strokeWidth={1.75}
             label={{
-              value: 'MEC',
-              position: 'insideTopRight',
+              value: "MEC",
+              position: "insideTopRight",
               fontSize: 9,
-              fill: 'var(--app-chart-mec)'
+              fill: "var(--app-chart-mec)"
             }}
           />
           <ReferenceLine
@@ -203,10 +232,10 @@ export function EffectChart({
             strokeDasharray="3 3"
             strokeWidth={1.75}
             label={{
-              value: 'MTC',
-              position: 'insideTopRight',
+              value: "MTC",
+              position: "insideTopRight",
               fontSize: 9,
-              fill: 'var(--app-chart-mtc)'
+              fill: "var(--app-chart-mtc)"
             }}
           />
 
@@ -217,32 +246,41 @@ export function EffectChart({
               strokeWidth={1.75}
               strokeDasharray="4 3"
               label={{
-                value: 'now',
-                position: 'insideTopRight',
+                value: "now",
+                position: "insideTopRight",
                 fontSize: 9,
-                fill: 'var(--app-chart-now)'
+                fill: "var(--app-chart-now)"
               }}
             />
           )}
 
           <Tooltip
             contentStyle={{
-              background: 'var(--app-card)',
-              border: '1px solid var(--app-border)',
-              borderRadius: '8px',
-              fontSize: '11px',
-              color: 'var(--app-text)'
+              background: "var(--app-card)",
+              border: "1px solid var(--app-border)",
+              borderRadius: "8px",
+              fontSize: "11px",
+              color: "var(--app-text)"
             }}
-            labelStyle={{ color: 'var(--app-text-secondary)', marginBottom: '2px' }}
+            labelStyle={{
+              color: "var(--app-text-secondary)",
+              marginBottom: "2px"
+            }}
             formatter={(v, name, props) => {
-              if (name !== 'concentration') return [v, name]
-              const val = typeof v === 'number' ? v.toFixed(2) : v
-              const pt = props.payload as { band: string; crashRisk: boolean } | undefined
-              const band = pt?.band ?? 'below'
-              const crash = pt?.crashRisk ? ' ⚠ crash risk' : ''
+              if (name !== "concentration") return [v, name]
+              const val = typeof v === "number" ? v.toFixed(2) : v
+              const pt = props.payload as
+                | { band: string; crashRisk: boolean }
+                | undefined
+              const band = pt?.band ?? "below"
+              const crash = pt?.crashRisk ? " ⚠ crash risk" : ""
               const bandLabel =
-                band === 'therapeutic' ? ' ✓ therapeutic' : band === 'above' ? ' ↑ above MTC' : ''
-              return [`${val}${bandLabel}${crash}`, 'Effect']
+                band === "therapeutic"
+                  ? " ✓ therapeutic"
+                  : band === "above"
+                    ? " ↑ above MTC"
+                    : ""
+              return [`${val}${bandLabel}${crash}`, "Effect"]
             }}
           />
           <Area

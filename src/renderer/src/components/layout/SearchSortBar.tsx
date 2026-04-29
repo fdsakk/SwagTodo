@@ -1,39 +1,43 @@
-import { useEffect, useMemo, useRef } from 'react'
-import { ListFilter, Plus, Search } from 'lucide-react'
+import { AnimatedCheckbox } from "@renderer/components/task-list/animated-checkbox"
+import {
+  Popover,
+  PopoverPopup,
+  PopoverTrigger
+} from "@renderer/components/ui/popover"
 import {
   Select,
-  SelectPopup,
   SelectGroup,
   SelectItem,
+  SelectPopup,
   SelectTrigger,
   SelectValue
-} from '@renderer/components/ui/select'
-import { Popover, PopoverPopup, PopoverTrigger } from '@renderer/components/ui/popover'
-import { AnimatedCheckbox } from '@renderer/components/task-list/animated-checkbox'
-import { useDomainStore, useUiStore } from '@renderer/store'
-import { PRIORITY_META } from '@renderer/utils/task'
-import { useShallow } from 'zustand/react/shallow'
-import { Button, buttonVariants } from '../ui/button'
-import { Badge } from '../ui/badge'
+} from "@renderer/components/ui/select"
+import { useDomainStore, useUiStore } from "@renderer/store"
+import { PRIORITY_META } from "@renderer/utils/task"
+import { ListFilter, Plus, Search } from "lucide-react"
+import { useEffect, useMemo, useRef } from "react"
+import { useShallow } from "zustand/react/shallow"
+import { Badge } from "../ui/badge"
+import { Button, buttonVariants } from "../ui/button"
 
 const SORT_OPTIONS = [
-  { value: 'priority', label: 'Priority' },
-  { value: 'due_date', label: 'Due date' },
-  { value: 'created_at', label: 'Creation date' }
+  { value: "priority", label: "Priority" },
+  { value: "due_date", label: "Due date" },
+  { value: "created_at", label: "Creation date" }
 ] as const
 
 const STATUS_FILTER_OPTIONS = [
-  { value: 'all', label: 'All statuses' },
-  { value: 'active', label: 'Active' },
-  { value: 'done', label: 'Done' }
+  { value: "all", label: "All statuses" },
+  { value: "active", label: "Active" },
+  { value: "done", label: "Done" }
 ] as const
 
 const PRIORITY_FILTER_OPTIONS = [
-  { value: 'all', label: 'All priorities' },
-  { value: 'p1', label: PRIORITY_META.p1.label },
-  { value: 'p2', label: PRIORITY_META.p2.label },
-  { value: 'p3', label: PRIORITY_META.p3.label },
-  { value: 'p4', label: PRIORITY_META.p4.label }
+  { value: "all", label: "All priorities" },
+  { value: "p1", label: PRIORITY_META.p1.label },
+  { value: "p2", label: PRIORITY_META.p2.label },
+  { value: "p3", label: PRIORITY_META.p3.label },
+  { value: "p4", label: PRIORITY_META.p4.label }
 ] as const
 
 export function SearchSortBar(): React.JSX.Element {
@@ -74,12 +78,12 @@ export function SearchSortBar(): React.JSX.Element {
     }))
   )
   const projects = useDomainStore((state) => state.projects)
-  const showInboxFilters = selectedView === 'inbox'
-  const showDoneFilter = !showInboxFilters && selectedView !== 'project'
+  const showInboxFilters = selectedView === "inbox"
+  const showDoneFilter = !showInboxFilters && selectedView !== "project"
   const projectFilterOptions = useMemo(
     () => [
-      { value: 'all', label: 'All projects' },
-      { value: 'no_project', label: 'Inbox only' },
+      { value: "all", label: "All projects" },
+      { value: "no_project", label: "Inbox only" },
       ...projects.map((project) => ({
         value: project.id,
         label: project.emoji ? `${project.emoji} ${project.name}` : project.name
@@ -88,9 +92,9 @@ export function SearchSortBar(): React.JSX.Element {
     [projects]
   )
   const activeFilterCount =
-    (showInboxFilters && inboxStatusFilter !== 'all' ? 1 : 0) +
-    (showInboxFilters && inboxProjectFilter !== 'all' ? 1 : 0) +
-    (showInboxFilters && inboxPriorityFilter !== 'all' ? 1 : 0) +
+    (showInboxFilters && inboxStatusFilter !== "all" ? 1 : 0) +
+    (showInboxFilters && inboxProjectFilter !== "all" ? 1 : 0) +
+    (showInboxFilters && inboxPriorityFilter !== "all" ? 1 : 0) +
     (showDoneFilter && showCompleted ? 1 : 0)
 
   useEffect(() => {
@@ -115,17 +119,24 @@ export function SearchSortBar(): React.JSX.Element {
       <Popover>
         <PopoverTrigger
           render={
-            <button className={buttonVariants({ size: 'sm', variant: 'outline' })} type="button" />
+            <button
+              className={buttonVariants({ size: "sm", variant: "outline" })}
+              type="button"
+            />
           }
         >
           <ListFilter size={16} />
           Filter
-          {activeFilterCount > 0 && <Badge variant={'info'}>{activeFilterCount}</Badge>}
+          {activeFilterCount > 0 && (
+            <Badge variant={"info"}>{activeFilterCount}</Badge>
+          )}
         </PopoverTrigger>
         <PopoverPopup align="end" className="bg-app-card shadow-md w-52">
           <div className="space-y-3">
             <div className="grid gap-1.5">
-              <span className="text-xs font-medium text-app-text-muted">Sort by</span>
+              <span className="text-xs font-medium text-app-text-muted">
+                Sort by
+              </span>
               <Select
                 items={SORT_OPTIONS}
                 onValueChange={(value) => {
@@ -150,11 +161,14 @@ export function SearchSortBar(): React.JSX.Element {
             {showInboxFilters && (
               <>
                 <div className="grid gap-1.5">
-                  <span className="text-xs font-medium text-app-text-muted">Status</span>
+                  <span className="text-xs font-medium text-app-text-muted">
+                    Status
+                  </span>
                   <Select
                     items={STATUS_FILTER_OPTIONS}
                     onValueChange={(value) => {
-                      if (value) setInboxStatusFilter(value as typeof inboxStatusFilter)
+                      if (value)
+                        setInboxStatusFilter(value as typeof inboxStatusFilter)
                     }}
                     value={inboxStatusFilter}
                   >
@@ -173,7 +187,9 @@ export function SearchSortBar(): React.JSX.Element {
                   </Select>
                 </div>
                 <div className="grid gap-1.5">
-                  <span className="text-xs font-medium text-app-text-muted">Project</span>
+                  <span className="text-xs font-medium text-app-text-muted">
+                    Project
+                  </span>
                   <Select
                     items={projectFilterOptions}
                     onValueChange={(value) => {
@@ -196,11 +212,16 @@ export function SearchSortBar(): React.JSX.Element {
                   </Select>
                 </div>
                 <div className="grid gap-1.5">
-                  <span className="text-xs font-medium text-app-text-muted">Priority</span>
+                  <span className="text-xs font-medium text-app-text-muted">
+                    Priority
+                  </span>
                   <Select
                     items={PRIORITY_FILTER_OPTIONS}
                     onValueChange={(value) => {
-                      if (value) setInboxPriorityFilter(value as typeof inboxPriorityFilter)
+                      if (value)
+                        setInboxPriorityFilter(
+                          value as typeof inboxPriorityFilter
+                        )
                     }}
                     value={inboxPriorityFilter}
                   >

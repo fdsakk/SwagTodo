@@ -1,4 +1,4 @@
-import { useEffect, useRef } from 'react'
+import { useEffect, useRef } from "react"
 
 interface KeyboardShortcutOptions {
   onNewTask: () => void
@@ -27,9 +27,9 @@ function isInputLikeElement(element: Element | null): boolean {
   if (!element) return false
   const tagName = element.tagName
   return (
-    tagName === 'INPUT' ||
-    tagName === 'TEXTAREA' ||
-    tagName === 'SELECT' ||
+    tagName === "INPUT" ||
+    tagName === "TEXTAREA" ||
+    tagName === "SELECT" ||
     (element as HTMLElement).isContentEditable
   )
 }
@@ -37,22 +37,22 @@ function isInputLikeElement(element: Element | null): boolean {
 type HandlerKey = keyof KeyboardShortcutOptions
 
 const KEY_BINDINGS: Record<string, HandlerKey> = {
-  n: 'onNewTask',
-  p: 'onGoProjects',
-  o: 'onNewProject',
-  l: 'onOpenLabels',
-  b: 'onToggleSidebar',
-  i: 'onGoInbox',
-  t: 'onGoToday',
-  a: 'onGoActivity',
-  r: 'onGoArchive',
-  h: 'onGoHealth',
-  s: 'onGoSessions',
-  ',': 'onGoSettings',
-  '/': 'onFocusSearch',
-  '?': 'onShowHelp',
-  '1': 'onProjectTabList',
-  '2': 'onProjectTabKanban'
+  n: "onNewTask",
+  p: "onGoProjects",
+  o: "onNewProject",
+  l: "onOpenLabels",
+  b: "onToggleSidebar",
+  i: "onGoInbox",
+  t: "onGoToday",
+  a: "onGoActivity",
+  r: "onGoArchive",
+  h: "onGoHealth",
+  s: "onGoSessions",
+  ",": "onGoSettings",
+  "/": "onFocusSearch",
+  "?": "onShowHelp",
+  "1": "onProjectTabList",
+  "2": "onProjectTabKanban"
 }
 
 export function useKeyboardShortcuts(options: KeyboardShortcutOptions): void {
@@ -67,7 +67,7 @@ export function useKeyboardShortcuts(options: KeyboardShortcutOptions): void {
       const o = optsRef.current
       const activeElement = document.activeElement
 
-      if (event.key === 'Escape') {
+      if (event.key === "Escape") {
         if (isInputLikeElement(activeElement)) {
           ;(activeElement as HTMLElement).blur()
         }
@@ -78,17 +78,17 @@ export function useKeyboardShortcuts(options: KeyboardShortcutOptions): void {
       if (isInputLikeElement(activeElement)) return
 
       if (event.ctrlKey || event.metaKey) {
-        if (event.key === '=' || event.key === '+') {
+        if (event.key === "=" || event.key === "+") {
           event.preventDefault()
           o.onZoomIn()
           return
         }
-        if (event.key === '-') {
+        if (event.key === "-") {
           event.preventDefault()
           o.onZoomOut()
           return
         }
-        if (event.key === '0') {
+        if (event.key === "0") {
           event.preventDefault()
           o.onZoomReset()
           return
@@ -104,7 +104,7 @@ export function useKeyboardShortcuts(options: KeyboardShortcutOptions): void {
       }
     }
 
-    window.addEventListener('keydown', onKeyDown)
-    return () => window.removeEventListener('keydown', onKeyDown)
+    window.addEventListener("keydown", onKeyDown)
+    return () => window.removeEventListener("keydown", onKeyDown)
   }, [])
 }

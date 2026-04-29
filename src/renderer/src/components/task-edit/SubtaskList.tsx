@@ -1,9 +1,9 @@
-import type { SubTask } from '@renderer/types'
-import { AnimatedCheckbox } from '@renderer/components/task-list/animated-checkbox'
-import { Button } from '@renderer/components/ui/button'
-import { Input } from '@renderer/components/ui/input'
-import { cn } from '@renderer/utils/cn'
-import { Trash2 } from 'lucide-react'
+import { AnimatedCheckbox } from "@renderer/components/task-list/animated-checkbox"
+import { Button } from "@renderer/components/ui/button"
+import { Input } from "@renderer/components/ui/input"
+import type { SubTask } from "@renderer/types"
+import { cn } from "@renderer/utils/cn"
+import { Trash2 } from "lucide-react"
 
 interface SubtaskListProps {
   taskId: string
@@ -39,8 +39,8 @@ export function SubtaskList({
             />
             <span
               className={cn(
-                'flex-1 text-sm text-app-text-secondary',
-                subTask.completed && 'line-through text-app-text-muted'
+                "flex-1 text-sm text-app-text-secondary",
+                subTask.completed && "line-through text-app-text-muted"
               )}
             >
               {subTask.title}

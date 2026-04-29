@@ -1,4 +1,19 @@
-import * as React from 'react'
+import { NavItem } from "@renderer/components/sidebar/NavItem"
+import { ProjectList } from "@renderer/components/sidebar/ProjectList"
+import { SidebarFooter as LabelsFooter } from "@renderer/components/sidebar/SidebarFooter"
+import {
+  Sidebar as ShadcnSidebar,
+  SidebarContent,
+  SidebarContext,
+  SidebarFooter,
+  SidebarGroup,
+  SidebarGroupAction,
+  SidebarGroupLabel,
+  SidebarHeader,
+  SidebarMenu
+} from "@renderer/components/ui/sidebar"
+import { selectInboxCounts, useDomainStore, useUiStore } from "@renderer/store"
+import { cn } from "@renderer/utils/cn"
 import {
   Activity,
   Archive,
@@ -10,24 +25,9 @@ import {
   Plus,
   Settings,
   Sun
-} from 'lucide-react'
-import { useShallow } from 'zustand/react/shallow'
-import { NavItem } from '@renderer/components/sidebar/NavItem'
-import { ProjectList } from '@renderer/components/sidebar/ProjectList'
-import { SidebarFooter as LabelsFooter } from '@renderer/components/sidebar/SidebarFooter'
-import { selectInboxCounts, useDomainStore, useUiStore } from '@renderer/store'
-import {
-  SidebarContent,
-  SidebarContext,
-  SidebarFooter,
-  SidebarGroup,
-  SidebarGroupAction,
-  SidebarGroupLabel,
-  SidebarHeader,
-  SidebarMenu,
-  Sidebar as ShadcnSidebar
-} from '@renderer/components/ui/sidebar'
-import { cn } from '@renderer/utils/cn'
+} from "lucide-react"
+import * as React from "react"
+import { useShallow } from "zustand/react/shallow"
 
 interface SidebarProps {
   onOpenProjectPanel: () => void
@@ -35,22 +35,25 @@ interface SidebarProps {
 }
 
 const SIDEBAR_WIDTH = {
-  collapsed: '56px',
-  expanded: '220px'
+  collapsed: "56px",
+  expanded: "220px"
 } as const
 
 const noop = (): void => {}
 
 export function Sidebar(props: SidebarProps): React.JSX.Element {
-  const { projects, hasLabels, isSidebarCollapsed, toggleSidebar } = useDomainStore(
-    useShallow((state) => ({
-      projects: state.projects,
-      hasLabels: state.labels.length > 0,
-      isSidebarCollapsed: state.isSidebarCollapsed,
-      toggleSidebar: state.toggleSidebar
-    }))
+  const { projects, hasLabels, isSidebarCollapsed, toggleSidebar } =
+    useDomainStore(
+      useShallow((state) => ({
+        projects: state.projects,
+        hasLabels: state.labels.length > 0,
+        isSidebarCollapsed: state.isSidebarCollapsed,
+        toggleSidebar: state.toggleSidebar
+      }))
+    )
+  const { inboxCount, todayCount } = useDomainStore(
+    useShallow(selectInboxCounts)
   )
-  const { inboxCount, todayCount } = useDomainStore(useShallow(selectInboxCounts))
   const {
     selectedView,
     selectedProjectId,
@@ -78,7 +81,7 @@ export function Sidebar(props: SidebarProps): React.JSX.Element {
   )
 
   const open = !isSidebarCollapsed
-  const state = open ? 'expanded' : 'collapsed'
+  const state = open ? "expanded" : "collapsed"
   const width = open ? SIDEBAR_WIDTH.expanded : SIDEBAR_WIDTH.collapsed
 
   const ctx = React.useMemo(
@@ -88,7 +91,7 @@ export function Sidebar(props: SidebarProps): React.JSX.Element {
       openMobile: false,
       setOpen: noop,
       setOpenMobile: noop,
-      state: state as 'expanded' | 'collapsed',
+      state: state as "expanded" | "collapsed",
       toggleSidebar
     }),
     [open, state, toggleSidebar]
@@ -103,22 +106,29 @@ export function Sidebar(props: SidebarProps): React.JSX.Element {
         data-state={state}
         style={
           {
-            '--sidebar-width': width,
+            "--sidebar-width": width,
             width
           } as React.CSSProperties
         }
       >
-        <ShadcnSidebar className="bg-app-sidebar! text-app-text!" collapsible="none">
+        <ShadcnSidebar
+          className="bg-app-sidebar! text-app-text!"
+          collapsible="none"
+        >
           <SidebarHeader className="flex-row items-center justify-between px-2 py-2">
-            {open && <span className="text-xs font-medium text-app-text-muted">Tasks</span>}
+            {open && (
+              <span className="text-xs font-medium text-app-text-muted">
+                Tasks
+              </span>
+            )}
             <button
               className={cn(
-                'flex h-8 w-8 items-center justify-center rounded-md text-app-text-secondary hover:bg-app-hover hover:text-app-text',
-                !open && 'mx-auto'
+                "flex h-8 w-8 items-center justify-center rounded-md text-app-text-secondary hover:bg-app-hover hover:text-app-text",
+                !open && "mx-auto"
               )}
               onClick={toggleSidebar}
               type="button"
-              aria-label={open ? 'Collapse sidebar' : 'Expand sidebar'}
+              aria-label={open ? "Collapse sidebar" : "Expand sidebar"}
             >
               {open ? <ChevronLeft size={14} /> : <ChevronRight size={14} />}
             </button>
@@ -128,7 +138,7 @@ export function Sidebar(props: SidebarProps): React.JSX.Element {
             <SidebarGroup className="py-0">
               <SidebarMenu className="gap-0.5">
                 <NavItem
-                  active={selectedView === 'inbox'}
+                  active={selectedView === "inbox"}
                   collapsed={!open}
                   count={inboxCount}
                   icon={<Inbox size={14} />}
@@ -136,7 +146,7 @@ export function Sidebar(props: SidebarProps): React.JSX.Element {
                   onClick={selectInbox}
                 />
                 <NavItem
-                  active={selectedView === 'today'}
+                  active={selectedView === "today"}
                   collapsed={!open}
                   count={todayCount}
                   icon={<Sun size={14} />}
@@ -144,28 +154,28 @@ export function Sidebar(props: SidebarProps): React.JSX.Element {
                   onClick={selectToday}
                 />
                 <NavItem
-                  active={selectedView === 'activity'}
+                  active={selectedView === "activity"}
                   collapsed={!open}
                   icon={<Activity size={14} />}
                   label="Activity"
                   onClick={selectActivity}
                 />
                 <NavItem
-                  active={selectedView === 'archive'}
+                  active={selectedView === "archive"}
                   collapsed={!open}
                   icon={<Archive size={14} />}
                   label="Archive"
                   onClick={selectArchive}
                 />
                 <NavItem
-                  active={selectedView === 'sessions'}
+                  active={selectedView === "sessions"}
                   collapsed={!open}
                   icon={<Calendar size={14} />}
                   label="Sessions"
                   onClick={selectSessions}
                 />
                 <NavItem
-                  active={selectedView === 'health'}
+                  active={selectedView === "health"}
                   collapsed={!open}
                   icon={<Pill size={14} />}
                   label="Meds"
@@ -192,7 +202,7 @@ export function Sidebar(props: SidebarProps): React.JSX.Element {
               <ProjectList
                 projects={projects}
                 selectedProjectId={selectedProjectId}
-                isProjectView={selectedView === 'project'}
+                isProjectView={selectedView === "project"}
                 collapsed={!open}
                 onSelect={selectProject}
                 onOpenCreatePanel={props.onOpenProjectPanel}
@@ -203,14 +213,17 @@ export function Sidebar(props: SidebarProps): React.JSX.Element {
           <SidebarFooter className="px-2 py-2 gap-0.5">
             <SidebarMenu className="gap-0.5">
               <NavItem
-                active={selectedView === 'settings'}
+                active={selectedView === "settings"}
                 collapsed={!open}
                 icon={<Settings size={14} />}
                 label="Settings"
                 onClick={selectSettings}
               />
               {open && (
-                <LabelsFooter hasLabels={hasLabels} onOpenLabelModal={props.onOpenLabelModal} />
+                <LabelsFooter
+                  hasLabels={hasLabels}
+                  onOpenLabelModal={props.onOpenLabelModal}
+                />
               )}
             </SidebarMenu>
           </SidebarFooter>

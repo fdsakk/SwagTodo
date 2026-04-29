@@ -1,6 +1,6 @@
-import { useEffect, useState } from 'react'
+import { useEffect, useState } from "react"
 
-const isMac = window.api?.window?.platform === 'darwin'
+const isMac = window.api?.window?.platform === "darwin"
 
 function useClockTick(): string {
   const [now, setNow] = useState(() => new Date())
@@ -8,8 +8,14 @@ function useClockTick(): string {
     const id = setInterval(() => setNow(new Date()), 1000)
     return () => clearInterval(id)
   }, [])
-  const day = now.toLocaleDateString('pl-PL', { month: 'short', day: 'numeric' })
-  const time = now.toLocaleTimeString('pl-PL', { hour: '2-digit', minute: '2-digit' })
+  const day = now.toLocaleDateString("pl-PL", {
+    month: "short",
+    day: "numeric"
+  })
+  const time = now.toLocaleTimeString("pl-PL", {
+    hour: "2-digit",
+    minute: "2-digit"
+  })
   return `${day}  ${time}`
 }
 
@@ -52,7 +58,7 @@ export function TitleBar(): React.JSX.Element | null {
   return (
     <div
       className="flex h-7 shrink-0 items-center justify-between select-none px-2.5 z-50"
-      style={{ WebkitAppRegion: 'drag' } as React.CSSProperties}
+      style={{ WebkitAppRegion: "drag" } as React.CSSProperties}
     >
       <span className="text-sm text-app-text-secondary ml-2">😎</span>
       <span className="text-xs font-semibold tracking-wide tabular-nums text-app-text-secondary">
@@ -62,7 +68,7 @@ export function TitleBar(): React.JSX.Element | null {
       {!isMac && (
         <div
           className="flex h-full items-center gap-2"
-          style={{ WebkitAppRegion: 'no-drag' } as React.CSSProperties}
+          style={{ WebkitAppRegion: "no-drag" } as React.CSSProperties}
         >
           <button
             type="button"
@@ -72,7 +78,7 @@ export function TitleBar(): React.JSX.Element | null {
           />
           <button
             type="button"
-            aria-label={isMaximized ? 'Restore window' : 'Maximize window'}
+            aria-label={isMaximized ? "Restore window" : "Maximize window"}
             onClick={handleToggleMaximize}
             className="h-2.5 w-2.5 rounded-full bg-neutral-800 transition-colors hover:bg-green-500 focus-visible:bg-green-500 focus-visible:outline-none"
           />

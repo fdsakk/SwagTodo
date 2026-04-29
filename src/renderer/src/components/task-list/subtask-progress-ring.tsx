@@ -1,5 +1,5 @@
-import { memo } from 'react'
-import { cn } from '@renderer/utils/cn'
+import { cn } from "@renderer/utils/cn"
+import { memo } from "react"
 
 interface SubtaskProgressRingProps {
   completed: number
@@ -22,12 +22,20 @@ function SubtaskProgressRingBase({
   const circumference = 2 * Math.PI * radius
   const dashOffset = circumference * (1 - ratio)
   const progressTone =
-    ratio >= 1 ? 'text-green-400' : ratio >= 0.5 ? 'text-app-text' : 'text-app-text-secondary'
+    ratio >= 1
+      ? "text-green-400"
+      : ratio >= 0.5
+        ? "text-app-text"
+        : "text-app-text-secondary"
 
   return (
     <div
       aria-label={`${completed} of ${total} subtasks done`}
-      className={cn('inline-flex items-center justify-center', progressTone, className)}
+      className={cn(
+        "inline-flex items-center justify-center",
+        progressTone,
+        className
+      )}
       role="img"
       title={`${completed}/${total} subtasks`}
     >
@@ -53,7 +61,9 @@ function SubtaskProgressRingBase({
           strokeDashoffset={dashOffset}
           strokeLinecap="round"
           transform={`rotate(-90 ${size / 2} ${size / 2})`}
-          style={{ transition: 'stroke-dashoffset 200ms ease, stroke 200ms ease' }}
+          style={{
+            transition: "stroke-dashoffset 200ms ease, stroke 200ms ease"
+          }}
         />
       </svg>
     </div>

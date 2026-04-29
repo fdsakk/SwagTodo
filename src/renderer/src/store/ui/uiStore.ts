@@ -1,23 +1,28 @@
-import { create } from 'zustand'
-import { createJSONStorage, persist, type StateStorage } from 'zustand/middleware'
-import type { UiState, UiStore } from '../shared/types'
-import { createUiActions } from './actions'
-import { createInitialUiState } from './state'
+import { create } from "zustand"
+import {
+  createJSONStorage,
+  persist,
+  type StateStorage
+} from "zustand/middleware"
+import type { UiState, UiStore } from "../shared/types"
+import { createUiActions } from "./actions"
+import { createInitialUiState } from "./state"
 
-const UI_STORE_PERSIST_KEY = 'ui-store'
+const UI_STORE_PERSIST_KEY = "ui-store"
 
 type PersistedUiFilters = Pick<
   UiState,
-  'inboxStatusFilter' | 'inboxProjectFilter' | 'inboxPriorityFilter'
+  "inboxStatusFilter" | "inboxProjectFilter" | "inboxPriorityFilter"
 >
 
 const localUiStorage: StateStorage = {
-  getItem: (name) => (typeof window === 'undefined' ? null : window.localStorage.getItem(name)),
+  getItem: (name) =>
+    typeof window === "undefined" ? null : window.localStorage.getItem(name),
   setItem: (name, value) => {
-    if (typeof window !== 'undefined') window.localStorage.setItem(name, value)
+    if (typeof window !== "undefined") window.localStorage.setItem(name, value)
   },
   removeItem: (name) => {
-    if (typeof window !== 'undefined') window.localStorage.removeItem(name)
+    if (typeof window !== "undefined") window.localStorage.removeItem(name)
   }
 }
 

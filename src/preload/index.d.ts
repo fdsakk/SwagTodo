@@ -1,5 +1,5 @@
-import { ElectronAPI } from '@electron-toolkit/preload'
-import type { AppState, WindowState } from '../shared/types'
+import { ElectronAPI } from "@electron-toolkit/preload"
+import type { AppState, WindowState } from "../shared/types"
 
 interface RendererApi {
   storage: {

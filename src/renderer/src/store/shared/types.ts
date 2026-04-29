@@ -1,12 +1,11 @@
-import type { StoreApi } from 'zustand'
 import type {
   AppearanceSettings,
   CreateTaskInput,
-  Label,
-  MedicationLog,
   InboxPriorityFilter,
   InboxProjectFilter,
   InboxStatusFilter,
+  Label,
+  MedicationLog,
   PkSettings,
   Project,
   ProjectTab,
@@ -17,31 +16,35 @@ import type {
   ThemeTokens,
   UiScale,
   ViewName
-} from '@renderer/types'
+} from "@renderer/types"
+import type { StoreApi } from "zustand"
 
 export type UpdateTaskInput = Partial<
   Pick<
     Task,
-    | 'title'
-    | 'description'
-    | 'priority'
-    | 'dueDate'
-    | 'projectId'
-    | 'labels'
-    | 'status'
-    | 'archivedAt'
+    | "title"
+    | "description"
+    | "priority"
+    | "dueDate"
+    | "projectId"
+    | "labels"
+    | "status"
+    | "archivedAt"
   >
 > & {
   completed?: boolean
 }
 
-export type CreateProjectInput = Pick<Project, 'name' | 'color' | 'emoji' | 'description'>
+export type CreateProjectInput = Pick<
+  Project,
+  "name" | "color" | "emoji" | "description"
+>
 export type UpdateProjectInput = Partial<CreateProjectInput>
 
-export type CreateLabelInput = Pick<Label, 'name' | 'color'>
+export type CreateLabelInput = Pick<Label, "name" | "color">
 export type UpdateLabelInput = Partial<CreateLabelInput>
 
-export type CreateMedicationLogInput = Omit<MedicationLog, 'id' | 'createdAt'>
+export type CreateMedicationLogInput = Omit<MedicationLog, "id" | "createdAt">
 
 export type SessionCreateInput = {
   taskId: string
@@ -54,7 +57,9 @@ export type SessionUpdateInput = {
   endAt?: string
 }
 
-export type SessionResult = { ok: true; id: string } | { ok: false; error: string }
+export type SessionResult =
+  | { ok: true; id: string }
+  | { ok: false; error: string }
 export type SessionUpdateResult = { ok: true } | { ok: false; error: string }
 
 export type TimeBlockCreateInput = {
@@ -69,7 +74,9 @@ export type TimeBlockUpdateInput = {
   endAt?: string
 }
 
-export type TimeBlockResult = { ok: true; id: string } | { ok: false; error: string }
+export type TimeBlockResult =
+  | { ok: true; id: string }
+  | { ok: false; error: string }
 export type TimeBlockUpdateResult = { ok: true } | { ok: false; error: string }
 
 export interface TaskCreateDefaults {
@@ -80,17 +87,17 @@ export interface TaskCreateDefaults {
 
 export type TaskPanelState =
   | { open: false }
-  | { open: true; mode: 'create'; defaults: TaskCreateDefaults }
-  | { open: true; mode: 'edit'; taskId: string }
-  | { open: true; mode: 'create_project' }
-  | { open: true; mode: 'edit_project'; projectId: string }
+  | { open: true; mode: "create"; defaults: TaskCreateDefaults }
+  | { open: true; mode: "edit"; taskId: string }
+  | { open: true; mode: "create_project" }
+  | { open: true; mode: "edit_project"; projectId: string }
 
 export interface DomainState {
   tasks: Task[]
   projects: Project[]
   labels: Label[]
-  sessions: import('@renderer/types').TaskSession[]
-  timeBlocks: import('@renderer/types').TimeBlock[]
+  sessions: import("@renderer/types").TaskSession[]
+  timeBlocks: import("@renderer/types").TimeBlock[]
   medications: MedicationLog[]
   pkSettings: PkSettings
   uiScale: UiScale
@@ -117,12 +124,21 @@ export interface DomainActions {
   addLabel: (input: CreateLabelInput) => string
   updateLabel: (labelId: string, updates: UpdateLabelInput) => void
   deleteLabel: (labelId: string) => void
-  applyKanbanOrder: (projectId: string, columns: Record<TaskStatus, string[]>) => void
+  applyKanbanOrder: (
+    projectId: string,
+    columns: Record<TaskStatus, string[]>
+  ) => void
   addSession: (input: SessionCreateInput) => SessionResult
-  updateSession: (sessionId: string, updates: SessionUpdateInput) => SessionUpdateResult
+  updateSession: (
+    sessionId: string,
+    updates: SessionUpdateInput
+  ) => SessionUpdateResult
   deleteSession: (sessionId: string) => void
   addTimeBlock: (input: TimeBlockCreateInput) => TimeBlockResult
-  updateTimeBlock: (id: string, updates: TimeBlockUpdateInput) => TimeBlockUpdateResult
+  updateTimeBlock: (
+    id: string,
+    updates: TimeBlockUpdateInput
+  ) => TimeBlockUpdateResult
   deleteTimeBlock: (id: string) => void
   setThemeId: (id: ThemeId) => void
   setCustomTokens: (tokens: Partial<ThemeTokens>) => void
@@ -182,22 +198,22 @@ export interface UiStoreMeta {
 
 export type PersistedDomainState = Pick<
   DomainState,
-  | 'tasks'
-  | 'projects'
-  | 'labels'
-  | 'sessions'
-  | 'timeBlocks'
-  | 'medications'
-  | 'pkSettings'
-  | 'uiScale'
-  | 'isSidebarCollapsed'
-  | 'appearance'
+  | "tasks"
+  | "projects"
+  | "labels"
+  | "sessions"
+  | "timeBlocks"
+  | "medications"
+  | "pkSettings"
+  | "uiScale"
+  | "isSidebarCollapsed"
+  | "appearance"
 >
 
 export type DomainStore = DomainState & DomainActions & DomainStoreMeta
 export type UiStore = UiState & UiActions & UiStoreMeta
 
-export type DomainStoreSet = StoreApi<DomainStore>['setState']
-export type DomainStoreGet = StoreApi<DomainStore>['getState']
-export type UiStoreSet = StoreApi<UiStore>['setState']
-export type UiStoreGet = StoreApi<UiStore>['getState']
+export type DomainStoreSet = StoreApi<DomainStore>["setState"]
+export type DomainStoreGet = StoreApi<DomainStore>["getState"]
+export type UiStoreSet = StoreApi<UiStore>["setState"]
+export type UiStoreGet = StoreApi<UiStore>["getState"]

@@ -1,23 +1,38 @@
-import { v4 as uuidv4 } from 'uuid'
-import type { DomainActions, DomainStoreGet, DomainStoreSet } from '../../shared/types'
-import { appendIfValid, getTimeRangeError, nowIso, removeById } from '../../shared/utils'
+import { v4 as uuidv4 } from "uuid"
+import type {
+  DomainActions,
+  DomainStoreGet,
+  DomainStoreSet
+} from "../../shared/types"
+import {
+  appendIfValid,
+  getTimeRangeError,
+  nowIso,
+  removeById
+} from "../../shared/utils"
 
 type SessionActions = Pick<
   DomainActions,
-  | 'addSession'
-  | 'updateSession'
-  | 'deleteSession'
-  | 'addTimeBlock'
-  | 'updateTimeBlock'
-  | 'deleteTimeBlock'
+  | "addSession"
+  | "updateSession"
+  | "deleteSession"
+  | "addTimeBlock"
+  | "updateTimeBlock"
+  | "deleteTimeBlock"
 >
 
-export const createSessionActions = (set: DomainStoreSet, get: DomainStoreGet): SessionActions => ({
+export const createSessionActions = (
+  set: DomainStoreSet,
+  get: DomainStoreGet
+): SessionActions => ({
   addSession: (input) => {
     const state = get()
-    const task = state.tasks.find((currentTask) => currentTask.id === input.taskId)
-    if (!task) return { ok: false, error: 'Task not found' }
-    if (!task.projectId) return { ok: false, error: 'Task must belong to a project' }
+    const task = state.tasks.find(
+      (currentTask) => currentTask.id === input.taskId
+    )
+    if (!task) return { ok: false, error: "Task not found" }
+    if (!task.projectId)
+      return { ok: false, error: "Task must belong to a project" }
 
     const rangeError = getTimeRangeError(input.startAt, input.endAt)
     if (rangeError) return { ok: false, error: rangeError }
@@ -38,15 +53,18 @@ export const createSessionActions = (set: DomainStoreSet, get: DomainStoreGet): 
   },
   updateSession: (sessionId, updates) => {
     const state = get()
-    const index = state.sessions.findIndex((session) => session.id === sessionId)
-    if (index === -1) return { ok: false, error: 'Session not found' }
+    const index = state.sessions.findIndex(
+      (session) => session.id === sessionId
+    )
+    if (index === -1) return { ok: false, error: "Session not found" }
 
     const current = state.sessions[index]
     const startAt = updates.startAt ?? current.startAt
     const endAt = updates.endAt ?? current.endAt
     const rangeError = getTimeRangeError(startAt, endAt)
     if (rangeError) return { ok: false, error: rangeError }
-    if (startAt === current.startAt && endAt === current.endAt) return { ok: true }
+    if (startAt === current.startAt && endAt === current.endAt)
+      return { ok: true }
 
     const sessions = state.sessions.slice()
     sessions[index] = { ...current, startAt, endAt, updatedAt: nowIso() }
@@ -64,7 +82,7 @@ export const createSessionActions = (set: DomainStoreSet, get: DomainStoreGet): 
 
     const timeBlock = {
       id: uuidv4(),
-      label: input.label.trim() || 'Block',
+      label: input.label.trim() || "Block",
       startAt: input.startAt,
       endAt: input.endAt,
       createdAt: nowIso()
@@ -76,7 +94,7 @@ export const createSessionActions = (set: DomainStoreSet, get: DomainStoreGet): 
   updateTimeBlock: (id, updates) => {
     const state = get()
     const index = state.timeBlocks.findIndex((timeBlock) => timeBlock.id === id)
-    if (index === -1) return { ok: false, error: 'Time block not found' }
+    if (index === -1) return { ok: false, error: "Time block not found" }
 
     const current = state.timeBlocks[index]
     const startAt = updates.startAt ?? current.startAt
@@ -85,7 +103,11 @@ export const createSessionActions = (set: DomainStoreSet, get: DomainStoreGet): 
     if (rangeError) return { ok: false, error: rangeError }
 
     const label = updates.label?.trim() ?? current.label
-    if (label === current.label && startAt === current.startAt && endAt === current.endAt) {
+    if (
+      label === current.label &&
+      startAt === current.startAt &&
+      endAt === current.endAt
+    ) {
       return { ok: true }
     }
 

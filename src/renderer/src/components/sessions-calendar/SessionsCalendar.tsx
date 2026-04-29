@@ -1,19 +1,19 @@
-import { useEffect, useMemo, useRef } from 'react'
-import type { Project, Task, TaskSession, TimeBlock } from '@renderer/types'
-import { cn } from '@renderer/utils/cn'
-import { HOUR_PX, PX_PER_MIN, isSameDay } from '@renderer/utils/calendar'
+import type { Project, Task, TaskSession, TimeBlock } from "@renderer/types"
+import { HOUR_PX, isSameDay, PX_PER_MIN } from "@renderer/utils/calendar"
+import { cn } from "@renderer/utils/cn"
+import { useEffect, useMemo, useRef } from "react"
+import { CalendarHeader } from "./CalendarHeader"
+import { DraftGhost } from "./DraftGhost"
+import { SessionBlockView } from "./SessionBlockView"
+import { TimeBlockView } from "./TimeBlockView"
 import {
+  computeBlocks,
+  computeTimeBlockDisplayBlocks,
   type PendingDraft,
   type SessionBlock,
-  type TimeBlockDisplayBlock,
-  computeBlocks,
-  computeTimeBlockDisplayBlocks
-} from './types'
-import { SessionBlockView } from './SessionBlockView'
-import { TimeBlockView } from './TimeBlockView'
-import { DraftGhost } from './DraftGhost'
-import { CalendarHeader } from './CalendarHeader'
-import { useCalendarDrag } from './useCalendarDrag'
+  type TimeBlockDisplayBlock
+} from "./types"
+import { useCalendarDrag } from "./useCalendarDrag"
 
 const HOURS = Array.from({ length: 25 }, (_, i) => i)
 const pad = (n: number): string => (n < 10 ? `0${n}` : String(n))
@@ -93,7 +93,8 @@ export function SessionsCalendar({
     return m
   }, [tbBlocks])
 
-  const daysKey = days.length > 0 ? days[0].toISOString() : ''
+  const _daysKey = days.length > 0 ? days[0].toISOString() : ""
+  void _daysKey
   useEffect(() => {
     const el = scrollRef.current
     if (!el) return
@@ -101,7 +102,7 @@ export function SessionsCalendar({
     const nowMinutes = n.getHours() * 60 + n.getMinutes()
     const target = Math.max(0, nowMinutes * PX_PER_MIN - el.clientHeight / 2)
     el.scrollTop = target
-  }, [daysKey])
+  }, [])
 
   const {
     draft,
@@ -109,7 +110,13 @@ export function SessionsCalendar({
     handleCreatePointerDown,
     handleBlockPointerDown,
     handleTimeBlockPointerDown
-  } = useCalendarDrag({ days, onCreateDraft, onUpdate, onOpenSession, onUpdateTimeBlock })
+  } = useCalendarDrag({
+    days,
+    onCreateDraft,
+    onUpdate,
+    onOpenSession,
+    onUpdateTimeBlock
+  })
 
   const nowDayIndex = days.findIndex((d) => isSameDay(d, now))
   const nowMin = now.getHours() * 60 + now.getMinutes()
@@ -133,7 +140,7 @@ export function SessionsCalendar({
                 className="absolute left-0 right-0 -translate-y-1/2 pr-2 text-right text-[10px] text-app-text-muted"
                 style={{ top: h * HOUR_PX }}
               >
-                {h === 0 ? '' : `${pad(h)}:00`}
+                {h === 0 ? "" : `${pad(h)}:00`}
               </div>
             ))}
           </div>
@@ -149,8 +156,11 @@ export function SessionsCalendar({
                 ref={setColumnRef(dayIdx)}
                 data-day-index={dayIdx}
                 onPointerDown={handleCreatePointerDown}
-                className={cn('relative border-l border-app-border', today && 'bg-black/[0.025]')}
-                style={{ height: 24 * HOUR_PX, touchAction: 'none' }}
+                className={cn(
+                  "relative border-l border-app-border",
+                  today && "bg-black/[0.025]"
+                )}
+                style={{ height: 24 * HOUR_PX, touchAction: "none" }}
               >
                 {HOURS.map((h) => (
                   <div
@@ -172,19 +182,24 @@ export function SessionsCalendar({
                 {dayBlocks.map((block) => {
                   const isDraftTarget =
                     draft &&
-                    (draft.kind === 'move' || draft.kind === 'resize') &&
+                    (draft.kind === "move" || draft.kind === "resize") &&
                     draft.sessionId === block.session.id
                   if (isDraftTarget && draft.dayIndex !== dayIdx) return null
-                  const startMin = isDraftTarget && draft ? draft.startMin : block.startMin
-                  const endMin = isDraftTarget && draft ? draft.endMin : block.endMin
+                  const startMin =
+                    isDraftTarget && draft ? draft.startMin : block.startMin
+                  const endMin =
+                    isDraftTarget && draft ? draft.endMin : block.endMin
                   return (
                     <SessionBlockView
                       key={block.session.id}
                       block={block}
                       startMin={startMin}
                       endMin={endMin}
-                      onMovePointerDown={handleBlockPointerDown(block, 'move')}
-                      onResizePointerDown={handleBlockPointerDown(block, 'resize')}
+                      onMovePointerDown={handleBlockPointerDown(block, "move")}
+                      onResizePointerDown={handleBlockPointerDown(
+                        block,
+                        "resize"
+                      )}
                       onDelete={() => onDeleteSession(block.session.id)}
                     />
                   )
@@ -193,45 +208,67 @@ export function SessionsCalendar({
                 {dayTbBlocks.map((tb) => {
                   const isDraftTarget =
                     draft &&
-                    (draft.kind === 'tb_move' || draft.kind === 'tb_resize') &&
+                    (draft.kind === "tb_move" || draft.kind === "tb_resize") &&
                     draft.blockId === tb.block.id
                   if (isDraftTarget && draft.dayIndex !== dayIdx) return null
-                  const startMin = isDraftTarget && draft ? draft.startMin : tb.startMin
-                  const endMin = isDraftTarget && draft ? draft.endMin : tb.endMin
+                  const startMin =
+                    isDraftTarget && draft ? draft.startMin : tb.startMin
+                  const endMin =
+                    isDraftTarget && draft ? draft.endMin : tb.endMin
                   return (
                     <TimeBlockView
                       key={tb.block.id}
                       tb={tb}
                       startMin={startMin}
                       endMin={endMin}
-                      onMovePointerDown={handleTimeBlockPointerDown(tb, 'move')}
-                      onResizePointerDown={handleTimeBlockPointerDown(tb, 'resize')}
+                      onMovePointerDown={handleTimeBlockPointerDown(tb, "move")}
+                      onResizePointerDown={handleTimeBlockPointerDown(
+                        tb,
+                        "resize"
+                      )}
                       onDelete={() => onDeleteTimeBlock(tb.block.id)}
                     />
                   )
                 })}
 
                 {draft &&
-                  draft.kind === 'tb_move' &&
+                  draft.kind === "tb_move" &&
                   draft.dayIndex === dayIdx &&
                   !(tbBlocksByDay.get(dayIdx) ?? []).some(
-                    (tb) => tb.block.id === (draft as { blockId: string }).blockId
+                    (tb) =>
+                      tb.block.id === (draft as { blockId: string }).blockId
                   ) && (
-                    <DraftGhost startMin={draft.startMin} endMin={draft.endMin} label="Moving..." />
+                    <DraftGhost
+                      startMin={draft.startMin}
+                      endMin={draft.endMin}
+                      label="Moving..."
+                    />
                   )}
 
                 {draft &&
-                  draft.kind === 'move' &&
+                  draft.kind === "move" &&
                   draft.dayIndex === dayIdx &&
                   !(blocksByDay.get(dayIdx) ?? []).some(
-                    (b) => b.session.id === (draft as { sessionId: string }).sessionId
+                    (b) =>
+                      b.session.id ===
+                      (draft as { sessionId: string }).sessionId
                   ) && (
-                    <DraftGhost startMin={draft.startMin} endMin={draft.endMin} label="Moving..." />
+                    <DraftGhost
+                      startMin={draft.startMin}
+                      endMin={draft.endMin}
+                      label="Moving..."
+                    />
                   )}
 
-                {draft && draft.kind === 'create' && draft.dayIndex === dayIdx && (
-                  <DraftGhost startMin={draft.startMin} endMin={draft.endMin} label="New session" />
-                )}
+                {draft &&
+                  draft.kind === "create" &&
+                  draft.dayIndex === dayIdx && (
+                    <DraftGhost
+                      startMin={draft.startMin}
+                      endMin={draft.endMin}
+                      label="New session"
+                    />
+                  )}
 
                 {!draft && pendingDraft && pendingDraft.dayIndex === dayIdx && (
                   <DraftGhost

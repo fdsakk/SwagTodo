@@ -1,6 +1,6 @@
-import confetti from 'canvas-confetti'
-import { useCallback } from 'react'
-import { useDomainStore } from '@renderer/store'
+import { useDomainStore } from "@renderer/store"
+import confetti from "canvas-confetti"
+import { useCallback } from "react"
 
 let confettiInstance: confetti.CreateTypes | null = null
 
@@ -10,19 +10,22 @@ interface ToggleTaskCompleteOptions {
 
 function getConfetti(): confetti.CreateTypes {
   if (confettiInstance) return confettiInstance
-  const canvas = document.createElement('canvas')
-  canvas.style.position = 'fixed'
-  canvas.style.inset = '0'
-  canvas.style.width = '100vw'
-  canvas.style.height = '100vh'
-  canvas.style.pointerEvents = 'none'
-  canvas.style.zIndex = '9999'
+  const canvas = document.createElement("canvas")
+  canvas.style.position = "fixed"
+  canvas.style.inset = "0"
+  canvas.style.width = "100vw"
+  canvas.style.height = "100vh"
+  canvas.style.pointerEvents = "none"
+  canvas.style.zIndex = "9999"
   document.body.appendChild(canvas)
   confettiInstance = confetti.create(canvas, { resize: true, useWorker: false })
   return confettiInstance
 }
 
-export function useTaskComplete(): (taskId: string, options?: ToggleTaskCompleteOptions) => void {
+export function useTaskComplete(): (
+  taskId: string,
+  options?: ToggleTaskCompleteOptions
+) => void {
   const tasks = useDomainStore((state) => state.tasks)
   const toggleTaskComplete = useDomainStore((state) => state.toggleTaskComplete)
 
@@ -42,7 +45,7 @@ export function useTaskComplete(): (taskId: string, options?: ToggleTaskComplete
           startVelocity: 45,
           gravity: 1,
           ticks: 150,
-          colors: ['#a855f7', '#ec4899', '#f59e0b', '#10b981', '#3b82f6']
+          colors: ["#a855f7", "#ec4899", "#f59e0b", "#10b981", "#3b82f6"]
         })
       }
 

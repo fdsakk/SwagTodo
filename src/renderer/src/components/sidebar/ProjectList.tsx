@@ -1,11 +1,11 @@
-import type { Project } from '@renderer/types'
 import {
   SidebarGroupContent,
   SidebarMenu,
   SidebarMenuButton,
   SidebarMenuItem
-} from '@renderer/components/ui/sidebar'
-import { cn } from '@renderer/utils/cn'
+} from "@renderer/components/ui/sidebar"
+import type { Project } from "@renderer/types"
+import { cn } from "@renderer/utils/cn"
 
 interface ProjectListProps {
   projects: Project[]
@@ -32,20 +32,24 @@ export function ProjectList({
             <SidebarMenuItem key={project.id}>
               <SidebarMenuButton
                 className={cn(
-                  'h-8 px-2 text-sm',
+                  "h-8 px-2 text-sm",
                   active
-                    ? 'bg-app-active text-app-text data-[active=true]:bg-app-active data-[active=true]:text-app-text'
-                    : 'text-app-text-secondary hover:bg-app-hover hover:!text-app-text',
-                  collapsed && 'justify-center px-0'
+                    ? "bg-app-active text-app-text data-[active=true]:bg-app-active data-[active=true]:text-app-text"
+                    : "text-app-text-secondary hover:bg-app-hover hover:!text-app-text",
+                  collapsed && "justify-center px-0"
                 )}
                 isActive={active}
                 onClick={() => onSelect(project.id)}
                 tooltip={collapsed ? project.name : undefined}
               >
                 <span className="flex h-4 w-4 items-center justify-center text-xs">
-                  {project.emoji || '#'}
+                  {project.emoji || "#"}
                 </span>
-                {!collapsed && <span className="flex-1 truncate text-left">{project.name}</span>}
+                {!collapsed && (
+                  <span className="flex-1 truncate text-left">
+                    {project.name}
+                  </span>
+                )}
               </SidebarMenuButton>
             </SidebarMenuItem>
           )

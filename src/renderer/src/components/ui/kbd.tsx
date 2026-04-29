@@ -1,7 +1,10 @@
-import type * as React from 'react'
-import { cn } from '@renderer/utils/cn'
+import { cn } from "@renderer/utils/cn"
+import type * as React from "react"
 
-export function Kbd({ className, ...props }: React.ComponentProps<'kbd'>): React.ReactElement {
+export function Kbd({
+  className,
+  ...props
+}: React.ComponentProps<"kbd">): React.ReactElement {
   return (
     <kbd
       className={cn(
@@ -14,10 +17,13 @@ export function Kbd({ className, ...props }: React.ComponentProps<'kbd'>): React
   )
 }
 
-export function KbdGroup({ className, ...props }: React.ComponentProps<'kbd'>): React.ReactElement {
+export function KbdGroup({
+  className,
+  ...props
+}: React.ComponentProps<"kbd">): React.ReactElement {
   return (
     <kbd
-      className={cn('inline-flex items-center gap-1', className)}
+      className={cn("inline-flex items-center gap-1", className)}
       data-slot="kbd-group"
       {...props}
     />

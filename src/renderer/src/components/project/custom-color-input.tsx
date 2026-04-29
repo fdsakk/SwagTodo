@@ -1,5 +1,5 @@
-import { useEffect, useState } from 'react'
-import { cn } from '@renderer/utils/cn'
+import { cn } from "@renderer/utils/cn"
+import { useEffect, useState } from "react"
 
 interface CustomColorInputProps {
   value: string
@@ -11,8 +11,8 @@ const HEX_RE = /^#([0-9a-fA-F]{6})$/
 
 function normalize(input: string): string {
   const trimmed = input.trim()
-  if (!trimmed) return ''
-  return trimmed.startsWith('#') ? trimmed : `#${trimmed}`
+  if (!trimmed) return ""
+  return trimmed.startsWith("#") ? trimmed : `#${trimmed}`
 }
 
 export function CustomColorInput({
@@ -31,10 +31,10 @@ export function CustomColorInput({
     if (HEX_RE.test(hex)) onChange(hex.toLowerCase())
   }
 
-  const displayColor = HEX_RE.test(value) ? value : '#52525b'
+  const displayColor = HEX_RE.test(value) ? value : "#52525b"
 
   return (
-    <div className={cn('flex items-center gap-2', className)}>
+    <div className={cn("flex items-center gap-2", className)}>
       <label
         className="relative flex h-7 w-7 cursor-pointer items-center justify-center overflow-hidden rounded-md border border-app-border"
         style={{ backgroundColor: displayColor }}
@@ -57,7 +57,7 @@ export function CustomColorInput({
         onBlur={() => commit(draft)}
         onChange={(event) => setDraft(event.target.value)}
         onKeyDown={(event) => {
-          if (event.key === 'Enter') {
+          if (event.key === "Enter") {
             event.preventDefault()
             commit(draft)
           }

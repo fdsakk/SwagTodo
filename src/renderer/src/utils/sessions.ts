@@ -1,4 +1,4 @@
-import type { TaskSession, TaskSessionStats } from '@renderer/types'
+import type { TaskSession, TaskSessionStats } from "@renderer/types"
 
 export const sessionsInRange = (
   sessions: readonly TaskSession[],
@@ -45,7 +45,7 @@ export const computeTaskStats = (
 }
 
 export const formatDuration = (ms: number): string => {
-  if (ms <= 0) return '0m'
+  if (ms <= 0) return "0m"
   const totalMin = Math.round(ms / 60000)
   const h = Math.floor(totalMin / 60)
   const m = totalMin % 60

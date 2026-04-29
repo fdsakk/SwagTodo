@@ -1,16 +1,25 @@
-import { v4 as uuidv4 } from 'uuid'
-import type { Project } from '@renderer/types'
-import { normalizeProjectInput, normalizeProjectPatch } from '../../shared/normalize'
-import type { DomainActions, DomainStoreSet } from '../../shared/types'
-import { nowIso, removeById } from '../../shared/utils'
-import { detachProjectFromTasks, removeProjectSessions } from '../helpers/relations'
+import type { Project } from "@renderer/types"
+import { v4 as uuidv4 } from "uuid"
+import {
+  normalizeProjectInput,
+  normalizeProjectPatch
+} from "../../shared/normalize"
+import type { DomainActions, DomainStoreSet } from "../../shared/types"
+import { nowIso, removeById } from "../../shared/utils"
+import {
+  detachProjectFromTasks,
+  removeProjectSessions
+} from "../helpers/relations"
 
-type ProjectActions = Pick<DomainActions, 'addProject' | 'updateProject' | 'deleteProject'>
+type ProjectActions = Pick<
+  DomainActions,
+  "addProject" | "updateProject" | "deleteProject"
+>
 
 export const createProjectActions = (set: DomainStoreSet): ProjectActions => ({
   addProject: (input) => {
     const normalized = normalizeProjectInput(input)
-    if (!normalized) return ''
+    if (!normalized) return ""
 
     const project: Project = {
       id: uuidv4(),
@@ -23,7 +32,9 @@ export const createProjectActions = (set: DomainStoreSet): ProjectActions => ({
   },
   updateProject: (projectId, updates) =>
     set((state) => {
-      const index = state.projects.findIndex((project) => project.id === projectId)
+      const index = state.projects.findIndex(
+        (project) => project.id === projectId
+      )
       if (index === -1) return state
 
       const current = state.projects[index]

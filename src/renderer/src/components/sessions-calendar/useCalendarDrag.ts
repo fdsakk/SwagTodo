@@ -1,11 +1,16 @@
-import { useCallback, useRef, useState, type PointerEvent as ReactPointerEvent } from 'react'
 import {
-  SLOT_MIN,
   buildIsoAtMinutes,
   clampMin,
   pointToMinutes,
+  SLOT_MIN,
   snapMin
-} from '@renderer/utils/calendar'
+} from "@renderer/utils/calendar"
+import {
+  type PointerEvent as ReactPointerEvent,
+  useCallback,
+  useRef,
+  useState
+} from "react"
 import type {
   Draft,
   DraftCreate,
@@ -15,7 +20,7 @@ import type {
   DraftTimeBlockResize,
   SessionBlock,
   TimeBlockDisplayBlock
-} from './types'
+} from "./types"
 
 const DEFAULT_CLICK_MIN = 60
 const DAY_MIN = 24 * 60
@@ -34,11 +39,11 @@ interface CalendarDrag {
   handleCreatePointerDown: (event: ReactPointerEvent<HTMLDivElement>) => void
   handleBlockPointerDown: (
     block: SessionBlock,
-    mode: 'move' | 'resize'
+    mode: "move" | "resize"
   ) => (event: ReactPointerEvent<HTMLDivElement>) => void
   handleTimeBlockPointerDown: (
     tb: TimeBlockDisplayBlock,
-    mode: 'move' | 'resize'
+    mode: "move" | "resize"
   ) => (event: ReactPointerEvent<HTMLDivElement>) => void
 }
 
@@ -55,7 +60,9 @@ function findDayIndexAtX(
   return fallback
 }
 
-const measureColumnRects = (columns: readonly (HTMLDivElement | null)[]): (DOMRect | null)[] =>
+const measureColumnRects = (
+  columns: readonly (HTMLDivElement | null)[]
+): (DOMRect | null)[] =>
   columns.map((column) => column?.getBoundingClientRect() ?? null)
 
 export function useCalendarDrag({
@@ -80,14 +87,14 @@ export function useCalendarDrag({
     (event: ReactPointerEvent<HTMLDivElement>): void => {
       if (event.button !== 0) return
       const target = event.target as HTMLElement
-      if (target.closest('[data-session-block]')) return
+      if (target.closest("[data-session-block]")) return
       const dayIndex = Number(event.currentTarget.dataset.dayIndex)
       const column = columnRefs.current[dayIndex]
       if (!column) return
       event.preventDefault()
       const startMin = pointToMinutes(event.clientY, column)
       let current: DraftCreate = {
-        kind: 'create',
+        kind: "create",
         dayIndex,
         startMin,
         endMin: Math.min(DAY_MIN, startMin + SLOT_MIN)
@@ -99,14 +106,16 @@ export function useCalendarDrag({
         if (!col) return
         const cur = pointToMinutes(e.clientY, col)
         const endMin =
-          cur <= current.startMin ? Math.min(DAY_MIN, current.startMin + SLOT_MIN) : cur
+          cur <= current.startMin
+            ? Math.min(DAY_MIN, current.startMin + SLOT_MIN)
+            : cur
         if (endMin !== current.endMin) moved = true
         current = { ...current, endMin }
         setDraft(current)
       }
       const onUp = (): void => {
-        window.removeEventListener('pointermove', onMove)
-        window.removeEventListener('pointerup', onUp)
+        window.removeEventListener("pointermove", onMove)
+        window.removeEventListener("pointerup", onUp)
         setDraft(null)
         let finalStart = current.startMin
         let finalEnd = current.endMin
@@ -120,14 +129,14 @@ export function useCalendarDrag({
         if (finalEnd <= finalStart) return
         onCreateDraft(current.dayIndex, finalStart, finalEnd)
       }
-      window.addEventListener('pointermove', onMove)
-      window.addEventListener('pointerup', onUp)
+      window.addEventListener("pointermove", onMove)
+      window.addEventListener("pointerup", onUp)
     },
     [onCreateDraft]
   )
 
   const handleBlockPointerDown = useCallback(
-    (block: SessionBlock, mode: 'move' | 'resize') =>
+    (block: SessionBlock, mode: "move" | "resize") =>
       (event: ReactPointerEvent<HTMLDivElement>): void => {
         if (event.button !== 0) return
         event.preventDefault()
@@ -151,17 +160,21 @@ export function useCalendarDrag({
         const onMove = (e: PointerEvent): void => {
           moved = true
           const nextDayIndex =
-            mode === 'move'
-              ? findDayIndexAtX(columnRectsRef.current, e.clientX, startDayIndex)
+            mode === "move"
+              ? findDayIndexAtX(
+                  columnRectsRef.current,
+                  e.clientX,
+                  startDayIndex
+                )
               : startDayIndex
           const col = columnRefs.current[nextDayIndex]
           if (!col) return
           const cur = pointToMinutes(e.clientY, col)
-          if (mode === 'move') {
+          if (mode === "move") {
             const nextStart = clampMin(snapMin(cur - offsetMin))
             const start = Math.min(DAY_MIN - duration, nextStart)
             current = {
-              kind: 'move',
+              kind: "move",
               sessionId: block.session.id,
               dayIndex: nextDayIndex,
               startMin: start,
@@ -170,7 +183,7 @@ export function useCalendarDrag({
           } else {
             const end = Math.max(block.startMin + SLOT_MIN, clampMin(cur))
             current = {
-              kind: 'resize',
+              kind: "resize",
               sessionId: block.session.id,
               dayIndex: startDayIndex,
               startMin: block.startMin,
@@ -180,8 +193,8 @@ export function useCalendarDrag({
           setDraft(current)
         }
         const onUp = (): void => {
-          window.removeEventListener('pointermove', onMove)
-          window.removeEventListener('pointerup', onUp)
+          window.removeEventListener("pointermove", onMove)
+          window.removeEventListener("pointerup", onUp)
           setDraft(null)
           if (!moved) {
             onOpenSession(block.session.id)
@@ -192,14 +205,14 @@ export function useCalendarDrag({
           const endAt = buildIsoAtMinutes(targetDay, current.endMin)
           onUpdate(block.session.id, startAt, endAt)
         }
-        window.addEventListener('pointermove', onMove)
-        window.addEventListener('pointerup', onUp)
+        window.addEventListener("pointermove", onMove)
+        window.addEventListener("pointerup", onUp)
       },
     [days, onUpdate, onOpenSession]
   )
 
   const handleTimeBlockPointerDown = useCallback(
-    (tb: TimeBlockDisplayBlock, mode: 'move' | 'resize') =>
+    (tb: TimeBlockDisplayBlock, mode: "move" | "resize") =>
       (event: ReactPointerEvent<HTMLDivElement>): void => {
         if (event.button !== 0) return
         event.preventDefault()
@@ -212,7 +225,7 @@ export function useCalendarDrag({
         const duration = tb.endMin - tb.startMin
         const offsetMin = initialPointer - tb.startMin
         let current: DraftTimeBlockMove | DraftTimeBlockResize = {
-          kind: mode === 'move' ? 'tb_move' : 'tb_resize',
+          kind: mode === "move" ? "tb_move" : "tb_resize",
           blockId: tb.block.id,
           dayIndex: startDayIndex,
           startMin: tb.startMin,
@@ -223,17 +236,21 @@ export function useCalendarDrag({
         const onMove = (e: PointerEvent): void => {
           moved = true
           const nextDayIndex =
-            mode === 'move'
-              ? findDayIndexAtX(columnRectsRef.current, e.clientX, startDayIndex)
+            mode === "move"
+              ? findDayIndexAtX(
+                  columnRectsRef.current,
+                  e.clientX,
+                  startDayIndex
+                )
               : startDayIndex
           const col = columnRefs.current[nextDayIndex]
           if (!col) return
           const cur = pointToMinutes(e.clientY, col)
-          if (mode === 'move') {
+          if (mode === "move") {
             const nextStart = clampMin(snapMin(cur - offsetMin))
             const start = Math.min(DAY_MIN - duration, nextStart)
             current = {
-              kind: 'tb_move',
+              kind: "tb_move",
               blockId: tb.block.id,
               dayIndex: nextDayIndex,
               startMin: start,
@@ -242,7 +259,7 @@ export function useCalendarDrag({
           } else {
             const end = Math.max(tb.startMin + SLOT_MIN, clampMin(cur))
             current = {
-              kind: 'tb_resize',
+              kind: "tb_resize",
               blockId: tb.block.id,
               dayIndex: startDayIndex,
               startMin: tb.startMin,
@@ -252,8 +269,8 @@ export function useCalendarDrag({
           setDraft(current)
         }
         const onUp = (): void => {
-          window.removeEventListener('pointermove', onMove)
-          window.removeEventListener('pointerup', onUp)
+          window.removeEventListener("pointermove", onMove)
+          window.removeEventListener("pointerup", onUp)
           setDraft(null)
           if (!moved) return
           const targetDay = days[current.dayIndex] ?? days[startDayIndex]
@@ -261,8 +278,8 @@ export function useCalendarDrag({
           const endAt = buildIsoAtMinutes(targetDay, current.endMin)
           onUpdateTimeBlock(tb.block.id, startAt, endAt)
         }
-        window.addEventListener('pointermove', onMove)
-        window.addEventListener('pointerup', onUp)
+        window.addEventListener("pointermove", onMove)
+        window.addEventListener("pointerup", onUp)
       },
     [days, onUpdateTimeBlock]
   )

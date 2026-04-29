@@ -1,14 +1,17 @@
-import { useState } from 'react'
-import type { PkSettings } from '@renderer/types'
-import { cn } from '@renderer/utils/cn'
-import { SliderRow } from './SliderRow'
+import type { PkSettings } from "@renderer/types"
+import { cn } from "@renderer/utils/cn"
+import { useState } from "react"
+import { SliderRow } from "./SliderRow"
 
 interface PkParamsProps {
   pkSettings: PkSettings
   onChange: (patch: Partial<PkSettings>) => void
 }
 
-export function PkParams({ pkSettings, onChange }: PkParamsProps): React.JSX.Element {
+export function PkParams({
+  pkSettings,
+  onChange
+}: PkParamsProps): React.JSX.Element {
   const [open, setOpen] = useState(false)
   return (
     <div className="mt-3 -mx-4 border-t border-app-border px-4 pt-4">
@@ -28,7 +31,10 @@ export function PkParams({ pkSettings, onChange }: PkParamsProps): React.JSX.Ele
           strokeWidth="2"
           strokeLinecap="round"
           strokeLinejoin="round"
-          className={cn('transition-transform duration-200', open ? 'rotate-180' : '')}
+          className={cn(
+            "transition-transform duration-200",
+            open ? "rotate-180" : ""
+          )}
         >
           <polyline points="6 9 12 15 18 9" />
         </svg>
@@ -50,7 +56,7 @@ export function PkParams({ pkSettings, onChange }: PkParamsProps): React.JSX.Ele
             min={-1}
             max={2}
             step={0.25}
-            format={(v) => `${v >= 0 ? '+' : ''}${v.toFixed(2)} h`}
+            format={(v) => `${v >= 0 ? "+" : ""}${v.toFixed(2)} h`}
             onChange={(v) => onChange({ tMaxOffsetH: v })}
           />
           <SliderRow

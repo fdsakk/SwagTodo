@@ -1,55 +1,65 @@
-import { memo, useCallback, useEffect, useMemo, useState } from 'react'
-import { ChevronDown, ChevronUp, RotateCcw } from 'lucide-react'
-import { HexColorPicker } from 'react-colorful'
 import {
-  THEME_PRESETS,
-  getResolvedTokens,
+  Popover,
+  PopoverPopup,
+  PopoverTrigger
+} from "@renderer/components/ui/popover"
+import {
   type AppearanceSettings,
+  getResolvedTokens,
+  THEME_PRESETS,
   type ThemeTokens
-} from '@renderer/types'
-import { cn } from '@renderer/utils/cn'
-import { Popover, PopoverPopup, PopoverTrigger } from '@renderer/components/ui/popover'
+} from "@renderer/types"
+import { cn } from "@renderer/utils/cn"
+import { ChevronDown, ChevronUp, RotateCcw } from "lucide-react"
+import { memo, useCallback, useEffect, useMemo, useState } from "react"
+import { HexColorPicker } from "react-colorful"
 
 const TOKEN_LABELS: Record<keyof ThemeTokens, string> = {
-  '--app-bg': 'Background',
-  '--app-sidebar': 'Sidebar',
-  '--app-titlebar': 'Title Bar',
-  '--app-content': 'Content',
-  '--app-card': 'Card',
-  '--app-text': 'Text',
-  '--app-text-secondary': 'Text Secondary',
-  '--app-text-muted': 'Text Muted',
-  '--app-border': 'Border',
-  '--app-hover': 'Hover',
-  '--app-active': 'Active',
-  '--app-accent': 'Accent',
-  '--app-accent-text': 'Accent Text',
-  '--app-scrollbar': 'Scrollbar',
-  '--app-scrollbar-hover': 'Scrollbar Hover'
+  "--app-bg": "Background",
+  "--app-sidebar": "Sidebar",
+  "--app-titlebar": "Title Bar",
+  "--app-content": "Content",
+  "--app-card": "Card",
+  "--app-text": "Text",
+  "--app-text-secondary": "Text Secondary",
+  "--app-text-muted": "Text Muted",
+  "--app-border": "Border",
+  "--app-hover": "Hover",
+  "--app-active": "Active",
+  "--app-accent": "Accent",
+  "--app-accent-text": "Accent Text",
+  "--app-scrollbar": "Scrollbar",
+  "--app-scrollbar-hover": "Scrollbar Hover"
 }
 
 const TOKEN_GROUPS = [
   {
-    id: 'layout',
-    title: 'Layout',
-    keys: ['--app-bg', '--app-sidebar', '--app-titlebar', '--app-content', '--app-card']
-  },
-  {
-    id: 'text',
-    title: 'Text',
-    keys: ['--app-text', '--app-text-secondary', '--app-text-muted']
-  },
-  {
-    id: 'interaction',
-    title: 'Interaction',
+    id: "layout",
+    title: "Layout",
     keys: [
-      '--app-border',
-      '--app-hover',
-      '--app-active',
-      '--app-accent',
-      '--app-accent-text',
-      '--app-scrollbar',
-      '--app-scrollbar-hover'
+      "--app-bg",
+      "--app-sidebar",
+      "--app-titlebar",
+      "--app-content",
+      "--app-card"
+    ]
+  },
+  {
+    id: "text",
+    title: "Text",
+    keys: ["--app-text", "--app-text-secondary", "--app-text-muted"]
+  },
+  {
+    id: "interaction",
+    title: "Interaction",
+    keys: [
+      "--app-border",
+      "--app-hover",
+      "--app-active",
+      "--app-accent",
+      "--app-accent-text",
+      "--app-scrollbar",
+      "--app-scrollbar-hover"
     ]
   }
 ] as const satisfies ReadonlyArray<{
@@ -62,16 +72,16 @@ const HEX_RE = /^#([0-9a-fA-F]{6})$/
 type ThemeTokenKey = keyof ThemeTokens
 
 function colorToHex(value: string): string {
-  if (value.startsWith('#')) return value.slice(0, 7)
-  if (value.startsWith('rgba') || value.startsWith('rgb')) {
+  if (value.startsWith("#")) return value.slice(0, 7)
+  if (value.startsWith("rgba") || value.startsWith("rgb")) {
     const m = value.match(/[\d.]+/g)
-    if (!m || m.length < 3) return '#000000'
+    if (!m || m.length < 3) return "#000000"
     const r = Math.round(Number(m[0]))
     const g = Math.round(Number(m[1]))
     const b = Math.round(Number(m[2]))
-    return `#${r.toString(16).padStart(2, '0')}${g.toString(16).padStart(2, '0')}${b.toString(16).padStart(2, '0')}`
+    return `#${r.toString(16).padStart(2, "0")}${g.toString(16).padStart(2, "0")}${b.toString(16).padStart(2, "0")}`
   }
-  return '#000000'
+  return "#000000"
 }
 
 interface ColorPickerPopoverProps {
@@ -80,7 +90,11 @@ interface ColorPickerPopoverProps {
   onChange: (value: string) => void
 }
 
-function ColorPickerPopover({ label, hex, onChange }: ColorPickerPopoverProps): React.JSX.Element {
+function ColorPickerPopover({
+  label,
+  hex,
+  onChange
+}: ColorPickerPopoverProps): React.JSX.Element {
   const [draft, setDraft] = useState(hex)
 
   useEffect(() => {
@@ -88,7 +102,7 @@ function ColorPickerPopover({ label, hex, onChange }: ColorPickerPopoverProps): 
   }, [hex])
 
   const commit = (raw: string): void => {
-    const next = raw.startsWith('#') ? raw : `#${raw}`
+    const next = raw.startsWith("#") ? raw : `#${raw}`
     if (HEX_RE.test(next)) onChange(next.toLowerCase())
   }
 
@@ -112,7 +126,7 @@ function ColorPickerPopover({ label, hex, onChange }: ColorPickerPopoverProps): 
           <HexColorPicker
             color={hex}
             onChange={onChange}
-            style={{ width: '100%' }}
+            style={{ width: "100%" }}
             className="[&_.react-colorful__saturation]:rounded-t-md [&_.react-colorful__hue]:rounded-b-md"
           />
           <div className="flex items-center gap-2">
@@ -128,12 +142,12 @@ function ColorPickerPopover({ label, hex, onChange }: ColorPickerPopoverProps): 
               onChange={(e) => {
                 const next = e.target.value
                 setDraft(next)
-                const val = next.startsWith('#') ? next : `#${next}`
+                const val = next.startsWith("#") ? next : `#${next}`
                 if (HEX_RE.test(val)) onChange(val.toLowerCase())
               }}
               onBlur={() => commit(draft)}
               onKeyDown={(e) => {
-                if (e.key === 'Enter') {
+                if (e.key === "Enter") {
                   e.preventDefault()
                   commit(draft)
                 }
@@ -245,16 +259,25 @@ export function CustomizeSection({
   const [showCustomize, setShowCustomize] = useState(false)
   const resolved = getResolvedTokens(appearance)
   const customTokens = useMemo(
-    () => appearance.customTokensByTheme[appearance.themeId] ?? appearance.customTokens ?? {},
-    [appearance.customTokens, appearance.customTokensByTheme, appearance.themeId]
+    () =>
+      appearance.customTokensByTheme[appearance.themeId] ??
+      appearance.customTokens ??
+      {},
+    [
+      appearance.customTokens,
+      appearance.customTokensByTheme,
+      appearance.themeId
+    ]
   )
   const customCount = Object.keys(customTokens).length
   const hasCustom = customCount > 0
   const activeThemeName =
-    THEME_PRESETS.find((preset) => preset.id === appearance.themeId)?.name ?? 'Custom'
+    THEME_PRESETS.find((preset) => preset.id === appearance.themeId)?.name ??
+    "Custom"
 
   const handleTokenChange = useCallback(
-    (tokenKey: ThemeTokenKey, value: string): void => onSetCustomTokens({ [tokenKey]: value }),
+    (tokenKey: ThemeTokenKey, value: string): void =>
+      onSetCustomTokens({ [tokenKey]: value }),
     [onSetCustomTokens]
   )
 
@@ -272,7 +295,9 @@ export function CustomizeSection({
     <section className="space-y-4">
       <div className="flex flex-col gap-3 sm:flex-row sm:items-end sm:justify-between">
         <div>
-          <h2 className="text-sm font-semibold text-app-text">Customize Colors</h2>
+          <h2 className="text-sm font-semibold text-app-text">
+            Customize Colors
+          </h2>
           <p className="mt-0.5 text-xs text-app-text-muted">
             Theme: {activeThemeName} · Custom tokens: {customCount}
           </p>
@@ -292,10 +317,10 @@ export function CustomizeSection({
             type="button"
             onClick={() => setShowCustomize((v) => !v)}
             className={cn(
-              'inline-flex items-center gap-1.5 rounded-lg border px-2.5 py-1.5 text-xs font-medium transition-colors',
+              "inline-flex items-center gap-1.5 rounded-lg border px-2.5 py-1.5 text-xs font-medium transition-colors",
               showCustomize
-                ? 'border-app-accent bg-app-accent/10 text-app-text'
-                : 'border-app-border text-app-text-secondary hover:text-app-text'
+                ? "border-app-accent bg-app-accent/10 text-app-text"
+                : "border-app-border text-app-text-secondary hover:text-app-text"
             )}
           >
             {showCustomize ? (
@@ -303,7 +328,7 @@ export function CustomizeSection({
             ) : (
               <ChevronDown className="size-3.5" />
             )}
-            {showCustomize ? 'Hide' : 'Customize'}
+            {showCustomize ? "Hide" : "Customize"}
           </button>
         </div>
       </div>

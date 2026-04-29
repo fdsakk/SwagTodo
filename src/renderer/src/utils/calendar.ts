@@ -29,7 +29,8 @@ export const formatHM = (totalMin: number): string => {
 
 export const clampMin = (m: number): number => Math.max(0, Math.min(24 * 60, m))
 
-export const snapMin = (m: number): number => Math.round(m / SLOT_MIN) * SLOT_MIN
+export const snapMin = (m: number): number =>
+  Math.round(m / SLOT_MIN) * SLOT_MIN
 
 export const buildIsoAtMinutes = (day: Date, minutes: number): string => {
   const d = new Date(day)
@@ -38,7 +39,10 @@ export const buildIsoAtMinutes = (day: Date, minutes: number): string => {
   return d.toISOString()
 }
 
-export const pointToMinutes = (clientY: number, columnEl: HTMLElement): number => {
+export const pointToMinutes = (
+  clientY: number,
+  columnEl: HTMLElement
+): number => {
   const rect = columnEl.getBoundingClientRect()
   const y = clientY - rect.top
   return clampMin(snapMin(y / PX_PER_MIN))

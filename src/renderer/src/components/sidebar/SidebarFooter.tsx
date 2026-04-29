@@ -1,5 +1,8 @@
-import { Hash } from 'lucide-react'
-import { SidebarMenuButton, SidebarMenuItem } from '@renderer/components/ui/sidebar'
+import {
+  SidebarMenuButton,
+  SidebarMenuItem
+} from "@renderer/components/ui/sidebar"
+import { Hash } from "lucide-react"
 
 interface SidebarFooterProps {
   hasLabels: boolean

@@ -1,19 +1,19 @@
 import {
-  THEME_PRESETS,
-  UI_SCALE_OPTIONS,
-  type AppearanceSettings,
-  type ThemeId,
-  type UiScale
-} from '@renderer/types'
-import { cn } from '@renderer/utils/cn'
-import {
   Select,
-  SelectPopup,
   SelectItem,
+  SelectPopup,
   SelectTrigger,
   SelectValue
-} from '@renderer/components/ui/select'
-import { ThemeSwatch } from './ThemeSwatch'
+} from "@renderer/components/ui/select"
+import {
+  type AppearanceSettings,
+  THEME_PRESETS,
+  type ThemeId,
+  UI_SCALE_OPTIONS,
+  type UiScale
+} from "@renderer/types"
+import { cn } from "@renderer/utils/cn"
+import { ThemeSwatch } from "./ThemeSwatch"
 
 const UI_SCALE_ITEMS = UI_SCALE_OPTIONS.map((scale) => ({
   value: String(scale),
@@ -44,11 +44,17 @@ export function ThemeSection({
       <div className="flex items-center justify-between">
         <div>
           <h2 className="text-sm font-semibold text-app-text">Theme</h2>
-          <p className="mt-0.5 text-xs text-app-text-muted">Choose a color scheme</p>
+          <p className="mt-0.5 text-xs text-app-text-muted">
+            Choose a color scheme
+          </p>
         </div>
         <div className="flex items-center gap-2">
           <span className="text-xs text-app-text-muted">UI scale</span>
-          <Select items={UI_SCALE_ITEMS} onValueChange={handleScaleChange} value={String(uiScale)}>
+          <Select
+            items={UI_SCALE_ITEMS}
+            onValueChange={handleScaleChange}
+            value={String(uiScale)}
+          >
             <SelectTrigger className="h-7 w-24 border-app-border bg-app-card px-2.5 text-xs text-app-text">
               <SelectValue />
             </SelectTrigger>
@@ -69,19 +75,19 @@ export function ThemeSection({
             type="button"
             onClick={() => onSetThemeId(preset.id)}
             className={cn(
-              'group relative flex flex-col overflow-hidden rounded-xl border transition-all',
+              "group relative flex flex-col overflow-hidden rounded-xl border transition-all",
               appearance.themeId === preset.id
-                ? 'border-app-accent ring-1 ring-app-accent'
-                : 'border-app-border hover:border-app-accent/50'
+                ? "border-app-accent ring-1 ring-app-accent"
+                : "border-app-border hover:border-app-accent/50"
             )}
           >
             <ThemeSwatch themeId={preset.id} />
             <div
               className={cn(
-                'px-2 py-1.5 text-center text-xs font-medium transition-colors',
+                "px-2 py-1.5 text-center text-xs font-medium transition-colors",
                 appearance.themeId === preset.id
-                  ? 'bg-app-accent/10 text-app-text'
-                  : 'text-app-text-secondary'
+                  ? "bg-app-accent/10 text-app-text"
+                  : "text-app-text-secondary"
               )}
             >
               {preset.name}

@@ -1,16 +1,25 @@
-import type { DomainActions, DomainStoreSet } from '../../shared/types'
+import type { DomainActions, DomainStoreSet } from "../../shared/types"
 
 type SettingsActions = Pick<
   DomainActions,
-  'setUiScale' | 'toggleSidebar' | 'setThemeId' | 'setCustomTokens' | 'resetCustomTokens'
+  | "setUiScale"
+  | "toggleSidebar"
+  | "setThemeId"
+  | "setCustomTokens"
+  | "resetCustomTokens"
 >
 
-export const createSettingsActions = (set: DomainStoreSet): SettingsActions => ({
-  setUiScale: (uiScale) => set((state) => (state.uiScale === uiScale ? state : { uiScale })),
-  toggleSidebar: () => set((state) => ({ isSidebarCollapsed: !state.isSidebarCollapsed })),
+export const createSettingsActions = (
+  set: DomainStoreSet
+): SettingsActions => ({
+  setUiScale: (uiScale) =>
+    set((state) => (state.uiScale === uiScale ? state : { uiScale })),
+  toggleSidebar: () =>
+    set((state) => ({ isSidebarCollapsed: !state.isSidebarCollapsed })),
   setThemeId: (themeId) =>
     set((state) => {
-      const nextCustomTokens = state.appearance.customTokensByTheme[themeId] ?? {}
+      const nextCustomTokens =
+        state.appearance.customTokensByTheme[themeId] ?? {}
       const hasCustomTokens = Object.keys(nextCustomTokens).length > 0
       if (state.appearance.themeId === themeId && !hasCustomTokens) return state
 

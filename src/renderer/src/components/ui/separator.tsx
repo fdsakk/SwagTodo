@@ -1,10 +1,10 @@
-import { Separator as SeparatorPrimitive } from '@base-ui/react/separator'
-import type React from 'react'
-import { cn } from '@renderer/utils/cn'
+import { Separator as SeparatorPrimitive } from "@base-ui/react/separator"
+import { cn } from "@renderer/utils/cn"
+import type React from "react"
 
 export function Separator({
   className,
-  orientation = 'horizontal',
+  orientation = "horizontal",
   ...props
 }: SeparatorPrimitive.Props): React.ReactElement {
   return (

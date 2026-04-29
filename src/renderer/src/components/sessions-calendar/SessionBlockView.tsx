@@ -1,7 +1,7 @@
-import type { CSSProperties, PointerEvent as ReactPointerEvent } from 'react'
-import { X } from 'lucide-react'
-import { PX_PER_MIN, SLOT_MIN, formatHM } from '@renderer/utils/calendar'
-import type { SessionBlock } from './types'
+import { formatHM, PX_PER_MIN, SLOT_MIN } from "@renderer/utils/calendar"
+import { X } from "lucide-react"
+import type { CSSProperties, PointerEvent as ReactPointerEvent } from "react"
+import type { SessionBlock } from "./types"
 
 interface SessionBlockViewProps {
   block: SessionBlock
@@ -21,9 +21,12 @@ export function SessionBlockView({
   onDelete
 }: SessionBlockViewProps): React.JSX.Element {
   const top = startMin * PX_PER_MIN
-  const height = Math.max(PX_PER_MIN * SLOT_MIN, (endMin - startMin) * PX_PER_MIN)
-  const color = block.project?.color ?? '#52525b'
-  const title = block.task?.title ?? 'Deleted task'
+  const height = Math.max(
+    PX_PER_MIN * SLOT_MIN,
+    (endMin - startMin) * PX_PER_MIN
+  )
+  const color = block.project?.color ?? "#52525b"
+  const title = block.task?.title ?? "Deleted task"
   const projectName = block.project?.name
   const style: CSSProperties = {
     top,
@@ -43,8 +46,12 @@ export function SessionBlockView({
           {formatHM(startMin)}–{formatHM(endMin)}
         </span>
       </div>
-      <div className="truncate text-[11px] font-medium text-zinc-100">{title}</div>
-      {projectName && <div className="truncate text-[10px] text-zinc-400">{projectName}</div>}
+      <div className="truncate text-[11px] font-medium text-zinc-100">
+        {title}
+      </div>
+      {projectName && (
+        <div className="truncate text-[10px] text-zinc-400">{projectName}</div>
+      )}
       <button
         type="button"
         onPointerDown={(e) => e.stopPropagation()}

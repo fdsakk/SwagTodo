@@ -1,7 +1,7 @@
-import { useState } from 'react'
-import { X } from 'lucide-react'
-import { formatHM } from '@renderer/utils/calendar'
-import type { DraftCreate } from './TaskPickerDialog'
+import { formatHM } from "@renderer/utils/calendar"
+import { X } from "lucide-react"
+import { useState } from "react"
+import type { DraftCreate } from "./TaskPickerDialog"
 
 interface GhostBlockDialogProps {
   draft: DraftCreate
@@ -21,19 +21,19 @@ export function GhostBlockDialog({
   onCreate,
   onSwitchToTask
 }: GhostBlockDialogProps): React.JSX.Element {
-  const [label, setLabel] = useState('')
+  const [label, setLabel] = useState("")
 
   const startMin = minutesFromIso(draft.startAt)
   const endMin = minutesFromIso(draft.endAt)
   const day = new Date(draft.dayIso).toLocaleDateString(undefined, {
-    weekday: 'short',
-    month: 'short',
-    day: 'numeric'
+    weekday: "short",
+    month: "short",
+    day: "numeric"
   })
 
   const handleSubmit = (e: React.FormEvent): void => {
     e.preventDefault()
-    onCreate(label.trim() || 'Block')
+    onCreate(label.trim() || "Block")
   }
 
   return (
@@ -71,10 +71,9 @@ export function GhostBlockDialog({
         </div>
         <form onSubmit={handleSubmit} className="px-4 py-3">
           <input
-            autoFocus
             value={label}
             onChange={(e) => setLabel(e.target.value)}
-            onKeyDown={(e) => e.key === 'Escape' && onCancel()}
+            onKeyDown={(e) => e.key === "Escape" && onCancel()}
             placeholder="Label (e.g. Lunch, Break...)"
             className="h-8 w-full bg-transparent text-sm text-app-text placeholder:text-app-text-muted focus:outline-none"
           />

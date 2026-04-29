@@ -1,5 +1,5 @@
-import { motion } from 'framer-motion'
-import { cn } from '@renderer/utils/cn'
+import { cn } from "@renderer/utils/cn"
+import { motion } from "framer-motion"
 
 interface AnimatedCheckboxProps {
   checked: boolean
@@ -16,10 +16,10 @@ export function AnimatedCheckbox({
     <button
       aria-checked={checked}
       className={cn(
-        'flex size-[22px] shrink-0 items-center justify-center rounded-[6px] border-[1.5px] transition-colors duration-200',
+        "flex size-[22px] shrink-0 items-center justify-center rounded-[6px] border-[1.5px] transition-colors duration-200",
         checked
-          ? 'border-transparent bg-foreground'
-          : 'border-muted-foreground/40 bg-transparent hover:border-muted-foreground/60',
+          ? "border-transparent bg-foreground"
+          : "border-muted-foreground/40 bg-transparent hover:border-muted-foreground/60",
         className
       )}
       onClick={(event) => {
@@ -44,7 +44,7 @@ export function AnimatedCheckbox({
           strokeWidth={2}
           transform="translate(5 6)"
           transition={{
-            pathLength: { ease: 'easeOut', duration: 0.3 },
+            pathLength: { ease: "easeOut", duration: 0.3 },
             opacity: { duration: 0 }
           }}
         />

@@ -1,14 +1,14 @@
-import type { Label, Task } from '../../../shared/types'
+import type { Label, Task } from "../../../shared/types"
 
 export type StoredTaskRow = {
   id: string
   title: string
   description: string | null
-  priority: Task['priority']
+  priority: Task["priority"]
   due_date: string | null
   project_id: string | null
   completed: number
-  status: Task['status']
+  status: Task["status"]
   completed_at: string | null
   archived_at: string | null
   created_at: string
@@ -92,9 +92,14 @@ export interface SqliteStateSnapshot {
   settings: StoredSettingRow[]
 }
 
-export const SETTINGS_KEYS = ['pkSettings', 'uiScale', 'isSidebarCollapsed', 'appearance'] as const
+export const SETTINGS_KEYS = [
+  "pkSettings",
+  "uiScale",
+  "isSidebarCollapsed",
+  "appearance"
+] as const
 
-export const LEGACY_STORE_FILES = ['todoist-clone.json', 'config.json'] as const
+export const LEGACY_STORE_FILES = ["todoist-clone.json", "config.json"] as const
 
 export const EMPTY_SNAPSHOT: SqliteStateSnapshot = {
   tasks: [],

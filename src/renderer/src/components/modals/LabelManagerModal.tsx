@@ -1,6 +1,4 @@
-import { useState } from 'react'
-import { Plus, Trash2 } from 'lucide-react'
-import { Button } from '@renderer/components/ui/button'
+import { Button } from "@renderer/components/ui/button"
 import {
   Dialog,
   DialogDescription,
@@ -9,9 +7,11 @@ import {
   DialogPanel,
   DialogPopup,
   DialogTitle
-} from '@renderer/components/ui/dialog'
-import { Input } from '@renderer/components/ui/input'
-import type { Label } from '@renderer/types'
+} from "@renderer/components/ui/dialog"
+import { Input } from "@renderer/components/ui/input"
+import type { Label } from "@renderer/types"
+import { Plus, Trash2 } from "lucide-react"
+import { useState } from "react"
 
 interface LabelManagerModalProps {
   open: boolean
@@ -22,22 +22,26 @@ interface LabelManagerModalProps {
   onDelete: (labelId: string) => void
 }
 
-export function LabelManagerModal(props: LabelManagerModalProps): React.JSX.Element {
-  const [newName, setNewName] = useState('')
-  const [newColor, setNewColor] = useState('#71717a')
+export function LabelManagerModal(
+  props: LabelManagerModalProps
+): React.JSX.Element {
+  const [newName, setNewName] = useState("")
+  const [newColor, setNewColor] = useState("#71717a")
 
   const handleCreate = (): void => {
     if (!newName.trim()) return
     props.onCreate({ name: newName.trim(), color: newColor })
-    setNewName('')
+    setNewName("")
   }
 
   return (
     <Dialog open={props.open} onOpenChange={(open) => !open && props.onClose()}>
-      <DialogPopup>
+      <DialogPopup finalFocus={() => false}>
         <DialogHeader>
           <DialogTitle>Manage labels</DialogTitle>
-          <DialogDescription>Add, rename, or delete task labels.</DialogDescription>
+          <DialogDescription>
+            Add, rename, or delete task labels.
+          </DialogDescription>
         </DialogHeader>
 
         <DialogPanel>
@@ -46,7 +50,7 @@ export function LabelManagerModal(props: LabelManagerModalProps): React.JSX.Elem
               className="flex-1"
               onChange={(event) => setNewName(event.target.value)}
               onKeyDown={(event) => {
-                if (event.key === 'Enter') {
+                if (event.key === "Enter") {
                   event.preventDefault()
                   handleCreate()
                 }
@@ -71,11 +75,17 @@ export function LabelManagerModal(props: LabelManagerModalProps): React.JSX.Elem
                 className="flex items-center gap-2 rounded-lg border border-app-border bg-app-hover/40 p-2"
                 key={label.id}
               >
-                <span className="size-3 rounded-full" style={{ backgroundColor: label.color }} />
+                <span
+                  className="size-3 rounded-full"
+                  style={{ backgroundColor: label.color }}
+                />
                 <Input
                   className="flex-1"
                   onChange={(event) =>
-                    props.onUpdate(label.id, { name: event.target.value, color: label.color })
+                    props.onUpdate(label.id, {
+                      name: event.target.value,
+                      color: label.color
+                    })
                   }
                   size="sm"
                   value={label.name}
@@ -83,7 +93,10 @@ export function LabelManagerModal(props: LabelManagerModalProps): React.JSX.Elem
                 <Input
                   className="w-24"
                   onChange={(event) =>
-                    props.onUpdate(label.id, { name: label.name, color: event.target.value })
+                    props.onUpdate(label.id, {
+                      name: label.name,
+                      color: event.target.value
+                    })
                   }
                   size="sm"
                   value={label.color}

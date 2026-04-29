@@ -1,11 +1,17 @@
-import { useMemo } from 'react'
-import { Check, Pencil, Plus } from 'lucide-react'
-import { format, formatDistanceToNow, isToday, isYesterday, parseISO } from 'date-fns'
-import type { Project, Task } from '@renderer/types'
-import { useShallow } from 'zustand/react/shallow'
-import { useDomainStore, useUiStore } from '@renderer/store'
+import { useDomainStore, useUiStore } from "@renderer/store"
+import type { Project, Task } from "@renderer/types"
+import {
+  format,
+  formatDistanceToNow,
+  isToday,
+  isYesterday,
+  parseISO
+} from "date-fns"
+import { Check, Pencil, Plus } from "lucide-react"
+import { useMemo } from "react"
+import { useShallow } from "zustand/react/shallow"
 
-type ActivityKind = 'created' | 'edited' | 'completed'
+type ActivityKind = "created" | "edited" | "completed"
 
 interface ActivityEvent {
   id: string
@@ -17,12 +23,30 @@ interface ActivityEvent {
 function buildEvents(tasks: Task[]): ActivityEvent[] {
   const events: ActivityEvent[] = []
   for (const task of tasks) {
-    events.push({ id: `${task.id}:created`, kind: 'created', at: task.createdAt, task })
+    events.push({
+      id: `${task.id}:created`,
+      kind: "created",
+      at: task.createdAt,
+      task
+    })
     if (task.completedAt) {
-      events.push({ id: `${task.id}:completed`, kind: 'completed', at: task.completedAt, task })
+      events.push({
+        id: `${task.id}:completed`,
+        kind: "completed",
+        at: task.completedAt,
+        task
+      })
     }
-    if (task.updatedAt !== task.createdAt && task.updatedAt !== task.completedAt) {
-      events.push({ id: `${task.id}:edited`, kind: 'edited', at: task.updatedAt, task })
+    if (
+      task.updatedAt !== task.createdAt &&
+      task.updatedAt !== task.completedAt
+    ) {
+      events.push({
+        id: `${task.id}:edited`,
+        kind: "edited",
+        at: task.updatedAt,
+        task
+      })
     }
   }
   return events.sort((a, b) => Date.parse(b.at) - Date.parse(a.at))
@@ -33,42 +57,45 @@ function groupByDay(
 ): { key: string; label: string; events: ActivityEvent[] }[] {
   const map = new Map<string, ActivityEvent[]>()
   for (const event of events) {
-    const day = format(parseISO(event.at), 'yyyy-MM-dd')
+    const day = format(parseISO(event.at), "yyyy-MM-dd")
     const bucket = map.get(day) ?? []
     bucket.push(event)
     map.set(day, bucket)
   }
   return Array.from(map.entries()).map(([key, items]) => {
     const date = parseISO(key)
-    let label = format(date, 'd MMM · EEEE')
-    if (isToday(date)) label = `${format(date, 'd MMM')} · Today · ${format(date, 'EEEE')}`
+    let label = format(date, "d MMM · EEEE")
+    if (isToday(date))
+      label = `${format(date, "d MMM")} · Today · ${format(date, "EEEE")}`
     else if (isYesterday(date))
-      label = `${format(date, 'd MMM')} · Yesterday · ${format(date, 'EEEE')}`
+      label = `${format(date, "d MMM")} · Yesterday · ${format(date, "EEEE")}`
     return { key, label, events: items }
   })
 }
 
-const KIND_META: Record<ActivityKind, { verb: string; icon: React.ReactNode; iconClass: string }> =
-  {
-    created: {
-      verb: 'You created',
-      icon: <Plus size={12} />,
-      iconClass:
-        'border border-blue-400/25 bg-blue-500/15 text-blue-400 [.app-theme-light_&]:border-blue-900/35 [.app-theme-light_&]:bg-blue-500/16 [.app-theme-light_&]:text-blue-900'
-    },
-    edited: {
-      verb: 'You edited',
-      icon: <Pencil size={12} />,
-      iconClass:
-        'border border-amber-400/25 bg-amber-500/15 text-amber-400 [.app-theme-light_&]:border-amber-950/40 [.app-theme-light_&]:bg-amber-500/18 [.app-theme-light_&]:text-amber-950'
-    },
-    completed: {
-      verb: 'You completed',
-      icon: <Check size={12} />,
-      iconClass:
-        'border border-emerald-400/25 bg-emerald-500/15 text-emerald-400 [.app-theme-light_&]:border-emerald-950/35 [.app-theme-light_&]:bg-emerald-500/16 [.app-theme-light_&]:text-emerald-950'
-    }
+const KIND_META: Record<
+  ActivityKind,
+  { verb: string; icon: React.ReactNode; iconClass: string }
+> = {
+  created: {
+    verb: "You created",
+    icon: <Plus size={12} />,
+    iconClass:
+      "border border-blue-400/25 bg-blue-500/15 text-blue-400 [.app-theme-light_&]:border-blue-900/35 [.app-theme-light_&]:bg-blue-500/16 [.app-theme-light_&]:text-blue-900"
+  },
+  edited: {
+    verb: "You edited",
+    icon: <Pencil size={12} />,
+    iconClass:
+      "border border-amber-400/25 bg-amber-500/15 text-amber-400 [.app-theme-light_&]:border-amber-950/40 [.app-theme-light_&]:bg-amber-500/18 [.app-theme-light_&]:text-amber-950"
+  },
+  completed: {
+    verb: "You completed",
+    icon: <Check size={12} />,
+    iconClass:
+      "border border-emerald-400/25 bg-emerald-500/15 text-emerald-400 [.app-theme-light_&]:border-emerald-950/35 [.app-theme-light_&]:bg-emerald-500/16 [.app-theme-light_&]:text-emerald-950"
   }
+}
 
 function ActivityRow({
   event,
@@ -82,22 +109,28 @@ function ActivityRow({
   const meta = KIND_META[event.kind]
   const relative = formatDistanceToNow(parseISO(event.at), { addSuffix: true })
   const titleClass =
-    event.kind === 'completed' ? 'text-app-text-muted line-through' : 'text-app-text'
+    event.kind === "completed"
+      ? "text-app-text-muted line-through"
+      : "text-app-text"
 
   return (
     <li
       className="grid grid-cols-[24px_110px_1fr_150px_130px] items-center gap-3 border-b border-app-border py-2.5 px-2 hover:bg-app-hover cursor-pointer"
       onClick={() => onOpen(event.task.id)}
     >
-      <span className={`flex h-6 w-6 items-center justify-center rounded-full ${meta.iconClass}`}>
+      <span
+        className={`flex h-6 w-6 items-center justify-center rounded-full ${meta.iconClass}`}
+      >
         {meta.icon}
       </span>
       <span className="text-sm text-app-text-secondary">{meta.verb}</span>
-      <span className={`truncate rounded-md bg-app-hover px-2 py-0.5 text-sm ${titleClass}`}>
+      <span
+        className={`truncate rounded-md bg-app-hover px-2 py-0.5 text-sm ${titleClass}`}
+      >
         {event.task.title}
       </span>
       <span className="truncate text-xs text-app-text-muted">
-        {project ? `${project.emoji ?? '#'} ${project.name}` : 'Inbox'}
+        {project ? `${project.emoji ?? "#"} ${project.name}` : "Inbox"}
       </span>
       <span className="text-xs text-app-text-muted text-right">{relative}</span>
     </li>
@@ -114,7 +147,10 @@ export default function ActivityPage(): React.JSX.Element {
   const openEditPanel = useUiStore((state) => state.openEditPanel)
 
   const days = useMemo(() => groupByDay(buildEvents(tasks)), [tasks])
-  const projectById = useMemo(() => new Map(projects.map((p) => [p.id, p])), [projects])
+  const projectById = useMemo(
+    () => new Map(projects.map((p) => [p.id, p])),
+    [projects]
+  )
 
   if (days.length === 0) {
     return (
@@ -129,7 +165,9 @@ export default function ActivityPage(): React.JSX.Element {
 
   return (
     <div className="h-full overflow-y-auto px-4 pb-6">
-      <h2 className="mb-4 px-2 text-base font-semibold text-app-text">Activity</h2>
+      <h2 className="mb-4 px-2 text-base font-semibold text-app-text">
+        Activity
+      </h2>
       <div className="space-y-6">
         {days.map((day) => (
           <section key={day.key}>
@@ -143,7 +181,11 @@ export default function ActivityPage(): React.JSX.Element {
                   event={event}
                   key={event.id}
                   onOpen={openEditPanel}
-                  project={event.task.projectId ? projectById.get(event.task.projectId) : undefined}
+                  project={
+                    event.task.projectId
+                      ? projectById.get(event.task.projectId)
+                      : undefined
+                  }
                 />
               ))}
             </ul>

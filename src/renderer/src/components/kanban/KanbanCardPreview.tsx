@@ -1,6 +1,6 @@
-import type { CSSProperties } from 'react'
-import type { Label, Task } from '@renderer/types'
-import { CardBody, KANBAN_CARD_CLASSNAME } from './KanbanCard'
+import type { Label, Task } from "@renderer/types"
+import type { CSSProperties } from "react"
+import { CardBody, KANBAN_CARD_CLASSNAME } from "./KanbanCard"
 
 interface KanbanCardPreviewProps {
   task: Task

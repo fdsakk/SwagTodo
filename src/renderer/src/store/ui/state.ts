@@ -1,15 +1,15 @@
-import type { UiState } from '../shared/types'
+import type { UiState } from "../shared/types"
 
 export const createInitialUiState = (): UiState => ({
-  selectedView: 'inbox',
+  selectedView: "inbox",
   selectedProjectId: undefined,
   taskPanel: { open: false },
-  searchQuery: '',
-  sortMode: 'priority',
+  searchQuery: "",
+  sortMode: "priority",
   showCompleted: false,
-  inboxStatusFilter: 'all',
-  inboxProjectFilter: 'all',
-  inboxPriorityFilter: 'all',
-  projectTab: 'list',
+  inboxStatusFilter: "all",
+  inboxProjectFilter: "all",
+  inboxPriorityFilter: "all",
+  projectTab: "list",
   searchFocusSignal: 0
 })

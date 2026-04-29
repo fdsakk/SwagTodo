@@ -1,7 +1,13 @@
-import { useMemo } from 'react'
-import type { Label, Priority, Project, TaskGroup, TaskStatus } from '@renderer/types'
-import { Badge } from '@renderer/components/ui/badge'
-import { TaskRow } from './TaskRow'
+import { Badge } from "@renderer/components/ui/badge"
+import type {
+  Label,
+  Priority,
+  Project,
+  TaskGroup,
+  TaskStatus
+} from "@renderer/types"
+import { useMemo } from "react"
+import { TaskRow } from "./TaskRow"
 
 interface TaskListProps {
   groups: TaskGroup[]
@@ -18,7 +24,11 @@ interface TaskListProps {
   onDeleteTask?: (taskId: string) => void
   onUpdateTask?: (
     taskId: string,
-    updates: { priority?: Priority; dueDate?: string | undefined; status?: TaskStatus }
+    updates: {
+      priority?: Priority
+      dueDate?: string | undefined
+      status?: TaskStatus
+    }
   ) => void
 }
 
@@ -36,8 +46,12 @@ export function TaskList(props: TaskListProps): React.JSX.Element {
   if (!hasTasks) {
     return (
       <div className="flex h-full flex-col items-center justify-center text-center">
-        <p className="text-sm text-app-text-secondary">{props.emptyStateTitle}</p>
-        <p className="mt-1 text-xs text-app-text-muted">{props.emptyStateDescription}</p>
+        <p className="text-sm text-app-text-secondary">
+          {props.emptyStateTitle}
+        </p>
+        <p className="mt-1 text-xs text-app-text-muted">
+          {props.emptyStateDescription}
+        </p>
       </div>
     )
   }
@@ -50,7 +64,11 @@ export function TaskList(props: TaskListProps): React.JSX.Element {
         {props.groups.map((group) =>
           group.tasks.length > 0 ? (
             <section className="flex flex-col gap-2" key={group.id}>
-              <Badge className="w-fit p-2.5 rounded-md" size="default" variant="outline">
+              <Badge
+                className="w-fit p-2.5 rounded-md"
+                size="default"
+                variant="outline"
+              >
                 {group.title}
               </Badge>
               <ul className="flex flex-col gap-2">
@@ -70,7 +88,11 @@ export function TaskList(props: TaskListProps): React.JSX.Element {
                       onToggleComplete={props.onToggleComplete}
                       onUnarchive={props.onUnarchiveTask}
                       onUpdate={props.onUpdateTask}
-                      project={task.projectId ? projectById.get(task.projectId) : undefined}
+                      project={
+                        task.projectId
+                          ? projectById.get(task.projectId)
+                          : undefined
+                      }
                       delayCompleteAnimation={props.delayCompleteAnimation}
                       showProjectContext={props.showProjectContext}
                       task={task}

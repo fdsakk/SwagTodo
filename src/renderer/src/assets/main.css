@@ -1,4 +1,4 @@
-@import 'tailwindcss';
+@import "tailwindcss";
 
 @custom-variant dark (&:where(.dark, .dark *));
 
@@ -48,8 +48,8 @@
   --radius-lg: var(--radius);
   --radius-md: calc(var(--radius) - 2px);
   --radius-sm: calc(var(--radius) - 4px);
-  --font-sans: 'Geist Sans', system-ui, sans-serif;
-  --font-heading: 'Geist Sans', system-ui, sans-serif;
+  --font-sans: "Geist Sans", system-ui, sans-serif;
+  --font-heading: "Geist Sans", system-ui, sans-serif;
 }
 
 @layer base {

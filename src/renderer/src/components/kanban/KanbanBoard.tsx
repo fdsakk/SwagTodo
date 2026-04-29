@@ -1,21 +1,27 @@
-import { useCallback, useMemo, useState, type CSSProperties } from 'react'
 import {
-  DndContext,
-  DragOverlay,
-  PointerSensor,
   closestCorners,
-  useSensor,
-  useSensors,
-  type DragStartEvent,
+  DndContext,
   type DragEndEvent,
-  type DragOverEvent
-} from '@dnd-kit/core'
-import type { Label, Task, TaskStatus } from '@renderer/types'
-import { useShallow } from 'zustand/react/shallow'
-import { KanbanColumn } from './KanbanColumn'
-import { KanbanCardPreview } from './KanbanCardPreview'
-import { COLUMNS, COLUMN_PREFIX, EMPTY_LABELS, byOrderAsc, resolveTaskLabels } from './types'
-import { useDomainStore } from '@renderer/store'
+  type DragOverEvent,
+  DragOverlay,
+  type DragStartEvent,
+  PointerSensor,
+  useSensor,
+  useSensors
+} from "@dnd-kit/core"
+import { useDomainStore } from "@renderer/store"
+import type { Label, Task, TaskStatus } from "@renderer/types"
+import { type CSSProperties, useCallback, useMemo, useState } from "react"
+import { useShallow } from "zustand/react/shallow"
+import { KanbanCardPreview } from "./KanbanCardPreview"
+import { KanbanColumn } from "./KanbanColumn"
+import {
+  byOrderAsc,
+  COLUMN_PREFIX,
+  COLUMNS,
+  EMPTY_LABELS,
+  resolveTaskLabels
+} from "./types"
 
 type ColumnTaskIds = Record<TaskStatus, string[]>
 
@@ -26,7 +32,11 @@ const buildLabelMap = (labels: readonly Label[]): Map<string, Label> => {
 }
 
 const buildColumns = (tasks: readonly Task[]): Record<TaskStatus, Task[]> => {
-  const buckets: Record<TaskStatus, Task[]> = { todo: [], in_progress: [], done: [] }
+  const buckets: Record<TaskStatus, Task[]> = {
+    todo: [],
+    in_progress: [],
+    done: []
+  }
   for (const task of tasks) buckets[task.status].push(task)
   buckets.todo.sort(byOrderAsc)
   buckets.in_progress.sort(byOrderAsc)
@@ -40,7 +50,9 @@ const buildTaskMap = (tasks: readonly Task[]): Map<string, Task> => {
   return map
 }
 
-const buildColumnTaskIds = (columns: Record<TaskStatus, readonly Task[]>): ColumnTaskIds => ({
+const buildColumnTaskIds = (
+  columns: Record<TaskStatus, readonly Task[]>
+): ColumnTaskIds => ({
   todo: columns.todo.map((task) => task.id),
   in_progress: columns.in_progress.map((task) => task.id),
   done: columns.done.map((task) => task.id)
@@ -56,10 +68,16 @@ const areColumnTaskIdsEqual = (a: ColumnTaskIds, b: ColumnTaskIds): boolean =>
   COLUMNS.every((column) => {
     const left = a[column.key]
     const right = b[column.key]
-    return left.length === right.length && left.every((id, index) => id === right[index])
+    return (
+      left.length === right.length &&
+      left.every((id, index) => id === right[index])
+    )
   })
 
-const findTaskStatus = (columns: ColumnTaskIds, taskId: string): TaskStatus | undefined => {
+const findTaskStatus = (
+  columns: ColumnTaskIds,
+  taskId: string
+): TaskStatus | undefined => {
   for (const column of COLUMNS) {
     if (columns[column.key].includes(taskId)) return column.key
   }
@@ -70,11 +88,15 @@ const mapColumnIdsToTasks = (
   columnTaskIds: ColumnTaskIds,
   taskById: Map<string, Task>
 ): Record<TaskStatus, Task[]> => ({
-  todo: columnTaskIds.todo.map((id) => taskById.get(id)).filter((task): task is Task => !!task),
+  todo: columnTaskIds.todo
+    .map((id) => taskById.get(id))
+    .filter((task): task is Task => !!task),
   in_progress: columnTaskIds.in_progress
     .map((id) => taskById.get(id))
     .filter((task): task is Task => !!task),
-  done: columnTaskIds.done.map((id) => taskById.get(id)).filter((task): task is Task => !!task)
+  done: columnTaskIds.done
+    .map((id) => taskById.get(id))
+    .filter((task): task is Task => !!task)
 })
 
 const getProjectedColumns = ({
@@ -96,7 +118,8 @@ const getProjectedColumns = ({
 }): ColumnTaskIds | null => {
   if (activeId === overId) return columns
 
-  const sourceStatus = findTaskStatus(columns, activeId) ?? taskById.get(activeId)?.status
+  const sourceStatus =
+    findTaskStatus(columns, activeId) ?? taskById.get(activeId)?.status
   if (!sourceStatus) return null
 
   const isColumnDrop = overId.startsWith(COLUMN_PREFIX)
@@ -145,16 +168,23 @@ export function KanbanBoard(props: KanbanBoardProps): React.JSX.Element {
   )
   const [addingColumn, setAddingColumn] = useState<TaskStatus | null>(null)
   const [activeTaskId, setActiveTaskId] = useState<string | null>(null)
-  const [activeTaskSize, setActiveTaskSize] = useState<{ width: number; height: number } | null>(
-    null
+  const [activeTaskSize, setActiveTaskSize] = useState<{
+    width: number
+    height: number
+  } | null>(null)
+  const [draftColumnTaskIds, setDraftColumnTaskIds] =
+    useState<ColumnTaskIds | null>(null)
+  const sensors = useSensors(
+    useSensor(PointerSensor, { activationConstraint: { distance: 6 } })
   )
-  const [draftColumnTaskIds, setDraftColumnTaskIds] = useState<ColumnTaskIds | null>(null)
-  const sensors = useSensors(useSensor(PointerSensor, { activationConstraint: { distance: 6 } }))
 
   const labelMap = useMemo(() => buildLabelMap(props.labels), [props.labels])
   const columns = useMemo(() => buildColumns(props.tasks), [props.tasks])
   const taskById = useMemo(() => buildTaskMap(props.tasks), [props.tasks])
-  const committedColumnTaskIds = useMemo(() => buildColumnTaskIds(columns), [columns])
+  const committedColumnTaskIds = useMemo(
+    () => buildColumnTaskIds(columns),
+    [columns]
+  )
   const renderedColumns = useMemo<Record<TaskStatus, Task[]>>(() => {
     if (!draftColumnTaskIds) return columns
     return mapColumnIdsToTasks(draftColumnTaskIds, taskById)
@@ -167,7 +197,9 @@ export function KanbanBoard(props: KanbanBoardProps): React.JSX.Element {
       setActiveTaskId(String(event.active.id))
       setDraftColumnTaskIds(cloneColumnTaskIds(committedColumnTaskIds))
       const rect = event.active.rect.current.initial
-      setActiveTaskSize(rect ? { width: rect.width, height: rect.height } : null)
+      setActiveTaskSize(
+        rect ? { width: rect.width, height: rect.height } : null
+      )
     },
     [committedColumnTaskIds]
   )
@@ -190,7 +222,8 @@ export function KanbanBoard(props: KanbanBoardProps): React.JSX.Element {
           overHeight: event.over?.rect.height
         })
 
-        if (!nextColumns || areColumnTaskIdsEqual(baseColumns, nextColumns)) return current
+        if (!nextColumns || areColumnTaskIdsEqual(baseColumns, nextColumns))
+          return current
         return nextColumns
       })
     },
@@ -218,11 +251,18 @@ export function KanbanBoard(props: KanbanBoardProps): React.JSX.Element {
           : baseColumns
 
       setDraftColumnTaskIds(null)
-      if (!overId || areColumnTaskIdsEqual(nextColumns, committedColumnTaskIds)) return
+      if (!overId || areColumnTaskIdsEqual(nextColumns, committedColumnTaskIds))
+        return
 
       applyKanbanOrder(props.projectId, nextColumns)
     },
-    [applyKanbanOrder, committedColumnTaskIds, draftColumnTaskIds, props.projectId, taskById]
+    [
+      applyKanbanOrder,
+      committedColumnTaskIds,
+      draftColumnTaskIds,
+      props.projectId,
+      taskById
+    ]
   )
 
   const onDragCancel = useCallback(() => {
@@ -242,14 +282,16 @@ export function KanbanBoard(props: KanbanBoardProps): React.JSX.Element {
     setAddingColumn((current) => (current === status ? null : status))
   }, [])
 
-  const activeTaskLabels = activeTask ? resolveTaskLabels(activeTask, labelMap) : EMPTY_LABELS
+  const activeTaskLabels = activeTask
+    ? resolveTaskLabels(activeTask, labelMap)
+    : EMPTY_LABELS
   const overlayStyle = useMemo<CSSProperties | undefined>(
     () =>
       activeTaskSize
         ? {
             width: activeTaskSize.width,
             height: activeTaskSize.height,
-            boxSizing: 'border-box'
+            boxSizing: "border-box"
           }
         : undefined,
     [activeTaskSize]
@@ -282,7 +324,11 @@ export function KanbanBoard(props: KanbanBoardProps): React.JSX.Element {
         </div>
         <DragOverlay adjustScale={false}>
           {activeTask ? (
-            <KanbanCardPreview labels={activeTaskLabels} style={overlayStyle} task={activeTask} />
+            <KanbanCardPreview
+              labels={activeTaskLabels}
+              style={overlayStyle}
+              task={activeTask}
+            />
           ) : null}
         </DragOverlay>
       </DndContext>

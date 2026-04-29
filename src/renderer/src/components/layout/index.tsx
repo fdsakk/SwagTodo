@@ -1,5 +1,5 @@
-export { TitleBar } from './TitleBar'
-export { Sidebar } from './Sidebar'
-export { ThemeProvider } from './ThemeProvider'
-export { SearchSortBar } from './SearchSortBar'
-export { GlobalErrorBoundary } from './GlobalErrorBoundary'
+export { GlobalErrorBoundary } from "./GlobalErrorBoundary"
+export { SearchSortBar } from "./SearchSortBar"
+export { Sidebar } from "./Sidebar"
+export { ThemeProvider } from "./ThemeProvider"
+export { TitleBar } from "./TitleBar"
