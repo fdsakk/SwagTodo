@@ -16,90 +16,119 @@
 | 10:55 | Replace pg JSONB sync with Supabase normalized tables (workspace_id), update preload+renderer settings UI and IPC, add schema.sql | src/main/index.ts, src/preload/index.ts, src/preload/index.d.ts, src/renderer/src/types/index.ts, src/renderer/src/store/useAppStore.ts, src/renderer/src/pages/SettingsPage.tsx, src/renderer/src/components/settings/SyncSection.tsx, supabase/schema.sql | wip (needs typecheck/lint) | ~3500 |
 
 ## Session: 2026-04-18 21:24
+
 > Consolidated session (32 actions)
 
 ## Session: 2026-04-18 21:36
+
 > Consolidated session (5 actions)
 
 ## Session: 2026-04-18 21:43
+
 > Consolidated session (9 actions)
 
 ## Session: 2026-04-18 22:08
+
 > Consolidated session (18 actions)
 
 ## Session: 2026-04-18 22:50
+
 > Consolidated session (13 actions)
 
 ## Session: 2026-04-19 10:49
+
 > Consolidated session (45 actions)
 
 ## Session: 2026-04-19 11:04
+
 > Consolidated session (1 actions)
 
 ## Session: 2026-04-19 11:05
+
 > Consolidated session (1 actions)
 
 ## Session: 2026-04-19 11:05
+
 > Consolidated session (1 actions)
 
 ## Session: 2026-04-19 11:09
+
 > Consolidated session (58 actions)
 
 ## Session: 2026-04-19 12:28
+
 > Consolidated session (10 actions)
 
 ## Session: 2026-04-19 12:38
+
 > Consolidated session (19 actions)
 
 ## Session: 2026-04-19 15:00
+
 > Consolidated session (11 actions)
 
 ## Session: 2026-04-19 15:12
+
 > Consolidated session (1 actions)
 
 ## Session: 2026-04-19 15:25
+
 > Consolidated session (25 actions)
 
 ## Session: 2026-04-19 15:58
+
 > Consolidated session (5 actions)
 
 ## Session: 2026-04-19 16:00
+
 > Consolidated session (9 actions)
 
 ## Session: 2026-04-19 16:55
+
 > Consolidated session (11 actions)
 
 ## Session: 2026-04-19 17:13
+
 > Consolidated session (48 actions)
 
 ## Session: 2026-04-19 17:48
+
 > Consolidated session (1 actions)
 
 ## Session: 2026-04-19 17:49
+
 > Consolidated session (1 actions)
 
 ## Session: 2026-04-19 17:50
+
 > Consolidated session (1 actions)
 
 ## Session: 2026-04-19 17:51
+
 > Consolidated session (1 actions)
 
 ## Session: 2026-04-19 17:52
+
 > Consolidated session (1 actions)
 
 ## Session: 2026-04-19 17:52
+
 > Consolidated session (1 actions)
 
 ## Session: 2026-04-19 18:01
+
 > Consolidated session (3 actions)
 
 ## Session: 2026-04-19 19:16
+
 > Consolidated session (8 actions)
 
 ## Session: 2026-04-21 16:29
+
 > Consolidated session (7 actions)
 
 ## Session: 2026-04-22 15:37
+
 > Consolidated session (16 actions)
 
 ## Session: 2026-04-23 15:37
@@ -403,49 +432,49 @@
 ## Session: 2026-04-29 10:38
 
 | Time | Action | File(s) | Outcome | ~Tokens |
-|------|--------|---------|---------|--------|
+| ---- | ------ | ------- | ------- | ------- |
 
 ## Session: 2026-04-29 10:39
 
 | Time | Action | File(s) | Outcome | ~Tokens |
-|------|--------|---------|---------|--------|
+| ---- | ------ | ------- | ------- | ------- |
 
 ## Session: 2026-04-29 10:39
 
 | Time | Action | File(s) | Outcome | ~Tokens |
-|------|--------|---------|---------|--------|
+| ---- | ------ | ------- | ------- | ------- |
 
 ## Session: 2026-04-29 10:39
 
 | Time | Action | File(s) | Outcome | ~Tokens |
-|------|--------|---------|---------|--------|
+| ---- | ------ | ------- | ------- | ------- |
 
 ## Session: 2026-04-29 10:40
 
 | Time | Action | File(s) | Outcome | ~Tokens |
-|------|--------|---------|---------|--------|
+| ---- | ------ | ------- | ------- | ------- |
 
 ## Session: 2026-04-29 10:41
 
 | Time | Action | File(s) | Outcome | ~Tokens |
-|------|--------|---------|---------|--------|
+| ---- | ------ | ------- | ------- | ------- |
 
 ## Session: 2026-04-29 10:42
 
 | Time | Action | File(s) | Outcome | ~Tokens |
-|------|--------|---------|---------|--------|
+| ---- | ------ | ------- | ------- | ------- |
 
 ## Session: 2026-04-29 10:43
 
 | Time | Action | File(s) | Outcome | ~Tokens |
-|------|--------|---------|---------|--------|
+| ---- | ------ | ------- | ------- | ------- |
 
 ## Session: 2026-04-29 10:43
 
 | Time | Action | File(s) | Outcome | ~Tokens |
-|------|--------|---------|---------|--------|
+| ---- | ------ | ------- | ------- | ------- |
 
 ## Session: 2026-04-29 10:44
 
 | Time | Action | File(s) | Outcome | ~Tokens |
-|------|--------|---------|---------|--------|
+| ---- | ------ | ------- | ------- | ------- |

@@ -19,7 +19,7 @@
 - `README.md` — Project documentation (~149 tok)
 - `skills-lock.json` (~144 tok)
 - `tsconfig.json` — TypeScript configuration (~31 tok)
-- `tsconfig.node.json` — /*", "src/preload/**/*", "src/shared/**/*"], (~72 tok)
+- `tsconfig.node.json` — /_", "src/preload/\*\*/_", "src/shared/\*_/_"], (~72 tok)
 - `tsconfig.web.json` (~116 tok)
 
 ## .agents/skills/coss-particles/
