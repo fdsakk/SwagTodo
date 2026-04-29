@@ -1,6 +1,6 @@
 # anatomy.md
 
-> Auto-maintained by OpenWolf. Last scanned: 2026-04-28T22:23:26.997Z
+> Auto-maintained by OpenWolf. Last scanned: 2026-04-29T06:41:47.779Z
 > Files: 187 tracked | Anatomy hits: 0 | Misses: 0
 
 ## ./
@@ -160,7 +160,7 @@
 - `panel-field.tsx` — Field (~93 tok)
 - `task-form-fields.tsx` — INBOX_VALUE (~2260 tok)
 - `TaskCreatePanel.tsx` — INITIAL_STATE — renders form, modal (~1210 tok)
-- `TaskDetailPanel.tsx` — TaskDetailPanel — renders modal (~747 tok)
+- `TaskDetailPanel.tsx` — TaskDetailPanel — renders modal (~766 tok)
 - `TaskEditPanel.tsx` — TEXT_COMMIT_DEBOUNCE_MS — renders modal (~2024 tok)
 
 ## src/renderer/src/components/ui/

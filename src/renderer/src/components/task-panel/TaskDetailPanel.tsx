@@ -55,6 +55,7 @@ export function TaskDetailPanel({ onClose }: TaskDetailPanelProps): React.JSX.El
       <DialogPopup
         showCloseButton={false}
         className={isTaskDialog ? 'sm:max-w-2xl' : 'sm:max-w-md'}
+        finalFocus={() => false}
       >
         {taskPanel.open && taskPanel.mode === 'edit' && task && (
           <TaskEditPanel onClose={onClose} task={task} />
