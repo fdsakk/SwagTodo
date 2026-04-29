@@ -34,8 +34,12 @@ interface SidebarProps {
   onOpenLabelModal: () => void
 }
 
-const COLLAPSED_WIDTH = '56px'
-const EXPANDED_WIDTH = '220px'
+const SIDEBAR_WIDTH = {
+  collapsed: '56px',
+  expanded: '220px'
+} as const
+
+const noop = (): void => {}
 
 export function Sidebar(props: SidebarProps): React.JSX.Element {
   const { projects, hasLabels, isSidebarCollapsed, toggleSidebar } = useDomainStore(
@@ -75,14 +79,15 @@ export function Sidebar(props: SidebarProps): React.JSX.Element {
 
   const open = !isSidebarCollapsed
   const state = open ? 'expanded' : 'collapsed'
+  const width = open ? SIDEBAR_WIDTH.expanded : SIDEBAR_WIDTH.collapsed
 
   const ctx = React.useMemo(
     () => ({
       isMobile: false,
       open,
       openMobile: false,
-      setOpen: () => {},
-      setOpenMobile: () => {},
+      setOpen: noop,
+      setOpenMobile: noop,
       state: state as 'expanded' | 'collapsed',
       toggleSidebar
     }),
@@ -98,8 +103,8 @@ export function Sidebar(props: SidebarProps): React.JSX.Element {
         data-state={state}
         style={
           {
-            '--sidebar-width': open ? EXPANDED_WIDTH : COLLAPSED_WIDTH,
-            width: open ? EXPANDED_WIDTH : COLLAPSED_WIDTH
+            '--sidebar-width': width,
+            width
           } as React.CSSProperties
         }
       >

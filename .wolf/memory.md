@@ -16,482 +16,91 @@
 | 10:55 | Replace pg JSONB sync with Supabase normalized tables (workspace_id), update preload+renderer settings UI and IPC, add schema.sql | src/main/index.ts, src/preload/index.ts, src/preload/index.d.ts, src/renderer/src/types/index.ts, src/renderer/src/store/useAppStore.ts, src/renderer/src/pages/SettingsPage.tsx, src/renderer/src/components/settings/SyncSection.tsx, supabase/schema.sql | wip (needs typecheck/lint) | ~3500 |
 
 ## Session: 2026-04-18 21:24
-
-| Time  | Action                                                                                                                       | File(s)                                                                                               | Outcome    | ~Tokens |
-| ----- | ---------------------------------------------------------------------------------------------------------------------------- | ----------------------------------------------------------------------------------------------------- | ---------- | ------- |
-| 21:27 | Edited src/renderer/src/components/SearchSortBar.tsx                                                                         | added 1 condition(s)                                                                                  | ~30        |
-| 21:28 | Edited src/renderer/src/types/index.ts                                                                                       | 17→17 lines                                                                                           | ~164       |
-| 21:28 | Edited src/renderer/src/components/sessions-calendar/SessionsCalendar.tsx                                                    | "grid border-b border-whit" → "grid border-b border-app-"                                             | ~15        |
-| 21:28 | Edited src/renderer/src/components/sessions-calendar/SessionsCalendar.tsx                                                    | "relative border-l border-" → "relative border-l border-"                                             | ~28        |
-| 21:28 | Edited src/renderer/src/components/sessions-calendar/SessionsCalendar.tsx                                                    | "pointer-events-none absol" → "pointer-events-none absol"                                             | ~30        |
-| 21:28 | Edited src/renderer/src/components/sessions-calendar/SessionsCalendar.tsx                                                    | 13→13 lines                                                                                           | ~175       |
-| 21:28 | Edited src/renderer/src/components/sessions-calendar/SessionsCalendar.tsx                                                    | "absolute left-0 right-0 -" → "absolute left-0 right-0 -"                                             | ~34        |
-| 21:28 | fix searchbar autofocus (guard signal>0), darken retro theme, fix calendar grid lines to use app-border                      | SearchSortBar.tsx, types/index.ts, sessions-calendar/SessionsCalendar.tsx                             | done       | ~800    |
-| 21:28 | Session end: 7 writes across 3 files (SearchSortBar.tsx, index.ts, SessionsCalendar.tsx)                                     | 7 reads                                                                                               | ~10029 tok |
-| 21:32 | Edited src/renderer/src/components/kanban/KanbanCard.tsx                                                                     | 4→4 lines                                                                                             | ~53        |
-| 21:32 | Edited src/renderer/src/components/kanban/KanbanCard.tsx                                                                     | "mt-1 flex flex-wrap items" → "mt-1 flex flex-wrap items"                                             | ~32        |
-| 21:32 | Edited src/renderer/src/components/kanban/KanbanCard.tsx                                                                     | "cursor-pointer rounded-md" → "cursor-pointer rounded-md"                                             | ~35        |
-| 21:32 | Edited src/renderer/src/components/kanban/KanbanColumn.tsx                                                                   | 6→6 lines                                                                                             | ~105       |
-| 21:32 | Edited src/renderer/src/components/kanban/KanbanColumn.tsx                                                                   | 4→4 lines                                                                                             | ~69        |
-| 21:32 | Edited src/renderer/src/pages/ActivityPage.tsx                                                                               | inline fix                                                                                            | ~30        |
-| 21:32 | Edited src/renderer/src/pages/ActivityPage.tsx                                                                               | "grid grid-cols-[24px_110p" → "grid grid-cols-[24px_110p"                                             | ~44        |
-| 21:33 | Edited src/renderer/src/pages/ActivityPage.tsx                                                                               | 8→8 lines                                                                                             | ~126       |
-| 21:33 | Edited src/renderer/src/pages/ActivityPage.tsx                                                                               | 2→2 lines                                                                                             | ~51        |
-| 21:33 | Edited src/renderer/src/pages/ActivityPage.tsx                                                                               | "mb-4 px-2 text-base font-" → "mb-4 px-2 text-base font-"                                             | ~24        |
-| 21:33 | Edited src/renderer/src/pages/ActivityPage.tsx                                                                               | 3→3 lines                                                                                             | ~64        |
-| 21:33 | Edited src/renderer/src/pages/ActivityPage.tsx                                                                               | "pt-2 text-center text-xs " → "pt-2 text-center text-xs "                                             | ~20        |
-| 21:33 | Edited src/renderer/src/pages/ProjectPage.tsx                                                                                | "flex h-full items-center " → "flex h-full items-center "                                             | ~26        |
-| 21:33 | Edited src/renderer/src/pages/ProjectPage.tsx                                                                                | "text-base font-semibold t" → "text-base font-semibold t"                                             | ~18        |
-| 21:33 | Edited src/renderer/src/pages/ProjectPage.tsx                                                                                | 28→28 lines                                                                                           | ~312       |
-| 21:33 | Edited src/renderer/src/pages/SessionsPage.tsx                                                                               | 34→34 lines                                                                                           | ~405       |
-| 21:33 | Edited src/renderer/src/pages/SessionsPage.tsx                                                                               | "mx-4 mb-2 rounded-md bord" → "mx-4 mb-2 rounded-md bord"                                             | ~37        |
-| 21:34 | Edited src/renderer/src/pages/SessionsPage.tsx                                                                               | "min-h-0 flex-1 border-t b" → "min-h-0 flex-1 border-t b"                                             | ~19        |
-| 21:34 | Created src/renderer/src/pages/sessions/GhostBlockDialog.tsx                                                                 | —                                                                                                     | ~931       |
-| 21:34 | Created src/renderer/src/pages/sessions/TaskPickerDialog.tsx                                                                 | —                                                                                                     | ~1235      |
-| 21:34 | replace all hardcoded zinc/white text+bg+border with app-\* tokens across kanban, activity, project, sessions pages+dialogs  | KanbanCard, KanbanColumn, ActivityPage, ProjectPage, SessionsPage, GhostBlockDialog, TaskPickerDialog | done       | ~1200   |
-| 21:34 | Session end: 27 writes across 10 files (SearchSortBar.tsx, index.ts, SessionsCalendar.tsx, KanbanCard.tsx, KanbanColumn.tsx) | 17 reads                                                                                              | ~24367 tok |
+> Consolidated session (32 actions)
 
 ## Session: 2026-04-18 21:36
-
-| Time  | Action                                                            | File(s)                                 | Outcome   | ~Tokens  |
-| ----- | ----------------------------------------------------------------- | --------------------------------------- | --------- | -------- |
-| 21:36 | Edited src/renderer/src/types/index.ts                            | expanded (+11 lines)                    | ~51       |
-| 21:37 | Edited src/renderer/src/types/index.ts                            | expanded (+126 lines)                   | ~1113     |
-| 21:37 | Session end: 2 writes across 1 files (index.ts)                   | 5 reads                                 | ~5572 tok |
-| 21:42 | aligned Appearance page spacing with Activity/Today layout rhythm | src/renderer/src/pages/SettingsPage.tsx | success   | ~240 tok |
+> Consolidated session (5 actions)
 
 ## Session: 2026-04-18 21:43
-
-| Time  | Action                                                                                                                                                                     | File(s)                                                                                          | Outcome   | ~Tokens |
-| ----- | -------------------------------------------------------------------------------------------------------------------------------------------------------------------------- | ------------------------------------------------------------------------------------------------ | --------- | ------- |
-| 21:45 | Edited src/renderer/src/pages/SettingsPage.tsx                                                                                                                             | 14→16 lines                                                                                      | ~183      |
-| 21:45 | Edited src/renderer/src/components/settings/ThemeSection.tsx                                                                                                               | modified ThemeSection()                                                                          | ~428      |
-| 21:45 | Edited src/renderer/src/components/settings/ThemeSwatch.tsx                                                                                                                | CSS: opacity                                                                                     | ~320      |
-| 21:45 | Created src/renderer/src/components/settings/BackgroundSection.tsx                                                                                                         | —                                                                                                | ~1021     |
-| 21:46 | Edited src/renderer/src/components/settings/CustomizeSection.tsx                                                                                                           | expanded (+9 lines)                                                                              | ~804      |
-| 21:46 | Redesign Appearance page — compact max-w-lg wrapper, bigger typography, theme swatches with dot indicator, background tiles with SVG icons, customize section table layout | SettingsPage.tsx, ThemeSection.tsx, ThemeSwatch.tsx, BackgroundSection.tsx, CustomizeSection.tsx | success   | ~4k     |
-| 21:46 | Session end: 5 writes across 5 files (SettingsPage.tsx, ThemeSection.tsx, ThemeSwatch.tsx, BackgroundSection.tsx, CustomizeSection.tsx)                                    | 6 reads                                                                                          | ~8137 tok |
-| 22:02 | Session end: 5 writes across 5 files (SettingsPage.tsx, ThemeSection.tsx, ThemeSwatch.tsx, BackgroundSection.tsx, CustomizeSection.tsx)                                    | 6 reads                                                                                          | ~8137 tok |
+> Consolidated session (9 actions)
 
 ## Session: 2026-04-18 22:08
-
-| Time  | Action                                                                                                                                                                                                                   | File(s)                                                       | Outcome        | ~Tokens |
-| ----- | ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------ | ------------------------------------------------------------- | -------------- | ------- |
-| 22:10 | Created src/renderer/src/hooks/useThemeColors.ts                                                                                                                                                                         | —                                                             | ~196           |
-| 22:10 | Created src/renderer/src/components/BackgroundLayer.tsx                                                                                                                                                                  | —                                                             | ~523           |
-| 22:11 | Created src/renderer/src/components/settings/BackgroundSection.tsx                                                                                                                                                       | —                                                             | ~1406          |
-| 22:12 | Integrated 5 animated backgrounds (Plasma/Aurora/SoftAurora/PixelSnow/PixelBlast) into BackgroundLayer.tsx; added useThemeColors hook for theme-adaptive colors; updated BackgroundSection with 6 options in grid-cols-3 | BackgroundLayer.tsx, BackgroundSection.tsx, useThemeColors.ts | typecheck pass | ~500    |
-| 22:12 | Session end: 3 writes across 3 files (useThemeColors.ts, BackgroundLayer.tsx, BackgroundSection.tsx)                                                                                                                     | 12 reads                                                      | ~8473 tok      |
-| 22:27 | Edited src/renderer/src/App.tsx                                                                                                                                                                                          | 4→4 lines                                                     | ~46            |
-| 22:27 | Edited src/renderer/src/components/BackgroundLayer.tsx                                                                                                                                                                   | "pointer-events-none fixed" → "pointer-events-none absol"     | ~23            |
-| 22:28 | Edited src/renderer/src/App.tsx                                                                                                                                                                                          | CSS: backgroundId                                             | ~44            |
-| 22:28 | Edited src/renderer/src/App.tsx                                                                                                                                                                                          | 3→4 lines                                                     | ~17            |
-| 22:28 | Edited src/renderer/src/App.tsx                                                                                                                                                                                          | 8→8 lines                                                     | ~121           |
-| 22:29 | Edited src/renderer/src/App.tsx                                                                                                                                                                                          | 8→8 lines                                                     | ~102           |
-| 22:29 | Edited src/renderer/src/App.tsx                                                                                                                                                                                          | 2→2 lines                                                     | ~47            |
-| 22:29 | Session end: 10 writes across 4 files (useThemeColors.ts, BackgroundLayer.tsx, BackgroundSection.tsx, App.tsx)                                                                                                           | 13 reads                                                      | ~10790 tok     |
-| 22:31 | Edited src/renderer/src/components/BackgroundLayer.tsx                                                                                                                                                                   | 48→48 lines                                                   | ~367           |
-| 22:31 | Session end: 11 writes across 4 files (useThemeColors.ts, BackgroundLayer.tsx, BackgroundSection.tsx, App.tsx)                                                                                                           | 13 reads                                                      | ~11555 tok     |
-| 22:33 | Edited src/renderer/src/components/BackgroundLayer.tsx                                                                                                                                                                   | CSS: maskImage, WebkitMaskImage                               | ~74            |
-| 22:33 | Session end: 12 writes across 4 files (useThemeColors.ts, BackgroundLayer.tsx, BackgroundSection.tsx, App.tsx)                                                                                                           | 13 reads                                                      | ~11629 tok     |
+> Consolidated session (18 actions)
 
 ## Session: 2026-04-18 22:50
-
-| Time  | Action                                                                                                | File(s)                  | Outcome    | ~Tokens |
-| ----- | ----------------------------------------------------------------------------------------------------- | ------------------------ | ---------- | ------- |
-| 22:52 | Edited src/renderer/src/components/sessions-calendar/SessionsCalendar.tsx                             | CSS: length              | ~64        |
-| 22:52 | Edited src/renderer/src/components/sessions-calendar/SessionsCalendar.tsx                             | added nullish coalescing | ~311       |
-| 22:52 | Edited src/renderer/src/components/sessions-calendar/SessionsCalendar.tsx                             | modified useCallback()   | ~534       |
-| 22:52 | Edited src/renderer/src/components/sessions-calendar/SessionsCalendar.tsx                             | reduced (-6 lines)       | ~18        |
-| 22:53 | Edited src/renderer/src/components/sessions-calendar/SessionsCalendar.tsx                             | added nullish coalescing | ~1257      |
-| 22:53 | Edited src/renderer/src/components/sessions-calendar/types.ts                                         | modified getMinutes()    | ~92        |
-| 22:53 | Edited src/renderer/src/components/sessions-calendar/types.ts                                         | modified getMinutes()    | ~104       |
-| 22:53 | Edited src/renderer/src/pages/ActivityPage.tsx                                                        | inline fix               | ~20        |
-| 22:53 | Edited src/renderer/src/components/Sidebar.tsx                                                        | inline fix               | ~4         |
-| 22:53 | Edited src/renderer/src/components/Sidebar.tsx                                                        | inline fix               | ~12        |
-| 22:54 | Edited src/renderer/src/components/Sidebar.tsx                                                        | inline fix               | ~9         |
-| 22:56 | Session end: 11 writes across 4 files (SessionsCalendar.tsx, types.ts, ActivityPage.tsx, Sidebar.tsx) | 12 reads                 | ~33713 tok |
+> Consolidated session (13 actions)
 
 ## Session: 2026-04-19 10:49
-
-| Time  | Action                                                                                                                                      | File(s)                                                   | Outcome    | ~Tokens |
-| ----- | ------------------------------------------------------------------------------------------------------------------------------------------- | --------------------------------------------------------- | ---------- | ------- |
-| 10:55 | Created src/renderer/src/components/task-panel/panel-field.tsx                                                                              | —                                                         | ~91        |
-| 10:56 | Created src/renderer/src/components/task-panel/task-form-fields.tsx                                                                         | —                                                         | ~2277      |
-| 10:56 | Created src/renderer/src/components/task-panel/TaskCreatePanel.tsx                                                                          | —                                                         | ~1368      |
-| 10:57 | Created src/renderer/src/components/task-panel/TaskEditPanel.tsx                                                                            | —                                                         | ~2153      |
-| 10:57 | Created src/renderer/src/components/task-panel/TaskDetailPanel.tsx                                                                          | —                                                         | ~852       |
-| 10:57 | Created src/renderer/src/components/task-panel/index.tsx                                                                                    | —                                                         | ~70        |
-| 10:57 | Created src/renderer/src/components/task-list/animated-checkbox.tsx                                                                         | —                                                         | ~427       |
-| 10:57 | Created src/renderer/src/components/task-list/subtask-progress-ring.tsx                                                                     | —                                                         | ~558       |
-| 10:57 | Created src/renderer/src/components/task-list/TaskRow.tsx                                                                                   | —                                                         | ~839       |
-| 10:57 | Edited src/renderer/src/components/task-list/TaskRow.tsx                                                                                    | inline fix                                                | ~18        |
-| 10:57 | Edited src/renderer/src/components/task-list/TaskRow.tsx                                                                                    | inline fix                                                | ~12        |
-| 10:58 | Created src/renderer/src/components/task-list/TaskList.tsx                                                                                  | —                                                         | ~585       |
-| 10:58 | Created src/renderer/src/components/task-list/index.tsx                                                                                     | —                                                         | ~55        |
-| 10:58 | Created src/renderer/src/components/modals/LabelManagerModal.tsx                                                                            | —                                                         | ~1086      |
-| 10:58 | Created src/renderer/src/components/modals/ShortcutsHelpModal.tsx                                                                           | —                                                         | ~942       |
-| 10:58 | Created src/renderer/src/components/modals/ProjectPickerModal.tsx                                                                           | —                                                         | ~1150      |
-| 10:58 | Created src/renderer/src/components/modals/index.tsx                                                                                        | —                                                         | ~50        |
-| 10:58 | Created src/renderer/src/components/project/color-selector.tsx                                                                              | —                                                         | ~387       |
-| 10:59 | Created src/renderer/src/components/project/custom-color-input.tsx                                                                          | —                                                         | ~573       |
-| 10:59 | Created src/renderer/src/components/project/emoji-picker.tsx                                                                                | —                                                         | ~995       |
-| 10:59 | Created src/renderer/src/components/project/ProjectPanel.tsx                                                                                | —                                                         | ~1552      |
-| 10:59 | Created src/renderer/src/components/project/index.tsx                                                                                       | —                                                         | ~56        |
-| 10:59 | Created src/renderer/src/components/layout/TitleBar.tsx                                                                                     | —                                                         | ~827       |
-| 10:59 | Created src/renderer/src/components/layout/ThemeProvider.tsx                                                                                | —                                                         | ~142       |
-| 11:00 | Created src/renderer/src/components/layout/BackgroundLayer.tsx                                                                              | —                                                         | ~599       |
-| 11:00 | Created src/renderer/src/components/layout/SearchSortBar.tsx                                                                                | —                                                         | ~909       |
-| 11:00 | Created src/renderer/src/components/layout/Sidebar.tsx                                                                                      | —                                                         | ~1387      |
-| 11:00 | Created src/renderer/src/components/layout/index.tsx                                                                                        | —                                                         | ~64        |
-| 11:00 | Created src/renderer/src/components/sidebar/index.tsx                                                                                       | —                                                         | ~37        |
-| 11:00 | Edited src/renderer/src/components/task-edit/SubtaskList.tsx                                                                                | "@renderer/components/anim" → "@renderer/components/task" | ~24        |
-| 11:00 | Created src/renderer/src/components/task-edit/index.tsx                                                                                     | —                                                         | ~26        |
-| 11:00 | Created src/renderer/src/components/settings/index.tsx                                                                                      | —                                                         | ~58        |
-| 11:01 | Created src/renderer/src/components/kanban/index.tsx                                                                                        | —                                                         | ~88        |
-| 11:01 | Created src/renderer/src/components/backgrounds/index.tsx                                                                                   | —                                                         | ~70        |
-| 11:01 | Created src/renderer/src/components/sessions-calendar/index.tsx                                                                             | —                                                         | ~60        |
-| 11:01 | Edited src/renderer/src/App.tsx                                                                                                             | reduced (-6 lines)                                        | ~172       |
-| 11:01 | Edited src/renderer/src/pages/InboxPage.tsx                                                                                                 | "@renderer/components/Task" → "@renderer/components/task" | ~17        |
-| 11:01 | Edited src/renderer/src/pages/TodayPage.tsx                                                                                                 | "@renderer/components/Task" → "@renderer/components/task" | ~17        |
-| 11:01 | Edited src/renderer/src/pages/ProjectPage.tsx                                                                                               | 2→2 lines                                                 | ~33        |
-| 11:01 | Edited src/renderer/src/pages/SessionsPage.tsx                                                                                              | "@renderer/components/Sess" → "@renderer/components/sess" | ~21        |
-| 11:02 | Edited src/renderer/src/components/kanban/KanbanCard.tsx                                                                                    | "@renderer/components/subt" → "@renderer/components/task" | ~26        |
-| 11:03 | Session end: 41 writes across 29 files (panel-field.tsx, task-form-fields.tsx, TaskCreatePanel.tsx, TaskEditPanel.tsx, TaskDetailPanel.tsx) | 36 reads                                                  | ~52280 tok |
-| 11:03 | Edited CLAUDE.md                                                                                                                            | expanded (+19 lines)                                      | ~534       |
-| 11:04 | Session end: 42 writes across 30 files (panel-field.tsx, task-form-fields.tsx, TaskCreatePanel.tsx, TaskEditPanel.tsx, TaskDetailPanel.tsx) | 37 reads                                                  | ~54546 tok |
+> Consolidated session (45 actions)
 
 ## Session: 2026-04-19 11:04
-
-| Time | Action | File(s) | Outcome | ~Tokens |
-| ---- | ------ | ------- | ------- | ------- |
+> Consolidated session (1 actions)
 
 ## Session: 2026-04-19 11:05
-
-| Time | Action | File(s) | Outcome | ~Tokens |
-| ---- | ------ | ------- | ------- | ------- |
+> Consolidated session (1 actions)
 
 ## Session: 2026-04-19 11:05
-
-| Time | Action | File(s) | Outcome | ~Tokens |
-| ---- | ------ | ------- | ------- | ------- |
+> Consolidated session (1 actions)
 
 ## Session: 2026-04-19 11:09
-
-| Time  | Action                                                                                                            | File(s)                    | Outcome    | ~Tokens |
-| ----- | ----------------------------------------------------------------------------------------------------------------- | -------------------------- | ---------- | ------- |
-| 12:02 | Edited src/renderer/src/types/index.ts                                                                            | inline fix                 | ~30        |
-| 12:02 | Edited src/renderer/src/types/index.ts                                                                            | expanded (+10 lines)       | ~118       |
-| 12:02 | Edited src/main/index.ts                                                                                          | expanded (+10 lines)       | ~114       |
-| 12:02 | Edited src/preload/index.ts                                                                                       | expanded (+10 lines)       | ~114       |
-| 12:02 | Edited src/preload/index.d.ts                                                                                     | expanded (+10 lines)       | ~114       |
-| 12:02 | Edited src/main/index.ts                                                                                          | 8→9 lines                  | ~66        |
-| 12:03 | Edited src/main/index.ts                                                                                          | added 1 condition(s)       | ~78        |
-| 12:03 | Edited src/main/index.ts                                                                                          | 8→8 lines                  | ~45        |
-| 12:03 | Edited src/preload/index.ts                                                                                       | 8→8 lines                  | ~47        |
-| 12:03 | Edited src/preload/index.d.ts                                                                                     | 8→8 lines                  | ~47        |
-| 12:03 | Edited src/renderer/src/store/useAppStore.ts                                                                      | 24→25 lines                | ~138       |
-| 12:03 | Edited src/renderer/src/store/useAppStore.ts                                                                      | 6→9 lines                  | ~105       |
-| 12:03 | Edited src/renderer/src/store/useAppStore.ts                                                                      | 30→32 lines                | ~290       |
-| 12:03 | Edited src/renderer/src/store/useAppStore.ts                                                                      | 6→7 lines                  | ~33        |
-| 12:03 | Edited src/renderer/src/store/useAppStore.ts                                                                      | added 1 condition(s)       | ~187       |
-| 12:04 | Edited src/renderer/src/store/useAppStore.ts                                                                      | modified if()              | ~274       |
-| 12:04 | Created src/renderer/src/utils/pharmacokinetics.ts                                                                | —                          | ~1271      |
-| 12:04 | Created src/renderer/src/pages/HealthPage.tsx                                                                     | —                          | ~1783      |
-| 12:04 | Edited src/renderer/src/App.tsx                                                                                   | added 1 import(s)          | ~32        |
-| 12:05 | Edited src/renderer/src/App.tsx                                                                                   | CSS: selectHealth          | ~49        |
-| 12:05 | Edited src/renderer/src/App.tsx                                                                                   | 4→5 lines                  | ~26        |
-| 12:05 | Edited src/renderer/src/App.tsx                                                                                   | 17→18 lines                | ~258       |
-| 12:05 | Edited src/renderer/src/components/layout/Sidebar.tsx                                                             | 2→2 lines                  | ~39        |
-| 12:05 | Edited src/renderer/src/components/layout/Sidebar.tsx                                                             | CSS: selectHealth          | ~213       |
-| 12:05 | Edited src/renderer/src/components/layout/Sidebar.tsx                                                             | expanded (+7 lines)        | ~125       |
-| 12:06 | Edited src/renderer/src/App.tsx                                                                                   | CSS: onGoHealth            | ~28        |
-| 12:06 | Edited src/renderer/src/App.tsx                                                                                   | 3→2 lines                  | ~20        |
-| 12:06 | Edited src/renderer/src/App.tsx                                                                                   | 5→4 lines                  | ~21        |
-| 12:06 | Edited src/renderer/src/App.tsx                                                                                   | 4→3 lines                  | ~37        |
-| 12:06 | Edited src/renderer/src/pages/HealthPage.tsx                                                                      | "Concentration" → "number" | ~27        |
-| 12:12 | Created src/renderer/src/utils/pharmacokinetics.ts                                                                | —                          | ~1545      |
-| 12:13 | Created src/renderer/src/pages/HealthPage.tsx                                                                     | —                          | ~1830      |
-| 12:13 | Session end: 32 writes across 7 files (index.ts, index.d.ts, useAppStore.ts, pharmacokinetics.ts, HealthPage.tsx) | 10 reads                   | ~32446 tok |
-| 12:15 | Edited src/renderer/src/store/useAppStore.ts                                                                      | 2→3 lines                  | ~52        |
-| 12:15 | Edited src/renderer/src/store/useAppStore.ts                                                                      | added 1 condition(s)       | ~143       |
-| 12:16 | Created src/renderer/src/pages/HealthPage.tsx                                                                     | —                          | ~2253      |
-| 12:16 | Session end: 35 writes across 7 files (index.ts, index.d.ts, useAppStore.ts, pharmacokinetics.ts, HealthPage.tsx) | 10 reads                   | ~34936 tok |
-| 12:19 | Session end: 35 writes across 7 files (index.ts, index.d.ts, useAppStore.ts, pharmacokinetics.ts, HealthPage.tsx) | 10 reads                   | ~34936 tok |
-| 12:20 | Edited src/renderer/src/types/index.ts                                                                            | expanded (+23 lines)       | ~214       |
-| 12:21 | Edited src/renderer/src/types/index.ts                                                                            | 12→13 lines                | ~86        |
-| 12:21 | Edited src/renderer/src/store/useAppStore.ts                                                                      | 24→27 lines                | ~153       |
-| 12:21 | Edited src/renderer/src/store/useAppStore.ts                                                                      | 5→7 lines                  | ~96        |
-| 12:21 | Edited src/renderer/src/store/useAppStore.ts                                                                      | 3→4 lines                  | ~32        |
-| 12:21 | Edited src/renderer/src/store/useAppStore.ts                                                                      | 30→35 lines                | ~333       |
-| 12:21 | Edited src/renderer/src/store/useAppStore.ts                                                                      | 2→3 lines                  | ~21        |
-| 12:21 | Edited src/renderer/src/store/useAppStore.ts                                                                      | added nullish coalescing   | ~238       |
-| 12:21 | Edited src/renderer/src/store/useAppStore.ts                                                                      | 2→3 lines                  | ~37        |
-| 12:22 | Edited src/renderer/src/store/useAppStore.ts                                                                      | 8→9 lines                  | ~35        |
-| 12:22 | Edited src/renderer/src/store/useAppStore.ts                                                                      | 8→9 lines                  | ~47        |
-| 12:22 | Created src/renderer/src/utils/pharmacokinetics.ts                                                                | —                          | ~1877      |
-| 12:23 | Created src/renderer/src/pages/HealthPage.tsx                                                                     | —                          | ~3489      |
-| 12:24 | Edited src/preload/index.ts                                                                                       | 8→9 lines                  | ~58        |
-| 12:24 | Edited src/preload/index.d.ts                                                                                     | 8→9 lines                  | ~58        |
-| 12:24 | Edited src/main/index.ts                                                                                          | 2→3 lines                  | ~22        |
-| 12:27 | Edited src/renderer/src/pages/HealthPage.tsx                                                                      | modified for()             | ~132       |
-| 12:27 | Edited src/renderer/src/pages/HealthPage.tsx                                                                      | modified String()          | ~99        |
-| 12:28 | Session end: 53 writes across 7 files (index.ts, index.d.ts, useAppStore.ts, pharmacokinetics.ts, HealthPage.tsx) | 10 reads                   | ~44740 tok |
+> Consolidated session (58 actions)
 
 ## Session: 2026-04-19 12:28
-
-| Time  | Action                                                                     | File(s)                  | Outcome   | ~Tokens |
-| ----- | -------------------------------------------------------------------------- | ------------------------ | --------- | ------- |
-| 12:29 | Edited src/renderer/src/pages/HealthPage.tsx                               | 2→2 lines                | ~33       |
-| 12:29 | Session end: 1 writes across 1 files (HealthPage.tsx)                      | 1 reads                  | ~3637 tok |
-| 12:32 | Edited src/renderer/src/utils/pharmacokinetics.ts                          | 13→13 lines              | ~87       |
-| 12:32 | Session end: 2 writes across 2 files (HealthPage.tsx, pharmacokinetics.ts) | 2 reads                  | ~5601 tok |
-| 12:34 | Edited src/renderer/src/pages/HealthPage.tsx                               | expanded (+7 lines)      | ~67       |
-| 12:34 | Edited src/renderer/src/pages/HealthPage.tsx                               | 3→2 lines                | ~36       |
-| 12:34 | Edited src/renderer/src/pages/HealthPage.tsx                               | added nullish coalescing | ~1090     |
-| 12:35 | Edited src/renderer/src/pages/HealthPage.tsx                               | —                        | ~0        |
-| 12:37 | Session end: 6 writes across 2 files (HealthPage.tsx, pharmacokinetics.ts) | 3 reads                  | ~7897 tok |
+> Consolidated session (10 actions)
 
 ## Session: 2026-04-19 12:38
-
-| Time  | Action                                                                                                                                                    | File(s)                                                                                                                                        | Outcome           | ~Tokens |
-| ----- | --------------------------------------------------------------------------------------------------------------------------------------------------------- | ---------------------------------------------------------------------------------------------------------------------------------------------- | ----------------- | ------- |
-| 12:44 | Edited src/renderer/src/pages/HealthPage.tsx                                                                                                              | inline fix                                                                                                                                     | ~18               |
-| 12:44 | Edited src/renderer/src/pages/HealthPage.tsx                                                                                                              | CSS: node                                                                                                                                      | ~112              |
-| 12:44 | Edited src/renderer/src/pages/HealthPage.tsx                                                                                                              | inline fix                                                                                                                                     | ~16               |
-| 12:44 | Edited src/renderer/src/pages/HealthPage.tsx                                                                                                              | CSS: 35, 23                                                                                                                                    | ~35               |
-| 12:44 | Edited src/renderer/src/pages/HealthPage.tsx                                                                                                              | 2→2 lines                                                                                                                                      | ~40               |
-| 12:44 | Edited src/renderer/src/pages/HealthPage.tsx                                                                                                              | inline fix                                                                                                                                     | ~11               |
-| 12:44 | Edited src/renderer/src/pages/HealthPage.tsx                                                                                                              | 6→5 lines                                                                                                                                      | ~32               |
-| 12:44 | Edited src/renderer/src/pages/HealthPage.tsx                                                                                                              | added optional chaining                                                                                                                        | ~90               |
-| 12:44 | Edited src/renderer/src/pages/HealthPage.tsx                                                                                                              | inline fix                                                                                                                                     | ~18               |
-| 12:45 | Session end: 9 writes across 1 files (HealthPage.tsx)                                                                                                     | 1 reads                                                                                                                                        | ~2250 tok         |
-| 12:46 | Edited src/renderer/src/pages/HealthPage.tsx                                                                                                              | CSS: 00, 24                                                                                                                                    | ~152              |
-| 12:46 | Edited src/renderer/src/pages/HealthPage.tsx                                                                                                              | inline fix                                                                                                                                     | ~34               |
-| 12:48 | Session end: 11 writes across 1 files (HealthPage.tsx)                                                                                                    | 1 reads                                                                                                                                        | ~2436 tok         |
-| 12:48 | Edited src/renderer/src/pages/HealthPage.tsx                                                                                                              | inline fix                                                                                                                                     | ~22               |
-| 12:48 | Session end: 12 writes across 1 files (HealthPage.tsx)                                                                                                    | 1 reads                                                                                                                                        | ~2458 tok         |
-| 12:49 | Edited src/renderer/src/pages/HealthPage.tsx                                                                                                              | added 1 condition(s)                                                                                                                           | ~173              |
-| 12:49 | Session end: 13 writes across 1 files (HealthPage.tsx)                                                                                                    | 2 reads                                                                                                                                        | ~6543 tok         |
-| 14:20 | Supabase sync hardening: debounced delta upsert/delete (no full workspace delete), fire-and-forget push; bump task.updatedAt on deleteProject/deleteLabel | src/main/index.ts, src/renderer/src/store/useAppStore.ts, src/renderer/src/components/settings/SyncSection.tsx, README.md, supabase/schema.sql | typecheck+lint ok | ~1200   |
+> Consolidated session (19 actions)
 
 ## Session: 2026-04-19 15:00
-
-| Time  | Action                                                                                                                                                                                                      | File(s)                                                             | Outcome    | ~Tokens |
-| ----- | ----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- | ------------------------------------------------------------------- | ---------- | ------- |
-| 15:08 | Edited src/renderer/src/types/index.ts                                                                                                                                                                      | reduced (-11 lines)                                                 | ~81        |
-| 15:08 | Edited src/renderer/src/utils/pharmacokinetics.ts                                                                                                                                                           | dose() → med()                                                      | ~457       |
-| 15:08 | Edited src/renderer/src/store/useAppStore.ts                                                                                                                                                                | 3→2 lines                                                           | ~18        |
-| 15:08 | Edited src/renderer/src/store/useAppStore.ts                                                                                                                                                                | 2→1 lines                                                           | ~6         |
-| 15:08 | Edited src/renderer/src/store/useAppStore.ts                                                                                                                                                                | isArray() → normalizePkSettings()                                   | ~16        |
-| 15:08 | Edited src/renderer/src/store/useAppStore.ts                                                                                                                                                                | added 1 condition(s)                                                | ~143       |
-| 15:08 | Edited src/renderer/src/store/useAppStore.ts                                                                                                                                                                | removed 20 lines                                                    | ~28        |
-| 15:09 | Created src/renderer/src/pages/HealthPage.tsx                                                                                                                                                               | —                                                                   | ~3034      |
-| 15:09 | Refactored HealthPage: removed per-med PK tuning, added global chart settings (doseRef/peakScale) as inline card; chart height 280, Y ticks every 1; simplified generateDailyChartData to use drug defaults | HealthPage.tsx, pharmacokinetics.ts, types/index.ts, useAppStore.ts | success    | ~900    |
-| 15:10 | Session end: 8 writes across 4 files (index.ts, pharmacokinetics.ts, useAppStore.ts, HealthPage.tsx)                                                                                                        | 3 reads                                                             | ~16173 tok |
+> Consolidated session (11 actions)
 
 ## Session: 2026-04-19 15:12
-
-| Time | Action | File(s) | Outcome | ~Tokens |
-| ---- | ------ | ------- | ------- | ------- |
+> Consolidated session (1 actions)
 
 ## Session: 2026-04-19 15:25
-
-| Time  | Action                                                                                                                                                           | File(s)                                                             | Outcome              | ~Tokens |
-| ----- | ---------------------------------------------------------------------------------------------------------------------------------------------------------------- | ------------------------------------------------------------------- | -------------------- | ------- |
-| 15:27 | Edited src/renderer/src/types/index.ts                                                                                                                           | expanded (+15 lines)                                                | ~274                 |
-| 15:27 | Edited src/renderer/src/utils/pharmacokinetics.ts                                                                                                                | modified with()                                                     | ~896                 |
-| 15:27 | Edited src/renderer/src/pages/HealthPage.tsx                                                                                                                     | 15→17 lines                                                         | ~139                 |
-| 15:27 | Edited src/renderer/src/pages/HealthPage.tsx                                                                                                                     | added 3 condition(s)                                                | ~263                 |
-| 15:28 | Edited src/renderer/src/pages/HealthPage.tsx                                                                                                                     | added optional chaining                                             | ~1951                |
-| 15:28 | Edited src/renderer/src/store/useAppStore.ts                                                                                                                     | expanded (+6 lines)                                                 | ~219                 |
-| 13:29 | Upgraded Meds PK model: MEC/MTC therapeutic window, crash-risk detection (dC/dt), tMaxOffset + keMultiplier + intensity sliders, ReferenceArea overlays in chart | types/index.ts, pharmacokinetics.ts, HealthPage.tsx, useAppStore.ts | ok, typechecks clean | ~4k     |
-| 15:29 | Session end: 6 writes across 4 files (index.ts, pharmacokinetics.ts, HealthPage.tsx, useAppStore.ts)                                                             | 4 reads                                                             | ~19003 tok           |
-| 15:36 | Edited src/renderer/src/utils/pharmacokinetics.ts                                                                                                                | modified generateDailyChartData()                                   | ~662                 |
-| 15:37 | Edited src/renderer/src/types/index.ts                                                                                                                           | 26→23 lines                                                         | ~231                 |
-| 15:37 | Edited src/renderer/src/store/useAppStore.ts                                                                                                                     | 16→15 lines                                                         | ~199                 |
-| 15:37 | Edited src/renderer/src/pages/HealthPage.tsx                                                                                                                     | CSS: hint                                                           | ~279                 |
-| 15:37 | Edited src/renderer/src/pages/HealthPage.tsx                                                                                                                     | modified for()                                                      | ~177                 |
-| 15:37 | Edited src/renderer/src/pages/HealthPage.tsx                                                                                                                     | String() → toFixed()                                                | ~88                  |
-| 15:37 | Edited src/renderer/src/pages/HealthPage.tsx                                                                                                                     | CSS: sm, crashThreshold                                             | ~673                 |
-| 13:40 | Removed doseRef (confusing), fixed Y axis 0-1, extended tail 1.5→3h, redesigned sliders (2-col grid, label+hint+accent value), added crashThreshold slider       | pharmacokinetics.ts, types/index.ts, useAppStore.ts, HealthPage.tsx | typechecks clean     | ~1.5k   |
-| 15:40 | Session end: 13 writes across 4 files (index.ts, pharmacokinetics.ts, HealthPage.tsx, useAppStore.ts)                                                            | 4 reads                                                             | ~22876 tok           |
-| 15:47 | Edited src/renderer/src/pages/HealthPage.tsx                                                                                                                     | added 1 condition(s)                                                | ~292                 |
-| 15:47 | Edited src/renderer/src/pages/HealthPage.tsx                                                                                                                     | toFixed() → String()                                                | ~87                  |
-| 15:48 | Edited src/renderer/src/pages/HealthPage.tsx                                                                                                                     | 20→20 lines                                                         | ~192                 |
-| 15:49 | Session end: 16 writes across 4 files (index.ts, pharmacokinetics.ts, HealthPage.tsx, useAppStore.ts)                                                            | 4 reads                                                             | ~23934 tok           |
-| 15:51 | Edited src/renderer/src/utils/pharmacokinetics.ts                                                                                                                | expanded (+8 lines)                                                 | ~427                 |
-| 15:51 | Edited src/renderer/src/utils/pharmacokinetics.ts                                                                                                                | modified for()                                                      | ~370                 |
-| 15:52 | Session end: 18 writes across 4 files (index.ts, pharmacokinetics.ts, HealthPage.tsx, useAppStore.ts)                                                            | 4 reads                                                             | ~24892 tok           |
+> Consolidated session (25 actions)
 
 ## Session: 2026-04-19 15:58
-
-| Time  | Action                                                | File(s)          | Outcome   | ~Tokens |
-| ----- | ----------------------------------------------------- | ---------------- | --------- | ------- |
-| 15:58 | Edited src/renderer/src/pages/HealthPage.tsx          | CSS: hover, http | ~296      |
-| 15:58 | Edited src/renderer/src/pages/HealthPage.tsx          | 5→5 lines        | ~24       |
-| 15:59 | Edited src/renderer/src/pages/HealthPage.tsx          | 2→3 lines        | ~49       |
-| 15:59 | Session end: 3 writes across 1 files (HealthPage.tsx) | 1 reads          | ~5283 tok |
+> Consolidated session (5 actions)
 
 ## Session: 2026-04-19 16:00
-
-| Time  | Action                                                                     | File(s)                    | Outcome   | ~Tokens |
-| ----- | -------------------------------------------------------------------------- | -------------------------- | --------- | ------- |
-| 16:02 | Edited src/renderer/src/pages/HealthPage.tsx                               | modified for()             | ~328      |
-| 16:02 | Session end: 1 writes across 1 files (HealthPage.tsx)                      | 2 reads                    | ~7472 tok |
-| 16:04 | Session end: 1 writes across 1 files (HealthPage.tsx)                      | 2 reads                    | ~7472 tok |
-| 16:05 | Edited src/renderer/src/utils/pharmacokinetics.ts                          | modified for()             | ~157      |
-| 16:05 | Edited src/renderer/src/pages/HealthPage.tsx                               | 2→2 lines                  | ~29       |
-| 16:05 | Session end: 3 writes across 2 files (HealthPage.tsx, pharmacokinetics.ts) | 2 reads                    | ~7658 tok |
-| 16:11 | Edited src/renderer/src/utils/pharmacokinetics.ts                          | modified applyUserParams() | ~84       |
-| 16:11 | Session end: 4 writes across 2 files (HealthPage.tsx, pharmacokinetics.ts) | 2 reads                    | ~7828 tok |
+> Consolidated session (9 actions)
 
 ## Session: 2026-04-19 16:55
-
-| Time  | Action                                                                      | File(s)                                                                                                                      | Outcome   | ~Tokens |
-| ----- | --------------------------------------------------------------------------- | ---------------------------------------------------------------------------------------------------------------------------- | --------- | ------- |
-| 16:55 | Removed custom backgrounds feature (shader overlays + settings)             | App.tsx, SettingsPage.tsx, useAppStore.ts, types/index.ts, main/index.ts, preload/index._ + deleted components/backgrounds/_ | done      | ~0      |
-| 17:03 | Edited src/renderer/src/pages/HealthPage.tsx                                | modified SliderRow()                                                                                                         | ~146      |
-| 17:03 | Edited src/renderer/src/pages/HealthPage.tsx                                | added 1 condition(s)                                                                                                         | ~92       |
-| 17:03 | Edited src/renderer/src/pages/HealthPage.tsx                                | expanded (+16 lines)                                                                                                         | ~142      |
-| 17:04 | Edited src/renderer/src/pages/HealthPage.tsx                                | CSS: lg                                                                                                                      | ~906      |
-| 17:04 | Session end: 8 writes across 2 files (HealthPage.tsx, pharmacokinetics.ts)  | 2 reads                                                                                                                      | ~9428 tok |
-| 17:06 | Edited src/renderer/src/pages/HealthPage.tsx                                | 2→2 lines                                                                                                                    | ~36       |
-| 17:06 | Session end: 9 writes across 2 files (HealthPage.tsx, pharmacokinetics.ts)  | 2 reads                                                                                                                      | ~9464 tok |
-| 17:10 | Edited src/renderer/src/pages/HealthPage.tsx                                | CSS: 1, 0                                                                                                                    | ~107      |
-| 17:10 | Session end: 10 writes across 2 files (HealthPage.tsx, pharmacokinetics.ts) | 2 reads                                                                                                                      | ~9604 tok |
+> Consolidated session (11 actions)
 
 ## Session: 2026-04-19 17:13
-
-| Time  | Action                                                                                                                | File(s)                                             | Outcome    | ~Tokens |
-| ----- | --------------------------------------------------------------------------------------------------------------------- | --------------------------------------------------- | ---------- | ------- |
-| 17:15 | Edited src/renderer/src/components/settings/SyncSection.tsx                                                           | CSS: hover                                          | ~628       |
-| 17:15 | Edited src/renderer/src/components/settings/SyncSection.tsx                                                           | 6→7 lines                                           | ~42        |
-| 17:15 | Edited src/renderer/src/components/settings/ThemeSection.tsx                                                          | added 1 condition(s)                                | ~505       |
-| 17:15 | Edited src/renderer/src/pages/SettingsPage.tsx                                                                        | reduced (-8 lines)                                  | ~112       |
-| 17:15 | Edited src/renderer/src/pages/SettingsPage.tsx                                                                        | reduced (-19 lines)                                 | ~257       |
-| 15:15 | Refactored SettingsPage: SyncSection collapsible toggle, UI scale moved into ThemeSection header                      | SyncSection.tsx, ThemeSection.tsx, SettingsPage.tsx | ok         | ~800    |
-| 17:16 | Session end: 5 writes across 3 files (SyncSection.tsx, ThemeSection.tsx, SettingsPage.tsx)                            | 4 reads                                             | ~6487 tok  |
-| 17:18 | Edited src/renderer/src/types/index.ts                                                                                | 12→17 lines                                         | ~72        |
-| 17:18 | Edited src/renderer/src/types/index.ts                                                                                | 21→21 lines                                         | ~174       |
-| 17:19 | Edited src/renderer/src/types/index.ts                                                                                | 21→21 lines                                         | ~177       |
-| 17:19 | Edited src/renderer/src/types/index.ts                                                                                | 21→21 lines                                         | ~181       |
-| 17:19 | Edited src/renderer/src/types/index.ts                                                                                | 21→21 lines                                         | ~182       |
-| 17:19 | Edited src/renderer/src/types/index.ts                                                                                | expanded (+105 lines)                               | ~1086      |
-| 15:20 | Added 5 themes (catppuccin, tokyo-night, kanagawa, monokai, slate), fixed contrast on light/retro/cyberpunk/solarized | types/index.ts                                      | ok         | ~600    |
-| 17:20 | Session end: 11 writes across 4 files (SyncSection.tsx, ThemeSection.tsx, SettingsPage.tsx, index.ts)                 | 5 reads                                             | ~12123 tok |
-| 17:21 | Edited src/renderer/src/types/index.ts                                                                                | 21→21 lines                                         | ~178       |
-| 17:21 | Session end: 12 writes across 4 files (SyncSection.tsx, ThemeSection.tsx, SettingsPage.tsx, index.ts)                 | 5 reads                                             | ~12301 tok |
-| 17:23 | Edited src/renderer/src/types/index.ts                                                                                | 1→2 lines                                           | ~9         |
-| 17:23 | Edited src/renderer/src/types/index.ts                                                                                | expanded (+21 lines)                                | ~196       |
-| 17:23 | Edited src/renderer/src/pages/HealthPage.tsx                                                                          | 14→14 lines                                         | ~189       |
-| 17:23 | Edited src/renderer/src/pages/HealthPage.tsx                                                                          | 15→15 lines                                         | ~136       |
-| 17:23 | Edited src/renderer/src/pages/HealthPage.tsx                                                                          | 26→26 lines                                         | ~228       |
-| 17:23 | Edited src/renderer/src/pages/HealthPage.tsx                                                                          | 8→8 lines                                           | ~74        |
-| 17:24 | Edited src/renderer/src/pages/HealthPage.tsx                                                                          | "rgba(239,68,68,0.15)" → "rgba(220,38,38,0.18)"     | ~13        |
-| 17:24 | Session end: 19 writes across 5 files (SyncSection.tsx, ThemeSection.tsx, SettingsPage.tsx, index.ts, HealthPage.tsx) | 6 reads                                             | ~18436 tok |
-| 17:27 | Edited src/renderer/src/types/index.ts                                                                                | reduced (-39 lines)                                 | ~2786      |
-| 17:27 | Edited src/renderer/src/types/index.ts                                                                                | 18→16 lines                                         | ~69        |
-| 17:27 | Session end: 21 writes across 5 files (SyncSection.tsx, ThemeSection.tsx, SettingsPage.tsx, index.ts, HealthPage.tsx) | 6 reads                                             | ~22364 tok |
-| 17:31 | Edited src/renderer/src/types/index.ts                                                                                | 21→21 lines                                         | ~184       |
-| 17:31 | Edited src/renderer/src/types/index.ts                                                                                | 2→2 lines                                           | ~24        |
-| 17:31 | Edited src/renderer/src/types/index.ts                                                                                | 2→2 lines                                           | ~24        |
-| 17:31 | Edited src/renderer/src/types/index.ts                                                                                | 2→2 lines                                           | ~24        |
-| 17:31 | Edited src/renderer/src/types/index.ts                                                                                | 2→2 lines                                           | ~24        |
-| 17:31 | Edited src/renderer/src/types/index.ts                                                                                | 2→2 lines                                           | ~24        |
-| 17:31 | Edited src/renderer/src/types/index.ts                                                                                | 2→2 lines                                           | ~24        |
-| 17:31 | Edited src/renderer/src/types/index.ts                                                                                | 2→2 lines                                           | ~24        |
-| 17:31 | Edited src/renderer/src/types/index.ts                                                                                | 2→2 lines                                           | ~24        |
-| 17:31 | Edited src/renderer/src/types/index.ts                                                                                | 2→2 lines                                           | ~24        |
-| 17:31 | Edited src/renderer/src/types/index.ts                                                                                | 2→2 lines                                           | ~24        |
-| 17:35 | Session end: 32 writes across 5 files (SyncSection.tsx, ThemeSection.tsx, SettingsPage.tsx, index.ts, HealthPage.tsx) | 6 reads                                             | ~22487 tok |
-| 17:36 | Edited src/renderer/src/types/index.ts                                                                                | 42→42 lines                                         | ~350       |
-| 17:36 | Session end: 33 writes across 5 files (SyncSection.tsx, ThemeSection.tsx, SettingsPage.tsx, index.ts, HealthPage.tsx) | 6 reads                                             | ~22837 tok |
-| 17:37 | Edited src/renderer/src/types/index.ts                                                                                | 3→4 lines                                           | ~15        |
-| 17:38 | Edited src/renderer/src/types/index.ts                                                                                | expanded (+21 lines)                                | ~358       |
-| 17:38 | Session end: 35 writes across 5 files (SyncSection.tsx, ThemeSection.tsx, SettingsPage.tsx, index.ts, HealthPage.tsx) | 6 reads                                             | ~23210 tok |
-| 17:39 | Edited src/renderer/src/types/index.ts                                                                                | 42→42 lines                                         | ~356       |
-| 17:39 | Session end: 36 writes across 5 files (SyncSection.tsx, ThemeSection.tsx, SettingsPage.tsx, index.ts, HealthPage.tsx) | 6 reads                                             | ~23566 tok |
+> Consolidated session (48 actions)
 
 ## Session: 2026-04-19 17:48
-
-| Time | Action | File(s) | Outcome | ~Tokens |
-| ---- | ------ | ------- | ------- | ------- |
+> Consolidated session (1 actions)
 
 ## Session: 2026-04-19 17:49
-
-| Time | Action | File(s) | Outcome | ~Tokens |
-| ---- | ------ | ------- | ------- | ------- |
+> Consolidated session (1 actions)
 
 ## Session: 2026-04-19 17:50
-
-| Time | Action | File(s) | Outcome | ~Tokens |
-| ---- | ------ | ------- | ------- | ------- |
+> Consolidated session (1 actions)
 
 ## Session: 2026-04-19 17:51
-
-| Time | Action | File(s) | Outcome | ~Tokens |
-| ---- | ------ | ------- | ------- | ------- |
+> Consolidated session (1 actions)
 
 ## Session: 2026-04-19 17:52
-
-| Time | Action | File(s) | Outcome | ~Tokens |
-| ---- | ------ | ------- | ------- | ------- |
+> Consolidated session (1 actions)
 
 ## Session: 2026-04-19 17:52
-
-| Time | Action | File(s) | Outcome | ~Tokens |
-| ---- | ------ | ------- | ------- | ------- |
+> Consolidated session (1 actions)
 
 ## Session: 2026-04-19 18:01
-
-| Time  | Action                                                          | File(s)                                                                                                                                                                                                              | Outcome                                       | ~Tokens |
-| ----- | --------------------------------------------------------------- | -------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- | --------------------------------------------- | ------- |
-| 18:21 | Punkt 1 z to_fix: unifikacja typów do shared                    | src/shared/types.ts; src/main/index.ts; src/preload/index.ts; src/preload/index.d.ts; src/renderer/src/types/index.ts; tsconfig.\*                                                                                   | Deduplikacja typów + przejście lint/build     | ~2600   |
-| 18:33 | Punkty 2-7 z to_fix: persist+slices+partial IPC+PK opt+defaults | src/renderer/src/store/useAppStore.ts; src/main/index.ts; src/preload/\*; src/shared/defaults.ts; src/renderer/src/utils/pharmacokinetics.ts; src/renderer/src/pages/HealthPage.tsx; src/renderer/src/types/index.ts | Zrobione punkt po punkcie, lint/build zielone | ~5200   |
+> Consolidated session (3 actions)
 
 ## Session: 2026-04-19 19:16
-
-| Time  | Action                                                                                  | File(s)                                                   | Outcome                                                        | ~Tokens |
-| ----- | --------------------------------------------------------------------------------------- | --------------------------------------------------------- | -------------------------------------------------------------- | ------- |
-| 19:18 | Edited src/renderer/src/App.tsx                                                         | added optional chaining                                   | ~115                                                           |
-| 19:18 | Edited src/renderer/src/App.tsx                                                         | 4→4 lines                                                 | ~100                                                           |
-| 19:18 | Edited src/renderer/src/App.tsx                                                         | "flex h-full flex-col over" → "flex h-full flex-col over" | ~35                                                            |
-| 19:18 | Edited src/renderer/src/App.tsx                                                         | "relative flex min-h-0 fle" → "relative flex min-h-0 fle" | ~34                                                            |
-| 19:18 | remove window roundness in fullscreen                                                   | App.tsx                                                   | done — isFullScreen state drives rounded-xl/rounded-lg removal | ~150    |
-| 19:35 | wygładzenie i wydłużenie opadania krzywej leków (asymetryczne kształtowanie sumy dawek) | src/renderer/src/utils/pharmacokinetics.ts                | peak bardziej miękki, spadek dłuższy przy dokładaniu dawek     | ~900    |
-| 19:18 | Session end: 4 writes across 1 files (App.tsx)                                          | 2 reads                                                   | ~2941 tok                                                      |
+> Consolidated session (8 actions)
 
 ## Session: 2026-04-21 16:29
-
-| Time  | Action                                                                                          | File(s)                       | Outcome   | ~Tokens |
-| ----- | ----------------------------------------------------------------------------------------------- | ----------------------------- | --------- | ------- |
-| 16:32 | Created src/renderer/src/components/settings/CustomizeSection.tsx                               | —                             | ~1801     |
-| 16:32 | redesign CustomizeSection: 2-col grid, big swatch previews, hover edit overlay, reset-per-token | settings/CustomizeSection.tsx | done      | ~800    |
-| 16:32 | Session end: 1 writes across 1 files (CustomizeSection.tsx)                                     | 1 reads                       | ~3108 tok |
-| 16:33 | Session end: 1 writes across 1 files (CustomizeSection.tsx)                                     | 2 reads                       | ~4178 tok |
-| 16:34 | Created src/renderer/src/components/settings/CustomizeSection.tsx                               | —                             | ~2449     |
-| 16:39 | Session end: 2 writes across 1 files (CustomizeSection.tsx)                                     | 3 reads                       | ~6995 tok |
+> Consolidated session (7 actions)
 
 ## Session: 2026-04-22 15:37
-
-| Time  | Action                                                                                                                                                                                                      | File(s)                                                                                                                                                                                                                             | Outcome                                        | ~Tokens |
-| ----- | ----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- | ----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- | ---------------------------------------------- | ------- |
-| 15:41 | Created src/renderer/src/components/task-panel/TaskDetailPanel.tsx                                                                                                                                          | —                                                                                                                                                                                                                                   | ~1091                                          |
-| 15:41 | Created src/renderer/src/components/task-panel/TaskEditPanel.tsx                                                                                                                                            | —                                                                                                                                                                                                                                   | ~2414                                          |
-| 15:41 | Created src/renderer/src/components/task-panel/TaskCreatePanel.tsx                                                                                                                                          | —                                                                                                                                                                                                                                   | ~1442                                          |
-| 15:42 | Created src/renderer/src/components/project/ProjectPanel.tsx                                                                                                                                                | —                                                                                                                                                                                                                                   | ~1620                                          |
-| 15:42 | Edited src/renderer/src/components/task-panel/TaskEditPanel.tsx                                                                                                                                             | 14→11 lines                                                                                                                                                                                                                         | ~108                                           |
-| 15:42 | Redesigned all panels (TaskEditPanel, TaskCreatePanel, ProjectPanel, TaskDetailPanel) from right-side slide to centered modal cards                                                                         | task-panel/, project/ProjectPanel.tsx                                                                                                                                                                                               | success                                        | ~3000   |
-| 15:42 | Session end: 5 writes across 4 files (TaskDetailPanel.tsx, TaskEditPanel.tsx, TaskCreatePanel.tsx, ProjectPanel.tsx)                                                                                        | 9 reads                                                                                                                                                                                                                             | ~17855 tok                                     |
-| 15:58 | Fixed kanban drag card size snap by freezing overlay width+height from source rect and reusing identical card shell styles in preview; logged mandatory `.wolf` preference                                  | `.wolf/cerebrum.md`, `.wolf/anatomy.md`, `.wolf/buglog.json`, `src/renderer/src/components/kanban/KanbanBoard.tsx`, `src/renderer/src/components/kanban/KanbanCard.tsx`, `src/renderer/src/components/kanban/KanbanCardPreview.tsx` | success, typecheck clean                       | ~1200   |
-| 16:08 | Fixed kanban cross-column drag preview by keeping live draft task ids per column in `onDragOver`; target columns now animate insertion and drop index follows hover midpoint instead of defaulting near top | `.wolf/cerebrum.md`, `.wolf/anatomy.md`, `.wolf/buglog.json`, `src/renderer/src/components/kanban/KanbanBoard.tsx`                                                                                                                  | success, typecheck clean                       | ~1500   |
-| 14:20 | Standardized app branding to Swag Todo and switched repo instructions/scripts from npm to Bun                                                                                                               | `package.json`, `README.md`, `CLAUDE.md`, `electron-builder.yml`, `bun.lock`                                                                                                                                                        | success, bun test clean                        | ~1200   |
-| 14:49 | inspected current storage + build config for sqlite migration                                                                                                                                               | .wolf/buglog.json, src/main/index.ts, src/renderer/src/store, package.json                                                                                                                                                          | clarified implementation scope and constraints | ~2200   |
-| 14:59 | implemented sqlite-backed main-process storage, swapped dependency from electron-store, and added main serialization tests                                                                                  | src/main/index.ts, src/main/storage/\*, src/main/tests/sqlite.test.ts, package.json, bun.lock                                                                                                                                       | tests/build passing; lint cleanup pending      | ~2800   |
-| 15:01 | finalized sqlite migration housekeeping in OpenWolf docs and bug log; lint/test/build all green                                                                                                             | .wolf/anatomy.md, .wolf/cerebrum.md, .wolf/buglog.json, .wolf/memory.md                                                                                                                                                             | success                                        | ~1400   |
-| 15:25 | reviewed sqlite migration, added legacy electron-store import plus main-process cache for partial saves, and revalidated test/build/lint                                                                    | `src/main/index.ts`, `src/main/storage/sqlite.ts`, `src/main/tests/sqlite.test.ts`, `CLAUDE.md`, `.wolf/cerebrum.md`, `.wolf/buglog.json`, `.wolf/memory.md`                                                                        | success, review issues fixed                   | ~2600   |
-| 15:32 | created handoff prompt for next agent covering sqlite delta-write refactor, constraints, extra improvements, and acceptance criteria                                                                        | `prompt.md`, `.wolf/anatomy.md`, `.wolf/memory.md`                                                                                                                                                                                  | success                                        | ~900    |
+> Consolidated session (16 actions)
 
 ## Session: 2026-04-23 15:37
 
@@ -671,108 +280,172 @@
 
 ## Session: 2026-04-28 00:02
 
-| Time  | Action                                                        | File(s) | Outcome | ~Tokens |
-| ----- | ------------------------------------------------------------- | ------- | ------- | ------- |
-| 00:06 | Created src/renderer/src/components/layout/Sidebar.tsx        | —       | ~2039   |
-| 00:06 | Created src/renderer/src/components/sidebar/NavItem.tsx       | —       | ~380    |
-| 00:06 | Created src/renderer/src/components/sidebar/ProjectList.tsx   | —       | ~525    |
-| 00:06 | Created src/renderer/src/components/sidebar/SidebarFooter.tsx | —       | ~226    |
-| 00:08 | Edited src/renderer/src/components/layout/Sidebar.tsx | 2→2 lines | ~18 |
+| Time  | Action                                                        | File(s)   | Outcome | ~Tokens |
+| ----- | ------------------------------------------------------------- | --------- | ------- | ------- |
+| 00:06 | Created src/renderer/src/components/layout/Sidebar.tsx        | —         | ~2039   |
+| 00:06 | Created src/renderer/src/components/sidebar/NavItem.tsx       | —         | ~380    |
+| 00:06 | Created src/renderer/src/components/sidebar/ProjectList.tsx   | —         | ~525    |
+| 00:06 | Created src/renderer/src/components/sidebar/SidebarFooter.tsx | —         | ~226    |
+| 00:08 | Edited src/renderer/src/components/layout/Sidebar.tsx         | 2→2 lines | ~18     |
 
-| 14:30 | Migrated Sidebar to coss/Base UI sidebar primitives (SidebarMenu/Item/Button/Badge, SidebarHeader/Content/Footer/Group). Preserved zustand selectors + actions. NavItem/ProjectList/SidebarFooter rewritten as menu items with tooltip-on-collapse. | components/layout/Sidebar.tsx, components/sidebar/* | typecheck+lint clean | ~3500 |
+| 14:30 | Migrated Sidebar to coss/Base UI sidebar primitives (SidebarMenu/Item/Button/Badge, SidebarHeader/Content/Footer/Group). Preserved zustand selectors + actions. NavItem/ProjectList/SidebarFooter rewritten as menu items with tooltip-on-collapse. | components/layout/Sidebar.tsx, components/sidebar/\* | typecheck+lint clean | ~3500 |
 | 00:09 | Session end: 5 writes across 4 files (Sidebar.tsx, NavItem.tsx, ProjectList.tsx, SidebarFooter.tsx) | 8 reads | ~12937 tok |
 | 00:14 | Session end: 5 writes across 4 files (Sidebar.tsx, NavItem.tsx, ProjectList.tsx, SidebarFooter.tsx) | 8 reads | ~12937 tok |
 
 ## Session: 2026-04-28 00:21
 
-| Time | Action | File(s) | Outcome | ~Tokens |
-|------|--------|---------|---------|--------|
-| 00:23 | Edited src/renderer/src/pages/SessionsPage.tsx | 9→9 lines | ~176 |
-| 00:23 | Edited src/renderer/src/pages/SessionsPage.tsx | 17→13 lines | ~115 |
-| 00:23 | Edited src/renderer/src/pages/SessionsPage.tsx | 2→3 lines | ~47 |
-| 00:23 | Session end: 3 writes across 1 files (SessionsPage.tsx) | 2 reads | ~3276 tok |
-| 00:26 | Session end: 3 writes across 1 files (SessionsPage.tsx) | 3 reads | ~4546 tok |
-| 08:41 | Edited src/renderer/src/components/task-panel/TaskDetailPanel.tsx | 4→5 lines | ~45 |
-| 08:41 | Session end: 4 writes across 2 files (SessionsPage.tsx, TaskDetailPanel.tsx) | 6 reads | ~8995 tok |
-| 08:43 | Session end: 4 writes across 2 files (SessionsPage.tsx, TaskDetailPanel.tsx) | 6 reads | ~8995 tok |
-| 08:45 | Edited src/renderer/src/components/task-panel/TaskCreatePanel.tsx | CSS: placeholder, focus | ~134 |
-| 08:45 | Edited src/renderer/src/components/task-panel/TaskCreatePanel.tsx | — | ~0 |
-| 08:46 | Edited src/renderer/src/components/task-panel/TaskEditPanel.tsx | CSS: placeholder, focus | ~121 |
-| 08:46 | Edited src/renderer/src/components/task-panel/TaskEditPanel.tsx | — | ~0 |
-| 08:47 | Session end: 8 writes across 4 files (SessionsPage.tsx, TaskDetailPanel.tsx, TaskCreatePanel.tsx, TaskEditPanel.tsx) | 8 reads | ~12484 tok |
-| 08:49 | Edited src/renderer/src/components/task-panel/TaskCreatePanel.tsx | 10→9 lines | ~82 |
-| 08:49 | Edited src/renderer/src/components/task-panel/TaskCreatePanel.tsx | 29→29 lines | ~286 |
-| 08:50 | Edited src/renderer/src/components/task-panel/TaskEditPanel.tsx | 10→8 lines | ~65 |
-| 08:50 | Edited src/renderer/src/components/task-panel/TaskEditPanel.tsx | 19→16 lines | ~172 |
-| 08:51 | Session end: 12 writes across 4 files (SessionsPage.tsx, TaskDetailPanel.tsx, TaskCreatePanel.tsx, TaskEditPanel.tsx) | 8 reads | ~13162 tok |
-| 08:52 | Edited src/renderer/src/components/task-panel/TaskCreatePanel.tsx | 18→18 lines | ~230 |
-| 08:52 | Edited src/renderer/src/components/task-panel/TaskEditPanel.tsx | 18→18 lines | ~216 |
-| 08:53 | Session end: 14 writes across 4 files (SessionsPage.tsx, TaskDetailPanel.tsx, TaskCreatePanel.tsx, TaskEditPanel.tsx) | 8 reads | ~13608 tok |
-| 08:57 | Created src/renderer/src/components/task-panel/TitleInput.tsx | — | ~890 |
-| 08:58 | Edited src/renderer/src/assets/main.css | CSS: --animate-title-caret | ~85 |
-| 08:58 | Edited src/renderer/src/components/task-panel/index.tsx | 1→2 lines | ~27 |
-| 08:58 | Edited src/renderer/src/components/task-panel/TaskCreatePanel.tsx | added 1 import(s) | ~61 |
-| 08:58 | Edited src/renderer/src/components/task-panel/TaskCreatePanel.tsx | 7→8 lines | ~87 |
-| 08:59 | Edited src/renderer/src/components/task-panel/TaskEditPanel.tsx | added 1 import(s) | ~27 |
-| 08:59 | Edited src/renderer/src/components/task-panel/TaskEditPanel.tsx | 7→8 lines | ~74 |
-| 09:01 | Edited src/renderer/src/components/task-panel/index.tsx | 2→1 lines | ~15 |
-| 09:01 | Edited src/renderer/src/components/task-panel/TaskCreatePanel.tsx | 2→1 lines | ~15 |
-| 09:01 | Edited src/renderer/src/components/task-panel/TaskEditPanel.tsx | 2→1 lines | ~15 |
-| 09:01 | Edited src/renderer/src/assets/main.css | reduced (-10 lines) | ~36 |
-| 09:02 | Edited src/renderer/src/assets/main.css | 4→3 lines | ~31 |
-| 09:03 | Session end: 26 writes across 7 files (SessionsPage.tsx, TaskDetailPanel.tsx, TaskCreatePanel.tsx, TaskEditPanel.tsx, TitleInput.tsx) | 12 reads | ~17939 tok |
+| Time  | Action                                                                                                                                | File(s)                    | Outcome    | ~Tokens |
+| ----- | ------------------------------------------------------------------------------------------------------------------------------------- | -------------------------- | ---------- | ------- |
+| 00:23 | Edited src/renderer/src/pages/SessionsPage.tsx                                                                                        | 9→9 lines                  | ~176       |
+| 00:23 | Edited src/renderer/src/pages/SessionsPage.tsx                                                                                        | 17→13 lines                | ~115       |
+| 00:23 | Edited src/renderer/src/pages/SessionsPage.tsx                                                                                        | 2→3 lines                  | ~47        |
+| 00:23 | Session end: 3 writes across 1 files (SessionsPage.tsx)                                                                               | 2 reads                    | ~3276 tok  |
+| 00:26 | Session end: 3 writes across 1 files (SessionsPage.tsx)                                                                               | 3 reads                    | ~4546 tok  |
+| 08:41 | Edited src/renderer/src/components/task-panel/TaskDetailPanel.tsx                                                                     | 4→5 lines                  | ~45        |
+| 08:41 | Session end: 4 writes across 2 files (SessionsPage.tsx, TaskDetailPanel.tsx)                                                          | 6 reads                    | ~8995 tok  |
+| 08:43 | Session end: 4 writes across 2 files (SessionsPage.tsx, TaskDetailPanel.tsx)                                                          | 6 reads                    | ~8995 tok  |
+| 08:45 | Edited src/renderer/src/components/task-panel/TaskCreatePanel.tsx                                                                     | CSS: placeholder, focus    | ~134       |
+| 08:45 | Edited src/renderer/src/components/task-panel/TaskCreatePanel.tsx                                                                     | —                          | ~0         |
+| 08:46 | Edited src/renderer/src/components/task-panel/TaskEditPanel.tsx                                                                       | CSS: placeholder, focus    | ~121       |
+| 08:46 | Edited src/renderer/src/components/task-panel/TaskEditPanel.tsx                                                                       | —                          | ~0         |
+| 08:47 | Session end: 8 writes across 4 files (SessionsPage.tsx, TaskDetailPanel.tsx, TaskCreatePanel.tsx, TaskEditPanel.tsx)                  | 8 reads                    | ~12484 tok |
+| 08:49 | Edited src/renderer/src/components/task-panel/TaskCreatePanel.tsx                                                                     | 10→9 lines                 | ~82        |
+| 08:49 | Edited src/renderer/src/components/task-panel/TaskCreatePanel.tsx                                                                     | 29→29 lines                | ~286       |
+| 08:50 | Edited src/renderer/src/components/task-panel/TaskEditPanel.tsx                                                                       | 10→8 lines                 | ~65        |
+| 08:50 | Edited src/renderer/src/components/task-panel/TaskEditPanel.tsx                                                                       | 19→16 lines                | ~172       |
+| 08:51 | Session end: 12 writes across 4 files (SessionsPage.tsx, TaskDetailPanel.tsx, TaskCreatePanel.tsx, TaskEditPanel.tsx)                 | 8 reads                    | ~13162 tok |
+| 08:52 | Edited src/renderer/src/components/task-panel/TaskCreatePanel.tsx                                                                     | 18→18 lines                | ~230       |
+| 08:52 | Edited src/renderer/src/components/task-panel/TaskEditPanel.tsx                                                                       | 18→18 lines                | ~216       |
+| 08:53 | Session end: 14 writes across 4 files (SessionsPage.tsx, TaskDetailPanel.tsx, TaskCreatePanel.tsx, TaskEditPanel.tsx)                 | 8 reads                    | ~13608 tok |
+| 08:57 | Created src/renderer/src/components/task-panel/TitleInput.tsx                                                                         | —                          | ~890       |
+| 08:58 | Edited src/renderer/src/assets/main.css                                                                                               | CSS: --animate-title-caret | ~85        |
+| 08:58 | Edited src/renderer/src/components/task-panel/index.tsx                                                                               | 1→2 lines                  | ~27        |
+| 08:58 | Edited src/renderer/src/components/task-panel/TaskCreatePanel.tsx                                                                     | added 1 import(s)          | ~61        |
+| 08:58 | Edited src/renderer/src/components/task-panel/TaskCreatePanel.tsx                                                                     | 7→8 lines                  | ~87        |
+| 08:59 | Edited src/renderer/src/components/task-panel/TaskEditPanel.tsx                                                                       | added 1 import(s)          | ~27        |
+| 08:59 | Edited src/renderer/src/components/task-panel/TaskEditPanel.tsx                                                                       | 7→8 lines                  | ~74        |
+| 09:01 | Edited src/renderer/src/components/task-panel/index.tsx                                                                               | 2→1 lines                  | ~15        |
+| 09:01 | Edited src/renderer/src/components/task-panel/TaskCreatePanel.tsx                                                                     | 2→1 lines                  | ~15        |
+| 09:01 | Edited src/renderer/src/components/task-panel/TaskEditPanel.tsx                                                                       | 2→1 lines                  | ~15        |
+| 09:01 | Edited src/renderer/src/assets/main.css                                                                                               | reduced (-10 lines)        | ~36        |
+| 09:02 | Edited src/renderer/src/assets/main.css                                                                                               | 4→3 lines                  | ~31        |
+| 09:03 | Session end: 26 writes across 7 files (SessionsPage.tsx, TaskDetailPanel.tsx, TaskCreatePanel.tsx, TaskEditPanel.tsx, TitleInput.tsx) | 12 reads                   | ~17939 tok |
 
 ## Session: 2026-04-29 09:05
 
-| Time | Action | File(s) | Outcome | ~Tokens |
-|------|--------|---------|---------|--------|
-| 09:06 | Edited src/renderer/src/components/task-list/task-context-menu.tsx | CSS: focus, focus-visible | ~78 |
-| 09:06 | Edited src/renderer/src/components/task-list/task-context-menu.tsx | CSS: focus, focus-visible | ~54 |
-| 09:06 | Session end: 2 writes across 1 files (task-context-menu.tsx) | 2 reads | ~3552 tok |
+| Time  | Action                                                             | File(s)                   | Outcome   | ~Tokens |
+| ----- | ------------------------------------------------------------------ | ------------------------- | --------- | ------- |
+| 09:06 | Edited src/renderer/src/components/task-list/task-context-menu.tsx | CSS: focus, focus-visible | ~78       |
+| 09:06 | Edited src/renderer/src/components/task-list/task-context-menu.tsx | CSS: focus, focus-visible | ~54       |
+| 09:06 | Session end: 2 writes across 1 files (task-context-menu.tsx)       | 2 reads                   | ~3552 tok |
 
 ## Session: 2026-04-29 09:07
 
-| Time | Action | File(s) | Outcome | ~Tokens |
-|------|--------|---------|---------|--------|
-| 09:08 | Edited src/renderer/src/components/task-list/task-context-menu.tsx | added 1 import(s) | ~46 |
-| 09:09 | Edited src/renderer/src/components/task-list/task-context-menu.tsx | CSS: focus, focus-visible | ~125 |
-| 09:09 | Session end: 2 writes across 1 files (task-context-menu.tsx) | 2 reads | ~2360 tok |
+| Time  | Action                                                             | File(s)                   | Outcome   | ~Tokens |
+| ----- | ------------------------------------------------------------------ | ------------------------- | --------- | ------- |
+| 09:08 | Edited src/renderer/src/components/task-list/task-context-menu.tsx | added 1 import(s)         | ~46       |
+| 09:09 | Edited src/renderer/src/components/task-list/task-context-menu.tsx | CSS: focus, focus-visible | ~125      |
+| 09:09 | Session end: 2 writes across 1 files (task-context-menu.tsx)       | 2 reads                   | ~2360 tok |
 
 ## Session: 2026-04-29 09:33
 
-| Time | Action | File(s) | Outcome | ~Tokens |
-|------|--------|---------|---------|--------|
-| 09:37 | Edited src/renderer/src/components/task-list/TaskRow.tsx | removed 11 lines | ~8 |
-| 09:37 | Edited src/renderer/src/components/task-list/TaskRow.tsx | added optional chaining | ~128 |
+| Time  | Action                                                   | File(s)                 | Outcome | ~Tokens |
+| ----- | -------------------------------------------------------- | ----------------------- | ------- | ------- |
+| 09:37 | Edited src/renderer/src/components/task-list/TaskRow.tsx | removed 11 lines        | ~8      |
+| 09:37 | Edited src/renderer/src/components/task-list/TaskRow.tsx | added optional chaining | ~128    |
 
 ## Session: 2026-04-29 09:38
 
-| Time | Action | File(s) | Outcome | ~Tokens |
-|------|--------|---------|---------|--------|
-| 09:40 | Created src/renderer/src/pages/health/utils.ts | — | ~136 |
-| 09:40 | Created src/renderer/src/pages/health/SliderRow.tsx | — | ~263 |
-| 09:40 | Created src/renderer/src/pages/health/QuickAddButtons.tsx | — | ~310 |
-| 09:40 | Created src/renderer/src/pages/health/MedLogList.tsx | — | ~786 |
-| 09:40 | Created src/renderer/src/pages/health/PkParams.tsx | — | ~871 |
-| 09:41 | Created src/renderer/src/pages/health/EffectChart.tsx | — | ~2534 |
-| 09:41 | Created src/renderer/src/pages/HealthPage.tsx | — | ~691 |
-| 09:41 | Edited src/renderer/src/pages/health/EffectChart.tsx | 6→3 lines | ~27 |
-| 09:42 | Created src/renderer/src/components/sessions-calendar/CalendarHeader.tsx | — | ~380 |
-| 09:42 | Created src/renderer/src/components/sessions-calendar/useCalendarDrag.ts | — | ~2654 |
+| Time  | Action                                                                   | File(s)   | Outcome | ~Tokens |
+| ----- | ------------------------------------------------------------------------ | --------- | ------- | ------- |
+| 09:40 | Created src/renderer/src/pages/health/utils.ts                           | —         | ~136    |
+| 09:40 | Created src/renderer/src/pages/health/SliderRow.tsx                      | —         | ~263    |
+| 09:40 | Created src/renderer/src/pages/health/QuickAddButtons.tsx                | —         | ~310    |
+| 09:40 | Created src/renderer/src/pages/health/MedLogList.tsx                     | —         | ~786    |
+| 09:40 | Created src/renderer/src/pages/health/PkParams.tsx                       | —         | ~871    |
+| 09:41 | Created src/renderer/src/pages/health/EffectChart.tsx                    | —         | ~2534   |
+| 09:41 | Created src/renderer/src/pages/HealthPage.tsx                            | —         | ~691    |
+| 09:41 | Edited src/renderer/src/pages/health/EffectChart.tsx                     | 6→3 lines | ~27     |
+| 09:42 | Created src/renderer/src/components/sessions-calendar/CalendarHeader.tsx | —         | ~380    |
+| 09:42 | Created src/renderer/src/components/sessions-calendar/useCalendarDrag.ts | —         | ~2654   |
 
 ## Session: 2026-04-29 09:43
 
+| Time  | Action                                                                                                      | File(s)    | Outcome    | ~Tokens |
+| ----- | ----------------------------------------------------------------------------------------------------------- | ---------- | ---------- | ------- |
+| 09:43 | Created src/renderer/src/components/sessions-calendar/SessionsCalendar.tsx                                  | —          | ~2561      |
+| 09:43 | Edited src/renderer/src/components/sessions-calendar/index.tsx                                              | inline fix | ~16        |
+| 09:44 | Created src/main/storage/sqlite/types.ts                                                                    | —          | ~643       |
+| 09:44 | Created src/main/storage/sqlite/schema.ts                                                                   | —          | ~646       |
+| 09:44 | Created src/main/storage/sqlite/serialize.ts                                                                | —          | ~2918      |
+| 09:45 | Created src/main/storage/sqlite.ts                                                                          | —          | ~75        |
+| 09:46 | Created src/main/storage/sqlite/storage.ts                                                                  | —          | ~3131      |
+| 09:46 | Created src/renderer/src/pages/sessions/SessionsToolbar.tsx                                                 | —          | ~580       |
+| 09:46 | Created src/renderer/src/pages/sessions/useSessionsKeyboard.ts                                              | —          | ~447       |
+| 09:47 | Created src/renderer/src/pages/SessionsPage.tsx                                                             | —          | ~2178      |
+| 09:50 | Session end: 10 writes across 10 files (SessionsCalendar.tsx, index.tsx, types.ts, schema.ts, serialize.ts) | 4 reads    | ~24272 tok |
+| 09:51 | Session end: 10 writes across 10 files (SessionsCalendar.tsx, index.tsx, types.ts, schema.ts, serialize.ts) | 4 reads    | ~24272 tok |
+
+## Session: 2026-04-29 10:06
+
+| Time  | Action                                                                                         | File(s)                                                                                                              | Outcome                                    | ~Tokens |
+| ----- | ---------------------------------------------------------------------------------------------- | -------------------------------------------------------------------------------------------------------------------- | ------------------------------------------ | ------- |
+| 10:06 | Added coss toast providers and split toast manager singleton for non-visual imports            | src/renderer/src/main.tsx, src/renderer/src/components/ui/toast.tsx, src/renderer/src/components/ui/toast-manager.ts | save failures can show app toast           | ~900    |
+| 10:06 | Added SQLite savePartial error handling without changing Zustand -> IPC -> SQLite architecture | src/renderer/src/store/domain/persist.ts                                                                             | failed patches stay pending for retry      | ~900    |
+| 10:06 | Added persistence retry and reload tests                                                       | src/renderer/src/store/tests/persist.test.ts                                                                         | test/typecheck/lint/build pass             | ~1600   |
+| 10:06 | Updated OpenWolf records for new file and test-runner fixes                                    | .wolf/anatomy.md, .wolf/cerebrum.md, .wolf/buglog.json, .wolf/memory.md                                              | anatomy/cerebrum/buglog/memory now current | ~700    |
+| 10:18 | Checked refactor-suggestions completion status for user                                        | .wolf/refactor-suggestions.md, src/renderer/src/store/domain/persist.ts                                              | Tier 1 done; Tier 2/3 not fully complete   | ~2200   |
+| 10:45 | Completed Tier 2 component/code-quality refactors                                              | task-form-fields, KanbanBoard, CustomizeSection, task-context-menu, Sidebar, TaskEditPanel, App                      | behavior-preserving cleanup done           | ~6200   |
+| 10:45 | Closed Tier 3 production/testing gaps                                                          | ipcHandlers.ts, persist.test.ts, pharmacokinetics.test.ts, sqlite serialize/storage                                  | IPC/persist/PK/SQLite tests added          | ~5600   |
+| 10:45 | Ran verification suite                                                                         | package scripts                                                                                                      | format/lint/test/typecheck/build pass      | ~1200   |
+| 10:45 | Updated OpenWolf records and checklist                                                         | .wolf/refactor-suggestions.md, .wolf/anatomy.md, .wolf/cerebrum.md, .wolf/buglog.json, .wolf/memory.md               | Tier 2/3 marked complete                   | ~1600   |
+
+## Session: 2026-04-29 10:38
+
 | Time | Action | File(s) | Outcome | ~Tokens |
 |------|--------|---------|---------|--------|
-| 09:43 | Created src/renderer/src/components/sessions-calendar/SessionsCalendar.tsx | — | ~2561 |
-| 09:43 | Edited src/renderer/src/components/sessions-calendar/index.tsx | inline fix | ~16 |
-| 09:44 | Created src/main/storage/sqlite/types.ts | — | ~643 |
-| 09:44 | Created src/main/storage/sqlite/schema.ts | — | ~646 |
-| 09:44 | Created src/main/storage/sqlite/serialize.ts | — | ~2918 |
-| 09:45 | Created src/main/storage/sqlite.ts | — | ~75 |
-| 09:46 | Created src/main/storage/sqlite/storage.ts | — | ~3131 |
-| 09:46 | Created src/renderer/src/pages/sessions/SessionsToolbar.tsx | — | ~580 |
-| 09:46 | Created src/renderer/src/pages/sessions/useSessionsKeyboard.ts | — | ~447 |
-| 09:47 | Created src/renderer/src/pages/SessionsPage.tsx | — | ~2178 |
-| 09:50 | Session end: 10 writes across 10 files (SessionsCalendar.tsx, index.tsx, types.ts, schema.ts, serialize.ts) | 4 reads | ~24272 tok |
-| 09:51 | Session end: 10 writes across 10 files (SessionsCalendar.tsx, index.tsx, types.ts, schema.ts, serialize.ts) | 4 reads | ~24272 tok |
+
+## Session: 2026-04-29 10:39
+
+| Time | Action | File(s) | Outcome | ~Tokens |
+|------|--------|---------|---------|--------|
+
+## Session: 2026-04-29 10:39
+
+| Time | Action | File(s) | Outcome | ~Tokens |
+|------|--------|---------|---------|--------|
+
+## Session: 2026-04-29 10:39
+
+| Time | Action | File(s) | Outcome | ~Tokens |
+|------|--------|---------|---------|--------|
+
+## Session: 2026-04-29 10:40
+
+| Time | Action | File(s) | Outcome | ~Tokens |
+|------|--------|---------|---------|--------|
+
+## Session: 2026-04-29 10:41
+
+| Time | Action | File(s) | Outcome | ~Tokens |
+|------|--------|---------|---------|--------|
+
+## Session: 2026-04-29 10:42
+
+| Time | Action | File(s) | Outcome | ~Tokens |
+|------|--------|---------|---------|--------|
+
+## Session: 2026-04-29 10:43
+
+| Time | Action | File(s) | Outcome | ~Tokens |
+|------|--------|---------|---------|--------|
+
+## Session: 2026-04-29 10:43
+
+| Time | Action | File(s) | Outcome | ~Tokens |
+|------|--------|---------|---------|--------|
+
+## Session: 2026-04-29 10:44
+
+| Time | Action | File(s) | Outcome | ~Tokens |
+|------|--------|---------|---------|--------|

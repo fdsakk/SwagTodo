@@ -148,9 +148,6 @@ export interface ChartPoint {
   band: 'below' | 'therapeutic' | 'above'
 }
 
-/** 5-minute resolution → smooth curve. XAxis tick every 12th point = 1 hour. */
-export const CHART_TICK_INTERVAL = 11
-
 /**
  * Build a per-med PK def with user-overridden keMultiplier and tMaxOffsetH applied.
  * keMultiplier scales all elimination rates; tMaxOffsetH shifts the effective intake time.

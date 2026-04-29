@@ -2,13 +2,9 @@ import { app, shell, dialog, BrowserWindow, ipcMain, type IpcMainInvokeEvent } f
 import { join } from 'path'
 import { electronApp, optimizer, is } from '@electron-toolkit/utils'
 import icon from '../../resources/icon.png?asset'
-import { DEFAULT_UI_SCALE, UI_SCALE_OPTIONS } from '../shared/defaults'
-import type { UiScale } from '../shared/types'
-import { isAppState, isAppStatePatch, isUiScale } from './storage/appState'
 import { createSqliteAppStorage, type SqliteAppStorage } from './storage/sqlite'
+import { getPersistedUiScale, registerIpcHandlers } from './ipcHandlers'
 
-const MIN_ZOOM_FACTOR = UI_SCALE_OPTIONS[0] / 100
-const MAX_ZOOM_FACTOR = UI_SCALE_OPTIONS[UI_SCALE_OPTIONS.length - 1] / 100
 const IS_MAC = process.platform === 'darwin'
 const IS_WAYLAND = process.platform === 'linux' && process.env.XDG_SESSION_TYPE === 'wayland'
 let appStorage: SqliteAppStorage | null = null
@@ -24,23 +20,9 @@ if (IS_WAYLAND) {
   )
 }
 
-const isZoomFactor = (v: unknown): v is number =>
-  typeof v === 'number' && v >= MIN_ZOOM_FACTOR && v <= MAX_ZOOM_FACTOR
-
 const getAppStorage = (): SqliteAppStorage => {
   if (!appStorage) throw new Error('App storage is not initialized')
   return appStorage
-}
-
-const getPersistedUiScale = (): UiScale => {
-  const s = getAppStorage().loadUiScale()
-  return isUiScale(s) ? s : DEFAULT_UI_SCALE
-}
-
-const senderWindow = (event: IpcMainInvokeEvent): BrowserWindow => {
-  const w = BrowserWindow.fromWebContents(event.sender)
-  if (!w) throw new Error('Unable to resolve sender window')
-  return w
 }
 
 const formatProcessError = (value: unknown): string => {
@@ -117,7 +99,7 @@ function createWindow(): void {
   mainWindow.setMenuBarVisibility(false)
 
   mainWindow.webContents.once('did-finish-load', () => {
-    mainWindow.webContents.setZoomFactor(getPersistedUiScale() / 100)
+    mainWindow.webContents.setZoomFactor(getPersistedUiScale(getAppStorage()) / 100)
   })
 
   mainWindow.once('ready-to-show', () => mainWindow.show())
@@ -145,48 +127,6 @@ function createWindow(): void {
   }
 }
 
-function registerIpcHandlers(): void {
-  ipcMain.handle('store:load', async () => getAppStorage().loadState())
-
-  ipcMain.handle('store:save', async (_, nextState: unknown) => {
-    if (!isAppState(nextState)) throw new Error('Invalid app state payload')
-    getAppStorage().saveState(nextState)
-  })
-
-  ipcMain.handle('store:savePartial', async (_, patch: unknown) => {
-    if (!isAppStatePatch(patch)) throw new Error('Invalid app state patch payload')
-    getAppStorage().savePartial(patch)
-  })
-
-  ipcMain.handle('ui:getZoomFactor', (event) => senderWindow(event).webContents.getZoomFactor())
-
-  ipcMain.handle('ui:setZoomFactor', (event, nextZoomFactor: unknown) => {
-    if (!isZoomFactor(nextZoomFactor)) throw new Error('Invalid zoom factor payload')
-    senderWindow(event).webContents.setZoomFactor(nextZoomFactor)
-  })
-
-  ipcMain.handle('window:minimize', (event) => {
-    BrowserWindow.fromWebContents(event.sender)?.minimize()
-  })
-
-  ipcMain.handle('window:toggleMaximize', (event) => {
-    const w = BrowserWindow.fromWebContents(event.sender)
-    if (!w) return
-    w.isMaximized() ? w.unmaximize() : w.maximize()
-  })
-
-  ipcMain.handle('window:close', (event) => {
-    BrowserWindow.fromWebContents(event.sender)?.close()
-  })
-
-  ipcMain.handle('window:getState', (event) => {
-    const w = BrowserWindow.fromWebContents(event.sender)
-    return w
-      ? { isMaximized: w.isMaximized(), isFullScreen: w.isFullScreen() }
-      : { isMaximized: false, isFullScreen: false }
-  })
-}
-
 app.whenReady().then(() => {
   electronApp.setAppUserModelId('com.electron.app')
 
@@ -195,7 +135,11 @@ app.whenReady().then(() => {
   })
 
   appStorage = createSqliteAppStorage(join(app.getPath('userData'), 'swag-todo.db'))
-  registerIpcHandlers()
+  registerIpcHandlers({
+    ipcMain,
+    getAppStorage,
+    resolveSenderWindow: (event: IpcMainInvokeEvent) => BrowserWindow.fromWebContents(event.sender)
+  })
   createWindow()
 
   app.on('activate', () => {

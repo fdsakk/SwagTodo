@@ -4,6 +4,7 @@ import { DEFAULT_UI_SCALE } from '../../shared/defaults'
 import type { AppState } from '../../shared/types'
 import { normalizeAppState } from '../storage/appState'
 import {
+  changedTaskChildIds,
   changedTaskIds,
   deserializeAppState,
   parseLegacyElectronStore,
@@ -177,6 +178,7 @@ test('changedTaskIds detects updated task title', () => {
   const changed = changedTaskIds(prev, next)
   assert.ok(changed.has('task-1'))
   assert.equal(changed.size, 1)
+  assert.equal(changedTaskChildIds(prev, next).size, 0)
 })
 
 test('changedTaskIds detects subtask change without row change', () => {
@@ -193,6 +195,7 @@ test('changedTaskIds detects subtask change without row change', () => {
   const next = serializeAppState(modified)
   const changed = changedTaskIds(prev, next)
   assert.ok(changed.has('task-1'))
+  assert.ok(changedTaskChildIds(prev, next).has('task-1'))
 })
 
 test('changedTaskIds detects label order change', () => {
@@ -205,6 +208,7 @@ test('changedTaskIds detects label order change', () => {
   const next = serializeAppState(modified)
   const changed = changedTaskIds(prev, next)
   assert.ok(changed.has('task-1'))
+  assert.ok(changedTaskChildIds(prev, next).has('task-1'))
 })
 
 test('changedTaskIds marks removed task id as changed', () => {

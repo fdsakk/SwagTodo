@@ -18,6 +18,7 @@ import { normalizeStoredTask } from '../shared/normalize'
 import type { DomainState, PersistedDomainState } from '../shared/types'
 import { isUiScale } from '../shared/utils'
 import { createInitialDomainState } from './state'
+import { toastManager } from '@renderer/components/ui/toast-manager'
 import { z } from 'zod'
 
 const defaultPersistedState = pickPersistedState(createInitialDomainState())
@@ -108,11 +109,35 @@ export function pickPersistedState(state: DomainState): PersistedDomainState {
 }
 
 type PersistedJson = Map<keyof PersistedDomainState, string>
+type PersistenceErrorReporter = (error: unknown) => void | Promise<void>
 
 let lastPersistedJson: PersistedJson | undefined
+let persistenceErrorReporter: PersistenceErrorReporter = (error) => {
+  toastManager.add({
+    id: 'storage-save-failed',
+    type: 'error',
+    title: 'Changes were not saved',
+    description: getPersistenceErrorMessage(error),
+    priority: 'high'
+  })
+}
+
+const getPersistenceErrorMessage = (error: unknown): string => {
+  if (error instanceof Error && error.message) return error.message
+  if (typeof error === 'string' && error) return error
+  return 'SQLite save failed. Your latest change will be retried on the next update.'
+}
 
 const buildPersistedJson = (state: PersistedDomainState): PersistedJson =>
   new Map(PERSISTED_KEYS.map((k) => [k, JSON.stringify(state[k])]))
+
+export const setPersistenceErrorReporter = (reporter: PersistenceErrorReporter): (() => void) => {
+  const previous = persistenceErrorReporter
+  persistenceErrorReporter = reporter
+  return () => {
+    persistenceErrorReporter = previous
+  }
+}
 
 export const persistedStorage: PersistStorage<PersistedDomainState> = {
   getItem: async () => {
@@ -135,7 +160,12 @@ export const persistedStorage: PersistStorage<PersistedDomainState> = {
     }
 
     if (Object.keys(patch).length === 0) return
-    await window.api.storage.savePartial(patch)
+    try {
+      await window.api.storage.savePartial(patch)
+    } catch (error) {
+      void persistenceErrorReporter(error)
+      return
+    }
     lastPersistedJson = nextJson
   },
   removeItem: async () => {

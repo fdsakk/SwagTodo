@@ -23,6 +23,7 @@ interface TaskEditPanelProps {
 }
 
 const TEXT_COMMIT_DEBOUNCE_MS = 200
+type PendingTextCommit = { taskId: string; value: string }
 
 export function TaskEditPanel({ task, onClose }: TaskEditPanelProps): React.JSX.Element {
   const {
@@ -55,35 +56,61 @@ export function TaskEditPanel({ task, onClose }: TaskEditPanelProps): React.JSX.
 
   const titleTimerRef = useRef<ReturnType<typeof setTimeout> | null>(null)
   const descTimerRef = useRef<ReturnType<typeof setTimeout> | null>(null)
+  const pendingTitleRef = useRef<PendingTextCommit | null>(null)
+  const pendingDescriptionRef = useRef<PendingTextCommit | null>(null)
 
-  useEffect(() => {
-    return () => {
-      if (titleTimerRef.current) clearTimeout(titleTimerRef.current)
-      if (descTimerRef.current) clearTimeout(descTimerRef.current)
-    }
+  const clearTitleTimer = useCallback((): void => {
+    if (!titleTimerRef.current) return
+    clearTimeout(titleTimerRef.current)
+    titleTimerRef.current = null
   }, [])
+
+  const clearDescriptionTimer = useCallback((): void => {
+    if (!descTimerRef.current) return
+    clearTimeout(descTimerRef.current)
+    descTimerRef.current = null
+  }, [])
+
+  const flushPendingTitle = useCallback((): void => {
+    const pending = pendingTitleRef.current
+    if (!pending) return
+    clearTitleTimer()
+    pendingTitleRef.current = null
+    if (pending.value.trim()) updateTask(pending.taskId, { title: pending.value })
+  }, [clearTitleTimer, updateTask])
+
+  const flushPendingDescription = useCallback((): void => {
+    const pending = pendingDescriptionRef.current
+    if (!pending) return
+    clearDescriptionTimer()
+    pendingDescriptionRef.current = null
+    updateTask(pending.taskId, { description: pending.value })
+  }, [clearDescriptionTimer, updateTask])
 
   const commitTitle = useCallback(
     (value: string) => {
-      if (titleTimerRef.current) clearTimeout(titleTimerRef.current)
-      titleTimerRef.current = setTimeout(() => {
-        titleTimerRef.current = null
-        updateTask(task.id, { title: value })
-      }, TEXT_COMMIT_DEBOUNCE_MS)
+      clearTitleTimer()
+      pendingTitleRef.current = { taskId: task.id, value }
+      titleTimerRef.current = setTimeout(flushPendingTitle, TEXT_COMMIT_DEBOUNCE_MS)
     },
-    [task.id, updateTask]
+    [clearTitleTimer, flushPendingTitle, task.id]
   )
 
   const commitDescription = useCallback(
     (value: string) => {
-      if (descTimerRef.current) clearTimeout(descTimerRef.current)
-      descTimerRef.current = setTimeout(() => {
-        descTimerRef.current = null
-        updateTask(task.id, { description: value })
-      }, TEXT_COMMIT_DEBOUNCE_MS)
+      clearDescriptionTimer()
+      pendingDescriptionRef.current = { taskId: task.id, value }
+      descTimerRef.current = setTimeout(flushPendingDescription, TEXT_COMMIT_DEBOUNCE_MS)
     },
-    [task.id, updateTask]
+    [clearDescriptionTimer, flushPendingDescription, task.id]
   )
+
+  useEffect(() => {
+    return () => {
+      flushPendingTitle()
+      flushPendingDescription()
+    }
+  }, [flushPendingDescription, flushPendingTitle])
 
   const handleTitleChange = useCallback(
     (e: React.ChangeEvent<HTMLInputElement>) => {
@@ -104,21 +131,13 @@ export function TaskEditPanel({ task, onClose }: TaskEditPanelProps): React.JSX.
   )
 
   const flushTitle = useCallback(() => {
-    if (titleTimerRef.current) {
-      clearTimeout(titleTimerRef.current)
-      titleTimerRef.current = null
-      if (title.trim()) updateTask(task.id, { title })
-      else setTitle(task.title)
-    }
-  }, [task.id, task.title, title, updateTask])
+    flushPendingTitle()
+    if (!title.trim()) setTitle(task.title)
+  }, [flushPendingTitle, task.title, title])
 
   const flushDescription = useCallback(() => {
-    if (descTimerRef.current) {
-      clearTimeout(descTimerRef.current)
-      descTimerRef.current = null
-      updateTask(task.id, { description })
-    }
-  }, [task.id, description, updateTask])
+    flushPendingDescription()
+  }, [flushPendingDescription])
 
   const toggleLabel = useCallback(
     (labelId: string): void => {
@@ -146,6 +165,26 @@ export function TaskEditPanel({ task, onClose }: TaskEditPanelProps): React.JSX.
       onClose()
     }
   }, [deleteTask, onClose, task.id])
+
+  const handleDueDateChange = useCallback(
+    (v: string | undefined) => updateTask(task.id, { dueDate: v ?? undefined }),
+    [task.id, updateTask]
+  )
+
+  const handlePriorityChange = useCallback(
+    (v: Priority) => updateTask(task.id, { priority: v }),
+    [task.id, updateTask]
+  )
+
+  const handleProjectChange = useCallback(
+    (v: string | undefined) => updateTask(task.id, { projectId: v ?? undefined }),
+    [task.id, updateTask]
+  )
+
+  const handleStatusChange = useCallback(
+    (v: TaskStatus) => updateTask(task.id, { status: v }),
+    [task.id, updateTask]
+  )
 
   return (
     <>
@@ -181,10 +220,10 @@ export function TaskEditPanel({ task, onClose }: TaskEditPanelProps): React.JSX.
             dueDate={task.dueDate}
             emptyLabelsMessage="No labels selected."
             labels={labels}
-            onDueDateChange={(v) => updateTask(task.id, { dueDate: v ?? undefined })}
-            onPriorityChange={(v: Priority) => updateTask(task.id, { priority: v })}
-            onProjectChange={(v) => updateTask(task.id, { projectId: v ?? undefined })}
-            onStatusChange={(v: TaskStatus) => updateTask(task.id, { status: v })}
+            onDueDateChange={handleDueDateChange}
+            onPriorityChange={handlePriorityChange}
+            onProjectChange={handleProjectChange}
+            onStatusChange={handleStatusChange}
             onToggleLabel={toggleLabel}
             priority={task.priority}
             projectId={task.projectId}

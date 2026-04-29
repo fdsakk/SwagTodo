@@ -19,7 +19,28 @@ import { useDomainStore } from '@renderer/store'
 
 type ColumnTaskIds = Record<TaskStatus, string[]>
 
-const buildColumnTaskIds = (columns: Record<TaskStatus, Task[]>): ColumnTaskIds => ({
+const buildLabelMap = (labels: readonly Label[]): Map<string, Label> => {
+  const map = new Map<string, Label>()
+  for (const label of labels) map.set(label.id, label)
+  return map
+}
+
+const buildColumns = (tasks: readonly Task[]): Record<TaskStatus, Task[]> => {
+  const buckets: Record<TaskStatus, Task[]> = { todo: [], in_progress: [], done: [] }
+  for (const task of tasks) buckets[task.status].push(task)
+  buckets.todo.sort(byOrderAsc)
+  buckets.in_progress.sort(byOrderAsc)
+  buckets.done.sort(byOrderAsc)
+  return buckets
+}
+
+const buildTaskMap = (tasks: readonly Task[]): Map<string, Task> => {
+  const map = new Map<string, Task>()
+  for (const task of tasks) map.set(task.id, task)
+  return map
+}
+
+const buildColumnTaskIds = (columns: Record<TaskStatus, readonly Task[]>): ColumnTaskIds => ({
   todo: columns.todo.map((task) => task.id),
   in_progress: columns.in_progress.map((task) => task.id),
   done: columns.done.map((task) => task.id)
@@ -44,6 +65,17 @@ const findTaskStatus = (columns: ColumnTaskIds, taskId: string): TaskStatus | un
   }
   return undefined
 }
+
+const mapColumnIdsToTasks = (
+  columnTaskIds: ColumnTaskIds,
+  taskById: Map<string, Task>
+): Record<TaskStatus, Task[]> => ({
+  todo: columnTaskIds.todo.map((id) => taskById.get(id)).filter((task): task is Task => !!task),
+  in_progress: columnTaskIds.in_progress
+    .map((id) => taskById.get(id))
+    .filter((task): task is Task => !!task),
+  done: columnTaskIds.done.map((id) => taskById.get(id)).filter((task): task is Task => !!task)
+})
 
 const getProjectedColumns = ({
   activeId,
@@ -104,7 +136,7 @@ interface KanbanBoardProps {
   onOpenTask: (taskId: string) => void
 }
 
-export default function KanbanBoard(props: KanbanBoardProps): React.JSX.Element {
+export function KanbanBoard(props: KanbanBoardProps): React.JSX.Element {
   const { addTask, applyKanbanOrder } = useDomainStore(
     useShallow((state) => ({
       addTask: state.addTask,
@@ -119,41 +151,13 @@ export default function KanbanBoard(props: KanbanBoardProps): React.JSX.Element 
   const [draftColumnTaskIds, setDraftColumnTaskIds] = useState<ColumnTaskIds | null>(null)
   const sensors = useSensors(useSensor(PointerSensor, { activationConstraint: { distance: 6 } }))
 
-  const labelMap = useMemo(() => {
-    const m = new Map<string, Label>()
-    for (const label of props.labels) m.set(label.id, label)
-    return m
-  }, [props.labels])
-
-  const columns = useMemo<Record<TaskStatus, Task[]>>(() => {
-    const buckets: Record<TaskStatus, Task[]> = { todo: [], in_progress: [], done: [] }
-    for (const task of props.tasks) buckets[task.status].push(task)
-    buckets.todo.sort(byOrderAsc)
-    buckets.in_progress.sort(byOrderAsc)
-    buckets.done.sort(byOrderAsc)
-    return buckets
-  }, [props.tasks])
-
-  const taskById = useMemo(() => {
-    const m = new Map<string, Task>()
-    for (const task of props.tasks) m.set(task.id, task)
-    return m
-  }, [props.tasks])
+  const labelMap = useMemo(() => buildLabelMap(props.labels), [props.labels])
+  const columns = useMemo(() => buildColumns(props.tasks), [props.tasks])
+  const taskById = useMemo(() => buildTaskMap(props.tasks), [props.tasks])
   const committedColumnTaskIds = useMemo(() => buildColumnTaskIds(columns), [columns])
   const renderedColumns = useMemo<Record<TaskStatus, Task[]>>(() => {
     if (!draftColumnTaskIds) return columns
-
-    return {
-      todo: draftColumnTaskIds.todo
-        .map((id) => taskById.get(id))
-        .filter((task): task is Task => !!task),
-      in_progress: draftColumnTaskIds.in_progress
-        .map((id) => taskById.get(id))
-        .filter((task): task is Task => !!task),
-      done: draftColumnTaskIds.done
-        .map((id) => taskById.get(id))
-        .filter((task): task is Task => !!task)
-    }
+    return mapColumnIdsToTasks(draftColumnTaskIds, taskById)
   }, [columns, draftColumnTaskIds, taskById])
 
   const activeTask = activeTaskId ? taskById.get(activeTaskId) : undefined

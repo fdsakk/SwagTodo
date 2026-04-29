@@ -1,5 +1,6 @@
 export type { SqliteStateSnapshot } from './sqlite/types'
 export {
+  changedTaskChildIds,
   changedTaskIds,
   deserializeAppState,
   parseLegacyElectronStore,

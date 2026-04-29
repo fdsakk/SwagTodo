@@ -1,6 +1,5 @@
 import { useCallback, useRef, useState, type PointerEvent as ReactPointerEvent } from 'react'
 import {
-  PX_PER_MIN,
   SLOT_MIN,
   buildIsoAtMinutes,
   clampMin,
@@ -44,18 +43,20 @@ interface CalendarDrag {
 }
 
 function findDayIndexAtX(
-  columns: (HTMLDivElement | null)[],
+  rects: readonly (DOMRect | null)[],
   clientX: number,
   fallback: number
 ): number {
-  for (let i = 0; i < columns.length; i++) {
-    const col = columns[i]
-    if (!col) continue
-    const r = col.getBoundingClientRect()
+  for (let i = 0; i < rects.length; i++) {
+    const r = rects[i]
+    if (!r) continue
     if (clientX >= r.left && clientX <= r.right) return i
   }
   return fallback
 }
+
+const measureColumnRects = (columns: readonly (HTMLDivElement | null)[]): (DOMRect | null)[] =>
+  columns.map((column) => column?.getBoundingClientRect() ?? null)
 
 export function useCalendarDrag({
   days,
@@ -65,6 +66,7 @@ export function useCalendarDrag({
   onUpdateTimeBlock
 }: UseCalendarDragArgs): CalendarDrag {
   const columnRefs = useRef<(HTMLDivElement | null)[]>([])
+  const columnRectsRef = useRef<(DOMRect | null)[]>([])
   const [draft, setDraft] = useState<Draft | null>(null)
 
   const setColumnRef = useCallback(
@@ -134,6 +136,7 @@ export function useCalendarDrag({
         const column = columnRefs.current[startDayIndex]
         if (!column) return
         const initialPointer = pointToMinutes(event.clientY, column)
+        columnRectsRef.current = measureColumnRects(columnRefs.current)
         const duration = block.endMin - block.startMin
         const offsetMin = initialPointer - block.startMin
         let current: DraftMove | DraftResize = {
@@ -149,7 +152,7 @@ export function useCalendarDrag({
           moved = true
           const nextDayIndex =
             mode === 'move'
-              ? findDayIndexAtX(columnRefs.current, e.clientX, startDayIndex)
+              ? findDayIndexAtX(columnRectsRef.current, e.clientX, startDayIndex)
               : startDayIndex
           const col = columnRefs.current[nextDayIndex]
           if (!col) return
@@ -205,6 +208,7 @@ export function useCalendarDrag({
         const column = columnRefs.current[startDayIndex]
         if (!column) return
         const initialPointer = pointToMinutes(event.clientY, column)
+        columnRectsRef.current = measureColumnRects(columnRefs.current)
         const duration = tb.endMin - tb.startMin
         const offsetMin = initialPointer - tb.startMin
         let current: DraftTimeBlockMove | DraftTimeBlockResize = {
@@ -220,7 +224,7 @@ export function useCalendarDrag({
           moved = true
           const nextDayIndex =
             mode === 'move'
-              ? findDayIndexAtX(columnRefs.current, e.clientX, startDayIndex)
+              ? findDayIndexAtX(columnRectsRef.current, e.clientX, startDayIndex)
               : startDayIndex
           const col = columnRefs.current[nextDayIndex]
           if (!col) return
@@ -271,5 +275,3 @@ export function useCalendarDrag({
     handleTimeBlockPointerDown
   }
 }
-
-export const CALENDAR_PX_PER_MIN = PX_PER_MIN

@@ -1,6 +1,5 @@
 export {
   isTaskDueToday,
-  isTaskInFuture,
   isTaskOverdue,
   selectEditingProjectById,
   selectArchivedTaskGroups,
@@ -25,6 +24,5 @@ export type {
   UiStore,
   UpdateTaskInput
 } from './shared/types'
-export { domainSelectors } from './domain/selectors'
 export { useUiStore } from './ui/uiStore'
 export { useDomainStore } from './domain/domainStore'

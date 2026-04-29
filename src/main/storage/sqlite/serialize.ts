@@ -303,11 +303,18 @@ const buildChildJson = (
   return m
 }
 
+const isSameRow = <T extends Record<string, unknown>>(a: T, b: T): boolean => {
+  const aKeys = Object.keys(a)
+  const bKeys = Object.keys(b)
+  if (aKeys.length !== bKeys.length) return false
+  return aKeys.every((key) => Object.is(a[key], b[key]))
+}
+
 export const changedTaskIds = (
   prev: SqliteStateSnapshot,
   next: SqliteStateSnapshot
 ): Set<string> => {
-  const prevTaskJson = new Map(prev.tasks.map((t) => [t.id, JSON.stringify(t)]))
+  const prevTaskById = new Map(prev.tasks.map((t) => [t.id, t]))
   const prevSubJson = buildChildJson(prev.taskSubtasks, JSON.stringify)
   const prevLblJson = buildChildJson(prev.taskLabels, JSON.stringify)
   const nextSubJson = buildChildJson(next.taskSubtasks, JSON.stringify)
@@ -315,8 +322,10 @@ export const changedTaskIds = (
 
   const changed = new Set<string>()
   for (const t of next.tasks) {
+    const prevTask = prevTaskById.get(t.id)
     if (
-      prevTaskJson.get(t.id) !== JSON.stringify(t) ||
+      !prevTask ||
+      !isSameRow(prevTask, t) ||
       (prevSubJson.get(t.id) ?? '') !== (nextSubJson.get(t.id) ?? '') ||
       (prevLblJson.get(t.id) ?? '') !== (nextLblJson.get(t.id) ?? '')
     ) {
@@ -330,8 +339,35 @@ export const changedTaskIds = (
   return changed
 }
 
+export const changedTaskChildIds = (
+  prev: SqliteStateSnapshot,
+  next: SqliteStateSnapshot
+): Set<string> => {
+  const prevSubJson = buildChildJson(prev.taskSubtasks, JSON.stringify)
+  const prevLblJson = buildChildJson(prev.taskLabels, JSON.stringify)
+  const nextSubJson = buildChildJson(next.taskSubtasks, JSON.stringify)
+  const nextLblJson = buildChildJson(next.taskLabels, JSON.stringify)
+  const ids = new Set<string>()
+
+  for (const task of next.tasks) {
+    if (
+      (prevSubJson.get(task.id) ?? '') !== (nextSubJson.get(task.id) ?? '') ||
+      (prevLblJson.get(task.id) ?? '') !== (nextLblJson.get(task.id) ?? '')
+    ) {
+      ids.add(task.id)
+    }
+  }
+
+  return ids
+}
+
 export const changedIds = <T extends { id: string }>(prev: T[], next: T[]): boolean => {
   if (prev.length !== next.length) return true
-  const prevMap = new Map(prev.map((r) => [r.id, JSON.stringify(r)]))
-  return next.some((r) => prevMap.get(r.id) !== JSON.stringify(r))
+  const prevMap = new Map(prev.map((r) => [r.id, r]))
+  return next.some((r) => {
+    const previous = prevMap.get(r.id)
+    return (
+      !previous || !isSameRow(previous as Record<string, unknown>, r as Record<string, unknown>)
+    )
+  })
 }

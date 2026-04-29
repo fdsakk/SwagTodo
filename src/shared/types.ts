@@ -1,7 +1,8 @@
+import type { UiScale } from './defaults'
+
 export type Priority = 'p1' | 'p2' | 'p3' | 'p4'
 export type TaskStatus = 'todo' | 'in_progress' | 'done'
-export const UI_SCALE_OPTIONS = [100, 110, 125, 150, 175] as const
-export type UiScale = (typeof UI_SCALE_OPTIONS)[number]
+export type { UiScale } from './defaults'
 
 export interface SubTask {
   id: string

@@ -1,5 +1,6 @@
-/* eslint-disable @typescript-eslint/no-require-imports */
+// eslint-disable-next-line @typescript-eslint/no-require-imports -- require hook must patch CommonJS resolver before tests import TS aliases.
 const Module = require('module')
+// eslint-disable-next-line @typescript-eslint/no-require-imports -- require hook runs as CommonJS preload.
 const path = require('path')
 
 const originalResolveFilename = Module._resolveFilename

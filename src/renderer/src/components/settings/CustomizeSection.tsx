@@ -1,4 +1,4 @@
-import { useEffect, useState } from 'react'
+import { memo, useCallback, useEffect, useMemo, useState } from 'react'
 import { ChevronDown, ChevronUp, RotateCcw } from 'lucide-react'
 import { HexColorPicker } from 'react-colorful'
 import {
@@ -59,6 +59,7 @@ const TOKEN_GROUPS = [
 }>
 
 const HEX_RE = /^#([0-9a-fA-F]{6})$/
+type ThemeTokenKey = keyof ThemeTokens
 
 function colorToHex(value: string): string {
   if (value.startsWith('#')) return value.slice(0, 7)
@@ -146,23 +147,31 @@ function ColorPickerPopover({ label, hex, onChange }: ColorPickerPopoverProps): 
 }
 
 interface ColorTokenCardProps {
+  tokenKey: ThemeTokenKey
   label: string
   hex: string
   isCustom: boolean
-  onChange: (value: string) => void
-  onReset: () => void
+  onChange: (tokenKey: ThemeTokenKey, value: string) => void
+  onReset: (tokenKey: ThemeTokenKey) => void
 }
 
-function ColorTokenCard({
+const ColorTokenCard = memo(function ColorTokenCard({
+  tokenKey,
   label,
   hex,
   isCustom,
   onChange,
   onReset
 }: ColorTokenCardProps): React.JSX.Element {
+  const handleChange = useCallback(
+    (value: string) => onChange(tokenKey, value),
+    [onChange, tokenKey]
+  )
+  const handleReset = useCallback(() => onReset(tokenKey), [onReset, tokenKey])
+
   return (
     <div className="rounded-lg border border-app-border bg-app-card p-3">
-      <ColorPickerPopover label={label} hex={hex} onChange={onChange} />
+      <ColorPickerPopover label={label} hex={hex} onChange={handleChange} />
       <div className="mt-2.5 flex items-end justify-between gap-2">
         <div className="min-w-0">
           <p className="truncate text-xs font-medium text-app-text">{label}</p>
@@ -172,7 +181,7 @@ function ColorTokenCard({
           {isCustom && (
             <button
               type="button"
-              onClick={onReset}
+              onClick={handleReset}
               className="rounded-md border border-app-border px-2 py-1 text-xs text-app-text-secondary hover:text-app-text transition-colors"
               aria-label={`Reset ${label}`}
             >
@@ -183,7 +192,44 @@ function ColorTokenCard({
       </div>
     </div>
   )
+})
+
+interface TokenGroupSectionProps {
+  title: string
+  keys: readonly ThemeTokenKey[]
+  resolved: ThemeTokens
+  customTokens: Partial<ThemeTokens>
+  onTokenChange: (tokenKey: ThemeTokenKey, value: string) => void
+  onResetToken: (tokenKey: ThemeTokenKey) => void
 }
+
+const TokenGroupSection = memo(function TokenGroupSection({
+  title,
+  keys,
+  resolved,
+  customTokens,
+  onTokenChange,
+  onResetToken
+}: TokenGroupSectionProps): React.JSX.Element {
+  return (
+    <div className="space-y-2">
+      <h3 className="text-xs font-semibold text-app-text-secondary">{title}</h3>
+      <div className="grid gap-2 grid-cols-5 xl:grid-cols-7">
+        {keys.map((key) => (
+          <ColorTokenCard
+            key={key}
+            tokenKey={key}
+            label={TOKEN_LABELS[key]}
+            hex={colorToHex(resolved[key])}
+            isCustom={Boolean(customTokens[key])}
+            onChange={onTokenChange}
+            onReset={onResetToken}
+          />
+        ))}
+      </div>
+    </div>
+  )
+})
 
 interface CustomizeSectionProps {
   appearance: AppearanceSettings
@@ -198,19 +244,29 @@ export function CustomizeSection({
 }: CustomizeSectionProps): React.JSX.Element {
   const [showCustomize, setShowCustomize] = useState(false)
   const resolved = getResolvedTokens(appearance)
-  const customTokens =
-    appearance.customTokensByTheme[appearance.themeId] ?? appearance.customTokens ?? {}
+  const customTokens = useMemo(
+    () => appearance.customTokensByTheme[appearance.themeId] ?? appearance.customTokens ?? {},
+    [appearance.customTokens, appearance.customTokensByTheme, appearance.themeId]
+  )
   const customCount = Object.keys(customTokens).length
   const hasCustom = customCount > 0
   const activeThemeName =
     THEME_PRESETS.find((preset) => preset.id === appearance.themeId)?.name ?? 'Custom'
 
-  const handleResetToken = (tokenKey: keyof ThemeTokens): void => {
-    const next = { ...customTokens }
-    delete next[tokenKey]
-    onResetCustomTokens()
-    if (Object.keys(next).length > 0) onSetCustomTokens(next)
-  }
+  const handleTokenChange = useCallback(
+    (tokenKey: ThemeTokenKey, value: string): void => onSetCustomTokens({ [tokenKey]: value }),
+    [onSetCustomTokens]
+  )
+
+  const handleResetToken = useCallback(
+    (tokenKey: ThemeTokenKey): void => {
+      const next = { ...customTokens }
+      delete next[tokenKey]
+      onResetCustomTokens()
+      if (Object.keys(next).length > 0) onSetCustomTokens(next)
+    },
+    [customTokens, onResetCustomTokens, onSetCustomTokens]
+  )
 
   return (
     <section className="space-y-4">
@@ -255,25 +311,15 @@ export function CustomizeSection({
       {showCustomize && (
         <div className="space-y-4">
           {TOKEN_GROUPS.map(({ id, title, keys }) => (
-            <div key={id} className="space-y-2">
-              <h3 className="text-xs font-semibold text-app-text-secondary">{title}</h3>
-              <div className="grid gap-2 grid-cols-5 xl:grid-cols-7">
-                {keys.map((key) => {
-                  const hex = colorToHex(resolved[key])
-                  const isCustom = Boolean(customTokens[key])
-                  return (
-                    <ColorTokenCard
-                      key={key}
-                      label={TOKEN_LABELS[key]}
-                      hex={hex}
-                      isCustom={isCustom}
-                      onChange={(value) => onSetCustomTokens({ [key]: value })}
-                      onReset={() => handleResetToken(key)}
-                    />
-                  )
-                })}
-              </div>
-            </div>
+            <TokenGroupSection
+              key={id}
+              title={title}
+              keys={keys}
+              resolved={resolved}
+              customTokens={customTokens}
+              onTokenChange={handleTokenChange}
+              onResetToken={handleResetToken}
+            />
           ))}
         </div>
       )}

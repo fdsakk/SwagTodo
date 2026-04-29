@@ -1,4 +1,4 @@
-export { default as KanbanBoard } from './KanbanBoard'
+export { KanbanBoard } from './KanbanBoard'
 export { CardBody, SortableCard } from './KanbanCard'
 export { KanbanCardPreview } from './KanbanCardPreview'
 export { KanbanColumn } from './KanbanColumn'

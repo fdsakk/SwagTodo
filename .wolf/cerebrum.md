@@ -1,71 +1,55 @@
 # Cerebrum
 
-> OpenWolf's learning memory. Updated automatically as the AI learns from interactions.
-> Do not edit manually unless correcting an error.
-> Last updated: 2026-04-28
+> OpenWolf learning memory. Updated automatically.
+> Last updated: 2026-04-29
 
 ## User Preferences
 
-- Read and follow `.wolf` protocol before touching project files; treat `.wolf` as mandatory project instructions.
-- Keep page padding and content alignment visually consistent across views (especially matching Activity/Today spacing).
-- Components must be organized in subfolders — no loose files at `components/` root.
-- All component exports are **named** (not default). Default exports only in legacy shadcn/ui primitives under `components/ui/`.
-- Each component subfolder has an `index.tsx` barrel that re-exports everything from that folder.
-- Public app name is `Swag Todo`; use in docs and UI-facing metadata. Bun is the package manager; use `bun install` / `bun run <script>`.
-- When user asks to execute review/improvement list, resolve every listed item fully; do not stop at cosmetic cleanup or partial shortcuts.
-- User wants terse caveman responses in this session; keep technical substance, drop fluff.
-- User prefers Geist Sans for app UI font.
-- For theme polish, keep existing vibe and nudge colors toward better harmony instead of full redesign.
-- Inbox page should render task entries as shadcn-style `Item` cards instead of flat border-separated rows, and group date labels should use `Badge`.
-- `ui/badge` and `ui/item` should use app theme color variables (`app-*`) so they adapt to customized color tokens.
-- For task completion UX, prefer delayed `done` mutation without a row exit/fade animation.
+- Follow `.wolf` protocol before touching files.
+- App `Swag Todo`. Bun pkg manager (`bun install` / `bun run <script>`).
+- Components in subfolders w/ `index.tsx` barrel — no loose files at `components/` root. Named exports only (default exports legacy shadcn `components/ui/` only).
+- Page padding consistent (Settings/Appearance: `px-4` outer, `px-2` inner).
+- Geist Sans UI font. Theme polish nudges harmony, preserves vibe, no redesign.
+- Inbox tasks: shadcn `Item` cards, date `Badge`, `app-*` theme vars. Completion: delayed `done` mutation, no row exit/fade anim.
+- Resolve review items fully, no cosmetic shortcuts.
+- Terse caveman responses, full technical substance.
 
 ## Key Learnings
 
-- SQLite persistence: main-process `better-sqlite3` behind `window.api.storage` IPC. First run imports legacy `todoist-clone.json` into `swag-todo.db`. In-memory normalized cache avoids reload before every `store:savePartial`. Node tests must not open the native DB directly — test serialization helpers only.
-- Filtered task lists like Inbox should delay the actual `completed` store update until exit animations finish; otherwise selector-driven removal cuts off checkbox/confetti feedback immediately.
-- Renderer crash guard lives at root: wrap `App` in layout-level `GlobalErrorBoundary` and also listen for `window.error` + `unhandledrejection` so runtime faults show fallback UI instead of blank/crashed window.
-- In renderer global `window.error` handling, ignore resource-load errors (`event.target !== window`) or missing font/img/script can falsely trip full-app fallback.
-- Renderer Zustand is live state source; `persist` sends changed-slice patches via `store:savePartial`. UI filters still use `localStorage`.
-- Kanban cross-column DnD: update draft column state in `onDragOver`, not only `onDragEnd` — late reorder leaves target column frozen and misplaces drop index.
-- Settings/Appearance page: same container rhythm as list pages (`px-4` outer, `px-2` inner).
-- Component subfolders: `layout/`, `task-panel/`, `task-list/`, `modals/`, `project/`, `sidebar/`, `settings/`, `task-edit/`, `kanban/`, `sessions-calendar/`, `ui/`. See CLAUDE.md for full mapping.
-- Cross-folder import paths: `SubtaskList` → `task-list/animated-checkbox`; `KanbanCard` → `task-list/subtask-progress-ring`; `ProjectPanel` → `task-panel/panel-field`.
-- Shared types in `src/shared/types.ts`; shared defaults (`UI_SCALE_OPTIONS`, `DEFAULT_UI_SCALE`, etc.) in `src/shared/defaults.ts`. Main + preload import directly; renderer re-exports from `@renderer/types`.
-- Shared schema validation now lives in `src/shared/stateSchema.ts` with Zod; renderer persist and main app-state normalization should reuse it instead of reintroducing scattered manual type guards.
-- Health PK chart: apply asymmetric smoothing (`smoothSummedEffect` — faster rise, slower fall) to summed dose curve before crash/band analysis to avoid sharp additive peaks.
-- Theme appearance persistence now keeps `customTokensByTheme`; switching presets must restore that preset's saved token overrides, while old payloads with flat `customTokens` migrate into active theme bucket.
-- Theme presets now carry `tone: 'light' | 'dark'`; `ThemeProvider` exposes `data-theme-tone` plus `app-theme-light/dark` root classes and chart contrast CSS vars for tone-specific UI polish.
-- Due date calendar must serialize selected days with local date formatting (`format(day, 'yyyy-MM-dd')`), not `toISOString().slice(0, 10)`, or positive UTC offsets shift selection to previous day.
-- coss registry output may need import cleanup in this Electron/Vite alias setup: primitive namespaces should import from `@base-ui/react/*`, local components from `@renderer/components/ui/*`, and `cn` from `@renderer/utils/cn`.
-- Base UI popup triggers need a real DOM anchor/ref; in this app, use a native `button` styled with `buttonVariants` for `PopoverTrigger render={...}` instead of local `Button` when positioning is unstable.
-- Tailwind v4 migration for this app uses `@tailwindcss/vite`, `@import 'tailwindcss'`, and `@theme inline` tokens in `src/renderer/src/assets/main.css`; app theme colors must be exposed as `--color-app-*` for existing `bg-app-*` classes.
-- Project List/Board switching should use controlled coss `Tabs`/`TabsPanel` with `projectTab` and `setProjectTab`, preserving the existing `list`/`kanban` UI state values.
-- Dialog overlays are portaled to `body`; to keep the custom Electron title bar outside backdrop blur, constrain `DialogBackdrop`/`DialogViewport` with global `--app-overlay-top` set in `App.tsx`.
-- Sidebar primitive (`components/ui/sidebar.tsx`) ships its own `SidebarProvider` with `cookieStore.set` + `min-h-svh` wrapper unsuitable for the frameless Electron layout. Layout `Sidebar` instead exposes a custom `SidebarContext.Provider` synced to the Zustand `isSidebarCollapsed` flag, renders `Sidebar collapsible="none"` (no fixed positioning), and sets `data-collapsible="icon"` + `data-state` on a wrapper so `group-data-*` styles + `SidebarMenuButton` collapsed tooltips still trigger. Override `bg-sidebar`/`text-sidebar-foreground` with `!bg-app-sidebar !text-app-text` because no `--color-sidebar` token exists.
+- **Persistence flow**: Zustand → `persist` → `window.api.storage.savePartial` IPC → main `better-sqlite3` cache → `writeDeltaTx` (JSON-diff, `changedTaskIds()`); changed tasks `INSERT OR REPLACE`, child rows rebuilt per-task. Other collections: `INSERT OR REPLACE` + `DELETE WHERE id NOT IN (json_each(?))`. `writeSnapshotTx` legacy-migration only. First run imports `todoist-clone.json` → `swag-todo.db`. Indices on `task_subtasks(task_id)`, `task_labels(task_id)`. `savePartial` failures → coss toast; last persisted JSON unchanged so patch retries. UI filters in `localStorage`. Filtered lists (Inbox) delay real `completed` mutation until exit anim done.
+- **Test boundary**: IPC registered through pure `src/main/ipcHandlers.ts` for Node unit-tests w/o Electron. Store modules under Node tests must NOT static-import TSX UI — split non-visual singletons to `.ts` (e.g. `components/ui/toast-manager.ts`). Node tests cover serialization only — no native DB. Guard renderer Zustand auto-hydration w/ `typeof window === 'undefined'`.
+- **Crash guard**: root wraps `App` in `GlobalErrorBoundary` + `window.error`/`unhandledrejection`. Ignore resource-load errors (`event.target !== window`). Main installs `uncaughtException`/`unhandledRejection` w/ `dialog.showErrorBox`.
+- **Kanban DnD**: update draft column state in `onDragOver`, not only `onDragEnd` — late reorder freezes target column.
+- **Component subfolders**: `layout/`, `task-panel/`, `task-list/`, `modals/`, `project/`, `sidebar/`, `settings/`, `task-edit/`, `kanban/`, `sessions-calendar/`, `ui/`. Cross-folder: `SubtaskList` → `task-list/animated-checkbox`; `KanbanCard` → `task-list/subtask-progress-ring`; `ProjectPanel` → `task-panel/panel-field`.
+- **Shared modules**: types `src/shared/types.ts`; defaults (`UI_SCALE_OPTIONS`, `UiScale`, `DEFAULT_UI_SCALE`) `src/shared/defaults.ts`. Renderer re-exports via `@renderer/types`. Zod `src/shared/stateSchema.ts` reused by renderer persist + main normalization.
+- **Health PK chart**: asymmetric `smoothSummedEffect` (faster rise, slower fall) on summed dose curve pre-crash/band analysis.
+- **Theme**: `customTokensByTheme` per-preset; switching restores preset overrides. Legacy flat `customTokens` migrates to active bucket. Presets carry `tone: 'light' | 'dark'`; `ThemeProvider` exposes `data-theme-tone` + `app-theme-light/dark` root classes + chart contrast CSS vars.
+- **Date serialization**: due-date calendar uses `format(day, 'yyyy-MM-dd')`, NOT `toISOString().slice(0, 10)` — positive UTC offsets shift back a day.
+- **coss/Base UI**: primitives `@base-ui/react/*`, local `@renderer/components/ui/*`, `cn` from `@renderer/utils/cn`. Popup triggers need real DOM anchor; native `button` + `buttonVariants` for `PopoverTrigger render={...}`.
+- **Tailwind v4**: `@tailwindcss/vite`, `@import 'tailwindcss'`, `@theme inline` in `src/renderer/src/assets/main.css`. Theme colors as `--color-app-*` for `bg-app-*`.
+- **Project List/Board**: controlled coss `Tabs`/`TabsPanel` with `projectTab`/`setProjectTab` (`list`/`kanban`).
+- **Dialog overlay + frameless title bar**: portaled to `body`; `DialogBackdrop`/`DialogViewport` constrained by `--app-overlay-top` in `App.tsx`.
+- **Sidebar primitive**: `components/ui/sidebar.tsx` ships own `SidebarProvider` w/ `cookieStore.set` + `min-h-svh` — unsuitable for frameless Electron. Layout `Sidebar` exposes custom `SidebarContext.Provider` synced to Zustand `isSidebarCollapsed`, renders `Sidebar collapsible="none"`, sets `data-collapsible="icon"` + `data-state` for `group-data-*` + collapsed tooltips. Override `bg-sidebar`/`text-sidebar-foreground` w/ `!bg-app-sidebar !text-app-text`.
+- **Task edit debounce**: pending commits in refs w/ original `taskId`; key `TaskEditPanel` by `task.id` so switching unmounts, flushes pending text, remounts clean.
 
 ## Do-Not-Repeat
 
-- [2026-04-23] Do NOT swap persistence backends without a first-run import for existing user data; migrations must preserve old on-disk payload.
-- [2026-04-23] Do NOT implement `savePartial` by reloading the full SQLite snapshot; keep normalized cache, merge patches in memory.
-- [2026-04-23] Do NOT run `better-sqlite3` storage tests under plain Node runtime after Electron rebuild; test serialization layer instead.
-- [2026-04-23] Do NOT enable auto-hydration for renderer Zustand stores in Node/test environment; guard with `typeof window === 'undefined'` or tests will throw unhandled `window is not defined`.
-- [2026-04-23] Do NOT keep theme customization in one flat `appearance.customTokens` map if preset switching should preserve per-theme edits; use per-theme buckets and migrate legacy flat payloads.
-- [2026-04-28] Do NOT let repo-wide Prettier traverse local read-only skill folders; keep `.agents`, `.claude/skills`, and `.pi` ignored.
-- [2026-04-19] Do NOT place new components as loose files in `components/` root. Always use appropriate subfolder + `index.tsx` barrel.
-- [2026-04-19] Do NOT use default exports for new components.
-- [2026-04-19] Do NOT implement destructive sync (delete-all then insert-all) for Supabase — slow, risks data loss on partial failure.
+- [2026-04-19] No loose components at `components/` root; no default exports for new components.
+- [2026-04-19] No destructive sync (delete-all then insert-all) for Supabase.
+- [2026-04-23] No swap persistence backends without first-run import; preserve old payload.
+- [2026-04-23] No `savePartial` via full SQLite reload; keep normalized cache, merge patches in memory.
+- [2026-04-23] No `better-sqlite3` tests under plain Node post Electron rebuild; test serialization layer.
+- [2026-04-23] No flat `appearance.customTokens`; use per-theme buckets + migrate legacy.
+- [2026-04-28] No repo Prettier traverse `.agents`, `.claude/skills`, `.pi`.
+- [2026-04-29] No static-import TSX UI from persistence/store modules in Node tests; use `.ts` helpers/injected reporters.
+- [2026-04-29] No type re-export alone when same file needs type locally; import + re-export separately.
 
 ## Decision Log
 
-- [2026-04-24] Archive task feature merge: keep `archive-tooltip-2` data model and filtering logic (`archivedAt`, archive page/selectors/persistence) while using Radix/shadcn-style `TaskContextMenu` from `archive-tooltip` with hover colors from `archive-tooltip-2`.
-- [2026-04-28] UI migration: `/components/ui` now uses coss/Base UI primitives with Tailwind v4; task right-click context menu uses direct Base UI `ContextMenu`; Radix runtime packages were removed.
-- [2026-04-28] SearchSortBar filters: use coss `Popover` for a filter panel containing selects; reserve `Menu` for action lists because nested selects inside menus are a weaker keyboard/focus fit.
-- [2026-04-23] Inbox completion UX: delayed the real `toggleTaskComplete` mutation behind a short local completion state in `TaskRow`; after follow-up UX correction this keeps checkbox/confetti feedback but does not animate the row out.
-- [2026-04-23] Runtime crash guard: main process now installs global `uncaughtException` / `unhandledRejection` handlers with `dialog.showErrorBox`; renderer root wrapped in `GlobalErrorBoundary` to keep app open and offer reload after React/window/promise failures.
-- [2026-04-23] Lint workflow: removed ESLint cache from repo script because cached prettier diagnostics produced false positives after formatting; correctness of signal beats small speed gain here.
-- [2026-04-23] SQLite migration: replaced `electron-store` with `better-sqlite3`. Delta writes via `writeDeltaTx` (JSON-stringify diff, `changedTaskIds()`); only changed tasks get `INSERT OR REPLACE`, child rows rebuilt per-task. Other collections use `INSERT OR REPLACE` + `DELETE WHERE id NOT IN (json_each(?))`. In-memory cache avoids read-before-write. `writeSnapshotTx` kept for legacy migration only. Indices on `task_subtasks(task_id)` and `task_labels(task_id)`.
-- [2026-04-23] Review cleanup pass: `App.tsx` now uses `cn()` + grouped Zustand `actions`; domain store exposes `hydrated` via persist callback; shared Zod schemas centralize persistence normalization; SQLite startup reads nested task children with `json_group_array()` and logs parse/migration failures instead of swallowing them.
-- [2026-04-19] Component reorganization: moved 23 loose root files into domain subfolders with `index.tsx` barrels. Named exports for barrel compatibility.
-- [2026-04-19] Supabase sync: debounced diff-based delta (upsert/delete) via shadow slice; `store:save` IPC no longer awaits remote push. Types/constants consolidated into `src/shared/types.ts` + `src/shared/defaults.ts`. Renderer switched to Zustand `persist` with `store:savePartial`.
-- [2026-04-19] Health PK: asymmetric smoothing (`smoothSummedEffect`) applied before crash/band analysis.
+- [2026-04-19] Component reorg: 23 loose files → domain subfolders w/ `index.tsx` barrels, named exports.
+- [2026-04-19] Supabase sync: debounced diff-based delta (upsert/delete) via shadow slice; `store:save` no longer awaits remote push. Renderer → Zustand `persist` + `store:savePartial`.
+- [2026-04-23] Inbox completion: delayed real `toggleTaskComplete` behind local state in `TaskRow`.
+- [2026-04-23] Lint: ESLint cache removed from script — false positives post-format.
+- [2026-04-24] Archive task merge: keep `archive-tooltip-2` data model + filtering; Radix/shadcn `TaskContextMenu` from `archive-tooltip` w/ hover colors from `archive-tooltip-2`.
+- [2026-04-28] `/components/ui` uses coss/Base UI + Tailwind v4; task right-click direct Base UI `ContextMenu`; Radix runtime removed.
+- [2026-04-28] SearchSortBar filters: coss `Popover` w/ selects (not `Menu` — nested selects fight focus).

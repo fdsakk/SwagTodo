@@ -58,7 +58,7 @@ export function TaskDetailPanel({ onClose }: TaskDetailPanelProps): React.JSX.El
         finalFocus={() => false}
       >
         {taskPanel.open && taskPanel.mode === 'edit' && task && (
-          <TaskEditPanel onClose={onClose} task={task} />
+          <TaskEditPanel key={task.id} onClose={onClose} task={task} />
         )}
         {taskPanel.open && taskPanel.mode === 'create' && (
           <TaskCreatePanel

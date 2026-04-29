@@ -1,4 +1,4 @@
-import { memo, useCallback } from 'react'
+import { memo, useCallback, useMemo } from 'react'
 import { format, parseISO } from 'date-fns'
 import { CalendarIcon, ChevronDownIcon, X } from 'lucide-react'
 import { Button, buttonVariants } from '@renderer/components/ui/button'
@@ -30,6 +30,16 @@ const PRIORITY_OPTIONS = PRIORITIES.map((value) => ({
   value,
   label: PRIORITY_META[value].label
 }))
+
+const buildProjectOptions = (
+  projects: readonly Project[]
+): readonly { value: string; label: string }[] => [
+  { value: INBOX_VALUE, label: 'Inbox' },
+  ...projects.map((project) => ({
+    value: project.id,
+    label: `${project.emoji || '#'} ${project.name}`
+  }))
+]
 
 interface LabelChipProps {
   label: Label
@@ -92,7 +102,8 @@ function TaskFormFieldsImpl({
 }: TaskFormFieldsProps): React.JSX.Element {
   const selectedDate = dueDate ? parseISO(dueDate) : undefined
   const projectValue = projectId ?? INBOX_VALUE
-  const selectedLabelSet = new Set(selectedLabelIds)
+  const selectedLabelSet = useMemo(() => new Set(selectedLabelIds), [selectedLabelIds])
+  const projectOptions = useMemo(() => buildProjectOptions(projects), [projects])
 
   const handlePriority = useCallback(
     (value: Priority | null) => {
@@ -189,17 +200,7 @@ function TaskFormFieldsImpl({
 
       <Field>
         <FieldLabel>Project</FieldLabel>
-        <Select
-          items={[
-            { value: INBOX_VALUE, label: 'Inbox' },
-            ...projects.map((project) => ({
-              value: project.id,
-              label: `${project.emoji || '#'} ${project.name}`
-            }))
-          ]}
-          onValueChange={handleProject}
-          value={projectValue}
-        >
+        <Select items={projectOptions} onValueChange={handleProject} value={projectValue}>
           <SelectTrigger className="w-full">
             <SelectValue placeholder="Inbox" />
           </SelectTrigger>

@@ -1,35 +1,48 @@
 {
-  "generated_at": "2026-04-23T15:47:05.830Z",
+  "generated_at": "2026-04-29T08:42:14.469Z",
   "achievements": [
-    "SQLite backend replaces electron-store: delta write (writeDeltaTx), in-memory cache, legacy todoist-clone.json import on first run — 25/25 tests green",
-    "O(n²)→Set in persist.ts, UUID IPC validation, snapshot cache, delta guards in collections — storage perf hardened",
-    "All 23 loose components reorganized into domain subfolders (task-panel, task-list, modals, project, layout, etc.) with index.tsx barrels + named exports",
-    "Health/Meds PK page shipped: asymmetric smoothing, MEC/MTC therapeutic window, crash-risk detection, Recharts chart",
-    "Kanban DnD fixed: cross-column drag preview via live draft state in onDragOver, frozen card size via source rect",
-    "11 themes added (Dracula, Gruvbox, Catppuccin, Tokyo Night, Kanagawa, etc.) + hardcoded zinc/white tokens replaced with app-* CSS vars across all views",
-    "Shared types/defaults extracted to src/shared/ — single source across main, preload, renderer",
-    "Panels (TaskEdit, TaskCreate, ProjectPanel) redesigned from right-side slide to centered modal cards"
+    "Migrated UI primitives shadcn/Radix → coss/Base UI + Tailwind v4",
+    "Big-file refactor: split sqlite.ts into sqlite/{schema,serialize,storage,types}, extracted health/ and sessions-calendar/ modules",
+    "SQLite delta-write: changedTaskIds diff + INSERT OR REPLACE replaces full snapshot DELETE+INSERT",
+    "Persist perf: cached JSON-string compare map, O(n²)→Set, skip normalizeAppState on non-task patch, UUID validation in IPC",
+    "Tier 2/3 closed: ipcHandlers extracted + tested, persist retry tests, pharmacokinetics tests, SQLite serialize/storage tests",
+    "Toast manager singleton split for non-visual imports; SQLite savePartial errors surface as toasts; failed patches stay pending for retry",
+    "Sidebar migrated to coss SidebarMenu primitives; ProjectPage list/board → coss Tabs",
+    "Per-theme token override persistence + legacy migration; light-theme contrast fixes (Activity icons, Health chart)",
+    "Task panels split: TaskCreatePanel/TaskEditPanel/TaskDetailPanel + TitleInput; metadata moved to side column",
+    "Due date calendar timezone off-by-one fixed (local day vs UTC ISO slice)"
   ],
   "improvements": [
-    "useAppStore.ts (~7k tok) — candidate for slice split; domain actions mixed with UI actions and PK settings in one file",
-    "persist.ts PERSISTED_KEYS and stateFromPersisted — verify these stay in sync with shared/types.ts after each new field; currently manual",
-    "SessionsCalendar.tsx (~5k tok) — high-complexity component; extract DraftGhost logic and time-block layout into smaller hooks",
-    "HealthPage.tsx (~5.3k tok) — SliderRow + chart data generation inline; extract pharmacokinetics controls to sub-component",
-    "supabase/schema.sql present but Supabase sync code still lives in renderer store — if sync is being kept, move push logic to main process to avoid IPC backpressure"
+    "TaskEditPanel.tsx ~2433 tok still heavy — extract metadata side column + debounce hook",
+    "useCalendarDrag.ts ~2746 tok — extract pointer math + hit-testing helpers",
+    "EffectChart.tsx ~2502 tok — split chart series builder from render",
+    "task-form-fields.tsx ~2304 tok — split label/project/priority field groups",
+    "sqlite/storage.ts ~3163 tok and serialize.ts ~3224 tok — group by entity (tasks/projects/labels/sessions)",
+    "components/ui/sidebar.tsx ~6396 tok and drawer.tsx ~6743 tok — vendor primitives, isolate from src lint/format churn",
+    "Replace persist deep-compare cache with structural shallow-equal per-slice to drop JSON.stringify hot path entirely",
+    "Centralize Date parsing in calendar utils — multiple components still call new Date() per render",
+    "Audit useMemo deps in KanbanBoard.buildLabelMap and selectors.ts for stale-closure risks"
   ],
   "next_tasks": [
-    "Run bun run typecheck + bun run lint — confirm dev branch is clean after the 2026-04-23 SQLite sessions",
-    "Merge dev → main (last main commit was 2d2defc perf/storage); current dev has significant unreleased work",
-    "Persist new fields introduced this week (pkSettings, healthEntries) through the full save path: shared/types.ts → appState.ts → sqlite.ts schema → persist.ts",
-    "Add SQLite schema migration path — currently a fresh DB or legacy import; no version column means future field additions are fragile",
-    "Test HealthPage with real data: add a med entry, reload app, verify persistence round-trip through SQLite",
-    "Keyboard shortcuts: 'h' for Health page not yet wired in useKeyboardShortcuts.ts"
+    "Add e2e smoke test (Playwright) for create/edit/complete task + drag in Kanban + sessions calendar drag",
+    "Wire IPC handler unit tests into CI gate (currently exist but verify required check)",
+    "Backfill tests for store/domain/actions/{tasks,projects,sessions} — only domain-store.test.ts + persist.test.ts present",
+    "Add SQLite migration runner + version table — schema.ts is single-shot, no upgrade path",
+    "Telemetry: log persist retry counts + IPC error rates to surface silent failures",
+    "Keyboard shortcut help modal: audit coverage vs useKeyboardShortcuts hook registrations",
+    "Investigate bundle size — out/renderer/assets/index-CX6S-WSs.css is ~79k tok, likely Tailwind v4 not purging coss vendor",
+    "Document state schema invariants (stateSchema.ts) in AGENTS.md for future contributors"
   ],
   "risks": [
-    "PERSISTED_KEYS in persist.ts and APP_STATE_KEYS in appState.ts must stay manually synchronized — no compile-time enforcement; a missed key silently drops data on save",
-    "better-sqlite3 must be rebuilt for Electron runtime; CI or a fresh bun install will break if rebuild step is missing from package.json scripts",
-    "No SQLite schema version/migration table — adding a column in the future requires manual ALTER TABLE or a full drop+recreate path",
-    "Supabase sync (SyncSection, schema.sql) is partially implemented but removed from main flow per 2026-04-19 refactor; dead code risk if not cleaned up or re-integrated intentionally",
-    "HealthPage PK state (pkSettings) not confirmed to survive app restart — verify it is included in PERSISTED_KEYS and SQLite serialization"
+    "schema.ts has no migration mechanism — any column add breaks existing user DBs",
+    "Persist retry queue lives in memory only — app crash before flush loses pending patches",
+    "Toast manager singleton imported from non-React modules — ensure no circular import with main.tsx provider",
+    "Large vendored ui/ files (sidebar 6396 tok, drawer 6743 tok, combobox 4291 tok) inflate type-check time and obscure local edits",
+    "useCalendarDrag.ts complexity high — pointer/hit-test logic untested, drag regressions likely on refactor",
+    "GlobalErrorBoundary catches render errors but async rejections in store actions may still bubble to console only",
+    "stateSchema.ts validates on hydration but partial saves bypass schema — corrupt patch could persist",
+    "Theme token override migration is one-way — no rollback if user downgrades app version",
+    "Geist Sans font + 6 new themes shipped without contrast audit on all surfaces (only Activity/Health verified)",
+    "out/ committed-looking artifacts in anatomy — verify .gitignore excludes build output"
   ]
 }

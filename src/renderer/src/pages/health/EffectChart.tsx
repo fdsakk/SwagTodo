@@ -1,4 +1,4 @@
-import { useCallback, useMemo, useRef, useState } from 'react'
+import { useEffect, useMemo, useRef, useState } from 'react'
 import {
   ResponsiveContainer,
   ComposedChart,
@@ -26,12 +26,14 @@ export function EffectChart({
   pkSettings
 }: EffectChartProps): React.JSX.Element {
   const [chartWidth, setChartWidth] = useState(600)
-  const roRef = useRef<ResizeObserver | null>(null)
-  const containerRef = useCallback((node: HTMLDivElement | null) => {
-    roRef.current?.disconnect()
+  const containerRef = useRef<HTMLDivElement>(null)
+
+  useEffect(() => {
+    const node = containerRef.current
     if (!node) return
-    roRef.current = new ResizeObserver(([entry]) => setChartWidth(entry.contentRect.width))
-    roRef.current.observe(node)
+    const observer = new ResizeObserver(([entry]) => setChartWidth(entry.contentRect.width))
+    observer.observe(node)
+    return () => observer.disconnect()
   }, [])
 
   const chartStepMinutes = chartWidth < 700 ? 10 : 5

@@ -16,9 +16,11 @@ import SettingsPage from '@renderer/pages/SettingsPage'
 import { HealthPage } from '@renderer/pages/HealthPage'
 import { useKeyboardShortcuts } from '@renderer/hooks/useKeyboardShortcuts'
 import { useShallow } from 'zustand/react/shallow'
-import { UI_SCALE_OPTIONS } from '@renderer/types'
+import { UI_SCALE_OPTIONS, type ViewName } from '@renderer/types'
 import { useDomainStore, useUiStore } from '@renderer/store'
 import { cn } from '@renderer/utils/cn'
+
+const FULL_HEIGHT_VIEWS = new Set<ViewName>(['sessions', 'settings', 'health'])
 
 function App(): React.JSX.Element {
   const [isFullScreen, setIsFullScreen] = useState(false)
@@ -141,6 +143,18 @@ function App(): React.JSX.Element {
     )
   }
 
+  const viewContent: Record<ViewName, React.JSX.Element> = {
+    inbox: <InboxPage />,
+    today: <TodayPage />,
+    activity: <ActivityPage />,
+    archive: <ArchivePage />,
+    sessions: <SessionsPage />,
+    settings: <SettingsPage />,
+    health: <HealthPage />,
+    project: <ProjectPage onEditProject={(project) => openEditProjectPanel(project.id)} />
+  }
+  const isFullHeightView = FULL_HEIGHT_VIEWS.has(selectedView)
+
   return (
     <div
       className={cn(
@@ -162,29 +176,9 @@ function App(): React.JSX.Element {
         />
 
         <div className="relative flex min-w-0 flex-1 flex-col overflow-hidden bg-app-content">
-          {selectedView !== 'sessions' &&
-            selectedView !== 'settings' &&
-            selectedView !== 'health' && <SearchSortBar />}
-          <div
-            className={cn(
-              'min-h-0 flex-1',
-              selectedView === 'sessions' ||
-                selectedView === 'settings' ||
-                selectedView === 'health'
-                ? 'overflow-y-auto'
-                : 'mt-4'
-            )}
-          >
-            {selectedView === 'inbox' && <InboxPage />}
-            {selectedView === 'today' && <TodayPage />}
-            {selectedView === 'activity' && <ActivityPage />}
-            {selectedView === 'archive' && <ArchivePage />}
-            {selectedView === 'sessions' && <SessionsPage />}
-            {selectedView === 'settings' && <SettingsPage />}
-            {selectedView === 'health' && <HealthPage />}
-            {selectedView === 'project' && (
-              <ProjectPage onEditProject={(project) => openEditProjectPanel(project.id)} />
-            )}
+          {!isFullHeightView && <SearchSortBar />}
+          <div className={cn('min-h-0 flex-1', isFullHeightView ? 'overflow-y-auto' : 'mt-4')}>
+            {viewContent[selectedView]}
           </div>
         </div>
 

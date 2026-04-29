@@ -16,18 +16,15 @@ import type { Priority, Task, TaskStatus } from '@renderer/types'
 import { PRIORITY_META } from '@renderer/utils/task'
 import { Calendar } from '@renderer/components/ui/calendar'
 
-const STATUSES: { value: TaskStatus; label: string }[] = [
+const STATUSES: readonly { value: TaskStatus; label: string }[] = [
   { value: 'todo', label: 'To Do' },
   { value: 'in_progress', label: 'In Progress' },
   { value: 'done', label: 'Done' }
 ]
 
-const PRIORITIES: { value: Priority; label: string }[] = [
-  { value: 'p1', label: 'Urgent' },
-  { value: 'p2', label: 'High' },
-  { value: 'p3', label: 'Medium' },
-  { value: 'p4', label: 'None' }
-]
+const PRIORITIES: readonly { value: Priority; label: string }[] = (
+  ['p1', 'p2', 'p3', 'p4'] as const
+).map((value) => ({ value, label: PRIORITY_META[value].label }))
 
 const menuContentClass =
   'z-50 min-w-[160px] overflow-hidden rounded-md border border-app-border bg-app-card p-1.5 shadow-xl outline-none focus:outline-none focus-visible:outline-none'
@@ -38,6 +35,61 @@ const subTriggerClass = cn(
   'data-popup-open:bg-app-hover data-popup-open:text-app-text'
 )
 const separatorClass = 'my-1 h-px bg-app-border'
+
+interface SubmenuShellProps {
+  icon: React.ReactNode
+  label: string
+  children: React.ReactNode
+  popupClassName?: string
+}
+
+function SubmenuShell({
+  icon,
+  label,
+  children,
+  popupClassName
+}: SubmenuShellProps): React.JSX.Element {
+  return (
+    <ContextMenu.SubmenuRoot>
+      <ContextMenu.SubmenuTrigger className={subTriggerClass}>
+        {icon}
+        <span className="flex-1">{label}</span>
+        <ChevronRight size={12} className="text-app-text-muted" />
+      </ContextMenu.SubmenuTrigger>
+      <ContextMenu.Portal>
+        <ContextMenu.Positioner alignOffset={-4} className="z-50" sideOffset={2}>
+          <ContextMenu.Popup className={cn(menuContentClass, popupClassName)}>
+            {children}
+          </ContextMenu.Popup>
+        </ContextMenu.Positioner>
+      </ContextMenu.Portal>
+    </ContextMenu.SubmenuRoot>
+  )
+}
+
+interface CheckedMenuItemProps<T extends string> {
+  value: T
+  label: string
+  active: boolean
+  onSelect: (value: T) => void
+  swatch?: string
+}
+
+function CheckedMenuItem<T extends string>({
+  value,
+  label,
+  active,
+  onSelect,
+  swatch
+}: CheckedMenuItemProps<T>): React.JSX.Element {
+  return (
+    <ContextMenu.Item className={menuItemClass} onClick={() => onSelect(value)}>
+      {swatch && <span className="size-2 shrink-0 rounded-full" style={{ background: swatch }} />}
+      <span className="flex-1">{label}</span>
+      {active && <Check size={12} className="text-app-text-muted" />}
+    </ContextMenu.Item>
+  )
+}
 
 interface TaskContextMenuProps {
   task: Task
@@ -85,88 +137,50 @@ export function TaskContextMenu({
 
             <ContextMenu.Separator className={separatorClass} />
 
-            <ContextMenu.SubmenuRoot>
-              <ContextMenu.SubmenuTrigger className={subTriggerClass}>
-                <Flag size={13} className="shrink-0" />
-                <span className="flex-1">Set Urgency</span>
-                <ChevronRight size={12} className="text-app-text-muted" />
-              </ContextMenu.SubmenuTrigger>
-              <ContextMenu.Portal>
-                <ContextMenu.Positioner alignOffset={-4} className="z-50" sideOffset={2}>
-                  <ContextMenu.Popup className={menuContentClass}>
-                    {PRIORITIES.map((p) => (
-                      <ContextMenu.Item
-                        key={p.value}
-                        className={menuItemClass}
-                        onClick={() => onSetPriority(task.id, p.value)}
-                      >
-                        <span
-                          className="size-2 shrink-0 rounded-full"
-                          style={{ background: PRIORITY_META[p.value].color }}
-                        />
-                        <span className="flex-1">{p.label}</span>
-                        {task.priority === p.value && (
-                          <Check size={12} className="text-app-text-muted" />
-                        )}
-                      </ContextMenu.Item>
-                    ))}
-                  </ContextMenu.Popup>
-                </ContextMenu.Positioner>
-              </ContextMenu.Portal>
-            </ContextMenu.SubmenuRoot>
+            <SubmenuShell icon={<Flag size={13} className="shrink-0" />} label="Set Urgency">
+              {PRIORITIES.map((p) => (
+                <CheckedMenuItem
+                  key={p.value}
+                  value={p.value}
+                  label={p.label}
+                  active={task.priority === p.value}
+                  onSelect={(value) => onSetPriority(task.id, value)}
+                  swatch={PRIORITY_META[p.value].color}
+                />
+              ))}
+            </SubmenuShell>
 
-            <ContextMenu.SubmenuRoot>
-              <ContextMenu.SubmenuTrigger className={subTriggerClass}>
-                <TrendingUp size={13} className="shrink-0" />
-                <span className="flex-1">Progress</span>
-                <ChevronRight size={12} className="text-app-text-muted" />
-              </ContextMenu.SubmenuTrigger>
-              <ContextMenu.Portal>
-                <ContextMenu.Positioner alignOffset={-4} className="z-50" sideOffset={2}>
-                  <ContextMenu.Popup className={menuContentClass}>
-                    {STATUSES.map((s) => (
-                      <ContextMenu.Item
-                        key={s.value}
-                        className={menuItemClass}
-                        onClick={() => onSetStatus(task.id, s.value)}
-                      >
-                        <span className="flex-1">{s.label}</span>
-                        {task.status === s.value && (
-                          <Check size={12} className="text-app-text-muted" />
-                        )}
-                      </ContextMenu.Item>
-                    ))}
-                  </ContextMenu.Popup>
-                </ContextMenu.Positioner>
-              </ContextMenu.Portal>
-            </ContextMenu.SubmenuRoot>
+            <SubmenuShell icon={<TrendingUp size={13} className="shrink-0" />} label="Progress">
+              {STATUSES.map((s) => (
+                <CheckedMenuItem
+                  key={s.value}
+                  value={s.value}
+                  label={s.label}
+                  active={task.status === s.value}
+                  onSelect={(value) => onSetStatus(task.id, value)}
+                />
+              ))}
+            </SubmenuShell>
 
-            <ContextMenu.SubmenuRoot>
-              <ContextMenu.SubmenuTrigger className={subTriggerClass}>
-                <CalendarIcon size={13} className="shrink-0" />
-                <span className="flex-1">Due Date</span>
-                <ChevronRight size={12} className="text-app-text-muted" />
-              </ContextMenu.SubmenuTrigger>
-              <ContextMenu.Portal>
-                <ContextMenu.Positioner alignOffset={-4} className="z-50" sideOffset={2}>
-                  <ContextMenu.Popup className={cn(menuContentClass, 'w-auto p-0')}>
-                    <Calendar
-                      mode="single"
-                      selected={task.dueDate ? parseISO(task.dueDate) : undefined}
-                      onSelect={handleDaySelect}
-                    />
-                    {task.dueDate && (
-                      <ContextMenu.Item
-                        className={cn(menuItemClass, 'mx-1.5 mb-1.5')}
-                        onClick={() => handleDaySelect(undefined)}
-                      >
-                        Clear due date
-                      </ContextMenu.Item>
-                    )}
-                  </ContextMenu.Popup>
-                </ContextMenu.Positioner>
-              </ContextMenu.Portal>
-            </ContextMenu.SubmenuRoot>
+            <SubmenuShell
+              icon={<CalendarIcon size={13} className="shrink-0" />}
+              label="Due Date"
+              popupClassName="w-auto p-0"
+            >
+              <Calendar
+                mode="single"
+                selected={task.dueDate ? parseISO(task.dueDate) : undefined}
+                onSelect={handleDaySelect}
+              />
+              {task.dueDate && (
+                <ContextMenu.Item
+                  className={cn(menuItemClass, 'mx-1.5 mb-1.5')}
+                  onClick={() => handleDaySelect(undefined)}
+                >
+                  Clear due date
+                </ContextMenu.Item>
+              )}
+            </SubmenuShell>
 
             <ContextMenu.Separator className={separatorClass} />
 

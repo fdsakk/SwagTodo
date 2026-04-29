@@ -11,6 +11,7 @@ import {
 import type React from 'react'
 import { cn } from '@renderer/utils/cn'
 import { buttonVariants } from '@renderer/components/ui/button'
+import { anchoredToastManager, toastManager } from '@renderer/components/ui/toast-manager'
 
 const TOAST_ICONS = {
   error: CircleAlertIcon,
@@ -237,11 +238,6 @@ function AnchoredToasts({
     </Toast.Portal>
   )
 }
-
-export const toastManager: ReturnType<typeof Toast.createToastManager> = Toast.createToastManager()
-
-export const anchoredToastManager: ReturnType<typeof Toast.createToastManager> =
-  Toast.createToastManager()
 
 export type ToastPosition =
   | 'top-left'

@@ -1,4 +1,4 @@
-import { endOfToday, format, isAfter, isBefore, isToday, parseISO, startOfToday } from 'date-fns'
+import { format, isBefore, isToday, parseISO, startOfToday } from 'date-fns'
 import type { Project, Task, TaskGroup } from '@renderer/types'
 import type { DomainState, UiState } from '../shared/types'
 
@@ -16,11 +16,6 @@ export const isTaskOverdue = (task: Task): boolean => {
   if (!task.dueDate || task.completed) return false
   const dueDateMs = getDueDateMs(task)
   return dueDateMs !== null && isBefore(dueDateMs, startOfToday())
-}
-
-export const isTaskInFuture = (task: Task): boolean => {
-  const dueDateMs = getDueDateMs(task)
-  return dueDateMs !== null && isAfter(dueDateMs, endOfToday())
 }
 
 const filterBySearch = (tasks: readonly Task[], query: string): Task[] => {
@@ -238,20 +233,4 @@ export const selectInboxCounts = (
   }
 
   return { inboxCount, todayCount }
-}
-
-export const domainSelectors = {
-  isTaskDueToday,
-  isTaskOverdue,
-  isTaskInFuture,
-  selectTaskById,
-  selectProjectById,
-  selectEditingProjectById,
-  selectVisibleTasks,
-  selectTasksForProject,
-  selectInboxTaskGroups,
-  selectArchivedTaskGroups,
-  selectTodayTaskGroups,
-  selectProjectTaskGroups,
-  selectInboxCounts
 }

@@ -17,6 +17,7 @@ import {
 } from './types'
 import {
   changedIds,
+  changedTaskChildIds,
   changedTaskIds,
   inflateTaskRows,
   parseSetting,
@@ -211,19 +212,20 @@ export class SqliteAppStorage {
       (prev: SqliteStateSnapshot, next: SqliteStateSnapshot) => {
         const taskIds = JSON.stringify(next.tasks.map((t) => t.id))
         const changed = changedTaskIds(prev, next)
+        const changedChildren = changedTaskChildIds(prev, next)
         for (const t of next.tasks) {
           if (changed.has(t.id)) upsertTask.run(t)
         }
         deleteTasksNotIn.run(next.tasks.length ? taskIds : '[]')
-        for (const taskId of changed) {
+        for (const taskId of changedChildren) {
           deleteSubtasksForTask.run(taskId)
           deleteLabelsForTask.run(taskId)
         }
         for (const row of next.taskSubtasks) {
-          if (changed.has(row.task_id)) insertSubTask.run(row)
+          if (changedChildren.has(row.task_id)) insertSubTask.run(row)
         }
         for (const row of next.taskLabels) {
-          if (changed.has(row.task_id)) insertTaskLabel.run(row)
+          if (changedChildren.has(row.task_id)) insertTaskLabel.run(row)
         }
 
         if (changedIds(prev.projects, next.projects)) {
