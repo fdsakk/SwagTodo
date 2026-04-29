@@ -26,6 +26,7 @@
 - **Theme**: `customTokensByTheme` per-preset; switching restores preset overrides. Legacy flat `customTokens` migrates to active bucket. Presets carry `tone: 'light' | 'dark'`; `ThemeProvider` exposes `data-theme-tone` + `app-theme-light/dark` root classes + chart contrast CSS vars.
 - **Date serialization**: due-date calendar uses `format(day, 'yyyy-MM-dd')`, NOT `toISOString().slice(0, 10)` — positive UTC offsets shift back a day.
 - **coss/Base UI**: primitives `@base-ui/react/*`, local `@renderer/components/ui/*`, `cn` from `@renderer/utils/cn`. Popup triggers need real DOM anchor; native `button` + `buttonVariants` for `PopoverTrigger render={...}`.
+- **Default SelectItem layout**: selected checkmark belongs at the far right end; item text/content stays left in first grid column.
 - **Tailwind v4**: `@tailwindcss/vite`, `@import 'tailwindcss'`, `@theme inline` in `src/renderer/src/assets/main.css`. Theme colors as `--color-app-*` for `bg-app-*`.
 - **Project List/Board**: controlled coss `Tabs`/`TabsPanel` with `projectTab`/`setProjectTab` (`list`/`kanban`).
 - **Dialog overlay + frameless title bar**: portaled to `body`; `DialogBackdrop`/`DialogViewport` constrained by `--app-overlay-top` in `App.tsx`.

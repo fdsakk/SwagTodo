@@ -492,3 +492,7 @@
 |------|--------|---------|---------|--------|
 | 12:28 | Added urgency dot to priority filter select trigger in SearchSortBar | src/renderer/src/components/layout/SearchSortBar.tsx | Selected urgency now shows dot in filter popup trigger and list item | ~220 |
 | 12:28 | Ran `bun run lint` | repo | Passed | ~60 |
+| 12:32 | Moved default select item checkmark to end | src/renderer/src/components/ui/select.tsx | Text is left, checkmark is right aligned | ~140 |
+| 12:32 | Ran `bun run lint` | repo | Passed | ~40 |
+| 12:33 | Fixed select item grid row placement | src/renderer/src/components/ui/select.tsx | Checkmark no longer pushes text to next line | ~70 |
+| 12:33 | Ran `bun run lint` | repo | Passed | ~40 |
