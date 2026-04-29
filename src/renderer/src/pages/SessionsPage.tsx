@@ -3,7 +3,8 @@ import { ChevronLeft, ChevronRight } from 'lucide-react'
 import { useShallow } from 'zustand/react/shallow'
 import { SessionsCalendar } from '@renderer/components/sessions-calendar'
 import { addDays, buildIsoAtMinutes, isSameDay, startOfDay } from '@renderer/utils/calendar'
-import { cn } from '@renderer/utils/cn'
+import { Tabs, TabsList, TabsTab } from '@renderer/components/ui/tabs'
+
 import { TaskPickerDialog, type DraftCreate } from './sessions/TaskPickerDialog'
 import { GhostBlockDialog } from './sessions/GhostBlockDialog'
 import { useDomainStore, useUiStore } from '@renderer/store'
@@ -247,23 +248,19 @@ export default function SessionsPage(): React.JSX.Element {
           </button>
         </div>
         <span className="text-sm text-app-text-secondary">{rangeLabel}</span>
-        <div className="ml-auto flex items-center gap-1 rounded-md border border-app-border bg-app-hover p-0.5">
-          {DAY_OPTIONS.map((opt) => (
-            <button
-              key={opt}
-              type="button"
-              onClick={() => setDayCount(opt)}
-              className={cn(
-                'h-6 rounded-sm px-2 text-xs transition-colors',
-                dayCount === opt
-                  ? 'bg-app-active text-app-text'
-                  : 'text-app-text-muted hover:text-app-text'
-              )}
-            >
-              {opt} {opt === 1 ? 'day' : 'days'}
-            </button>
-          ))}
-        </div>
+        <Tabs
+          className="ml-auto"
+          value={String(dayCount)}
+          onValueChange={(v) => setDayCount(Number(v) as DayCount)}
+        >
+          <TabsList>
+            {DAY_OPTIONS.map((opt) => (
+              <TabsTab key={opt} value={String(opt)}>
+                {opt} {opt === 1 ? 'day' : 'days'}
+              </TabsTab>
+            ))}
+          </TabsList>
+        </Tabs>
       </div>
 
       {error && (

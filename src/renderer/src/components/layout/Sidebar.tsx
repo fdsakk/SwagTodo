@@ -81,8 +81,8 @@ export function Sidebar(props: SidebarProps): React.JSX.Element {
       isMobile: false,
       open,
       openMobile: false,
-      setOpen: () => {},
-      setOpenMobile: () => {},
+      setOpen: () => { },
+      setOpenMobile: () => { },
       state: state as 'expanded' | 'collapsed',
       toggleSidebar
     }),
@@ -103,7 +103,7 @@ export function Sidebar(props: SidebarProps): React.JSX.Element {
           } as React.CSSProperties
         }
       >
-        <ShadcnSidebar className="!bg-app-sidebar !text-app-text" collapsible="none">
+        <ShadcnSidebar className="bg-app-sidebar! text-app-text!" collapsible="none">
           <SidebarHeader className="flex-row items-center justify-between px-2 py-2">
             {open && <span className="text-xs font-medium text-app-text-muted">Tasks</span>}
             <button

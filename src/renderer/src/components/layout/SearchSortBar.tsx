@@ -122,7 +122,7 @@ export function SearchSortBar(): React.JSX.Element {
           Filter
           {activeFilterCount > 0 && <Badge variant={'info'}>{activeFilterCount}</Badge>}
         </PopoverTrigger>
-        <PopoverPopup align="end" className="w-[260px] border-app-border bg-app-card p-1 shadow-lg">
+        <PopoverPopup align="end" className="bg-app-card shadow-md w-52">
           <div className="space-y-3">
             <div className="grid gap-1.5">
               <span className="text-xs font-medium text-app-text-muted">Sort by</span>
@@ -221,14 +221,14 @@ export function SearchSortBar(): React.JSX.Element {
               </>
             )}
             {showDoneFilter && (
-              <label className="flex cursor-pointer items-center justify-between gap-3 rounded-md px-1 py-0.5 text-xs font-medium text-app-text-muted hover:text-app-text-secondary">
+              <div className="flex cursor-pointer items-center justify-between gap-3 rounded-md px-1 py-0.5 text-xs font-medium text-app-text-muted hover:text-app-text-secondary">
                 Show done
                 <AnimatedCheckbox
                   checked={showCompleted}
                   className="size-[18px] rounded-[5px]"
                   onCheckedChange={setShowCompleted}
                 />
-              </label>
+              </div>
             )}
           </div>
         </PopoverPopup>

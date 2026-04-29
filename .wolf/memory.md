@@ -681,3 +681,14 @@
 
 | 14:30 | Migrated Sidebar to coss/Base UI sidebar primitives (SidebarMenu/Item/Button/Badge, SidebarHeader/Content/Footer/Group). Preserved zustand selectors + actions. NavItem/ProjectList/SidebarFooter rewritten as menu items with tooltip-on-collapse. | components/layout/Sidebar.tsx, components/sidebar/* | typecheck+lint clean | ~3500 |
 | 00:09 | Session end: 5 writes across 4 files (Sidebar.tsx, NavItem.tsx, ProjectList.tsx, SidebarFooter.tsx) | 8 reads | ~12937 tok |
+| 00:14 | Session end: 5 writes across 4 files (Sidebar.tsx, NavItem.tsx, ProjectList.tsx, SidebarFooter.tsx) | 8 reads | ~12937 tok |
+
+## Session: 2026-04-28 00:21
+
+| Time | Action | File(s) | Outcome | ~Tokens |
+|------|--------|---------|---------|--------|
+| 00:23 | Edited src/renderer/src/pages/SessionsPage.tsx | 9→9 lines | ~176 |
+| 00:23 | Edited src/renderer/src/pages/SessionsPage.tsx | 17→13 lines | ~115 |
+| 00:23 | Edited src/renderer/src/pages/SessionsPage.tsx | 2→3 lines | ~47 |
+| 00:23 | Session end: 3 writes across 1 files (SessionsPage.tsx) | 2 reads | ~3276 tok |
+| 00:26 | Session end: 3 writes across 1 files (SessionsPage.tsx) | 3 reads | ~4546 tok |

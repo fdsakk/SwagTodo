@@ -2,14 +2,14 @@
   "version": 1,
   "created_at": "2026-04-18T19:20:23.576Z",
   "lifetime": {
-    "total_tokens_estimated": 1032535,
-    "total_reads": 440,
-    "total_writes": 799,
-    "total_sessions": 41,
-    "anatomy_hits": 397,
-    "anatomy_misses": 43,
-    "repeated_reads_blocked": 177,
-    "estimated_savings_vs_bare_cli": 744551
+    "total_tokens_estimated": 1053294,
+    "total_reads": 453,
+    "total_writes": 810,
+    "total_sessions": 42,
+    "anatomy_hits": 408,
+    "anatomy_misses": 45,
+    "repeated_reads_blocked": 179,
+    "estimated_savings_vs_bare_cli": 752627
   },
   "sessions": [
     {
@@ -7727,6 +7727,190 @@
         "writes_count": 5,
         "repeated_reads_blocked": 0,
         "anatomy_lookups": 8
+      }
+    },
+    {
+      "id": "session-2026-04-28-0002",
+      "started": "2026-04-28T22:02:19.422Z",
+      "ended": "2026-04-28T22:14:53.293Z",
+      "reads": [
+        {
+          "file": "/home/fenta/Projects/SwagTodo/src/renderer/src/components/layout/Sidebar.tsx",
+          "tokens_estimated": 1250,
+          "was_repeated": false,
+          "anatomy_had_description": false
+        },
+        {
+          "file": "/home/fenta/Projects/SwagTodo/src/renderer/src/components/sidebar/NavItem.tsx",
+          "tokens_estimated": 296,
+          "was_repeated": false,
+          "anatomy_had_description": false
+        },
+        {
+          "file": "/home/fenta/Projects/SwagTodo/src/renderer/src/components/sidebar/ProjectList.tsx",
+          "tokens_estimated": 588,
+          "was_repeated": false,
+          "anatomy_had_description": false
+        },
+        {
+          "file": "/home/fenta/Projects/SwagTodo/src/renderer/src/components/sidebar/SidebarFooter.tsx",
+          "tokens_estimated": 204,
+          "was_repeated": false,
+          "anatomy_had_description": false
+        },
+        {
+          "file": "/home/fenta/Projects/SwagTodo/src/renderer/src/components/sidebar/index.tsx",
+          "tokens_estimated": 37,
+          "was_repeated": false,
+          "anatomy_had_description": false
+        },
+        {
+          "file": "/home/fenta/Projects/SwagTodo/src/renderer/src/components/ui/sidebar.tsx",
+          "tokens_estimated": 4940,
+          "was_repeated": false,
+          "anatomy_had_description": false
+        },
+        {
+          "file": "/home/fenta/Projects/SwagTodo/src/renderer/src/App.tsx",
+          "tokens_estimated": 2220,
+          "was_repeated": false,
+          "anatomy_had_description": false
+        },
+        {
+          "file": "/home/fenta/Projects/SwagTodo/src/renderer/src/hooks/use-media-query.ts",
+          "tokens_estimated": 214,
+          "was_repeated": false,
+          "anatomy_had_description": false
+        }
+      ],
+      "writes": [
+        {
+          "file": "/home/fenta/Projects/SwagTodo/src/renderer/src/components/layout/Sidebar.tsx",
+          "tokens_estimated": 2039,
+          "action": "create"
+        },
+        {
+          "file": "/home/fenta/Projects/SwagTodo/src/renderer/src/components/sidebar/NavItem.tsx",
+          "tokens_estimated": 380,
+          "action": "create"
+        },
+        {
+          "file": "/home/fenta/Projects/SwagTodo/src/renderer/src/components/sidebar/ProjectList.tsx",
+          "tokens_estimated": 525,
+          "action": "create"
+        },
+        {
+          "file": "/home/fenta/Projects/SwagTodo/src/renderer/src/components/sidebar/SidebarFooter.tsx",
+          "tokens_estimated": 226,
+          "action": "create"
+        },
+        {
+          "file": "/home/fenta/Projects/SwagTodo/src/renderer/src/components/layout/Sidebar.tsx",
+          "tokens_estimated": 18,
+          "action": "edit"
+        }
+      ],
+      "totals": {
+        "input_tokens_estimated": 9749,
+        "output_tokens_estimated": 3188,
+        "reads_count": 8,
+        "writes_count": 5,
+        "repeated_reads_blocked": 0,
+        "anatomy_lookups": 8
+      }
+    },
+    {
+      "id": "session-2026-04-28-0021",
+      "started": "2026-04-28T22:21:31.725Z",
+      "ended": "2026-04-28T22:23:55.188Z",
+      "reads": [
+        {
+          "file": "/home/fenta/Projects/SwagTodo/.claude/skills/coss/references/primitives/tabs.md",
+          "tokens_estimated": 0,
+          "was_repeated": false,
+          "anatomy_had_description": false
+        },
+        {
+          "file": "/home/fenta/Projects/SwagTodo/src/renderer/src/pages/SessionsPage.tsx",
+          "tokens_estimated": 2938,
+          "was_repeated": true,
+          "anatomy_had_description": false
+        }
+      ],
+      "writes": [
+        {
+          "file": "/home/fenta/Projects/SwagTodo/src/renderer/src/pages/SessionsPage.tsx",
+          "tokens_estimated": 176,
+          "action": "edit"
+        },
+        {
+          "file": "/home/fenta/Projects/SwagTodo/src/renderer/src/pages/SessionsPage.tsx",
+          "tokens_estimated": 115,
+          "action": "edit"
+        },
+        {
+          "file": "/home/fenta/Projects/SwagTodo/src/renderer/src/pages/SessionsPage.tsx",
+          "tokens_estimated": 47,
+          "action": "edit"
+        }
+      ],
+      "totals": {
+        "input_tokens_estimated": 2938,
+        "output_tokens_estimated": 338,
+        "reads_count": 2,
+        "writes_count": 3,
+        "repeated_reads_blocked": 1,
+        "anatomy_lookups": 1
+      }
+    },
+    {
+      "id": "session-2026-04-28-0021",
+      "started": "2026-04-28T22:21:31.725Z",
+      "ended": "2026-04-28T22:26:01.090Z",
+      "reads": [
+        {
+          "file": "/home/fenta/Projects/SwagTodo/.claude/skills/coss/references/primitives/tabs.md",
+          "tokens_estimated": 0,
+          "was_repeated": false,
+          "anatomy_had_description": false
+        },
+        {
+          "file": "/home/fenta/Projects/SwagTodo/src/renderer/src/pages/SessionsPage.tsx",
+          "tokens_estimated": 2938,
+          "was_repeated": true,
+          "anatomy_had_description": false
+        },
+        {
+          "file": "/home/fenta/Projects/SwagTodo/src/renderer/src/components/task-list/task-context-menu.tsx",
+          "tokens_estimated": 1270,
+          "was_repeated": false,
+          "anatomy_had_description": false
+        }
+      ],
+      "writes": [
+        {
+          "file": "/home/fenta/Projects/SwagTodo/src/renderer/src/pages/SessionsPage.tsx",
+          "tokens_estimated": 176,
+          "action": "edit"
+        },
+        {
+          "file": "/home/fenta/Projects/SwagTodo/src/renderer/src/pages/SessionsPage.tsx",
+          "tokens_estimated": 115,
+          "action": "edit"
+        },
+        {
+          "file": "/home/fenta/Projects/SwagTodo/src/renderer/src/pages/SessionsPage.tsx",
+          "tokens_estimated": 47,
+          "action": "edit"
+        }
+      ],
+      "totals": {
+        "input_tokens_estimated": 4208,
+        "output_tokens_estimated": 338,
+        "reads_count": 3,
+        "writes_count": 3,
+        "repeated_reads_blocked": 1,
+        "anatomy_lookups": 2
       }
     }
   ],

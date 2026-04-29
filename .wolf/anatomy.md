@@ -1,6 +1,6 @@
 # anatomy.md
 
-> Auto-maintained by OpenWolf. Last scanned: 2026-04-28T22:08:46.623Z
+> Auto-maintained by OpenWolf. Last scanned: 2026-04-28T22:23:26.997Z
 > Files: 187 tracked | Anatomy hits: 0 | Misses: 0
 
 ## ./
@@ -237,7 +237,7 @@
 - `HealthPage.tsx` — today — renders chart — uses useState, useCallback, useMemo (~5362 tok)
 - `InboxPage.tsx` — InboxPage — uses useMemo (~409 tok)
 - `ProjectPage.tsx` — ProjectPage — uses useMemo, useEffect (~1364 tok)
-- `SessionsPage.tsx` — DAY_OPTIONS — uses useEffect, useMemo, useCallback (~2989 tok)
+- `SessionsPage.tsx` — DAY_OPTIONS (~2938 tok)
 - `SettingsPage.tsx` — SettingsPage (~372 tok)
 - `TodayPage.tsx` — TodayPage — uses useMemo (~383 tok)
 

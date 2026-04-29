@@ -781,6 +781,22 @@
       "related_bugs": [],
       "occurrences": 1,
       "last_seen": "2026-04-28T22:08:46.645Z"
+    },
+    {
+      "id": "bug-046",
+      "timestamp": "2026-04-28T22:23:18.813Z",
+      "error_message": "Type error",
+      "file": "src/renderer/src/pages/SessionsPage.tsx",
+      "root_cause": "Missing or incorrect type annotation",
+      "fix": "Added type assertion/annotation",
+      "tags": [
+        "auto-detected",
+        "type-fix",
+        "tsx"
+      ],
+      "related_bugs": [],
+      "occurrences": 1,
+      "last_seen": "2026-04-28T22:23:18.813Z"
     }
   ]
 }
