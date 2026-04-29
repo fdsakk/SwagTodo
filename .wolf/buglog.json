@@ -797,6 +797,54 @@
       "related_bugs": [],
       "occurrences": 1,
       "last_seen": "2026-04-28T22:23:18.813Z"
+    },
+    {
+      "id": "bug-047",
+      "timestamp": "2026-04-29T06:49:50.742Z",
+      "error_message": "CSS fix: sm",
+      "file": "src/renderer/src/components/task-panel/TaskCreatePanel.tsx",
+      "root_cause": "sm: grid-cols-[minmax(0,1fr)_13.5rem]\"> → grid-cols-[minmax(0,1fr)_auto_13.5rem]\">",
+      "fix": "Changed sm: grid-cols-[minmax(0,1fr)_13.5rem]\"> → grid-cols-[minmax(0,1fr)_auto_13.5rem]\">",
+      "tags": [
+        "auto-detected",
+        "style-fix",
+        "tsx"
+      ],
+      "related_bugs": [],
+      "occurrences": 1,
+      "last_seen": "2026-04-29T06:49:50.742Z"
+    },
+    {
+      "id": "bug-048",
+      "timestamp": "2026-04-29T07:01:27.287Z",
+      "error_message": "Significant refactor of ",
+      "file": "src/renderer/src/assets/main.css",
+      "root_cause": "3 lines replaced/restructured",
+      "fix": "Rewrote 21→11 lines (3 removed)",
+      "tags": [
+        "auto-detected",
+        "refactor",
+        "css"
+      ],
+      "related_bugs": [],
+      "occurrences": 1,
+      "last_seen": "2026-04-29T07:01:27.287Z"
+    },
+    {
+      "id": "bug-049",
+      "timestamp": "2026-04-29T07:06:16.196Z",
+      "error_message": "Incorrect value in code",
+      "file": "src/renderer/src/components/task-list/task-context-menu.tsx",
+      "root_cause": "Had 'flex h-8 cursor-default select-none items-center ",
+      "fix": "Changed to 'flex h-8 cursor-default select-none items-center ",
+      "tags": [
+        "auto-detected",
+        "wrong-value",
+        "tsx"
+      ],
+      "related_bugs": [],
+      "occurrences": 3,
+      "last_seen": "2026-04-29T07:08:56.606Z"
     }
   ]
 }

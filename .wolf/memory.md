@@ -695,3 +695,45 @@
 | 08:41 | Edited src/renderer/src/components/task-panel/TaskDetailPanel.tsx | 4→5 lines | ~45 |
 | 08:41 | Session end: 4 writes across 2 files (SessionsPage.tsx, TaskDetailPanel.tsx) | 6 reads | ~8995 tok |
 | 08:43 | Session end: 4 writes across 2 files (SessionsPage.tsx, TaskDetailPanel.tsx) | 6 reads | ~8995 tok |
+| 08:45 | Edited src/renderer/src/components/task-panel/TaskCreatePanel.tsx | CSS: placeholder, focus | ~134 |
+| 08:45 | Edited src/renderer/src/components/task-panel/TaskCreatePanel.tsx | — | ~0 |
+| 08:46 | Edited src/renderer/src/components/task-panel/TaskEditPanel.tsx | CSS: placeholder, focus | ~121 |
+| 08:46 | Edited src/renderer/src/components/task-panel/TaskEditPanel.tsx | — | ~0 |
+| 08:47 | Session end: 8 writes across 4 files (SessionsPage.tsx, TaskDetailPanel.tsx, TaskCreatePanel.tsx, TaskEditPanel.tsx) | 8 reads | ~12484 tok |
+| 08:49 | Edited src/renderer/src/components/task-panel/TaskCreatePanel.tsx | 10→9 lines | ~82 |
+| 08:49 | Edited src/renderer/src/components/task-panel/TaskCreatePanel.tsx | 29→29 lines | ~286 |
+| 08:50 | Edited src/renderer/src/components/task-panel/TaskEditPanel.tsx | 10→8 lines | ~65 |
+| 08:50 | Edited src/renderer/src/components/task-panel/TaskEditPanel.tsx | 19→16 lines | ~172 |
+| 08:51 | Session end: 12 writes across 4 files (SessionsPage.tsx, TaskDetailPanel.tsx, TaskCreatePanel.tsx, TaskEditPanel.tsx) | 8 reads | ~13162 tok |
+| 08:52 | Edited src/renderer/src/components/task-panel/TaskCreatePanel.tsx | 18→18 lines | ~230 |
+| 08:52 | Edited src/renderer/src/components/task-panel/TaskEditPanel.tsx | 18→18 lines | ~216 |
+| 08:53 | Session end: 14 writes across 4 files (SessionsPage.tsx, TaskDetailPanel.tsx, TaskCreatePanel.tsx, TaskEditPanel.tsx) | 8 reads | ~13608 tok |
+| 08:57 | Created src/renderer/src/components/task-panel/TitleInput.tsx | — | ~890 |
+| 08:58 | Edited src/renderer/src/assets/main.css | CSS: --animate-title-caret | ~85 |
+| 08:58 | Edited src/renderer/src/components/task-panel/index.tsx | 1→2 lines | ~27 |
+| 08:58 | Edited src/renderer/src/components/task-panel/TaskCreatePanel.tsx | added 1 import(s) | ~61 |
+| 08:58 | Edited src/renderer/src/components/task-panel/TaskCreatePanel.tsx | 7→8 lines | ~87 |
+| 08:59 | Edited src/renderer/src/components/task-panel/TaskEditPanel.tsx | added 1 import(s) | ~27 |
+| 08:59 | Edited src/renderer/src/components/task-panel/TaskEditPanel.tsx | 7→8 lines | ~74 |
+| 09:01 | Edited src/renderer/src/components/task-panel/index.tsx | 2→1 lines | ~15 |
+| 09:01 | Edited src/renderer/src/components/task-panel/TaskCreatePanel.tsx | 2→1 lines | ~15 |
+| 09:01 | Edited src/renderer/src/components/task-panel/TaskEditPanel.tsx | 2→1 lines | ~15 |
+| 09:01 | Edited src/renderer/src/assets/main.css | reduced (-10 lines) | ~36 |
+| 09:02 | Edited src/renderer/src/assets/main.css | 4→3 lines | ~31 |
+| 09:03 | Session end: 26 writes across 7 files (SessionsPage.tsx, TaskDetailPanel.tsx, TaskCreatePanel.tsx, TaskEditPanel.tsx, TitleInput.tsx) | 12 reads | ~17939 tok |
+
+## Session: 2026-04-29 09:05
+
+| Time | Action | File(s) | Outcome | ~Tokens |
+|------|--------|---------|---------|--------|
+| 09:06 | Edited src/renderer/src/components/task-list/task-context-menu.tsx | CSS: focus, focus-visible | ~78 |
+| 09:06 | Edited src/renderer/src/components/task-list/task-context-menu.tsx | CSS: focus, focus-visible | ~54 |
+| 09:06 | Session end: 2 writes across 1 files (task-context-menu.tsx) | 2 reads | ~3552 tok |
+
+## Session: 2026-04-29 09:07
+
+| Time | Action | File(s) | Outcome | ~Tokens |
+|------|--------|---------|---------|--------|
+| 09:08 | Edited src/renderer/src/components/task-list/task-context-menu.tsx | added 1 import(s) | ~46 |
+| 09:09 | Edited src/renderer/src/components/task-list/task-context-menu.tsx | CSS: focus, focus-visible | ~125 |
+| 09:09 | Session end: 2 writes across 1 files (task-context-menu.tsx) | 2 reads | ~2360 tok |

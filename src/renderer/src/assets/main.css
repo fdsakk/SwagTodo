@@ -50,7 +50,6 @@
   --radius-sm: calc(var(--radius) - 4px);
   --font-sans: 'Geist Sans', system-ui, sans-serif;
   --font-heading: 'Geist Sans', system-ui, sans-serif;
-  --shadow-soft: 0 0 0 1px rgba(255, 255, 255, 0.03), 0 8px 24px rgba(0, 0, 0, 0.4);
 }
 
 @layer base {

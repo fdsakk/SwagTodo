@@ -1,7 +1,7 @@
 # anatomy.md
 
-> Auto-maintained by OpenWolf. Last scanned: 2026-04-29T06:41:47.779Z
-> Files: 187 tracked | Anatomy hits: 0 | Misses: 0
+> Auto-maintained by OpenWolf. Last scanned: 2026-04-29T07:09:11.378Z
+> Files: 188 tracked | Anatomy hits: 0 | Misses: 0
 
 ## ./
 
@@ -81,7 +81,7 @@
 ## src/renderer/src/assets/
 
 - `base.css` — Styles: 22 vars (~400 tok)
-- `main.css` — Styles: 6 rules, 122 vars (~2174 tok)
+- `main.css` — Styles: 6 rules, 121 vars (~2150 tok)
 
 ## src/renderer/src/components/kanban/
 
@@ -150,7 +150,7 @@
 - `animated-checkbox.tsx` — AnimatedCheckbox (~427 tok)
 - `index.tsx` (~55 tok)
 - `subtask-progress-ring.tsx` — SubtaskProgressRingBase (~516 tok)
-- `task-context-menu.tsx` — TaskContextMenu — Radix context menu for task archive/delete/priority/status/due date (~1270 tok)
+- `task-context-menu.tsx` — STATUSES (~2185 tok)
 - `TaskList.tsx` — TaskList — uses useMemo (~674 tok)
 - `TaskRow.tsx` — TaskRowBase (~914 tok)
 
@@ -159,9 +159,10 @@
 - `index.tsx` (~59 tok)
 - `panel-field.tsx` — Field (~93 tok)
 - `task-form-fields.tsx` — INBOX_VALUE (~2260 tok)
-- `TaskCreatePanel.tsx` — INITIAL_STATE — renders form, modal (~1210 tok)
+- `TaskCreatePanel.tsx` — INITIAL_STATE — renders form, modal (~1266 tok)
 - `TaskDetailPanel.tsx` — TaskDetailPanel — renders modal (~766 tok)
-- `TaskEditPanel.tsx` — TEXT_COMMIT_DEBOUNCE_MS — renders modal (~2024 tok)
+- `TaskEditPanel.tsx` — TEXT_COMMIT_DEBOUNCE_MS — renders modal (~2083 tok)
+- `TitleInput.tsx` — CARET_WIDTH (~890 tok)
 
 ## src/renderer/src/components/ui/
 

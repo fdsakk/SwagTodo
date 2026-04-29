@@ -1,14 +1,12 @@
 import { useCallback, useState } from 'react'
 import { Button } from '@renderer/components/ui/button'
-import { Field, FieldLabel } from '@renderer/components/ui/field'
-import { Input } from '@renderer/components/ui/input'
 import {
-  DialogDescription,
   DialogFooter,
   DialogHeader,
   DialogPanel,
   DialogTitle
 } from '@renderer/components/ui/dialog'
+import { Separator } from '@renderer/components/ui/separator'
 import { Textarea } from '@renderer/components/ui/textarea'
 import type { Priority, TaskStatus } from '@renderer/types'
 import { TaskFormFields } from './task-form-fields'
@@ -96,33 +94,30 @@ export function TaskCreatePanel(props: TaskCreatePanelProps): React.JSX.Element 
     <>
       <DialogHeader>
         <DialogTitle>New task</DialogTitle>
-        <DialogDescription>Add a task to your list.</DialogDescription>
       </DialogHeader>
 
-      <DialogPanel>
-        <div className="grid gap-4 sm:grid-cols-[minmax(0,1fr)_13.5rem]">
-          <div className="space-y-3">
-            <Field>
-              <FieldLabel>Title</FieldLabel>
-              <Input
-                autoFocus
-                onChange={(event) => patch({ title: event.target.value })}
-                onKeyDown={handleTitleKeyDown}
-                placeholder="Task name"
-                value={form.title}
-              />
-            </Field>
+      <Separator />
 
-            <Field>
-              <FieldLabel>Description</FieldLabel>
-              <Textarea
-                className="min-h-32"
-                onChange={(event) => patch({ description: event.target.value })}
-                placeholder="Add description..."
-                value={form.description}
-              />
-            </Field>
+      <DialogPanel className="space-y-3 mt-4">
+        <div className="grid gap-4 sm:grid-cols-[minmax(0,1fr)_auto_13.5rem]">
+          <div className="flex flex-col gap-6 min-h-0">
+            <input
+              className="w-full border-l-4 pl-2 rounded-sm bg-transparent text-2xl font-semibold leading-tight text-app-text placeholder:text-app-text-muted focus:outline-none"
+              onChange={(event) => patch({ title: event.target.value })}
+              onKeyDown={handleTitleKeyDown}
+              placeholder="Task name"
+              value={form.title}
+            />
+
+            <Textarea
+              className="flex-1 min-h-32 resize-none"
+              onChange={(event) => patch({ description: event.target.value })}
+              placeholder="Add description..."
+              value={form.description}
+            />
           </div>
+
+          <Separator orientation="vertical" />
 
           <TaskFormFields
             dueDate={form.dueDate || undefined}

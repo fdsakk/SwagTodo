@@ -10,6 +10,7 @@ import {
   Trash2,
   TrendingUp
 } from 'lucide-react'
+import { Button } from '@renderer/components/ui/button'
 import { cn } from '@renderer/utils/cn'
 import type { Priority, Task, TaskStatus } from '@renderer/types'
 import { PRIORITY_META } from '@renderer/utils/task'
@@ -29,9 +30,9 @@ const PRIORITIES: { value: Priority; label: string }[] = [
 ]
 
 const menuContentClass =
-  'z-50 min-w-[160px] overflow-hidden rounded-md border border-app-border bg-app-card p-1.5 shadow-xl'
+  'z-50 min-w-[160px] overflow-hidden rounded-md border border-app-border bg-app-card p-1.5 shadow-xl outline-none focus:outline-none focus-visible:outline-none'
 const menuItemClass =
-  'flex h-8 cursor-default select-none items-center gap-2 rounded px-2 text-sm text-app-text-secondary outline-none data-highlighted:bg-app-hover data-highlighted:text-app-text data-disabled:opacity-40'
+  'flex h-8 cursor-default select-none items-center gap-2 rounded px-2 text-sm text-app-text-secondary outline-none focus:outline-none focus-visible:outline-none data-highlighted:bg-app-hover data-highlighted:text-app-text data-disabled:opacity-40'
 const subTriggerClass = cn(
   menuItemClass,
   'data-popup-open:bg-app-hover data-popup-open:text-app-text'
@@ -170,15 +171,15 @@ export function TaskContextMenu({
             <ContextMenu.Separator className={separatorClass} />
 
             <ContextMenu.Item
-              className={cn(
-                menuItemClass,
-                'text-red-300 data-highlighted:bg-red-500/10 data-highlighted:text-red-200 [.app-theme-light_&]:text-red-800 [.app-theme-light_&]:data-highlighted:bg-red-700/15 [.app-theme-light_&]:data-highlighted:text-red-950'
-              )}
+              className="rounded px-2 outline-none focus:outline-none focus-visible:outline-none"
               onClick={() => onDelete(task.id)}
-            >
-              <Trash2 size={13} className="shrink-0" />
-              Delete
-            </ContextMenu.Item>
+              render={
+                <Button variant="ghost-destructive" className="w-full justify-start gap-2">
+                  <Trash2 size={12} className="shrink-0" />
+                  Delete
+                </Button>
+              }
+            />
           </ContextMenu.Popup>
         </ContextMenu.Positioner>
       </ContextMenu.Portal>

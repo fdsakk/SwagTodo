@@ -1,11 +1,8 @@
 import { useCallback, useEffect, useMemo, useRef, useState } from 'react'
 import { Trash2 } from 'lucide-react'
 import { Button } from '@renderer/components/ui/button'
-import { Field, FieldLabel } from '@renderer/components/ui/field'
-import { Input } from '@renderer/components/ui/input'
 import { Separator } from '@renderer/components/ui/separator'
 import {
-  DialogDescription,
   DialogFooter,
   DialogHeader,
   DialogPanel,
@@ -160,28 +157,22 @@ export function TaskEditPanel({ task, onClose }: TaskEditPanelProps): React.JSX.
 
       <DialogPanel className="space-y-3 mt-4">
         <div className="grid gap-4 sm:grid-cols-[minmax(0,1fr)_auto_13.5rem]">
-          <div className="space-y-3">
-            <Field>
-              <FieldLabel>Title</FieldLabel>
-              <Input
-                autoFocus
-                onBlur={flushTitle}
-                onChange={handleTitleChange}
-                placeholder="Task name"
-                value={title}
-              />
-            </Field>
+          <div className="flex flex-col gap-6 min-h-0">
+            <input
+              className="w-full bg-transparent border-l-4 pl-2 rounded-sm text-2xl font-semibold leading-tight text-app-text placeholder:text-app-text-muted focus:outline-none"
+              onBlur={flushTitle}
+              onChange={handleTitleChange}
+              placeholder="Task name"
+              value={title}
+            />
 
-            <Field>
-              <FieldLabel>Description</FieldLabel>
-              <Textarea
-                className="min-h-[10.25rem]"
-                onBlur={flushDescription}
-                onChange={handleDescriptionChange}
-                placeholder="Add description..."
-                value={description}
-              />
-            </Field>
+            <Textarea
+              className="flex-1 min-h-[10.25rem] resize-none"
+              onBlur={flushDescription}
+              onChange={handleDescriptionChange}
+              placeholder="Add description..."
+              value={description}
+            />
           </div>
 
           <Separator orientation="vertical" />
