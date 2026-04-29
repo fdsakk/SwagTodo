@@ -81,8 +81,8 @@ export function Sidebar(props: SidebarProps): React.JSX.Element {
       isMobile: false,
       open,
       openMobile: false,
-      setOpen: () => { },
-      setOpenMobile: () => { },
+      setOpen: () => {},
+      setOpenMobile: () => {},
       state: state as 'expanded' | 'collapsed',
       toggleSidebar
     }),

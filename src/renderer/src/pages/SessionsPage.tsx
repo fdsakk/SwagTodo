@@ -1,16 +1,14 @@
 import { useCallback, useEffect, useMemo, useState } from 'react'
-import { ChevronLeft, ChevronRight } from 'lucide-react'
 import { useShallow } from 'zustand/react/shallow'
 import { SessionsCalendar } from '@renderer/components/sessions-calendar'
 import { addDays, buildIsoAtMinutes, isSameDay, startOfDay } from '@renderer/utils/calendar'
-import { Tabs, TabsList, TabsTab } from '@renderer/components/ui/tabs'
 
 import { TaskPickerDialog, type DraftCreate } from './sessions/TaskPickerDialog'
 import { GhostBlockDialog } from './sessions/GhostBlockDialog'
+import { SessionsToolbar, type DayCount } from './sessions/SessionsToolbar'
+import { useSessionsKeyboard } from './sessions/useSessionsKeyboard'
 import { useDomainStore, useUiStore } from '@renderer/store'
 
-type DayCount = 1 | 3 | 5 | 7
-const DAY_OPTIONS: readonly DayCount[] = [1, 3, 5, 7] as const
 const NOW_TICK_MS = 60 * 1000
 
 export default function SessionsPage(): React.JSX.Element {
@@ -59,35 +57,12 @@ export default function SessionsPage(): React.JSX.Element {
     return () => clearTimeout(timer)
   }, [error])
 
-  useEffect(() => {
-    const onKey = (e: KeyboardEvent): void => {
-      const target = e.target as HTMLElement | null
-      if (target) {
-        const tag = target.tagName
-        if (tag === 'INPUT' || tag === 'TEXTAREA' || target.isContentEditable) return
-      }
-      if (e.ctrlKey || e.metaKey || e.altKey) return
-      if (draftCreate) return
-      if (e.key === '[') {
-        e.preventDefault()
-        setAnchor((current) => addDays(current, -dayCount))
-      } else if (e.key === ']') {
-        e.preventDefault()
-        setAnchor((current) => addDays(current, dayCount))
-      } else if (e.key.toLowerCase() === 'd') {
-        e.preventDefault()
-        setDayCount((current) => {
-          const idx = DAY_OPTIONS.indexOf(current)
-          return DAY_OPTIONS[(idx + 1) % DAY_OPTIONS.length] ?? current
-        })
-      } else if (e.key.toLowerCase() === 'g') {
-        e.preventDefault()
-        setAnchor(startOfDay(new Date()))
-      }
-    }
-    window.addEventListener('keydown', onKey)
-    return () => window.removeEventListener('keydown', onKey)
-  }, [dayCount, draftCreate])
+  useSessionsKeyboard({
+    dayCount,
+    blocked: Boolean(draftCreate),
+    setAnchor,
+    setDayCount
+  })
 
   const days = useMemo(() => {
     const out: Date[] = []
@@ -121,9 +96,7 @@ export default function SessionsPage(): React.JSX.Element {
   }, [projects])
 
   const shiftRange = useCallback(
-    (direction: -1 | 1) => {
-      setAnchor((current) => addDays(current, direction * dayCount))
-    },
+    (direction: -1 | 1) => setAnchor((current) => addDays(current, direction * dayCount)),
     [dayCount]
   )
 
@@ -184,26 +157,12 @@ export default function SessionsPage(): React.JSX.Element {
     [addSession, draftCreate]
   )
 
-  const handleDeleteSession = useCallback(
-    (sessionId: string) => {
-      deleteSession(sessionId)
-    },
-    [deleteSession]
-  )
-
   const handleUpdateTimeBlock = useCallback(
     (id: string, startAt: string, endAt: string) => {
       const result = updateTimeBlock(id, { startAt, endAt })
       if (!result.ok) setError(result.error)
     },
     [updateTimeBlock]
-  )
-
-  const handleDeleteTimeBlock = useCallback(
-    (id: string) => {
-      deleteTimeBlock(id)
-    },
-    [deleteTimeBlock]
   )
 
   const handlePickGhostBlock = useCallback(
@@ -221,47 +180,13 @@ export default function SessionsPage(): React.JSX.Element {
 
   return (
     <div className="flex h-full flex-col">
-      <div className="flex items-center gap-2 px-4 py-2">
-        <div className="flex items-center gap-1">
-          <button
-            type="button"
-            onClick={() => shiftRange(-1)}
-            className="flex h-7 w-7 items-center justify-center rounded-md text-app-text-muted hover:bg-app-hover hover:text-app-text"
-            title="Previous range"
-          >
-            <ChevronLeft size={14} />
-          </button>
-          <button
-            type="button"
-            onClick={goToday}
-            className="h-7 rounded-md px-2 text-xs text-app-text-muted hover:bg-app-hover hover:text-app-text"
-          >
-            Today
-          </button>
-          <button
-            type="button"
-            onClick={() => shiftRange(1)}
-            className="flex h-7 w-7 items-center justify-center rounded-md text-app-text-muted hover:bg-app-hover hover:text-app-text"
-            title="Next range"
-          >
-            <ChevronRight size={14} />
-          </button>
-        </div>
-        <span className="text-sm text-app-text-secondary">{rangeLabel}</span>
-        <Tabs
-          className="ml-auto"
-          value={String(dayCount)}
-          onValueChange={(v) => setDayCount(Number(v) as DayCount)}
-        >
-          <TabsList>
-            {DAY_OPTIONS.map((opt) => (
-              <TabsTab key={opt} value={String(opt)}>
-                {opt} {opt === 1 ? 'day' : 'days'}
-              </TabsTab>
-            ))}
-          </TabsList>
-        </Tabs>
-      </div>
+      <SessionsToolbar
+        dayCount={dayCount}
+        rangeLabel={rangeLabel}
+        onShiftRange={shiftRange}
+        onGoToday={goToday}
+        onDayCountChange={setDayCount}
+      />
 
       {error && (
         <div className="mx-4 mb-2 rounded-md border border-red-500/40 bg-red-500/10 px-3 py-1.5 text-xs text-red-300">
@@ -287,9 +212,9 @@ export default function SessionsPage(): React.JSX.Element {
           onCreateDraft={handleCreateDraft}
           onUpdate={handleUpdate}
           onOpenSession={handleOpenSession}
-          onDeleteSession={handleDeleteSession}
+          onDeleteSession={deleteSession}
           onUpdateTimeBlock={handleUpdateTimeBlock}
-          onDeleteTimeBlock={handleDeleteTimeBlock}
+          onDeleteTimeBlock={deleteTimeBlock}
         />
       </div>
 

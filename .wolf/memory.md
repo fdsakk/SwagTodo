@@ -737,3 +737,42 @@
 | 09:08 | Edited src/renderer/src/components/task-list/task-context-menu.tsx | added 1 import(s) | ~46 |
 | 09:09 | Edited src/renderer/src/components/task-list/task-context-menu.tsx | CSS: focus, focus-visible | ~125 |
 | 09:09 | Session end: 2 writes across 1 files (task-context-menu.tsx) | 2 reads | ~2360 tok |
+
+## Session: 2026-04-29 09:33
+
+| Time | Action | File(s) | Outcome | ~Tokens |
+|------|--------|---------|---------|--------|
+| 09:37 | Edited src/renderer/src/components/task-list/TaskRow.tsx | removed 11 lines | ~8 |
+| 09:37 | Edited src/renderer/src/components/task-list/TaskRow.tsx | added optional chaining | ~128 |
+
+## Session: 2026-04-29 09:38
+
+| Time | Action | File(s) | Outcome | ~Tokens |
+|------|--------|---------|---------|--------|
+| 09:40 | Created src/renderer/src/pages/health/utils.ts | — | ~136 |
+| 09:40 | Created src/renderer/src/pages/health/SliderRow.tsx | — | ~263 |
+| 09:40 | Created src/renderer/src/pages/health/QuickAddButtons.tsx | — | ~310 |
+| 09:40 | Created src/renderer/src/pages/health/MedLogList.tsx | — | ~786 |
+| 09:40 | Created src/renderer/src/pages/health/PkParams.tsx | — | ~871 |
+| 09:41 | Created src/renderer/src/pages/health/EffectChart.tsx | — | ~2534 |
+| 09:41 | Created src/renderer/src/pages/HealthPage.tsx | — | ~691 |
+| 09:41 | Edited src/renderer/src/pages/health/EffectChart.tsx | 6→3 lines | ~27 |
+| 09:42 | Created src/renderer/src/components/sessions-calendar/CalendarHeader.tsx | — | ~380 |
+| 09:42 | Created src/renderer/src/components/sessions-calendar/useCalendarDrag.ts | — | ~2654 |
+
+## Session: 2026-04-29 09:43
+
+| Time | Action | File(s) | Outcome | ~Tokens |
+|------|--------|---------|---------|--------|
+| 09:43 | Created src/renderer/src/components/sessions-calendar/SessionsCalendar.tsx | — | ~2561 |
+| 09:43 | Edited src/renderer/src/components/sessions-calendar/index.tsx | inline fix | ~16 |
+| 09:44 | Created src/main/storage/sqlite/types.ts | — | ~643 |
+| 09:44 | Created src/main/storage/sqlite/schema.ts | — | ~646 |
+| 09:44 | Created src/main/storage/sqlite/serialize.ts | — | ~2918 |
+| 09:45 | Created src/main/storage/sqlite.ts | — | ~75 |
+| 09:46 | Created src/main/storage/sqlite/storage.ts | — | ~3131 |
+| 09:46 | Created src/renderer/src/pages/sessions/SessionsToolbar.tsx | — | ~580 |
+| 09:46 | Created src/renderer/src/pages/sessions/useSessionsKeyboard.ts | — | ~447 |
+| 09:47 | Created src/renderer/src/pages/SessionsPage.tsx | — | ~2178 |
+| 09:50 | Session end: 10 writes across 10 files (SessionsCalendar.tsx, index.tsx, types.ts, schema.ts, serialize.ts) | 4 reads | ~24272 tok |
+| 09:51 | Session end: 10 writes across 10 files (SessionsCalendar.tsx, index.tsx, types.ts, schema.ts, serialize.ts) | 4 reads | ~24272 tok |

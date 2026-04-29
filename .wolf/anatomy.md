@@ -1,7 +1,7 @@
 # anatomy.md
 
-> Auto-maintained by OpenWolf. Last scanned: 2026-04-29T07:09:11.378Z
-> Files: 188 tracked | Anatomy hits: 0 | Misses: 0
+> Auto-maintained by OpenWolf. Last scanned: 2026-04-29T07:47:11.184Z
+> Files: 202 tracked | Anatomy hits: 0 | Misses: 0
 
 ## ./
 
@@ -57,7 +57,14 @@
 ## src/main/storage/
 
 - `appState.ts` — Exports defaultAppState, APP_STATE_KEYS, isUiScale, isSafeId + 5 more (~1447 tok)
-- `sqlite.ts` — Exports SqliteStateSnapshot, parseLegacyElectronStore, serializeAppState, deserializeAppState, changedTaskIds (~6102 tok)
+- `sqlite.ts` (~75 tok)
+
+## src/main/storage/sqlite/
+
+- `schema.ts` — Exports SCHEMA (~646 tok)
+- `serialize.ts` — Exports parseSetting, parseJsonArray, inflateTaskRows, parseLegacyElectronStore + 5 more (~2918 tok)
+- `storage.ts` — Exports SqliteAppStorage, createSqliteAppStorage (~3131 tok)
+- `types.ts` — Exports StoredTaskRow, StoredSubTaskRow, StoredTaskLabelRow, StoredProjectRow + 10 more (~643 tok)
 
 ## src/main/tests/
 
@@ -118,12 +125,14 @@
 
 ## src/renderer/src/components/sessions-calendar/
 
+- `CalendarHeader.tsx` — WEEKDAYS (~380 tok)
 - `DraftGhost.tsx` — DraftGhost (~216 tok)
-- `index.tsx` (~60 tok)
+- `index.tsx` (~57 tok)
 - `SessionBlockView.tsx` — SessionBlockView (~681 tok)
-- `SessionsCalendar.tsx` — WEEKDAYS — uses useMemo, useEffect, useCallback (~5332 tok)
+- `SessionsCalendar.tsx` — HOURS (~2561 tok)
 - `TimeBlockView.tsx` — TimeBlockView (~588 tok)
 - `types.ts` — Exports DAY_MS, SessionBlock, TimeBlockDisplayBlock, DraftCreate + 8 more (~1061 tok)
+- `useCalendarDrag.ts` — Exports useCalendarDrag, CALENDAR_PX_PER_MIN (~2654 tok)
 
 ## src/renderer/src/components/settings/
 
@@ -152,7 +161,7 @@
 - `subtask-progress-ring.tsx` — SubtaskProgressRingBase (~516 tok)
 - `task-context-menu.tsx` — STATUSES (~2185 tok)
 - `TaskList.tsx` — TaskList — uses useMemo (~674 tok)
-- `TaskRow.tsx` — TaskRowBase (~914 tok)
+- `TaskRow.tsx` — COMPLETE_TOGGLE_DELAY_MS (~1492 tok)
 
 ## src/renderer/src/components/task-panel/
 
@@ -235,17 +244,28 @@
 
 - `ActivityPage.tsx` — buildEvents — uses useMemo (~1521 tok)
 - `ArchivePage.tsx` — ArchivePage — lists archived tasks with unarchive/delete/update actions (~420 tok)
-- `HealthPage.tsx` — today — renders chart — uses useState, useCallback, useMemo (~5362 tok)
+- `HealthPage.tsx` — HealthPage (~691 tok)
 - `InboxPage.tsx` — InboxPage — uses useMemo (~409 tok)
 - `ProjectPage.tsx` — ProjectPage — uses useMemo, useEffect (~1364 tok)
-- `SessionsPage.tsx` — DAY_OPTIONS (~2938 tok)
+- `SessionsPage.tsx` — NOW_TICK_MS (~2178 tok)
 - `SettingsPage.tsx` — SettingsPage (~372 tok)
 - `TodayPage.tsx` — TodayPage — uses useMemo (~383 tok)
+
+## src/renderer/src/pages/health/
+
+- `EffectChart.tsx` — EffectChart (~2505 tok)
+- `MedLogList.tsx` — MedLogList (~786 tok)
+- `PkParams.tsx` — PkParams (~871 tok)
+- `QuickAddButtons.tsx` — PRESET_BUTTONS (~310 tok)
+- `SliderRow.tsx` — SliderRow (~263 tok)
+- `utils.ts` — Exports today, isoToTimeInput, timeInputToIso (~136 tok)
 
 ## src/renderer/src/pages/sessions/
 
 - `GhostBlockDialog.tsx` — minutesFromIso — renders form — uses useState (~931 tok)
+- `SessionsToolbar.tsx` — DAY_OPTIONS (~580 tok)
 - `TaskPickerDialog.tsx` — minutesFromIso — uses useState, useMemo (~1235 tok)
+- `useSessionsKeyboard.ts` — Exports useSessionsKeyboard (~447 tok)
 
 ## src/renderer/src/store/
 

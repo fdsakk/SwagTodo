@@ -65,16 +65,6 @@ function TaskRowBase(props: TaskRowProps): React.JSX.Element {
     props.onToggleComplete(props.task.id)
   }
 
-  const handleArchive = (taskId: string): void => props.onArchive?.(taskId)
-  const handleUnarchive = (taskId: string): void => props.onUnarchive?.(taskId)
-  const handleDelete = (taskId: string): void => props.onDelete?.(taskId)
-  const handleSetPriority = (taskId: string, priority: Priority): void =>
-    props.onUpdate?.(taskId, { priority })
-  const handleSetStatus = (taskId: string, status: TaskStatus): void =>
-    props.onUpdate?.(taskId, { status })
-  const handleSetDueDate = (taskId: string, dueDate: string | undefined): void =>
-    props.onUpdate?.(taskId, { dueDate })
-
   if (props.task.dueDate) {
     metaParts.push(
       <span className={cn(overdue && 'text-red-400/80')} key="due-date">
@@ -102,12 +92,12 @@ function TaskRowBase(props: TaskRowProps): React.JSX.Element {
   return (
     <TaskContextMenu
       task={props.task}
-      onArchive={handleArchive}
-      onDelete={handleDelete}
-      onSetDueDate={handleSetDueDate}
-      onSetPriority={handleSetPriority}
-      onSetStatus={handleSetStatus}
-      onUnarchive={handleUnarchive}
+      onArchive={props.onArchive ?? (() => {})}
+      onDelete={props.onDelete ?? (() => {})}
+      onSetDueDate={(taskId, dueDate) => props.onUpdate?.(taskId, { dueDate })}
+      onSetPriority={(taskId, priority) => props.onUpdate?.(taskId, { priority })}
+      onSetStatus={(taskId, status) => props.onUpdate?.(taskId, { status })}
+      onUnarchive={props.onUnarchive ?? (() => {})}
     >
       <li>
         <div
