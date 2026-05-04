@@ -9,13 +9,14 @@ import {
   shell
 } from "electron"
 import icon from "../../resources/icon.png?asset"
-import { getPersistedUiScale, registerIpcHandlers } from "./ipcHandlers"
+import { registerIpcHandlers } from "./ipcHandlers"
 import { createSqliteAppStorage, type SqliteAppStorage } from "./storage/sqlite"
 
 const IS_MAC = process.platform === "darwin"
 const IS_WAYLAND =
   process.platform === "linux" && process.env.XDG_SESSION_TYPE === "wayland"
 let appStorage: SqliteAppStorage | null = null
+let appStoragePath: string | null = null
 let hasShownProcessErrorDialog = false
 
 if (IS_WAYLAND) {
@@ -29,7 +30,10 @@ if (IS_WAYLAND) {
 }
 
 const getAppStorage = (): SqliteAppStorage => {
-  if (!appStorage) throw new Error("App storage is not initialized")
+  if (!appStorage) {
+    if (!appStoragePath) throw new Error("App storage path is not initialized")
+    appStorage = createSqliteAppStorage(appStoragePath)
+  }
   return appStorage
 }
 
@@ -78,8 +82,8 @@ function createWindow(): void {
     minHeight: 640,
     show: false,
     autoHideMenuBar: true,
-    transparent: true,
-    backgroundColor: "#00000000",
+    transparent: IS_MAC,
+    backgroundColor: IS_MAC ? "#00000000" : "#070708",
     ...(IS_MAC
       ? { titleBarStyle: "hiddenInset", trafficLightPosition: { x: 16, y: 14 } }
       : { titleBarStyle: "hidden" }),
@@ -106,13 +110,12 @@ function createWindow(): void {
   mainWindow.on("leave-full-screen", emitWindowState)
   mainWindow.setMenuBarVisibility(false)
 
-  mainWindow.webContents.once("did-finish-load", () => {
-    mainWindow.webContents.setZoomFactor(
-      getPersistedUiScale(getAppStorage()) / 100
-    )
-  })
+  const showWindow = (): void => {
+    if (!mainWindow.isDestroyed() && !mainWindow.isVisible()) mainWindow.show()
+  }
 
-  mainWindow.once("ready-to-show", () => mainWindow.show())
+  mainWindow.once("ready-to-show", showWindow)
+  mainWindow.webContents.once("dom-ready", showWindow)
 
   const ALLOWED_PROTOCOLS = new Set(["https:", "http:"])
   mainWindow.webContents.setWindowOpenHandler(({ url }) => {
@@ -147,9 +150,7 @@ app.whenReady().then(() => {
     optimizer.watchWindowShortcuts(window)
   })
 
-  appStorage = createSqliteAppStorage(
-    join(app.getPath("userData"), "swag-todo.db")
-  )
+  appStoragePath = join(app.getPath("userData"), "swag-todo.db")
   registerIpcHandlers({
     ipcMain,
     getAppStorage,

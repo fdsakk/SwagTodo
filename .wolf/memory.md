@@ -496,3 +496,10 @@
 | 12:32 | Ran `bun run lint` | repo | Passed | ~40 |
 | 12:33 | Fixed select item grid row placement | src/renderer/src/components/ui/select.tsx | Checkmark no longer pushes text to next line | ~70 |
 | 12:33 | Ran `bun run lint` | repo | Passed | ~40 |
+
+## Session: 2026-04-29 16:52
+
+| Time | Action | File(s) | Outcome | ~Tokens |
+|------|--------|---------|---------|--------|
+| 16:58 | analyzed production Electron startup/package costs | main, renderer, dist/app.asar | found sync SQLite before window, monolithic renderer bundle, large packaged node_modules | ~8000 |
+| 17:07 | implemented startup/package performance changes | package.json, electron-builder.yml, src/main/index.ts, src/renderer/src/App.tsx | app.asar 115MB -> 5.8MB, main renderer 2.8MB -> 1.8MB, tests/build pass | ~9000 |

@@ -11,21 +11,33 @@ import {
 } from "@renderer/components/modals"
 import { TaskDetailPanel } from "@renderer/components/task-panel"
 import { useKeyboardShortcuts } from "@renderer/hooks/useKeyboardShortcuts"
-import ActivityPage from "@renderer/pages/ActivityPage"
-import ArchivePage from "@renderer/pages/ArchivePage"
-import { HealthPage } from "@renderer/pages/HealthPage"
 import InboxPage from "@renderer/pages/InboxPage"
-import ProjectPage from "@renderer/pages/ProjectPage"
-import SessionsPage from "@renderer/pages/SessionsPage"
-import SettingsPage from "@renderer/pages/SettingsPage"
 import TodayPage from "@renderer/pages/TodayPage"
 import { useDomainStore, useUiStore } from "@renderer/store"
 import { UI_SCALE_OPTIONS, type ViewName } from "@renderer/types"
 import { cn } from "@renderer/utils/cn"
-import { useCallback, useEffect, useRef, useState } from "react"
+import { lazy, Suspense, useCallback, useEffect, useRef, useState } from "react"
 import { useShallow } from "zustand/react/shallow"
 
 const FULL_HEIGHT_VIEWS = new Set<ViewName>(["sessions", "settings", "health"])
+const ActivityPage = lazy(() => import("@renderer/pages/ActivityPage"))
+const ArchivePage = lazy(() => import("@renderer/pages/ArchivePage"))
+const HealthPage = lazy(() =>
+  import("@renderer/pages/HealthPage").then((module) => ({
+    default: module.HealthPage
+  }))
+)
+const ProjectPage = lazy(() => import("@renderer/pages/ProjectPage"))
+const SessionsPage = lazy(() => import("@renderer/pages/SessionsPage"))
+const SettingsPage = lazy(() => import("@renderer/pages/SettingsPage"))
+
+function ViewFallback(): React.JSX.Element {
+  return (
+    <div className="flex h-full items-center justify-center text-sm text-app-text-muted">
+      Loading view...
+    </div>
+  )
+}
 
 function App(): React.JSX.Element {
   const [isFullScreen, setIsFullScreen] = useState(false)
@@ -207,7 +219,9 @@ function App(): React.JSX.Element {
               isFullHeightView ? "overflow-y-auto" : "mt-4"
             )}
           >
-            {viewContent[selectedView]}
+            <Suspense fallback={<ViewFallback />}>
+              {viewContent[selectedView]}
+            </Suspense>
           </div>
         </div>
 

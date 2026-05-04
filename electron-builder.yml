@@ -3,13 +3,33 @@ productName: Swag Todo
 directories:
   buildResources: build
 files:
+  - out/**
+  - resources/**
+  - package.json
   - '!**/.vscode/*'
-  - '!src/*'
+  - '!**/.idea/*'
+  - '!src/**'
+  - '!dist/**'
+  - '!node_modules/.cache/**'
+  - '!node_modules/**/{test,tests,__tests__,docs,doc,example,examples,coverage}/**'
+  - '!node_modules/**/*.{map,ts,tsx,md,markdown}'
+  - '!.agents/**'
+  - '!.claude/**'
+  - '!.pi/**'
+  - '!.wolf/**'
+  - '!CLAUDE.md'
+  - '!AGENTS.md'
+  - '!biome.json'
+  - '!bun.lock'
+  - '!components.json'
+  - '!postcss.config.cjs'
+  - '!tailwind.config.ts'
   - '!electron.vite.config.{js,ts,mjs,cjs}'
   - '!{.eslintcache,eslint.config.mjs,.prettierignore,.prettierrc.yaml,dev-app-update.yml,CHANGELOG.md,README.md}'
-  - '!{.env,.env.*,.npmrc,pnpm-lock.yaml}'
+  - '!{.env,.env.*,.npmrc,pnpm-lock.yaml,package-lock.json,yarn.lock}'
   - '!{tsconfig.json,tsconfig.node.json,tsconfig.web.json}'
 asarUnpack:
+  - node_modules/better-sqlite3/build/Release/*.node
   - resources/**
 win:
   executableName: swag-todo

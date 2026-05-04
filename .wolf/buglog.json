@@ -1029,6 +1029,23 @@
       ],
       "occurrences": 1,
       "last_seen": "2026-04-29T12:33:27+02:00"
+    },
+    {
+      "id": "bug-061",
+      "timestamp": "2026-04-29T17:06:57+02:00",
+      "error_message": "bun install failed with: error: Unexpected accessing temporary directory. Please set $BUN_TMPDIR or $BUN_INSTALL",
+      "file": "bun.lock",
+      "root_cause": "Sandboxed command environment prevented Bun from accessing its temporary install directory.",
+      "fix": "Reran `env BUN_TMPDIR=/tmp bun install` with escalated permissions so Bun could update the lockfile and rebuild native app deps.",
+      "tags": [
+        "bun",
+        "install",
+        "sandbox",
+        "dependencies"
+      ],
+      "related_bugs": [],
+      "occurrences": 1,
+      "last_seen": "2026-04-29T17:06:57+02:00"
     }
   ]
 }
