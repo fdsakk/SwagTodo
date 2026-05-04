@@ -1046,6 +1046,54 @@
       "related_bugs": [],
       "occurrences": 1,
       "last_seen": "2026-04-29T17:06:57+02:00"
+    },
+    {
+      "id": "bug-062",
+      "timestamp": "2026-05-04T13:20:18.521Z",
+      "error_message": "Incorrect value in code",
+      "file": "src/renderer/src/components/task-list/TaskRow.tsx",
+      "root_cause": "Had \"group flex cursor-pointer items-center gap-3.5 ro",
+      "fix": "Changed to \"group relative flex cursor-pointer items-center g",
+      "tags": [
+        "auto-detected",
+        "wrong-value",
+        "tsx"
+      ],
+      "related_bugs": [],
+      "occurrences": 1,
+      "last_seen": "2026-05-04T13:20:18.521Z"
+    },
+    {
+      "id": "bug-063",
+      "timestamp": "2026-05-04T13:31:33.832Z",
+      "error_message": "Incorrect value in code",
+      "file": "src/renderer/src/App.tsx",
+      "root_cause": "Had \"rounded-lg\"",
+      "fix": "Changed to \"rounded-md\"",
+      "tags": [
+        "auto-detected",
+        "wrong-value",
+        "tsx"
+      ],
+      "related_bugs": [],
+      "occurrences": 2,
+      "last_seen": "2026-05-04T13:31:37.316Z"
+    },
+    {
+      "id": "bug-064",
+      "timestamp": "2026-05-04T13:39:00.343Z",
+      "error_message": "Incorrect value in code",
+      "file": "src/renderer/src/components/sidebar/SidebarFooter.tsx",
+      "root_cause": "Had \"h-8 px-2 text-sm text-app-text-secondary hover:bg",
+      "fix": "Changed to \"h-8 px-2 text-sm transition-colors duration-150 t",
+      "tags": [
+        "auto-detected",
+        "wrong-value",
+        "tsx"
+      ],
+      "related_bugs": [],
+      "occurrences": 1,
+      "last_seen": "2026-05-04T13:39:00.343Z"
     }
   ]
 }

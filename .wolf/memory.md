@@ -503,3 +503,33 @@
 |------|--------|---------|---------|--------|
 | 16:58 | analyzed production Electron startup/package costs | main, renderer, dist/app.asar | found sync SQLite before window, monolithic renderer bundle, large packaged node_modules | ~8000 |
 | 17:07 | implemented startup/package performance changes | package.json, electron-builder.yml, src/main/index.ts, src/renderer/src/App.tsx | app.asar 115MB -> 5.8MB, main renderer 2.8MB -> 1.8MB, tests/build pass | ~9000 |
+
+## Session: 2026-05-04 15:13
+
+| Time | Action | File(s) | Outcome | ~Tokens |
+|------|--------|---------|---------|--------|
+| 15:20 | Edited src/renderer/src/components/task-list/TaskRow.tsx | "group flex cursor-pointer" → "group relative flex curso" | ~111 |
+| 15:20 | Session end: 1 writes across 1 files (TaskRow.tsx) | 2 reads | ~3397 tok |
+
+## Session: 2026-05-04 15:30
+
+| Time | Action | File(s) | Outcome | ~Tokens |
+|------|--------|---------|---------|--------|
+| 15:31 | Edited src/main/index.ts | 2→2 lines | ~16 |
+| 15:31 | Edited src/renderer/src/App.tsx | 2→2 lines | ~33 |
+| 15:31 | Edited src/renderer/src/App.tsx | 2→2 lines | ~31 |
+| 15:31 | Session end: 3 writes across 2 files (index.ts, App.tsx) | 2 reads | ~3435 tok |
+
+## Session: 2026-05-04 15:38
+
+| Time | Action | File(s) | Outcome | ~Tokens |
+|------|--------|---------|---------|--------|
+| 15:38 | Edited src/renderer/src/components/sidebar/NavItem.tsx | 5→5 lines | ~101 |
+| 15:38 | Edited src/renderer/src/components/sidebar/ProjectList.tsx | 5→5 lines | ~101 |
+| 15:39 | Edited src/renderer/src/components/sidebar/SidebarFooter.tsx | "h-8 px-2 text-sm text-app" → "h-8 px-2 text-sm transiti" | ~38 |
+| 15:39 | Session end: 3 writes across 3 files (NavItem.tsx, ProjectList.tsx, SidebarFooter.tsx) | 3 reads | ~1371 tok |
+
+## Session: 2026-05-04 15:40
+
+| Time | Action | File(s) | Outcome | ~Tokens |
+|------|--------|---------|---------|--------|

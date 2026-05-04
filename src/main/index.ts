@@ -82,8 +82,8 @@ function createWindow(): void {
     minHeight: 640,
     show: false,
     autoHideMenuBar: true,
-    transparent: IS_MAC,
-    backgroundColor: IS_MAC ? "#00000000" : "#070708",
+    transparent: true,
+    backgroundColor: "#00000000",
     ...(IS_MAC
       ? { titleBarStyle: "hiddenInset", trafficLightPosition: { x: 16, y: 14 } }
       : { titleBarStyle: "hidden" }),

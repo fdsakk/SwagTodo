@@ -17,7 +17,7 @@ export function SidebarFooter({
   return (
     <SidebarMenuItem>
       <SidebarMenuButton
-        className="h-8 px-2 text-sm text-app-text-secondary hover:bg-app-hover hover:!text-app-text"
+        className="h-8 px-2 text-sm transition-colors duration-150 text-app-text-secondary hover:bg-app-hover hover:!text-app-text"
         onClick={onOpenLabelModal}
       >
         <span className="flex h-4 w-4 items-center justify-center">

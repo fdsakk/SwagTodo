@@ -155,14 +155,14 @@ function App(): React.JSX.Element {
       <div
         className={cn(
           "flex h-full flex-col overflow-hidden bg-[#070708] px-[2px] pb-[2px] ring-1 ring-white/5",
-          !isFullScreen && "rounded-lg"
+          !isFullScreen && "rounded-md"
         )}
       >
         <TitleBar />
         <div
           className={cn(
             "flex flex-1 items-center justify-center overflow-hidden bg-app-bg text-sm text-app-text-muted",
-            !isFullScreen && "rounded-b-[10px]"
+            !isFullScreen && "rounded-md"
           )}
         >
           Loading workspace...
@@ -178,7 +178,7 @@ function App(): React.JSX.Element {
     archive: <ArchivePage />,
     sessions: <SessionsPage />,
     settings: <SettingsPage />,
-    health: <HealthPage />,
+    health: <HealthPage />, 
     project: (
       <ProjectPage
         onEditProject={(project) => openEditProjectPanel(project.id)}
@@ -191,7 +191,7 @@ function App(): React.JSX.Element {
     <div
       className={cn(
         "flex h-full flex-col overflow-hidden bg-app-titlebar px-1.5 pb-1.5",
-        !isFullScreen && "rounded-lg"
+        !isFullScreen && "rounded-md"
       )}
     >
       <ThemeProvider />
@@ -199,7 +199,7 @@ function App(): React.JSX.Element {
       <div
         className={cn(
           "relative flex min-h-0 flex-1 overflow-hidden bg-app-bg",
-          !isFullScreen && "rounded-lg"
+          !isFullScreen && "rounded-md"
         )}
       >
         <Sidebar

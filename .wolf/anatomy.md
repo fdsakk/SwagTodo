@@ -1,6 +1,6 @@
 # anatomy.md
 
-> Auto-maintained by OpenWolf. Last scanned: 2026-04-29T10:16:02.446Z
+> Auto-maintained by OpenWolf. Last scanned: 2026-05-04T13:39:00.336Z
 > Files: 262 tracked | Anatomy hits: 0 | Misses: 0
 
 ## ./
@@ -125,7 +125,7 @@
 
 ## src/main/
 
-- `index.ts` — IpcMainInvokeEvent: installGlobalErrorHandlers, createWindow (~1365 tok)
+- `index.ts` — IpcMainInvokeEvent: installGlobalErrorHandlers, createWindow (~1406 tok)
 - `ipcHandlers.ts` — Exports IpcRegistrar, IpcStorage, isZoomFactor, getPersistedUiScale, registerIpcHandlers (~933 tok)
 
 ## src/main/storage/
@@ -156,7 +156,7 @@
 
 ## src/renderer/src/
 
-- `App.tsx` — FULL_HEIGHT_VIEWS — uses useState, useEffect (~1990 tok)
+- `App.tsx` — FULL_HEIGHT_VIEWS (~2234 tok)
 - `env.d.ts` — / <reference types="vite/client" /> (~11 tok)
 - `main.tsx` (~192 tok)
 
@@ -219,9 +219,9 @@
 ## src/renderer/src/components/sidebar/
 
 - `index.tsx` (~37 tok)
-- `NavItem.tsx` — NavItem (~380 tok)
-- `ProjectList.tsx` — ProjectList (~525 tok)
-- `SidebarFooter.tsx` — SidebarFooter (~226 tok)
+- `NavItem.tsx` — NavItem (~401 tok)
+- `ProjectList.tsx` — ProjectList (~556 tok)
+- `SidebarFooter.tsx` — SidebarFooter (~236 tok)
 
 ## src/renderer/src/components/task-edit/
 
@@ -236,7 +236,7 @@
 - `subtask-progress-ring.tsx` — SubtaskProgressRingBase (~516 tok)
 - `task-context-menu.tsx` — STATUSES (~1935 tok)
 - `TaskList.tsx` — TaskList — uses useMemo (~909 tok)
-- `TaskRow.tsx` — COMPLETE_TOGGLE_DELAY_MS — uses useState, useEffect (~1492 tok)
+- `TaskRow.tsx` — COMPLETE_TOGGLE_DELAY_MS (~1585 tok)
 
 ## src/renderer/src/components/task-panel/
 

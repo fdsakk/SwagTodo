@@ -32,7 +32,7 @@ export function ProjectList({
             <SidebarMenuItem key={project.id}>
               <SidebarMenuButton
                 className={cn(
-                  "h-8 px-2 text-sm",
+                  "h-8 px-2 text-sm transition-colors duration-150",
                   active
                     ? "bg-app-active text-app-text data-[active=true]:bg-app-active data-[active=true]:text-app-text"
                     : "text-app-text-secondary hover:bg-app-hover hover:!text-app-text",

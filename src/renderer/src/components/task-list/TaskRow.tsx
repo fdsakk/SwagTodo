@@ -119,7 +119,7 @@ function TaskRowBase(props: TaskRowProps): React.JSX.Element {
       <li>
         <div
           className={cn(
-            "group flex cursor-pointer items-center gap-3.5 rounded-lg border border-app-border bg-app-card px-3.5 py-2.5 transition-colors hover:bg-app-hover",
+            "group relative flex cursor-pointer items-center gap-3.5 rounded-lg border border-app-border/64 bg-app-card px-3.5 py-2.5 shadow-xs/5 transition-colors before:pointer-events-none before:absolute before:inset-0 before:rounded-[calc(var(--radius-lg)-1px)] before:shadow-[0_1px_--theme(--color-black/4%)] hover:bg-app-hover dark:before:shadow-[0_-1px_--theme(--color-white/6%)]",
             isVisuallyCompleted && "opacity-40"
           )}
           onClick={() => {
