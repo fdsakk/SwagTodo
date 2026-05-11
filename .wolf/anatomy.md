@@ -1,6 +1,6 @@
 # anatomy.md
 
-> Auto-maintained by OpenWolf. Last scanned: 2026-05-04T13:39:00.336Z
+> Auto-maintained by OpenWolf. Last scanned: 2026-05-11T17:20:10.114Z
 > Files: 262 tracked | Anatomy hits: 0 | Misses: 0
 
 ## ./
@@ -327,7 +327,7 @@
 
 ## src/renderer/src/pages/health/
 
-- `EffectChart.tsx` — EffectChart — renders chart — uses useState, useEffect, useMemo (~2502 tok)
+- `EffectChart.tsx` — EffectChart (~2685 tok)
 - `MedLogList.tsx` — MedLogList (~786 tok)
 - `PkParams.tsx` — PkParams — uses useState (~871 tok)
 - `QuickAddButtons.tsx` — PRESET_BUTTONS (~310 tok)

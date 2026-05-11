@@ -2,14 +2,14 @@
   "version": 1,
   "created_at": "2026-04-18T19:20:23.576Z",
   "lifetime": {
-    "total_tokens_estimated": 1193529,
-    "total_reads": 523,
-    "total_writes": 910,
-    "total_sessions": 63,
-    "anatomy_hits": 471,
+    "total_tokens_estimated": 1196359,
+    "total_reads": 524,
+    "total_writes": 912,
+    "total_sessions": 64,
+    "anatomy_hits": 472,
     "anatomy_misses": 52,
-    "repeated_reads_blocked": 191,
-    "estimated_savings_vs_bare_cli": 793226
+    "repeated_reads_blocked": 192,
+    "estimated_savings_vs_bare_cli": 796102
   },
   "sessions": [
     {
@@ -9101,6 +9101,39 @@
         "writes_count": 3,
         "repeated_reads_blocked": 0,
         "anatomy_lookups": 3
+      }
+    },
+    {
+      "id": "session-2026-05-11-1917",
+      "started": "2026-05-11T17:17:43.109Z",
+      "ended": "2026-05-11T17:20:23.888Z",
+      "reads": [
+        {
+          "file": "/home/fenta/Projects/SwagTodo/src/renderer/src/pages/health/EffectChart.tsx",
+          "tokens_estimated": 2676,
+          "was_repeated": true,
+          "anatomy_had_description": false
+        }
+      ],
+      "writes": [
+        {
+          "file": "/home/fenta/Projects/SwagTodo/src/renderer/src/pages/health/EffectChart.tsx",
+          "tokens_estimated": 140,
+          "action": "edit"
+        },
+        {
+          "file": "/home/fenta/Projects/SwagTodo/src/renderer/src/pages/health/EffectChart.tsx",
+          "tokens_estimated": 14,
+          "action": "edit"
+        }
+      ],
+      "totals": {
+        "input_tokens_estimated": 2676,
+        "output_tokens_estimated": 154,
+        "reads_count": 1,
+        "writes_count": 2,
+        "repeated_reads_blocked": 1,
+        "anatomy_lookups": 1
       }
     }
   ],

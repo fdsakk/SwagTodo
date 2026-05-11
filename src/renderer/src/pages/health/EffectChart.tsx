@@ -65,7 +65,13 @@ export function EffectChart({
     for (const pt of chartData) {
       if (pt.concentration > maxEffect) maxEffect = pt.concentration
     }
-    const ceiling = Math.max(1, Math.ceil(maxEffect))
+    const mtcHeadroom = pkSettings.mtc * 0.15
+    const minCeiling = Math.max(
+      pkSettings.mec,
+      pkSettings.mtc + mtcHeadroom,
+      maxEffect
+    )
+    const ceiling = Math.max(1, Math.ceil(minCeiling))
     const ticks: number[] = []
     for (let i = 0; i <= ceiling; i++) ticks.push(i)
 
@@ -115,7 +121,7 @@ export function EffectChart({
       yTicks: ticks,
       crashSegments: segments
     }
-  }, [chartData])
+  }, [chartData, pkSettings.mec, pkSettings.mtc])
 
   return (
     <div ref={containerRef}>

@@ -533,3 +533,12 @@
 
 | Time | Action | File(s) | Outcome | ~Tokens |
 |------|--------|---------|---------|--------|
+
+## Session: 2026-05-11 19:17
+
+| Time | Action | File(s) | Outcome | ~Tokens |
+|------|--------|---------|---------|--------|
+| 19:20 | Edited src/renderer/src/pages/health/EffectChart.tsx | modified for() | ~140 |
+| 19:20 | Edited src/renderer/src/pages/health/EffectChart.tsx | inline fix | ~14 |
+2026-05-11T19:20:19+02:00 | edit src/renderer/src/pages/health/EffectChart.tsx: y-domain ceiling now factors MTC + 15% headroom so MEC/MTC/Above-MTC band always visible
+| 19:20 | Session end: 2 writes across 1 files (EffectChart.tsx) | 1 reads | ~2830 tok |
