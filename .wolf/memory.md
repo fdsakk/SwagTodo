@@ -549,3 +549,4 @@
 |------|--------|---------|---------|--------|
 | 20:22 | Regenerated Windows app icon | build/icon.ico | PNG source converted to multi-size ICO with 256/128/64/48/32/16 sizes | ~900 |
 | 20:24 | Verified build and attempted Windows package | build/icon.ico, electron-builder.yml | bun run build passed; electron-builder --win --dir blocked by missing wine on Linux | ~1300 |
+| 20:36 | Added packaged ICO copy | resources/icon.ico | resources now includes .ico as well as .png for Windows builds | ~350 |

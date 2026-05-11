@@ -131,6 +131,7 @@
 
 ## resources/
 
+- `icon.ico` — Packaged Windows icon asset copied from build/icon.ico (~0 tok)
 - `icon.png` — Runtime BrowserWindow icon asset, 1024x1024 RGBA (~0 tok)
 
 ## src/main/

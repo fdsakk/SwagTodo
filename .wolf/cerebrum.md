@@ -33,7 +33,7 @@
 - **Sidebar primitive**: `components/ui/sidebar.tsx` ships own `SidebarProvider` w/ `cookieStore.set` + `min-h-svh` — unsuitable for frameless Electron. Layout `Sidebar` exposes custom `SidebarContext.Provider` synced to Zustand `isSidebarCollapsed`, renders `Sidebar collapsible="none"`, sets `data-collapsible="icon"` + `data-state` for `group-data-*` + collapsed tooltips. Override `bg-sidebar`/`text-sidebar-foreground` w/ `!bg-app-sidebar !text-app-text`.
 - **Task edit debounce**: pending commits in refs w/ original `taskId`; key `TaskEditPanel` by `task.id` so switching unmounts, flushes pending text, remounts clean.
 - **Startup/package perf**: current Linux build packages renderer-only prod deps into `app.asar`; inspected `dist/linux-unpacked/resources/app.asar` at ~115 MB, extracted `node_modules` ~166 MB. Main runtime needs `better-sqlite3`, `zod`, `@electron-toolkit/utils`, but renderer deps are already bundled in `out/renderer/assets/index-*.js`.
-- **Windows app icon**: `electron-builder.yml` points `win.icon` at `build/icon.ico`; keep it as a real multi-size ICO generated from `build/icon.png` with 256/128/64/48/32/16 sizes. Runtime window icon still imports `resources/icon.png`.
+- **Windows app icon**: `electron-builder.yml` points `win.icon` at `build/icon.ico`; keep it as a real multi-size ICO generated from `build/icon.png` with 256/128/64/48/32/16 sizes. `resources/icon.ico` is a packaged copy for manual/runtime access; runtime window icon still imports `resources/icon.png`.
 
 ## Do-Not-Repeat
 
