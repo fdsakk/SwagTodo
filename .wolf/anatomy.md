@@ -22,6 +22,12 @@
 - `tsconfig.node.json` — /_", "src/preload/\*\*/_", "src/shared/\*_/_"], (~72 tok)
 - `tsconfig.web.json` (~116 tok)
 
+## build/
+
+- `icon.icns` — macOS app icon resource (~0 tok)
+- `icon.ico` — Windows multi-size app icon resource used by electron-builder (~0 tok)
+- `icon.png` — Source PNG app icon, 1024x1024 RGBA (~0 tok)
+
 ## .agents/skills/coss-particles/
 
 - `SKILL.md` — COSS UI Particles Index (~10397 tok)
@@ -122,6 +128,10 @@
 ## out/renderer/assets/
 
 - `index-CX6S-WSs.css` — Styles: 6 rules, 174 vars, 3 layers (~79538 tok)
+
+## resources/
+
+- `icon.png` — Runtime BrowserWindow icon asset, 1024x1024 RGBA (~0 tok)
 
 ## src/main/
 

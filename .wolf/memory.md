@@ -542,3 +542,10 @@
 | 19:20 | Edited src/renderer/src/pages/health/EffectChart.tsx | inline fix | ~14 |
 2026-05-11T19:20:19+02:00 | edit src/renderer/src/pages/health/EffectChart.tsx: y-domain ceiling now factors MTC + 15% headroom so MEC/MTC/Above-MTC band always visible
 | 19:20 | Session end: 2 writes across 1 files (EffectChart.tsx) | 1 reads | ~2830 tok |
+
+## Session: 2026-05-11 20:18
+
+| Time | Action | File(s) | Outcome | ~Tokens |
+|------|--------|---------|---------|--------|
+| 20:22 | Regenerated Windows app icon | build/icon.ico | PNG source converted to multi-size ICO with 256/128/64/48/32/16 sizes | ~900 |
+| 20:24 | Verified build and attempted Windows package | build/icon.ico, electron-builder.yml | bun run build passed; electron-builder --win --dir blocked by missing wine on Linux | ~1300 |
