@@ -2,14 +2,14 @@
   "version": 1,
   "created_at": "2026-04-18T19:20:23.576Z",
   "lifetime": {
-    "total_tokens_estimated": 1196359,
-    "total_reads": 524,
+    "total_tokens_estimated": 1197197,
+    "total_reads": 526,
     "total_writes": 912,
-    "total_sessions": 65,
-    "anatomy_hits": 472,
+    "total_sessions": 66,
+    "anatomy_hits": 474,
     "anatomy_misses": 52,
     "repeated_reads_blocked": 192,
-    "estimated_savings_vs_bare_cli": 796102
+    "estimated_savings_vs_bare_cli": 796502
   },
   "sessions": [
     {
@@ -9133,6 +9133,50 @@
         "reads_count": 1,
         "writes_count": 2,
         "repeated_reads_blocked": 1,
+        "anatomy_lookups": 1
+      }
+    },
+    {
+      "id": "session-2026-05-11-2047",
+      "started": "2026-05-11T18:47:18.417Z",
+      "ended": "2026-05-11T18:53:44.333Z",
+      "reads": [
+        {
+          "file": "/home/fenta/Projects/SwagTodo/electron-builder.yml",
+          "tokens_estimated": 419,
+          "was_repeated": false,
+          "anatomy_had_description": false
+        }
+      ],
+      "writes": [],
+      "totals": {
+        "input_tokens_estimated": 419,
+        "output_tokens_estimated": 0,
+        "reads_count": 1,
+        "writes_count": 0,
+        "repeated_reads_blocked": 0,
+        "anatomy_lookups": 1
+      }
+    },
+    {
+      "id": "session-2026-05-11-2047",
+      "started": "2026-05-11T18:47:18.417Z",
+      "ended": "2026-05-11T18:55:02.412Z",
+      "reads": [
+        {
+          "file": "/home/fenta/Projects/SwagTodo/electron-builder.yml",
+          "tokens_estimated": 419,
+          "was_repeated": false,
+          "anatomy_had_description": false
+        }
+      ],
+      "writes": [],
+      "totals": {
+        "input_tokens_estimated": 419,
+        "output_tokens_estimated": 0,
+        "reads_count": 1,
+        "writes_count": 0,
+        "repeated_reads_blocked": 0,
         "anatomy_lookups": 1
       }
     }
