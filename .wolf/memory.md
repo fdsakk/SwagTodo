@@ -555,3 +555,7 @@
 
 | Time | Action | File(s) | Outcome | ~Tokens |
 |------|--------|---------|---------|--------|
+| 10:06 | Fixed Activity narrow viewport row layout | src/renderer/src/pages/ActivityPage.tsx | Task title now spans its own narrow row instead of collapsing to one letter | ~3200 |
+| 10:06 | Logged Activity responsive bug and learning | .wolf/buglog.json, .wolf/cerebrum.md | Added bug-068 and Activity row layout note | ~600 |
+| 10:11 | Removed fixed Activity project/time columns | src/renderer/src/pages/ActivityPage.tsx | Project width now adapts dynamically and elapsed time is no longer rendered | ~1500 |
+| 10:11 | Logged Activity project column overflow fix | .wolf/buglog.json, .wolf/cerebrum.md | Added bug-069 and refined responsive row learning | ~500 |

@@ -1146,6 +1146,42 @@
       "related_bugs": [],
       "occurrences": 1,
       "last_seen": "2026-05-11T20:25:00+02:00"
+    },
+    {
+      "id": "bug-068",
+      "timestamp": "2026-06-25T10:06:23+02:00",
+      "error_message": "Przy wąskim viewport w sekcji Activity nazwa aktywności może skurczyć tytuł taska do jednej litery.",
+      "file": "src/renderer/src/pages/ActivityPage.tsx",
+      "root_cause": "Activity row used fixed grid columns for verb, project, and time, leaving the task title column with almost no space on narrow viewports.",
+      "fix": "Added a narrow-viewport grid layout that moves the task title and project text onto their own rows with min-w-0 truncation, while preserving the wider table layout at sm/md breakpoints.",
+      "tags": [
+        "activity",
+        "responsive-layout",
+        "task-title",
+        "ui"
+      ],
+      "related_bugs": [],
+      "occurrences": 1,
+      "last_seen": "2026-06-25T10:06:23+02:00"
+    },
+    {
+      "id": "bug-069",
+      "timestamp": "2026-06-25T10:11:29+02:00",
+      "error_message": "Activity project column is too large/fixed and the table should not horizontally scroll on small viewport; elapsed activity time can be omitted.",
+      "file": "src/renderer/src/pages/ActivityPage.tsx",
+      "root_cause": "The Activity row still reserved fixed-width columns for project and relative time on wider breakpoints, which made the layout less adaptive and increased overflow pressure.",
+      "fix": "Removed the relative time column and replaced fixed project/time grid tracks with adaptive minmax/fraction tracks so title and project share available width dynamically.",
+      "tags": [
+        "activity",
+        "responsive-layout",
+        "project-column",
+        "horizontal-scroll"
+      ],
+      "related_bugs": [
+        "bug-068"
+      ],
+      "occurrences": 1,
+      "last_seen": "2026-06-25T10:11:29+02:00"
     }
   ]
 }

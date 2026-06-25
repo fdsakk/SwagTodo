@@ -34,6 +34,7 @@
 - **Task edit debounce**: pending commits in refs w/ original `taskId`; key `TaskEditPanel` by `task.id` so switching unmounts, flushes pending text, remounts clean.
 - **Startup/package perf**: current Linux build packages renderer-only prod deps into `app.asar`; inspected `dist/linux-unpacked/resources/app.asar` at ~115 MB, extracted `node_modules` ~166 MB. Main runtime needs `better-sqlite3`, `zod`, `@electron-toolkit/utils`, but renderer deps are already bundled in `out/renderer/assets/index-*.js`.
 - **Windows app icon**: `electron-builder.yml` points `win.icon` at `build/icon.ico`; keep it as a real multi-size ICO generated from `build/icon.png` with 256/128/64/48/32/16 sizes. `resources/icon.ico` is a packaged copy for manual/runtime access; runtime window icon still imports `resources/icon.png`.
+- **Activity page responsive rows**: `ActivityRow` should not rely on fixed project/time columns; omit relative elapsed time when space is tight and use adaptive `minmax`/fraction tracks with `min-w-0 truncate` so task titles/projects share width without horizontal scroll.
 
 ## Do-Not-Repeat
 

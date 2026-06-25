@@ -178,7 +178,7 @@ function App(): React.JSX.Element {
     archive: <ArchivePage />,
     sessions: <SessionsPage />,
     settings: <SettingsPage />,
-    health: <HealthPage />, 
+    health: <HealthPage />,
     project: (
       <ProjectPage
         onEditProject={(project) => openEditProjectPanel(project.id)}

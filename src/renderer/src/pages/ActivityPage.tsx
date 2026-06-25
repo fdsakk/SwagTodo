@@ -1,12 +1,6 @@
 import { useDomainStore, useUiStore } from "@renderer/store"
 import type { Project, Task } from "@renderer/types"
-import {
-  format,
-  formatDistanceToNow,
-  isToday,
-  isYesterday,
-  parseISO
-} from "date-fns"
+import { format, isToday, isYesterday, parseISO } from "date-fns"
 import { Check, Pencil, Plus } from "lucide-react"
 import { useMemo } from "react"
 import { useShallow } from "zustand/react/shallow"
@@ -107,7 +101,6 @@ function ActivityRow({
   onOpen: (taskId: string) => void
 }): React.JSX.Element {
   const meta = KIND_META[event.kind]
-  const relative = formatDistanceToNow(parseISO(event.at), { addSuffix: true })
   const titleClass =
     event.kind === "completed"
       ? "text-app-text-muted line-through"
@@ -115,24 +108,25 @@ function ActivityRow({
 
   return (
     <li
-      className="grid grid-cols-[24px_110px_1fr_150px_130px] items-center gap-3 border-b border-app-border py-2.5 px-2 hover:bg-app-hover cursor-pointer"
+      className="grid cursor-pointer grid-cols-[24px_minmax(0,1fr)] items-center gap-x-3 gap-y-1 border-b border-app-border px-2 py-2.5 hover:bg-app-hover sm:grid-cols-[24px_auto_minmax(8rem,1fr)_minmax(0,0.6fr)] md:grid-cols-[24px_auto_minmax(12rem,1fr)_minmax(0,0.5fr)]"
       onClick={() => onOpen(event.task.id)}
     >
       <span
-        className={`flex h-6 w-6 items-center justify-center rounded-full ${meta.iconClass}`}
+        className={`row-span-3 flex h-6 w-6 items-center justify-center rounded-full sm:row-span-1 ${meta.iconClass}`}
       >
         {meta.icon}
       </span>
-      <span className="text-sm text-app-text-secondary">{meta.verb}</span>
+      <span className="min-w-0 truncate text-sm text-app-text-secondary">
+        {meta.verb}
+      </span>
       <span
-        className={`truncate rounded-md bg-app-hover px-2 py-0.5 text-sm ${titleClass}`}
+        className={`col-start-2 min-w-0 truncate rounded-md bg-app-hover px-2 py-0.5 text-sm sm:col-start-3 ${titleClass}`}
       >
         {event.task.title}
       </span>
-      <span className="truncate text-xs text-app-text-muted">
+      <span className="col-start-2 min-w-0 truncate text-xs text-app-text-muted sm:col-start-4">
         {project ? `${project.emoji ?? "#"} ${project.name}` : "Inbox"}
       </span>
-      <span className="text-xs text-app-text-muted text-right">{relative}</span>
     </li>
   )
 }
