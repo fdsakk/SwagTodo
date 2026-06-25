@@ -18,6 +18,7 @@ interface TaskPickerDialogProps {
   onCancel: () => void
   onPick: (taskId: string) => void
   onSwitchToGhost: () => void
+  onSwitchToEvent: () => void
 }
 
 function minutesFromIso(iso: string): number {
@@ -31,7 +32,8 @@ export function TaskPickerDialog({
   projectById,
   onCancel,
   onPick,
-  onSwitchToGhost
+  onSwitchToGhost,
+  onSwitchToEvent
 }: TaskPickerDialogProps): React.JSX.Element {
   const [query, setQuery] = useState("")
   const filtered = useMemo(() => {
@@ -65,6 +67,14 @@ export function TaskPickerDialog({
             </div>
           </div>
           <div className="flex items-center gap-2">
+            <button
+              type="button"
+              onClick={onSwitchToEvent}
+              className="h-6 rounded px-2 text-[11px] text-app-text-muted hover:bg-app-hover hover:text-app-text"
+              title="Add a calendar event instead"
+            >
+              Event
+            </button>
             <button
               type="button"
               onClick={onSwitchToGhost}

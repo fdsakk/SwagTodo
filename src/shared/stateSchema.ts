@@ -107,6 +107,31 @@ export const timeBlockSchema = z
   })
   .passthrough()
 
+export const calendarEventSchema = z
+  .object({
+    id: z.string().catch(""),
+    title: z.string().catch(""),
+    description: z.string().optional().catch(undefined),
+    location: z.string().optional().catch(undefined),
+    color: z.string().optional().catch(undefined),
+    startAt: z.string().catch(EPOCH_ISO),
+    endAt: z.string().catch(EPOCH_ISO),
+    allDay: storedBooleanSchema,
+    rrule: z.string().optional().catch(undefined),
+    recurrenceId: z.string().optional().catch(undefined),
+    googleCalendarId: z.string().optional().catch(undefined),
+    googleEventId: z.string().optional().catch(undefined),
+    etag: z.string().optional().catch(undefined),
+    syncStatus: z
+      .enum(["synced", "pending", "local_only"])
+      .optional()
+      .catch(undefined),
+    deletedAt: z.string().optional().catch(undefined),
+    createdAt: z.string().catch(EPOCH_ISO),
+    updatedAt: z.string().catch(EPOCH_ISO)
+  })
+  .passthrough()
+
 export const medicationSchema = z
   .object({
     id: z.string().catch(""),

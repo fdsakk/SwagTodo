@@ -5,6 +5,7 @@ import { DEFAULT_UI_SCALE } from "../../shared/defaults"
 import type { AppState } from "../../shared/types"
 import {
   getPersistedUiScale,
+  type IpcGoogleSync,
   type IpcRegistrar,
   type IpcStorage,
   isZoomFactor,
@@ -66,6 +67,28 @@ const createHarness = () => {
     isFullScreen: () => window.fullScreen
   }
 
+  const googleSync: IpcGoogleSync = {
+    status: () => ({ connected: false, encryptionAvailable: true }),
+    connect: async () => {
+      calls.push("google:connect")
+      return {
+        connected: true,
+        email: "me@example.com",
+        encryptionAvailable: true
+      }
+    },
+    signout: async () => {
+      calls.push("google:signout")
+    },
+    sync: async () => {
+      calls.push("google:sync")
+      return { upserted: 0, deleted: 0, skipped: 0 }
+    },
+    push: (eventId, op) => {
+      calls.push(`google:push:${op}:${eventId}`)
+    }
+  }
+
   const ipcMain: IpcRegistrar = {
     handle: (channel, listener) => {
       handlers.set(channel, listener)
@@ -75,6 +98,7 @@ const createHarness = () => {
   registerIpcHandlers({
     ipcMain,
     getAppStorage: () => storage,
+    getGoogleSync: () => googleSync,
     resolveSenderWindow: () => window
   })
 
@@ -94,6 +118,11 @@ test("ipc handlers register expected channels", () => {
   const { handlers } = createHarness()
 
   assert.deepEqual([...handlers.keys()].sort(), [
+    "google:auth:signout",
+    "google:auth:start",
+    "google:auth:status",
+    "google:push",
+    "google:sync:run",
     "store:load",
     "store:save",
     "store:savePartial",
@@ -104,6 +133,36 @@ test("ipc handlers register expected channels", () => {
     "window:minimize",
     "window:toggleMaximize"
   ])
+})
+
+test("google auth handlers delegate to the sync engine", async () => {
+  const { calls, invoke } = createHarness()
+
+  assert.deepEqual(await invoke("google:auth:status"), {
+    connected: false,
+    encryptionAvailable: true
+  })
+  await invoke("google:auth:start")
+  await invoke("google:sync:run")
+  await invoke("google:auth:signout")
+
+  assert.deepEqual(calls, ["google:connect", "google:sync", "google:signout"])
+})
+
+test("google:push validates op and forwards to the sync engine", async () => {
+  const { calls, invoke } = createHarness()
+
+  await invoke("google:push", "evt-1", "patch")
+  await assert.rejects(
+    () => invoke("google:push", "evt-1", "bogus"),
+    /Invalid google:push payload/
+  )
+  await assert.rejects(
+    () => invoke("google:push", 42, "patch"),
+    /Invalid google:push payload/
+  )
+
+  assert.deepEqual(calls, ["google:push:patch:evt-1"])
 })
 
 test("ipc storage handlers validate full and partial app state payloads", async () => {

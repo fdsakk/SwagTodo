@@ -1,19 +1,34 @@
-import type { Project, Task, TaskSession, TimeBlock } from "@renderer/types"
+import type {
+  CalendarEvent,
+  Project,
+  Task,
+  TaskSession,
+  TimeBlock
+} from "@renderer/types"
 import { HOUR_PX, isSameDay, PX_PER_MIN } from "@renderer/utils/calendar"
 import { cn } from "@renderer/utils/cn"
+import { type LayoutResult, packColumns } from "@renderer/utils/overlapLayout"
+import { expandEvents } from "@renderer/utils/recurrence"
 import { useEffect, useMemo, useRef } from "react"
+import { AllDayLane } from "./AllDayLane"
 import { CalendarHeader } from "./CalendarHeader"
 import { DraftGhost } from "./DraftGhost"
+import { EventBlockView } from "./EventBlockView"
 import { SessionBlockView } from "./SessionBlockView"
 import { TimeBlockView } from "./TimeBlockView"
 import {
+  type CalendarEventDisplayBlock,
+  computeAllDaySpans,
   computeBlocks,
+  computeCalendarEventBlocks,
   computeTimeBlockDisplayBlocks,
   type PendingDraft,
   type SessionBlock,
   type TimeBlockDisplayBlock
 } from "./types"
 import { useCalendarDrag } from "./useCalendarDrag"
+
+const DAY_MS = 24 * 60 * 60 * 1000
 
 const HOURS = Array.from({ length: 25 }, (_, i) => i)
 const pad = (n: number): string => (n < 10 ? `0${n}` : String(n))
@@ -24,6 +39,7 @@ interface SessionsCalendarProps {
   tasks: readonly Task[]
   projects: readonly Project[]
   timeBlocks: readonly TimeBlock[]
+  calendarEvents: readonly CalendarEvent[]
   now: Date
   pendingDraft: PendingDraft | null
   onCreateDraft: (dayIndex: number, startMin: number, endMin: number) => void
@@ -32,6 +48,8 @@ interface SessionsCalendarProps {
   onDeleteSession: (sessionId: string) => void
   onUpdateTimeBlock: (id: string, startAt: string, endAt: string) => void
   onDeleteTimeBlock: (id: string) => void
+  onOpenEvent: (eventId: string) => void
+  onDeleteEvent: (eventId: string) => void
 }
 
 export function SessionsCalendar({
@@ -40,6 +58,7 @@ export function SessionsCalendar({
   tasks,
   projects,
   timeBlocks,
+  calendarEvents,
   now,
   pendingDraft,
   onCreateDraft,
@@ -47,7 +66,9 @@ export function SessionsCalendar({
   onOpenSession,
   onDeleteSession,
   onUpdateTimeBlock,
-  onDeleteTimeBlock
+  onDeleteTimeBlock,
+  onOpenEvent,
+  onDeleteEvent
 }: SessionsCalendarProps): React.JSX.Element {
   const scrollRef = useRef<HTMLDivElement>(null)
 
@@ -73,6 +94,35 @@ export function SessionsCalendar({
     [timeBlocks, days]
   )
 
+  // Recurring events are expanded to concrete instances within the visible
+  // range before being split into timed grid blocks / all-day spans.
+  const expandedEvents = useMemo(() => {
+    if (days.length === 0) return []
+    const rangeStart = days[0]
+    const rangeEnd = new Date(days[days.length - 1].getTime() + DAY_MS)
+    return expandEvents(calendarEvents, rangeStart, rangeEnd)
+  }, [calendarEvents, days])
+
+  const eventBlocks = useMemo(
+    () => computeCalendarEventBlocks(expandedEvents, days),
+    [expandedEvents, days]
+  )
+
+  const allDaySpans = useMemo(
+    () => computeAllDaySpans(expandedEvents, days),
+    [expandedEvents, days]
+  )
+
+  const eventBlocksByDay = useMemo(() => {
+    const m = new Map<number, CalendarEventDisplayBlock[]>()
+    for (const eb of eventBlocks) {
+      const arr = m.get(eb.dayIndex) ?? []
+      arr.push(eb)
+      m.set(eb.dayIndex, arr)
+    }
+    return m
+  }, [eventBlocks])
+
   const blocksByDay = useMemo(() => {
     const m = new Map<number, SessionBlock[]>()
     for (const b of blocks) {
@@ -92,6 +142,40 @@ export function SessionsCalendar({
     }
     return m
   }, [tbBlocks])
+
+  // Side-by-side column packing per day. Sessions and time blocks share one
+  // packing pass so they never visually overlap each other; ids are namespaced
+  // (`s:`/`t:`) to keep the two kinds distinct within `packColumns`. Computed
+  // from committed start/end only — an active drag is laid out full width.
+  const layoutByDay = useMemo(() => {
+    const m = new Map<number, Map<string, LayoutResult>>()
+    const dayIndices = new Set<number>([
+      ...blocksByDay.keys(),
+      ...tbBlocksByDay.keys(),
+      ...eventBlocksByDay.keys()
+    ])
+    for (const dayIdx of dayIndices) {
+      const inputs = [
+        ...(blocksByDay.get(dayIdx) ?? []).map((b) => ({
+          id: `s:${b.session.id}`,
+          startMin: b.startMin,
+          endMin: b.endMin
+        })),
+        ...(tbBlocksByDay.get(dayIdx) ?? []).map((tb) => ({
+          id: `t:${tb.block.id}`,
+          startMin: tb.startMin,
+          endMin: tb.endMin
+        })),
+        ...(eventBlocksByDay.get(dayIdx) ?? []).map((eb) => ({
+          id: `e:${eb.event.id}`,
+          startMin: eb.startMin,
+          endMin: eb.endMin
+        }))
+      ]
+      m.set(dayIdx, packColumns(inputs))
+    }
+    return m
+  }, [blocksByDay, tbBlocksByDay, eventBlocksByDay])
 
   const _daysKey = days.length > 0 ? days[0].toISOString() : ""
   void _daysKey
@@ -124,6 +208,11 @@ export function SessionsCalendar({
   return (
     <div className="flex h-full flex-col">
       <CalendarHeader days={days} now={now} />
+      <AllDayLane
+        dayCount={days.length}
+        spans={allDaySpans}
+        onOpenEvent={onOpenEvent}
+      />
 
       <div ref={scrollRef} className="flex-1 overflow-y-auto">
         <div
@@ -149,6 +238,8 @@ export function SessionsCalendar({
             const today = isSameDay(day, now)
             const dayBlocks = blocksByDay.get(dayIdx) ?? []
             const dayTbBlocks = tbBlocksByDay.get(dayIdx) ?? []
+            const dayEventBlocks = eventBlocksByDay.get(dayIdx) ?? []
+            const dayLayout = layoutByDay.get(dayIdx)
 
             return (
               <div
@@ -189,12 +280,17 @@ export function SessionsCalendar({
                     isDraftTarget && draft ? draft.startMin : block.startMin
                   const endMin =
                     isDraftTarget && draft ? draft.endMin : block.endMin
+                  const layout = isDraftTarget
+                    ? undefined
+                    : dayLayout?.get(`s:${block.session.id}`)
                   return (
                     <SessionBlockView
                       key={block.session.id}
                       block={block}
                       startMin={startMin}
                       endMin={endMin}
+                      columnIndex={layout?.columnIndex}
+                      columnCount={layout?.columnCount}
                       onMovePointerDown={handleBlockPointerDown(block, "move")}
                       onResizePointerDown={handleBlockPointerDown(
                         block,
@@ -215,18 +311,39 @@ export function SessionsCalendar({
                     isDraftTarget && draft ? draft.startMin : tb.startMin
                   const endMin =
                     isDraftTarget && draft ? draft.endMin : tb.endMin
+                  const layout = isDraftTarget
+                    ? undefined
+                    : dayLayout?.get(`t:${tb.block.id}`)
                   return (
                     <TimeBlockView
                       key={tb.block.id}
                       tb={tb}
                       startMin={startMin}
                       endMin={endMin}
+                      columnIndex={layout?.columnIndex}
+                      columnCount={layout?.columnCount}
                       onMovePointerDown={handleTimeBlockPointerDown(tb, "move")}
                       onResizePointerDown={handleTimeBlockPointerDown(
                         tb,
                         "resize"
                       )}
                       onDelete={() => onDeleteTimeBlock(tb.block.id)}
+                    />
+                  )
+                })}
+
+                {dayEventBlocks.map((eb) => {
+                  const layout = dayLayout?.get(`e:${eb.event.id}`)
+                  return (
+                    <EventBlockView
+                      key={eb.event.id}
+                      block={eb}
+                      startMin={eb.startMin}
+                      endMin={eb.endMin}
+                      columnIndex={layout?.columnIndex}
+                      columnCount={layout?.columnCount}
+                      onOpen={() => onOpenEvent(eb.event.id)}
+                      onDelete={() => onDeleteEvent(eb.event.id)}
                     />
                   )
                 })}

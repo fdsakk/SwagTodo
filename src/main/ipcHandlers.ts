@@ -4,7 +4,11 @@ import {
   UI_SCALE_OPTIONS,
   type UiScale
 } from "../shared/defaults"
-import type { AppState } from "../shared/types"
+import type {
+  AppState,
+  GoogleAuthStatus,
+  GoogleSyncSummary
+} from "../shared/types"
 import { isAppState, isAppStatePatch, isUiScale } from "./storage/appState"
 
 const MIN_ZOOM_FACTOR = UI_SCALE_OPTIONS[0] / 100
@@ -24,6 +28,17 @@ export interface IpcStorage {
   loadUiScale(): unknown
 }
 
+export interface IpcGoogleSync {
+  status(): GoogleAuthStatus
+  connect(): Promise<GoogleAuthStatus>
+  signout(): Promise<void>
+  sync(): Promise<GoogleSyncSummary>
+  push(eventId: string, op: "insert" | "patch" | "delete"): void
+}
+
+const isOutboxOp = (v: unknown): v is "insert" | "patch" | "delete" =>
+  v === "insert" || v === "patch" || v === "delete"
+
 interface SenderWindow {
   webContents: {
     getZoomFactor(): number
@@ -40,6 +55,7 @@ interface SenderWindow {
 interface RegisterIpcHandlersArgs {
   ipcMain: IpcRegistrar
   getAppStorage: () => IpcStorage
+  getGoogleSync: () => IpcGoogleSync
   resolveSenderWindow: (event: IpcMainInvokeEvent) => SenderWindow | null
 }
 
@@ -65,6 +81,7 @@ const senderWindow = (
 export function registerIpcHandlers({
   ipcMain,
   getAppStorage,
+  getGoogleSync,
   resolveSenderWindow
 }: RegisterIpcHandlersArgs): void {
   ipcMain.handle("store:load", async () => getAppStorage().loadState())
@@ -110,5 +127,16 @@ export function registerIpcHandlers({
     return w
       ? { isMaximized: w.isMaximized(), isFullScreen: w.isFullScreen() }
       : { isMaximized: false, isFullScreen: false }
+  })
+
+  ipcMain.handle("google:auth:status", () => getGoogleSync().status())
+  ipcMain.handle("google:auth:start", () => getGoogleSync().connect())
+  ipcMain.handle("google:auth:signout", () => getGoogleSync().signout())
+  ipcMain.handle("google:sync:run", () => getGoogleSync().sync())
+  ipcMain.handle("google:push", (_, eventId: unknown, op: unknown) => {
+    if (typeof eventId !== "string" || !isOutboxOp(op)) {
+      throw new Error("Invalid google:push payload")
+    }
+    getGoogleSync().push(eventId, op)
   })
 }

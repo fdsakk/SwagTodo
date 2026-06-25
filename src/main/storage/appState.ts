@@ -1,6 +1,7 @@
 import { z } from "zod"
 import { DEFAULT_UI_SCALE, UI_SCALE_OPTIONS } from "../../shared/defaults"
 import {
+  calendarEventSchema,
   labelSchema,
   medicationSchema,
   projectSchema,
@@ -24,6 +25,7 @@ export const defaultAppState: AppState = {
   labels: [],
   sessions: [],
   timeBlocks: [],
+  calendarEvents: [],
   medications: [],
   uiScale: DEFAULT_UI_SCALE,
   isSidebarCollapsed: false
@@ -35,6 +37,7 @@ export const APP_STATE_KEYS: ReadonlySet<string> = new Set([
   "labels",
   "sessions",
   "timeBlocks",
+  "calendarEvents",
   "medications",
   "pkSettings",
   "uiScale",
@@ -63,6 +66,7 @@ const appStateSchema = z
     labels: z.array(labelSchema).catch([]),
     sessions: z.array(sessionSchema).catch([]),
     timeBlocks: z.array(timeBlockSchema).catch([]),
+    calendarEvents: z.array(calendarEventSchema).catch([]),
     medications: z.array(medicationSchema).catch([]),
     pkSettings: z.unknown().optional(),
     uiScale: z.number().refine(isUiScale).optional().catch(DEFAULT_UI_SCALE),
@@ -101,6 +105,7 @@ export const normalizeAppState = (state: unknown): AppState => {
     labels: data.labels,
     sessions: data.sessions,
     timeBlocks: data.timeBlocks,
+    calendarEvents: data.calendarEvents,
     medications: data.medications,
     uiScale: data.uiScale ?? DEFAULT_UI_SCALE,
     isSidebarCollapsed: data.isSidebarCollapsed ?? false
@@ -124,6 +129,8 @@ export const isAppState = (v: unknown): v is AppState => {
   ) {
     return false
   }
+  if (d.calendarEvents !== undefined && !isValidEntityArray(d.calendarEvents))
+    return false
   if (d.medications !== undefined && !isValidEntityArray(d.medications))
     return false
   if (d.uiScale !== undefined && !isUiScale(d.uiScale)) return false
@@ -152,6 +159,13 @@ export const isAppStatePatch = (v: unknown): v is Partial<AppState> => {
   ] as const
   for (const key of arrayKeys) {
     if (key in patch && !isValidEntityArray(patch[key])) return false
+  }
+  if (
+    "calendarEvents" in patch &&
+    patch.calendarEvents !== undefined &&
+    !isValidEntityArray(patch.calendarEvents)
+  ) {
+    return false
   }
   if (
     "medications" in patch &&

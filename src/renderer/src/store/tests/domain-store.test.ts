@@ -1,6 +1,7 @@
 import assert from "node:assert/strict"
 import test from "node:test"
 import { createStore } from "zustand/vanilla"
+import { createCalendarEventActions } from "../domain/actions/calendarEvents"
 import { createHealthActions } from "../domain/actions/health"
 import { createLabelActions } from "../domain/actions/labels"
 import { createProjectActions } from "../domain/actions/projects"
@@ -44,6 +45,7 @@ const createDomainTestStore = (preloaded: Partial<DomainState> = {}) =>
       ...createProjectActions(set),
       ...createLabelActions(set),
       ...createSessionActions(set, get),
+      ...createCalendarEventActions(set, get),
       ...createHealthActions(set)
     }
 
@@ -438,4 +440,91 @@ test("selectInboxTaskGroups applies inbox filters for status, project, and prior
     groups.flatMap((group) => group.tasks.map((task) => task.id)),
     ["active-p1-project"]
   )
+})
+
+test("addCalendarEvent assigns a uuid id and local_only status", () => {
+  const store = createDomainTestStore()
+  const result = store.getState().addCalendarEvent({
+    title: "Lunch",
+    startAt: "2026-05-01T12:00:00.000Z",
+    endAt: "2026-05-01T13:00:00.000Z"
+  })
+  assert.ok(result.ok)
+  const event = store.getState().calendarEvents[0]
+  assert.match(
+    event.id,
+    /^[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}$/i
+  )
+  assert.equal(event.title, "Lunch")
+  assert.equal(event.allDay, false)
+  assert.equal(event.syncStatus, "local_only")
+})
+
+test("addCalendarEvent rejects an inverted time range", () => {
+  const store = createDomainTestStore()
+  const result = store.getState().addCalendarEvent({
+    title: "Bad",
+    startAt: "2026-05-01T13:00:00.000Z",
+    endAt: "2026-05-01T12:00:00.000Z"
+  })
+  assert.equal(result.ok, false)
+  assert.equal(store.getState().calendarEvents.length, 0)
+})
+
+test("updateCalendarEvent flips a synced event to pending", () => {
+  const store = createDomainTestStore({
+    calendarEvents: [
+      {
+        id: "11111111-1111-4111-8111-111111111111",
+        title: "Synced",
+        startAt: "2026-05-01T12:00:00.000Z",
+        endAt: "2026-05-01T13:00:00.000Z",
+        allDay: false,
+        googleEventId: "g-1",
+        syncStatus: "synced",
+        createdAt: "2026-05-01T10:00:00.000Z",
+        updatedAt: "2026-05-01T10:00:00.000Z"
+      }
+    ]
+  })
+  store.getState().updateCalendarEvent("11111111-1111-4111-8111-111111111111", {
+    title: "Renamed"
+  })
+  const event = store.getState().calendarEvents[0]
+  assert.equal(event.title, "Renamed")
+  assert.equal(event.syncStatus, "pending")
+})
+
+test("deleteCalendarEvent preserves array reference for unknown ids", () => {
+  const store = createDomainTestStore()
+  const before = store.getState().calendarEvents
+  store.getState().deleteCalendarEvent("missing")
+  assert.equal(store.getState().calendarEvents, before)
+})
+
+test("user CRUD enqueues a push to the main process (outbound sync trigger)", () => {
+  const pushes: Array<[string, string]> = []
+  // Stand in for the preload bridge so the echo-guard path is exercised.
+  ;(globalThis as { window?: unknown }).window = {
+    api: { google: { push: (id: string, op: string) => pushes.push([id, op]) } }
+  }
+  try {
+    const store = createDomainTestStore()
+    const created = store.getState().addCalendarEvent({
+      title: "Event",
+      startAt: "2026-05-01T12:00:00.000Z",
+      endAt: "2026-05-01T13:00:00.000Z"
+    })
+    assert.ok(created.ok)
+    const id = created.ok ? created.id : ""
+    store.getState().updateCalendarEvent(id, { title: "Renamed" })
+    store.getState().deleteCalendarEvent(id)
+    assert.deepEqual(pushes, [
+      [id, "insert"],
+      [id, "patch"],
+      [id, "delete"]
+    ])
+  } finally {
+    ;(globalThis as { window?: unknown }).window = undefined
+  }
 })

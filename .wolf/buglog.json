@@ -87,10 +87,10 @@
     {
       "id": "bug-006",
       "timestamp": "2026-04-19T19:34:38+02:00",
-      "error_message": "Wykres po dodaniu kolejnych leków tylko się sumuje; peak jest zbyt ostry i spadek zbyt krótki.",
+      "error_message": "Wykres po dodaniu kolejnych lek\u00f3w tylko si\u0119 sumuje; peak jest zbyt ostry i spadek zbyt kr\u00f3tki.",
       "file": "src/renderer/src/utils/pharmacokinetics.ts",
-      "root_cause": "Generator wykresu sumował surowe krzywe dawek liniowo bez kształtowania odpowiedzi układu, więc kumulacja dawała ostre szczyty i zbyt szybki zjazd.",
-      "fix": "Dodano smoothSummedEffect (asymetryczny filtr: szybszy wzrost, wolniejszy spadek) i przełączono slope/band/crash na krzywą wygładzoną.",
+      "root_cause": "Generator wykresu sumowa\u0142 surowe krzywe dawek liniowo bez kszta\u0142towania odpowiedzi uk\u0142adu, wi\u0119c kumulacja dawa\u0142a ostre szczyty i zbyt szybki zjazd.",
+      "fix": "Dodano smoothSummedEffect (asymetryczny filtr: szybszy wzrost, wolniejszy spadek) i prze\u0142\u0105czono slope/band/crash na krzyw\u0105 wyg\u0142adzon\u0105.",
       "tags": [
         "health-chart",
         "pharmacokinetics",
@@ -107,7 +107,7 @@
       "error_message": "Significant refactor of ",
       "file": "src/renderer/src/components/task-panel/TaskEditPanel.tsx",
       "root_cause": "4 lines replaced/restructured",
-      "fix": "Rewrote 14→11 lines (4 removed)",
+      "fix": "Rewrote 14\u219211 lines (4 removed)",
       "tags": [
         "auto-detected",
         "refactor",
@@ -260,7 +260,7 @@
     {
       "id": "bug-016",
       "timestamp": "2026-04-23T14:00:00.000Z",
-      "error_message": "SQLite storage doing full DELETE+INSERT on every save — performance bottleneck",
+      "error_message": "SQLite storage doing full DELETE+INSERT on every save \u2014 performance bottleneck",
       "file": "src/main/storage/sqlite.ts",
       "root_cause": "writeSnapshotTx cleared all tables then re-inserted entire app state on every saveState/savePartial call",
       "fix": "Replaced writeSnapshotTx with writeDeltaTx: changedTaskIds() diffs prev/next snapshots, only changed tasks get UPSERT, child tables rebuilt per changed task_id, other collections use INSERT OR REPLACE + DELETE WHERE id NOT IN. writeSnapshotTx kept for legacy migration path only.",
@@ -280,7 +280,7 @@
       "error_message": "Significant refactor of ",
       "file": "src/main/storage/sqlite.ts",
       "root_cause": "64 lines replaced/restructured",
-      "fix": "Rewrote 68→3 lines (64 removed)",
+      "fix": "Rewrote 68\u21923 lines (64 removed)",
       "tags": [
         "auto-detected",
         "refactor",
@@ -341,9 +341,9 @@
     {
       "id": "bug-021",
       "timestamp": "2026-04-23T16:30:00+02:00",
-      "error_message": "Performance: changedTaskIds used Array.find in O(n²) loop for deleted-task detection; writeState serialized cachedState on every save (1 extra full serialization); non-task collections upserted unconditionally on every writeDeltaTx call",
+      "error_message": "Performance: changedTaskIds used Array.find in O(n\u00b2) loop for deleted-task detection; writeState serialized cachedState on every save (1 extra full serialization); non-task collections upserted unconditionally on every writeDeltaTx call",
       "file": "src/main/storage/sqlite.ts",
-      "root_cause": "1) Array.find inside for-loop = O(n²) for removed-task detection. 2) No snapshot cache — prev snapshot re-serialized from cachedState each write. 3) projects/sessions/labels/timeBlocks/medications always upserted even when unchanged",
+      "root_cause": "1) Array.find inside for-loop = O(n\u00b2) for removed-task detection. 2) No snapshot cache \u2014 prev snapshot re-serialized from cachedState each write. 3) projects/sessions/labels/timeBlocks/medications always upserted even when unchanged",
       "fix": "1) Built Set<string> from next.tasks before removed-task loop. 2) Added cachedSnapshot field, updated in writeState, used as prev in writeDeltaTx. 3) Added changedIds() helper, wrapped non-task collection upserts in if(changedIds(...)) guard",
       "tags": [
         "performance",
@@ -360,7 +360,7 @@
     {
       "id": "bug-022",
       "timestamp": "2026-04-23T16:30:00+02:00",
-      "error_message": "Performance: mergeAppState called normalizeAppState unconditionally — iterates all tasks on every savePartial even for non-task patches like isSidebarCollapsed",
+      "error_message": "Performance: mergeAppState called normalizeAppState unconditionally \u2014 iterates all tasks on every savePartial even for non-task patches like isSidebarCollapsed",
       "file": "src/main/storage/appState.ts",
       "root_cause": "normalizeAppState mapped all tasks through normalizeTask on every merge regardless of which fields changed",
       "fix": "Conditionally skip normalizeAppState when patch.tasks is undefined; only normalize when tasks field is present in the patch",
@@ -376,7 +376,7 @@
     {
       "id": "bug-023",
       "timestamp": "2026-04-23T16:30:00+02:00",
-      "error_message": "Security: IPC store:save / store:savePartial accepted arrays without validating element IDs — malicious renderer payload could inject arbitrary id strings",
+      "error_message": "Security: IPC store:save / store:savePartial accepted arrays without validating element IDs \u2014 malicious renderer payload could inject arbitrary id strings",
       "file": "src/main/storage/appState.ts",
       "root_cause": "isAppState and isAppStatePatch only checked that fields were arrays, not that array elements had valid UUID-format ids",
       "fix": "Added UUID_RE + isSafeId + allHaveSafeIds helpers; isAppState and isAppStatePatch now reject payloads where any entity id fails UUID format check",
@@ -396,7 +396,7 @@
       "error_message": "Wrong operator: ?? should be !==",
       "file": "src/renderer/src/store/domain/persist.ts",
       "root_cause": "Used \"??\" instead of \"!==\"",
-      "fix": "Changed operator ?? → !==",
+      "fix": "Changed operator ?? \u2192 !==",
       "tags": [
         "auto-detected",
         "operator-fix",
@@ -409,10 +409,10 @@
     {
       "id": "bug-025",
       "timestamp": "2026-04-23T18:03:25+02:00",
-      "error_message": "Aplikacja od razu wywala się przy globalnym runtime error zamiast pokazać fallback i zostać otwarta.",
+      "error_message": "Aplikacja od razu wywala si\u0119 przy globalnym runtime error zamiast pokaza\u0107 fallback i zosta\u0107 otwarta.",
       "file": "src/main/index.ts",
-      "root_cause": "Brak globalnych handlerów dla `uncaughtException` / `unhandledRejection` w main oraz brak renderer boundary na poziomie root dla błędów React/window/promise.",
-      "fix": "Dodałem globalne handlery procesu w Electron main z `dialog.showErrorBox` oraz renderer `GlobalErrorBoundary` łapiący React errors, `window.error` i `unhandledrejection`, z fallback UI i reloadem.",
+      "root_cause": "Brak globalnych handler\u00f3w dla `uncaughtException` / `unhandledRejection` w main oraz brak renderer boundary na poziomie root dla b\u0142\u0119d\u00f3w React/window/promise.",
+      "fix": "Doda\u0142em globalne handlery procesu w Electron main z `dialog.showErrorBox` oraz renderer `GlobalErrorBoundary` \u0142api\u0105cy React errors, `window.error` i `unhandledrejection`, z fallback UI i reloadem.",
       "tags": [
         "error-handling",
         "electron",
@@ -427,10 +427,10 @@
     {
       "id": "bug-026",
       "timestamp": "2026-04-23T18:10:00+02:00",
-      "error_message": "Global error boundary łapał też `window.error` z błędów ładowania assetów, więc pojedynczy font/img/script mógł zrzucić cały app do fallback screena.",
+      "error_message": "Global error boundary \u0142apa\u0142 te\u017c `window.error` z b\u0142\u0119d\u00f3w \u0142adowania asset\u00f3w, wi\u0119c pojedynczy font/img/script m\u00f3g\u0142 zrzuci\u0107 ca\u0142y app do fallback screena.",
       "file": "src/renderer/src/components/layout/GlobalErrorBoundary.tsx",
-      "root_cause": "Handler `window.addEventListener('error')` traktował każdy `ErrorEvent` jak runtime JS error i nie odróżniał resource-load failures od błędów wykonywania kodu.",
-      "fix": "Dodałem filtr `event.target !== window`, więc boundary ignoruje błędy ładowania zasobów i reaguje tylko na real runtime faults.",
+      "root_cause": "Handler `window.addEventListener('error')` traktowa\u0142 ka\u017cdy `ErrorEvent` jak runtime JS error i nie odr\u00f3\u017cnia\u0142 resource-load failures od b\u0142\u0119d\u00f3w wykonywania kodu.",
+      "fix": "Doda\u0142em filtr `event.target !== window`, wi\u0119c boundary ignoruje b\u0142\u0119dy \u0142adowania zasob\u00f3w i reaguje tylko na real runtime faults.",
       "tags": [
         "react",
         "renderer",
@@ -447,10 +447,10 @@
     {
       "id": "bug-027",
       "timestamp": "2026-04-23T18:10:00+02:00",
-      "error_message": "`bun run lint` dawał fałszywe prettier warningi przez przestarzały ESLint cache mimo że pliki były już sformatowane poprawnie.",
+      "error_message": "`bun run lint` dawa\u0142 fa\u0142szywe prettier warningi przez przestarza\u0142y ESLint cache mimo \u017ce pliki by\u0142y ju\u017c sformatowane poprawnie.",
       "file": "package.json",
-      "root_cause": "Skrypt lint używał `eslint --cache .`, a cache nie był spójny po `prettier --write`, więc workflow raportował nieistniejące problemy.",
-      "fix": "Zmieniłem skrypt lint na `eslint .` bez cache, żeby wynik był deterministyczny i zgodny ze stanem plików.",
+      "root_cause": "Skrypt lint u\u017cywa\u0142 `eslint --cache .`, a cache nie by\u0142 sp\u00f3jny po `prettier --write`, wi\u0119c workflow raportowa\u0142 nieistniej\u0105ce problemy.",
+      "fix": "Zmieni\u0142em skrypt lint na `eslint .` bez cache, \u017ceby wynik by\u0142 deterministyczny i zgodny ze stanem plik\u00f3w.",
       "tags": [
         "lint",
         "eslint",
@@ -465,10 +465,10 @@
     {
       "id": "bug-028",
       "timestamp": "2026-04-23T19:43:45+02:00",
-      "error_message": "Node test runtime zgłaszał `window is not defined` po włączeniu automatycznej hydracji Zustand store przy imporcie renderer store.",
+      "error_message": "Node test runtime zg\u0142asza\u0142 `window is not defined` po w\u0142\u0105czeniu automatycznej hydracji Zustand store przy imporcie renderer store.",
       "file": "src/renderer/src/store/domain/domainStore.ts",
-      "root_cause": "Persist middleware auto-uruchamiał `rehydrate()` także w środowisku Node, gdzie `persistedStorage.getItem()` dotyka `window.api` i kończy się unhandled rejection.",
-      "fix": "Dodałem `skipHydration: typeof window === 'undefined'` dla store domenowego i zostawiłem automatyczną hydrację tylko w rendererze przeglądarkowym.",
+      "root_cause": "Persist middleware auto-uruchamia\u0142 `rehydrate()` tak\u017ce w \u015brodowisku Node, gdzie `persistedStorage.getItem()` dotyka `window.api` i ko\u0144czy si\u0119 unhandled rejection.",
+      "fix": "Doda\u0142em `skipHydration: typeof window === 'undefined'` dla store domenowego i zostawi\u0142em automatyczn\u0105 hydracj\u0119 tylko w rendererze przegl\u0105darkowym.",
       "tags": [
         "zustand",
         "persist",
@@ -500,10 +500,10 @@
     {
       "id": "bug-030",
       "timestamp": "2026-04-23T23:42:18+02:00",
-      "error_message": "Zmodyfikowane theme nie zapisują się między przełączaniem na inne theme; po restarcie aplikacji obecny stan się zapisuje.",
+      "error_message": "Zmodyfikowane theme nie zapisuj\u0105 si\u0119 mi\u0119dzy prze\u0142\u0105czaniem na inne theme; po restarcie aplikacji obecny stan si\u0119 zapisuje.",
       "file": "src/renderer/src/store/domain/actions/settings.ts",
-      "root_cause": "Appearance state trzymał tylko jeden globalny `customTokens` map i `setThemeId()` zerował go przy każdej zmianie theme, więc customizacje znikały przy przełączaniu presetów.",
-      "fix": "Dodałem `customTokensByTheme`, migrację legacy payloadu do aktywnego bucketu, przełączanie theme z przywracaniem bucketu danego presetu oraz testy store/persist/SQLite dla tego przepływu.",
+      "root_cause": "Appearance state trzyma\u0142 tylko jeden globalny `customTokens` map i `setThemeId()` zerowa\u0142 go przy ka\u017cdej zmianie theme, wi\u0119c customizacje znika\u0142y przy prze\u0142\u0105czaniu preset\u00f3w.",
+      "fix": "Doda\u0142em `customTokensByTheme`, migracj\u0119 legacy payloadu do aktywnego bucketu, prze\u0142\u0105czanie theme z przywracaniem bucketu danego presetu oraz testy store/persist/SQLite dla tego przep\u0142ywu.",
       "tags": [
         "theme",
         "appearance",
@@ -518,10 +518,10 @@
     {
       "id": "bug-031",
       "timestamp": "2026-04-23T23:57:00+02:00",
-      "error_message": "W InboxPage kliknięcie checkboxa od razu usuwa task z listy, zamiast poczekać aż skończy się animacja checkboxa i confetti.",
+      "error_message": "W InboxPage klikni\u0119cie checkboxa od razu usuwa task z listy, zamiast poczeka\u0107 a\u017c sko\u0144czy si\u0119 animacja checkboxa i confetti.",
       "file": "src/renderer/src/components/task-list/TaskRow.tsx",
-      "root_cause": "Flow completion przełączał `task.completed` natychmiast w store, a Inbox filtruje aktywne taski bezpośrednio po tym polu, więc wiersz znikał zanim UI skończyło animację.",
-      "fix": "Dodałem opóźnione `toggleTaskComplete` z natychmiastowym confetti, lokalny stan `isCompleting`/`isFadingOut` w `TaskRow` oraz włączyłem ten tryb dla `InboxPage`, żeby task znikał dopiero po animacji z fade-outem.",
+      "root_cause": "Flow completion prze\u0142\u0105cza\u0142 `task.completed` natychmiast w store, a Inbox filtruje aktywne taski bezpo\u015brednio po tym polu, wi\u0119c wiersz znika\u0142 zanim UI sko\u0144czy\u0142o animacj\u0119.",
+      "fix": "Doda\u0142em op\u00f3\u017anione `toggleTaskComplete` z natychmiastowym confetti, lokalny stan `isCompleting`/`isFadingOut` w `TaskRow` oraz w\u0142\u0105czy\u0142em ten tryb dla `InboxPage`, \u017ceby task znika\u0142 dopiero po animacji z fade-outem.",
       "tags": [
         "inbox",
         "task-list",
@@ -536,10 +536,10 @@
     {
       "id": "bug-032",
       "timestamp": "2026-04-24T13:47:14+02:00",
-      "error_message": "Na jasnych themach ikony Activity (Completed, edited, created) oraz pomocnicze linie/bandy wykresu HealthPage są słabo widoczne przez zbyt jasne kolory i przezroczystość.",
+      "error_message": "Na jasnych themach ikony Activity (Completed, edited, created) oraz pomocnicze linie/bandy wykresu HealthPage s\u0105 s\u0142abo widoczne przez zbyt jasne kolory i przezroczysto\u015b\u0107.",
       "file": "src/renderer/src/types/index.ts",
-      "root_cause": "Theme presets nie miały klasyfikacji light/dark, więc Activity i HealthPage używały tych samych transparentnych kolorów dla wszystkich motywów.",
-      "fix": "Dodałem `ThemeTone`, klasy root `app-theme-light/dark`, mocniejsze light warianty ikon Activity oraz tone-aware CSS vars dla pomocniczych elementów wykresu HealthPage; po feedbacku podbiłem light chart opacity/darkness oraz grubość linii.",
+      "root_cause": "Theme presets nie mia\u0142y klasyfikacji light/dark, wi\u0119c Activity i HealthPage u\u017cywa\u0142y tych samych transparentnych kolor\u00f3w dla wszystkich motyw\u00f3w.",
+      "fix": "Doda\u0142em `ThemeTone`, klasy root `app-theme-light/dark`, mocniejsze light warianty ikon Activity oraz tone-aware CSS vars dla pomocniczych element\u00f3w wykresu HealthPage; po feedbacku podbi\u0142em light chart opacity/darkness oraz grubo\u015b\u0107 linii.",
       "tags": [
         "theme",
         "contrast",
@@ -554,10 +554,10 @@
     {
       "id": "bug-033",
       "timestamp": "2026-04-24T14:50:35+02:00",
-      "error_message": "Komponent due date w context menu po kliknięciu pokazuje się w niewłaściwym miejscu i przy ruchu myszką poza context znika.",
+      "error_message": "Komponent due date w context menu po klikni\u0119ciu pokazuje si\u0119 w niew\u0142a\u015bciwym miejscu i przy ruchu myszk\u0105 poza context znika.",
       "file": "src/renderer/src/components/task-list/task-context-menu.tsx",
-      "root_cause": "Due date używał osobnego Popover z ukrytym `sr-only` triggerem poza ContextMenu.Content, więc pozycjonowanie było względem złego elementu, a interakcja z menu zamykała/rozłączała popover.",
-      "fix": "Zastąpiłem Popover komponentem `ContextMenu.SubContent` z kalendarzem, więc pozycjonowanie jest zakotwiczone w pozycji `Due Date`, a ruch myszy zostaje w jednym Radix menu tree.",
+      "root_cause": "Due date u\u017cywa\u0142 osobnego Popover z ukrytym `sr-only` triggerem poza ContextMenu.Content, wi\u0119c pozycjonowanie by\u0142o wzgl\u0119dem z\u0142ego elementu, a interakcja z menu zamyka\u0142a/roz\u0142\u0105cza\u0142a popover.",
+      "fix": "Zast\u0105pi\u0142em Popover komponentem `ContextMenu.SubContent` z kalendarzem, wi\u0119c pozycjonowanie jest zakotwiczone w pozycji `Due Date`, a ruch myszy zostaje w jednym Radix menu tree.",
       "tags": [
         "context-menu",
         "due-date",
@@ -572,10 +572,10 @@
     {
       "id": "bug-034",
       "timestamp": "2026-04-24T14:51:51+02:00",
-      "error_message": "Delete item w task context menu ma za słaby kontrast hovera i koloru tekstu na jasnych themach.",
+      "error_message": "Delete item w task context menu ma za s\u0142aby kontrast hovera i koloru tekstu na jasnych themach.",
       "file": "src/renderer/src/components/task-list/task-context-menu.tsx",
-      "root_cause": "Delete item używał tylko ciemnothemowych klas `text-red-300` / `hover:text-red-200`, które na jasnym tle są zbyt blade.",
-      "fix": "Dodałem `.app-theme-light` warianty: `text-red-800`, mocniejszy hover background `bg-red-700/15` i hover text `text-red-950`.",
+      "root_cause": "Delete item u\u017cywa\u0142 tylko ciemnothemowych klas `text-red-300` / `hover:text-red-200`, kt\u00f3re na jasnym tle s\u0105 zbyt blade.",
+      "fix": "Doda\u0142em `.app-theme-light` warianty: `text-red-800`, mocniejszy hover background `bg-red-700/15` i hover text `text-red-950`.",
       "tags": [
         "context-menu",
         "delete",
@@ -592,9 +592,9 @@
     {
       "id": "bug-035",
       "timestamp": "2026-04-24T15:12:36+02:00",
-      "error_message": "Komponent due date buguje się: ring kliknięcia działa na właściwym dniu, ale wybiera się lewa data obok.",
+      "error_message": "Komponent due date buguje si\u0119: ring klikni\u0119cia dzia\u0142a na w\u0142a\u015bciwym dniu, ale wybiera si\u0119 lewa data obok.",
       "file": "src/renderer/src/components/task-list/task-context-menu.tsx",
-      "root_cause": "`handleDaySelect` zapisywał datę przez `toISOString().slice(0, 10)`, więc lokalna północ w strefach z dodatnim offsetem UTC serializowała się jako poprzedni dzień.",
+      "root_cause": "`handleDaySelect` zapisywa\u0142 dat\u0119 przez `toISOString().slice(0, 10)`, wi\u0119c lokalna p\u00f3\u0142noc w strefach z dodatnim offsetem UTC serializowa\u0142a si\u0119 jako poprzedni dzie\u0144.",
       "fix": "Zmieniono zapis due date na lokalne `format(day, 'yyyy-MM-dd')` i odczyt selected date na `parseISO(task.dueDate)`.",
       "tags": [
         "due-date",
@@ -686,7 +686,7 @@
       "error_message": "Wrong reference: SheetFooter should be DialogFooter",
       "file": "src/renderer/src/components/project/ProjectPanel.tsx",
       "root_cause": "Used \"SheetFooter\" instead of \"DialogFooter\"",
-      "fix": "Changed SheetFooter → DialogFooter",
+      "fix": "Changed SheetFooter \u2192 DialogFooter",
       "tags": [
         "auto-detected",
         "wrong-reference",
@@ -717,8 +717,8 @@
       "timestamp": "2026-04-28T17:08:22.534Z",
       "error_message": "CSS fix: not-dark",
       "file": "src/renderer/src/components/ui/dialog.tsx",
-      "root_cause": "not-dark: bg-clip-padding text-app-text opacity-[calc(1-var(--nested-dialogs))] → bg-clip-padding text-popover-foreground opacity-[calc(1-var(--nested-dialogs))]",
-      "fix": "Changed not-dark: bg-clip-padding text-app-text opacity-[calc(1-var(--nested-dialogs))] → bg-clip-padding text-popover-foreground opacity-[calc(1-var(--nested-dialogs))]",
+      "root_cause": "not-dark: bg-clip-padding text-app-text opacity-[calc(1-var(--nested-dialogs))] \u2192 bg-clip-padding text-popover-foreground opacity-[calc(1-var(--nested-dialogs))]",
+      "fix": "Changed not-dark: bg-clip-padding text-app-text opacity-[calc(1-var(--nested-dialogs))] \u2192 bg-clip-padding text-popover-foreground opacity-[calc(1-var(--nested-dialogs))]",
       "tags": [
         "auto-detected",
         "style-fix",
@@ -803,8 +803,8 @@
       "timestamp": "2026-04-29T06:49:50.742Z",
       "error_message": "CSS fix: sm",
       "file": "src/renderer/src/components/task-panel/TaskCreatePanel.tsx",
-      "root_cause": "sm: grid-cols-[minmax(0,1fr)_13.5rem]\"> → grid-cols-[minmax(0,1fr)_auto_13.5rem]\">",
-      "fix": "Changed sm: grid-cols-[minmax(0,1fr)_13.5rem]\"> → grid-cols-[minmax(0,1fr)_auto_13.5rem]\">",
+      "root_cause": "sm: grid-cols-[minmax(0,1fr)_13.5rem]\"> \u2192 grid-cols-[minmax(0,1fr)_auto_13.5rem]\">",
+      "fix": "Changed sm: grid-cols-[minmax(0,1fr)_13.5rem]\"> \u2192 grid-cols-[minmax(0,1fr)_auto_13.5rem]\">",
       "tags": [
         "auto-detected",
         "style-fix",
@@ -820,7 +820,7 @@
       "error_message": "Significant refactor of ",
       "file": "src/renderer/src/assets/main.css",
       "root_cause": "3 lines replaced/restructured",
-      "fix": "Rewrote 21→11 lines (3 removed)",
+      "fix": "Rewrote 21\u219211 lines (3 removed)",
       "tags": [
         "auto-detected",
         "refactor",
@@ -868,7 +868,7 @@
       "error_message": "Significant refactor of ",
       "file": "src/renderer/src/pages/health/EffectChart.tsx",
       "root_cause": "4 lines replaced/restructured",
-      "fix": "Rewrote 6→3 lines (4 removed)",
+      "fix": "Rewrote 6\u21923 lines (4 removed)",
       "tags": [
         "auto-detected",
         "refactor",
@@ -1146,6 +1146,763 @@
       "related_bugs": [],
       "occurrences": 1,
       "last_seen": "2026-05-11T20:25:00+02:00"
+    },
+    {
+      "id": "bug-068",
+      "timestamp": "2026-05-22T11:39:27.891Z",
+      "error_message": "Incorrect value in code",
+      "file": "src/main/index.ts",
+      "root_cause": "Had \"../../resources/icon.png?asset\"",
+      "fix": "Changed to \"../../resources/icon.ico?asset\"",
+      "tags": [
+        "auto-detected",
+        "wrong-value",
+        "ts"
+      ],
+      "related_bugs": [],
+      "occurrences": 1,
+      "last_seen": "2026-05-22T11:39:27.891Z"
+    },
+    {
+      "id": "bug-069",
+      "timestamp": "2026-05-22T11:39:41.230Z",
+      "error_message": "Wrong reference: com should be APP_USER_MODEL_ID",
+      "file": "src/main/index.ts",
+      "root_cause": "Used \"com\" instead of \"APP_USER_MODEL_ID\"",
+      "fix": "Changed com \u2192 APP_USER_MODEL_ID",
+      "tags": [
+        "auto-detected",
+        "wrong-reference",
+        "ts"
+      ],
+      "related_bugs": [],
+      "occurrences": 1,
+      "last_seen": "2026-05-22T11:39:41.230Z"
+    },
+    {
+      "id": "bug-070",
+      "timestamp": "2026-05-22T11:39:51.822Z",
+      "error_message": "Wrong reference: electron should be swagtodo",
+      "file": "electron-builder.yml",
+      "root_cause": "Used \"electron\" instead of \"swagtodo\"",
+      "fix": "Changed electron \u2192 swagtodo",
+      "tags": [
+        "auto-detected",
+        "wrong-reference",
+        "yml"
+      ],
+      "related_bugs": [],
+      "occurrences": 1,
+      "last_seen": "2026-05-22T11:39:51.822Z"
+    },
+    {
+      "id": "bug-071",
+      "timestamp": "2026-05-22T13:40:00+02:00",
+      "error_message": "Windows packaged app shows default Electron icon; custom title bar no double-click maximize / no Aero Snap",
+      "file": "src/main/index.ts",
+      "root_cause": "transparent:true disables native Windows DWM snap+double-click maximize. AUMID com.electron.app generic causing taskbar icon collision. BrowserWindow icon used .png not .ico.",
+      "fix": "Removed transparent+backgroundColor 00000000 (opaque #070708). Unique AUMID com.swagtodo.app (main + builder appId). Windows BrowserWindow icon -> resources/icon.ico. Dropped outer-shell rounded-md in App.tsx to avoid square-corner artifact.",
+      "tags": [
+        "electron",
+        "windows",
+        "title-bar",
+        "icon",
+        "transparent",
+        "aero-snap"
+      ],
+      "related_bugs": [],
+      "occurrences": 1,
+      "last_seen": "2026-05-22T13:40:00+02:00"
+    },
+    {
+      "id": "bug-072",
+      "timestamp": "2026-06-08T12:18:11.533Z",
+      "error_message": "Type error",
+      "file": "src/renderer/src/components/sessions-calendar/types.ts",
+      "root_cause": "Missing or incorrect type annotation",
+      "fix": "Added type assertion/annotation",
+      "tags": [
+        "auto-detected",
+        "type-fix",
+        "ts"
+      ],
+      "related_bugs": [],
+      "occurrences": 1,
+      "last_seen": "2026-06-08T12:18:11.533Z"
+    },
+    {
+      "id": "bug-073",
+      "timestamp": "2026-06-08T12:19:03.778Z",
+      "error_message": "Null/undefined access in ",
+      "file": "src/renderer/src/components/sessions-calendar/SessionsCalendar.tsx",
+      "root_cause": "Property access on potentially null/undefined value",
+      "fix": "Added null safety (optional chaining or null check) | Also: const layout = isDraftTarget; ? undefined",
+      "tags": [
+        "auto-detected",
+        "null-safety",
+        "tsx"
+      ],
+      "related_bugs": [],
+      "occurrences": 2,
+      "last_seen": "2026-06-08T12:19:10.253Z"
+    },
+    {
+      "id": "bug-074",
+      "timestamp": "2026-06-08T12:21:02.584Z",
+      "error_message": "Incorrect value in code",
+      "file": "src/renderer/src/components/sessions-calendar/SessionsCalendar.tsx",
+      "root_cause": "Had \"./CalendarHeader\"",
+      "fix": "Changed to \"./AllDayLane\"",
+      "tags": [
+        "auto-detected",
+        "wrong-value",
+        "tsx"
+      ],
+      "related_bugs": [],
+      "occurrences": 1,
+      "last_seen": "2026-06-08T12:21:02.584Z"
+    },
+    {
+      "id": "bug-075",
+      "timestamp": "2026-06-08T12:21:17.865Z",
+      "error_message": "Significant refactor of ",
+      "file": "src/renderer/src/pages/SessionsPage.tsx",
+      "root_cause": "3 lines replaced/restructured",
+      "fix": "Rewrote 14\u219223 lines (3 removed)",
+      "tags": [
+        "auto-detected",
+        "refactor",
+        "tsx"
+      ],
+      "related_bugs": [],
+      "occurrences": 1,
+      "last_seen": "2026-06-08T12:21:17.865Z"
+    },
+    {
+      "id": "bug-076",
+      "timestamp": "2026-06-08T12:21:23.257Z",
+      "error_message": "Type error",
+      "file": "src/renderer/src/pages/SessionsPage.tsx",
+      "root_cause": "Missing or incorrect type annotation",
+      "fix": "Added type assertion/annotation",
+      "tags": [
+        "auto-detected",
+        "type-fix",
+        "tsx"
+      ],
+      "related_bugs": [],
+      "occurrences": 1,
+      "last_seen": "2026-06-08T12:21:23.257Z"
+    },
+    {
+      "id": "bug-077",
+      "timestamp": "2026-06-08T12:21:28.576Z",
+      "error_message": "Missing guard clause",
+      "file": "src/renderer/src/pages/SessionsPage.tsx",
+      "root_cause": "No early return/throw for edge case: mode.kind !== \"days\"",
+      "fix": "Added guard clause: if (mode.kind !== \"days\")",
+      "tags": [
+        "auto-detected",
+        "guard-clause",
+        "tsx"
+      ],
+      "related_bugs": [],
+      "occurrences": 1,
+      "last_seen": "2026-06-08T12:21:28.576Z"
+    },
+    {
+      "id": "bug-078",
+      "timestamp": "2026-06-08T12:21:42.489Z",
+      "error_message": "Null/undefined access in ",
+      "file": "src/renderer/src/pages/SessionsPage.tsx",
+      "root_cause": "Property access on potentially null/undefined value",
+      "fix": "Added null safety (optional chaining or null check)",
+      "tags": [
+        "auto-detected",
+        "null-safety",
+        "tsx"
+      ],
+      "related_bugs": [],
+      "occurrences": 1,
+      "last_seen": "2026-06-08T12:21:42.489Z"
+    },
+    {
+      "id": "bug-079",
+      "timestamp": "2026-06-08T12:24:15.617Z",
+      "error_message": "Missing error handling in unknown",
+      "file": "src/shared/stateSchema.ts",
+      "root_cause": "Code path had no error handling \u2014 exceptions would propagate uncaught",
+      "fix": "Added try/catch block",
+      "tags": [
+        "auto-detected",
+        "error-handling",
+        "ts"
+      ],
+      "related_bugs": [],
+      "occurrences": 1,
+      "last_seen": "2026-06-08T12:24:15.617Z"
+    },
+    {
+      "id": "bug-080",
+      "timestamp": "2026-06-08T12:24:41.715Z",
+      "error_message": "Wrong condition in logic",
+      "file": "src/main/storage/appState.ts",
+      "root_cause": "Condition was: if (d.medications !== undefined && !isValidEntityArray)",
+      "fix": "Changed to: if (\n    d.calendarEvents !== undefined &&\n    !isVali)",
+      "tags": [
+        "auto-detected",
+        "logic-fix",
+        "ts"
+      ],
+      "related_bugs": [],
+      "occurrences": 1,
+      "last_seen": "2026-06-08T12:24:41.715Z"
+    },
+    {
+      "id": "bug-081",
+      "timestamp": "2026-06-08T12:25:01.503Z",
+      "error_message": "Type error",
+      "file": "src/main/storage/sqlite/types.ts",
+      "root_cause": "Missing or incorrect type annotation",
+      "fix": "Added type assertion/annotation",
+      "tags": [
+        "auto-detected",
+        "type-fix",
+        "ts"
+      ],
+      "related_bugs": [],
+      "occurrences": 1,
+      "last_seen": "2026-06-08T12:25:01.503Z"
+    },
+    {
+      "id": "bug-082",
+      "timestamp": "2026-06-08T12:25:35.184Z",
+      "error_message": "Null/undefined access in ",
+      "file": "src/main/storage/sqlite/serialize.ts",
+      "root_cause": "Property access on potentially null/undefined value",
+      "fix": "Added null safety (optional chaining or null check) | Also: calendarEvents: snapshot.calendarEvents.map((event) => ({; id: event.id, | Also: /**; * Drop keys whose value is `undefined` so a row that has no ",
+      "tags": [
+        "auto-detected",
+        "null-safety",
+        "ts"
+      ],
+      "related_bugs": [],
+      "occurrences": 3,
+      "last_seen": "2026-06-08T12:28:30.662Z"
+    },
+    {
+      "id": "bug-083",
+      "timestamp": "2026-06-08T12:26:05.769Z",
+      "error_message": "Null/undefined access in ",
+      "file": "src/main/storage/sqlite/storage.ts",
+      "root_cause": "Property access on potentially null/undefined value",
+      "fix": "Added null safety (optional chaining or null check)",
+      "tags": [
+        "auto-detected",
+        "null-safety",
+        "ts"
+      ],
+      "related_bugs": [],
+      "occurrences": 1,
+      "last_seen": "2026-06-08T12:26:05.769Z"
+    },
+    {
+      "id": "bug-084",
+      "timestamp": "2026-06-08T12:27:44.983Z",
+      "error_message": "Significant refactor of ",
+      "file": "src/main/tests/sqlite.test.ts",
+      "root_cause": "2 lines replaced/restructured",
+      "fix": "Rewrote 8\u219210 lines (2 removed)",
+      "tags": [
+        "auto-detected",
+        "refactor",
+        "ts"
+      ],
+      "related_bugs": [],
+      "occurrences": 1,
+      "last_seen": "2026-06-08T12:27:44.983Z"
+    },
+    {
+      "id": "bug-085",
+      "timestamp": "2026-06-08T12:30:27.357Z",
+      "error_message": "Incorrect value in code",
+      "file": "src/renderer/src/store/domain/domainStore.ts",
+      "root_cause": "Had \"./actions/health\"",
+      "fix": "Changed to \"./actions/calendarEvents\"",
+      "tags": [
+        "auto-detected",
+        "wrong-value",
+        "ts"
+      ],
+      "related_bugs": [],
+      "occurrences": 1,
+      "last_seen": "2026-06-08T12:30:27.357Z"
+    },
+    {
+      "id": "bug-086",
+      "timestamp": "2026-06-08T12:30:31.430Z",
+      "error_message": "Wrong reference: createHealthActions should be createCalendarEventActions",
+      "file": "src/renderer/src/store/domain/domainStore.ts",
+      "root_cause": "Used \"createHealthActions\" instead of \"createCalendarEventActions\"",
+      "fix": "Changed createHealthActions \u2192 createCalendarEventActions",
+      "tags": [
+        "auto-detected",
+        "wrong-reference",
+        "ts"
+      ],
+      "related_bugs": [],
+      "occurrences": 1,
+      "last_seen": "2026-06-08T12:30:31.430Z"
+    },
+    {
+      "id": "bug-087",
+      "timestamp": "2026-06-08T12:34:12.732Z",
+      "error_message": "Null/undefined access in ",
+      "file": "src/renderer/src/components/sessions-calendar/SessionsCalendar.tsx",
+      "root_cause": "Property access on potentially null/undefined value",
+      "fix": "Added null safety (optional chaining or null check) | Also: {dayEventBlocks.map((eb) => {; const layout = dayLayout?.get(`e:${eb.event.id}`)",
+      "tags": [
+        "auto-detected",
+        "null-safety",
+        "tsx"
+      ],
+      "related_bugs": [],
+      "occurrences": 2,
+      "last_seen": "2026-06-08T12:35:04.552Z"
+    },
+    {
+      "id": "bug-088",
+      "timestamp": "2026-06-08T12:34:23.850Z",
+      "error_message": "CSS fix: id, startMin, endMin",
+      "file": "src/renderer/src/components/sessions-calendar/SessionsCalendar.tsx",
+      "root_cause": "id: `t:${tb.block.id \u2192 `e:${eb.event.id; startMin: tb.startMin, \u2192 eb.startMin,; endMin: tb.endMin \u2192 eb.endMin",
+      "fix": "Changed id: `t:${tb.block.id \u2192 `e:${eb.event.id; startMin: tb.startMin, \u2192 eb.startMin,; endMin: tb.endMin \u2192 eb.endMin",
+      "tags": [
+        "auto-detected",
+        "style-fix",
+        "tsx"
+      ],
+      "related_bugs": [],
+      "occurrences": 1,
+      "last_seen": "2026-06-08T12:34:23.850Z"
+    },
+    {
+      "id": "bug-089",
+      "timestamp": "2026-06-08T12:35:14.897Z",
+      "error_message": "Incorrect value in code",
+      "file": "src/renderer/src/components/sessions-calendar/index.tsx",
+      "root_cause": "Had \"./MonthView\"",
+      "fix": "Changed to \"./EventBlockView\"",
+      "tags": [
+        "auto-detected",
+        "wrong-value",
+        "tsx"
+      ],
+      "related_bugs": [],
+      "occurrences": 1,
+      "last_seen": "2026-06-08T12:35:14.897Z"
+    },
+    {
+      "id": "bug-090",
+      "timestamp": "2026-06-08T12:36:20.282Z",
+      "error_message": "Missing guard clause",
+      "file": "src/renderer/src/utils/calendarItems.ts",
+      "root_cause": "No early return/throw for edge case: !Number.isFinite(startMs",
+      "fix": "Added guard clause: if (!Number.isFinite(startMs)",
+      "tags": [
+        "auto-detected",
+        "guard-clause",
+        "ts"
+      ],
+      "related_bugs": [],
+      "occurrences": 1,
+      "last_seen": "2026-06-08T12:36:20.282Z"
+    },
+    {
+      "id": "bug-091",
+      "timestamp": "2026-06-08T12:36:55.248Z",
+      "error_message": "CSS fix: hover",
+      "file": "src/renderer/src/components/sessions-calendar/AgendaView.tsx",
+      "root_cause": "hover: bg-app-active\" : \"cursor-default\" \u2192 bg-app-active\"",
+      "fix": "Changed hover: bg-app-active\" : \"cursor-default\" \u2192 bg-app-active\"",
+      "tags": [
+        "auto-detected",
+        "style-fix",
+        "tsx"
+      ],
+      "related_bugs": [],
+      "occurrences": 1,
+      "last_seen": "2026-06-08T12:36:55.248Z"
+    },
+    {
+      "id": "bug-092",
+      "timestamp": "2026-06-08T12:37:45.473Z",
+      "error_message": "CSS fix: deleteTimeBlock",
+      "file": "src/renderer/src/pages/SessionsPage.tsx",
+      "root_cause": "deleteTimeBlock: state.deleteTimeBlock \u2192 state.deleteTimeBlock,",
+      "fix": "Changed deleteTimeBlock: state.deleteTimeBlock \u2192 state.deleteTimeBlock,",
+      "tags": [
+        "auto-detected",
+        "style-fix",
+        "tsx"
+      ],
+      "related_bugs": [],
+      "occurrences": 3,
+      "last_seen": "2026-06-08T12:38:09.628Z"
+    },
+    {
+      "id": "bug-093",
+      "timestamp": "2026-06-08T12:42:15.315Z",
+      "error_message": "Wrong return value",
+      "file": "src/main/storage/sqlite/storage.ts",
+      "root_cause": "Was returning: this.cachedState",
+      "fix": "Now returns: this.db",
+      "tags": [
+        "auto-detected",
+        "return-value",
+        "ts"
+      ],
+      "related_bugs": [],
+      "occurrences": 1,
+      "last_seen": "2026-06-08T12:42:15.315Z"
+    },
+    {
+      "id": "bug-094",
+      "timestamp": "2026-06-08T12:43:56.324Z",
+      "error_message": "Incorrect value in code",
+      "file": "src/main/index.ts",
+      "root_cause": "Had \"./ipcHandlers\"",
+      "fix": "Changed to \"./google/syncEngine\"",
+      "tags": [
+        "auto-detected",
+        "wrong-value",
+        "ts"
+      ],
+      "related_bugs": [],
+      "occurrences": 1,
+      "last_seen": "2026-06-08T12:43:56.324Z"
+    },
+    {
+      "id": "bug-095",
+      "timestamp": "2026-06-08T12:45:09.505Z",
+      "error_message": "Function not marked async",
+      "file": "src/main/tests/ipcHandlers.test.ts",
+      "root_cause": "Function uses await but wasn't declared async",
+      "fix": "Added async modifier | Also: \"google:auth:signout\",; \"google:auth:start\",",
+      "tags": [
+        "auto-detected",
+        "async-fix",
+        "ts"
+      ],
+      "related_bugs": [],
+      "occurrences": 2,
+      "last_seen": "2026-06-08T12:45:17.410Z"
+    },
+    {
+      "id": "bug-096",
+      "timestamp": "2026-06-08T12:46:03.288Z",
+      "error_message": "Incorrect value in code",
+      "file": "src/renderer/src/pages/SettingsPage.tsx",
+      "root_cause": "Had \"@renderer/components/settings/ThemeSection\"",
+      "fix": "Changed to \"@renderer/components/settings/IntegrationsSection",
+      "tags": [
+        "auto-detected",
+        "wrong-value",
+        "tsx"
+      ],
+      "related_bugs": [],
+      "occurrences": 1,
+      "last_seen": "2026-06-08T12:46:03.288Z"
+    },
+    {
+      "id": "bug-097",
+      "timestamp": "2026-06-08T12:49:32.324Z",
+      "error_message": "Missing guard clause",
+      "file": "src/main/google/client.ts",
+      "root_cause": "No early return/throw for edge case: !res.ok",
+      "fix": "Added guard clause: if (!res.ok)",
+      "tags": [
+        "auto-detected",
+        "guard-clause",
+        "ts"
+      ],
+      "related_bugs": [],
+      "occurrences": 1,
+      "last_seen": "2026-06-08T12:49:32.324Z"
+    },
+    {
+      "id": "bug-098",
+      "timestamp": "2026-06-08T12:51:00.799Z",
+      "error_message": "Missing error handling in unknown",
+      "file": "src/renderer/src/store/bootstrap.ts",
+      "root_cause": "Code path had no error handling \u2014 exceptions would propagate uncaught",
+      "fix": "Added try/catch block",
+      "tags": [
+        "auto-detected",
+        "error-handling",
+        "ts"
+      ],
+      "related_bugs": [],
+      "occurrences": 1,
+      "last_seen": "2026-06-08T12:51:00.799Z"
+    },
+    {
+      "id": "bug-099",
+      "timestamp": "2026-06-08T12:51:05.971Z",
+      "error_message": "Incorrect value in code",
+      "file": "src/renderer/src/store/index.ts",
+      "root_cause": "Had \"./domain/domainStore\"",
+      "fix": "Changed to \"./bootstrap\"",
+      "tags": [
+        "auto-detected",
+        "wrong-value",
+        "ts"
+      ],
+      "related_bugs": [],
+      "occurrences": 1,
+      "last_seen": "2026-06-08T12:51:05.971Z"
+    },
+    {
+      "id": "bug-100",
+      "timestamp": "2026-06-08T12:51:16.374Z",
+      "error_message": "Null/undefined access in ",
+      "file": "src/renderer/src/App.tsx",
+      "root_cause": "Property access on potentially null/undefined value",
+      "fix": "Added null safety (optional chaining or null check)",
+      "tags": [
+        "auto-detected",
+        "null-safety",
+        "tsx"
+      ],
+      "related_bugs": [],
+      "occurrences": 1,
+      "last_seen": "2026-06-08T12:51:16.374Z"
+    },
+    {
+      "id": "bug-101",
+      "timestamp": "2026-06-08T12:51:28.066Z",
+      "error_message": "Missing error handling in unknown",
+      "file": "src/main/google/syncEngine.ts",
+      "root_cause": "Code path had no error handling \u2014 exceptions would propagate uncaught",
+      "fix": "Added try/catch block | Also: /** Push pending local mutations, then pull remote changes. ; await this.drainOutbox()",
+      "tags": [
+        "auto-detected",
+        "error-handling",
+        "ts"
+      ],
+      "related_bugs": [],
+      "occurrences": 2,
+      "last_seen": "2026-06-08T12:56:13.842Z"
+    },
+    {
+      "id": "bug-102",
+      "timestamp": "2026-06-08T12:52:13.352Z",
+      "error_message": "Wrong reference: mapGoogleEvent should be reduceRemoteEvents",
+      "file": "src/main/google/syncEngine.ts",
+      "root_cause": "Used \"mapGoogleEvent\" instead of \"reduceRemoteEvents\"",
+      "fix": "Changed mapGoogleEvent \u2192 reduceRemoteEvents",
+      "tags": [
+        "auto-detected",
+        "wrong-reference",
+        "ts"
+      ],
+      "related_bugs": [],
+      "occurrences": 1,
+      "last_seen": "2026-06-08T12:52:13.352Z"
+    },
+    {
+      "id": "bug-103",
+      "timestamp": "2026-06-08T12:52:24.490Z",
+      "error_message": "Significant refactor of ",
+      "file": "src/main/google/syncEngine.ts",
+      "root_cause": "62 lines replaced/restructured",
+      "fix": "Rewrote 83\u21926 lines (62 removed)",
+      "tags": [
+        "auto-detected",
+        "refactor",
+        "ts"
+      ],
+      "related_bugs": [],
+      "occurrences": 1,
+      "last_seen": "2026-06-08T12:52:24.490Z"
+    },
+    {
+      "id": "bug-104",
+      "timestamp": "2026-06-08T12:52:42.608Z",
+      "error_message": "Missing guard clause",
+      "file": "src/main/google/eventMapper.ts",
+      "root_cause": "No early return/throw for edge case: e.googleEventId",
+      "fix": "Added guard clause: if (e.googleEventId)",
+      "tags": [
+        "auto-detected",
+        "guard-clause",
+        "ts"
+      ],
+      "related_bugs": [],
+      "occurrences": 1,
+      "last_seen": "2026-06-08T12:52:42.608Z"
+    },
+    {
+      "id": "bug-105",
+      "timestamp": "2026-06-08T12:53:23.243Z",
+      "error_message": "Null/undefined access in ",
+      "file": "src/main/tests/eventMapper.test.ts",
+      "root_cause": "Property access on potentially null/undefined value",
+      "fix": "Added null safety (optional chaining or null check)",
+      "tags": [
+        "auto-detected",
+        "null-safety",
+        "ts"
+      ],
+      "related_bugs": [],
+      "occurrences": 1,
+      "last_seen": "2026-06-08T12:53:23.243Z"
+    },
+    {
+      "id": "bug-106",
+      "timestamp": "2026-06-08T12:54:32.851Z",
+      "error_message": "Missing guard clause",
+      "file": "src/main/google/client.ts",
+      "root_cause": "No early return/throw for edge case: !res.ok",
+      "fix": "Added guard clause: if (!res.ok)",
+      "tags": [
+        "auto-detected",
+        "guard-clause",
+        "ts"
+      ],
+      "related_bugs": [],
+      "occurrences": 1,
+      "last_seen": "2026-06-08T12:54:32.851Z"
+    },
+    {
+      "id": "bug-107",
+      "timestamp": "2026-06-08T12:55:19.753Z",
+      "error_message": "Null/undefined access in ",
+      "file": "src/main/google/eventMapper.ts",
+      "root_cause": "Property access on potentially null/undefined value",
+      "fix": "Added null safety (optional chaining or null check)",
+      "tags": [
+        "auto-detected",
+        "null-safety",
+        "ts"
+      ],
+      "related_bugs": [],
+      "occurrences": 1,
+      "last_seen": "2026-06-08T12:55:19.753Z"
+    },
+    {
+      "id": "bug-108",
+      "timestamp": "2026-06-08T12:55:27.445Z",
+      "error_message": "Type error",
+      "file": "src/main/google/eventMapper.ts",
+      "root_cause": "Missing or incorrect type annotation",
+      "fix": "Added type assertion/annotation",
+      "tags": [
+        "auto-detected",
+        "type-fix",
+        "ts"
+      ],
+      "related_bugs": [],
+      "occurrences": 1,
+      "last_seen": "2026-06-08T12:55:27.445Z"
+    },
+    {
+      "id": "bug-109",
+      "timestamp": "2026-06-08T12:56:41.932Z",
+      "error_message": "Null/undefined access in ",
+      "file": "src/renderer/src/store/domain/actions/calendarEvents.ts",
+      "root_cause": "Property access on potentially null/undefined value",
+      "fix": "Added null safety (optional chaining or null check)",
+      "tags": [
+        "auto-detected",
+        "null-safety",
+        "ts"
+      ],
+      "related_bugs": [],
+      "occurrences": 1,
+      "last_seen": "2026-06-08T12:56:41.932Z"
+    },
+    {
+      "id": "bug-110",
+      "timestamp": "2026-06-08T12:56:54.954Z",
+      "error_message": "Missing guard clause",
+      "file": "src/renderer/src/store/domain/actions/calendarEvents.ts",
+      "root_cause": "No early return/throw for edge case: calendarEvents === state.calendarEvents",
+      "fix": "Added guard clause: if (calendarEvents === state.calendarEvents)",
+      "tags": [
+        "auto-detected",
+        "guard-clause",
+        "ts"
+      ],
+      "related_bugs": [],
+      "occurrences": 2,
+      "last_seen": "2026-06-08T12:59:30.132Z"
+    },
+    {
+      "id": "bug-111",
+      "timestamp": "2026-06-08T12:57:19.786Z",
+      "error_message": "Missing await",
+      "file": "src/main/tests/ipcHandlers.test.ts",
+      "root_cause": "Async call without await \u2014 returned Promise instead of value",
+      "fix": "Added await to async call",
+      "tags": [
+        "auto-detected",
+        "async-fix",
+        "ts"
+      ],
+      "related_bugs": [],
+      "occurrences": 1,
+      "last_seen": "2026-06-08T12:57:19.786Z"
+    },
+    {
+      "id": "bug-112",
+      "timestamp": "2026-06-08T12:58:31.186Z",
+      "error_message": "Missing guard clause",
+      "file": "src/main/google/outboxStore.ts",
+      "root_cause": "No early return/throw for edge case: op === \"delete\"",
+      "fix": "Added guard clause: if (op === \"delete\")",
+      "tags": [
+        "auto-detected",
+        "guard-clause",
+        "ts"
+      ],
+      "related_bugs": [],
+      "occurrences": 1,
+      "last_seen": "2026-06-08T12:58:31.186Z"
+    },
+    {
+      "id": "bug-113",
+      "timestamp": "2026-06-08T15:01:00.000Z",
+      "error_message": "ReferenceError: window is not defined",
+      "file": "src/renderer/src/store/domain/actions/calendarEvents.ts",
+      "root_cause": "Domain action enqueuePush referenced `window.api` directly; the node test runner has no `window` global, so `window.api?.` throws ReferenceError (not undefined) at import/call.",
+      "fix": "Guard with `if (typeof window === \"undefined\") return` before touching window.api.",
+      "tags": [
+        "test",
+        "renderer",
+        "google-sync",
+        "ssr-safety"
+      ],
+      "related_bugs": [],
+      "occurrences": 1,
+      "last_seen": "2026-06-08T15:01:00.000Z"
+    },
+    {
+      "id": "bug-114",
+      "timestamp": "2026-06-08T15:01:00.000Z",
+      "error_message": "NODE_MODULE_VERSION 140 vs 141 (better_sqlite3.node)",
+      "file": "src/main/tests/outboxStore.test.ts",
+      "root_cause": "Test instantiated `new Database(':memory:')`, but better-sqlite3 is built for Electron's ABI, not the system node used by the test runner.",
+      "fix": "Extracted pure `decideCollapse` from the SQLite-backed OutboxStore and test that instead; never import better-sqlite3/electron in tests. See memory sqlite-test-native-mismatch.",
+      "tags": [
+        "test",
+        "main",
+        "better-sqlite3",
+        "native-abi"
+      ],
+      "related_bugs": [],
+      "occurrences": 1,
+      "last_seen": "2026-06-08T15:01:00.000Z"
     }
   ]
 }

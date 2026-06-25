@@ -112,6 +112,22 @@ export const readLegacyElectronStore = (dbPath: string): AppState | null => {
   return null
 }
 
+/**
+ * Drop keys whose value is `undefined` so a row that has no optional fields
+ * deep-equals the same entity produced by `normalizeAppState` (zod omits absent
+ * optionals rather than setting them to `undefined`). Used for calendar events,
+ * which carry many optional sync fields.
+ */
+export const stripUndefined = <T extends Record<string, unknown>>(
+  obj: T
+): T => {
+  const out = {} as Record<string, unknown>
+  for (const key of Object.keys(obj)) {
+    if (obj[key] !== undefined) out[key] = obj[key]
+  }
+  return out as T
+}
+
 export const serializeAppState = (state: AppState): SqliteStateSnapshot => {
   const normalized = normalizeAppState(state)
   const snapshot: SqliteStateSnapshot = {
@@ -122,6 +138,7 @@ export const serializeAppState = (state: AppState): SqliteStateSnapshot => {
     labels: [],
     sessions: [],
     timeBlocks: [],
+    calendarEvents: [],
     medications: [],
     settings: []
   }
@@ -199,6 +216,29 @@ export const serializeAppState = (state: AppState): SqliteStateSnapshot => {
       start_at: timeBlock.startAt,
       end_at: timeBlock.endAt,
       created_at: timeBlock.createdAt,
+      position
+    })
+  })
+
+  normalized.calendarEvents?.forEach((event, position) => {
+    snapshot.calendarEvents.push({
+      id: event.id,
+      title: event.title,
+      description: event.description ?? null,
+      location: event.location ?? null,
+      color: event.color ?? null,
+      start_at: event.startAt,
+      end_at: event.endAt,
+      all_day: event.allDay ? 1 : 0,
+      rrule: event.rrule ?? null,
+      recurrence_id: event.recurrenceId ?? null,
+      google_calendar_id: event.googleCalendarId ?? null,
+      google_event_id: event.googleEventId ?? null,
+      etag: event.etag ?? null,
+      sync_status: event.syncStatus ?? null,
+      deleted_at: event.deletedAt ?? null,
+      created_at: event.createdAt,
+      updated_at: event.updatedAt,
       position
     })
   })
@@ -297,6 +337,29 @@ export const deserializeAppState = (
       endAt: timeBlock.end_at,
       createdAt: timeBlock.created_at
     })),
+    calendarEvents: snapshot.calendarEvents.map((event) =>
+      stripUndefined({
+        id: event.id,
+        title: event.title,
+        description: event.description ?? undefined,
+        location: event.location ?? undefined,
+        color: event.color ?? undefined,
+        startAt: event.start_at,
+        endAt: event.end_at,
+        allDay: Boolean(event.all_day),
+        rrule: event.rrule ?? undefined,
+        recurrenceId: event.recurrence_id ?? undefined,
+        googleCalendarId: event.google_calendar_id ?? undefined,
+        googleEventId: event.google_event_id ?? undefined,
+        etag: event.etag ?? undefined,
+        syncStatus:
+          (event.sync_status as "synced" | "pending" | "local_only" | null) ??
+          undefined,
+        deletedAt: event.deleted_at ?? undefined,
+        createdAt: event.created_at,
+        updatedAt: event.updated_at
+      })
+    ),
     medications: snapshot.medications.map((medication) => ({
       id: medication.id,
       medId: medication.med_id,

@@ -1,5 +1,9 @@
 import { UI_SCALE_OPTIONS } from "../../../shared/defaults"
 import type {
+  CalendarEvent,
+  CalendarEventSyncStatus,
+  GoogleAuthStatus,
+  GoogleSyncSummary,
   Label,
   MedicationLog,
   Priority,
@@ -15,6 +19,10 @@ import type {
 } from "../../../shared/types"
 
 export type {
+  CalendarEvent,
+  CalendarEventSyncStatus,
+  GoogleAuthStatus,
+  GoogleSyncSummary,
   Label,
   MedicationLog,
   Priority,

@@ -1,5 +1,6 @@
 import type {
   AppearanceSettings,
+  CalendarEvent,
   CreateTaskInput,
   InboxPriorityFilter,
   InboxProjectFilter,
@@ -79,6 +80,38 @@ export type TimeBlockResult =
   | { ok: false; error: string }
 export type TimeBlockUpdateResult = { ok: true } | { ok: false; error: string }
 
+export type CalendarEventCreateInput = {
+  title: string
+  startAt: string
+  endAt: string
+  allDay?: boolean
+  description?: string
+  location?: string
+  color?: string
+  rrule?: string
+}
+
+export type CalendarEventUpdateInput = Partial<
+  Pick<
+    CalendarEvent,
+    | "title"
+    | "startAt"
+    | "endAt"
+    | "allDay"
+    | "description"
+    | "location"
+    | "color"
+    | "rrule"
+  >
+>
+
+export type CalendarEventResult =
+  | { ok: true; id: string }
+  | { ok: false; error: string }
+export type CalendarEventUpdateResult =
+  | { ok: true }
+  | { ok: false; error: string }
+
 export interface TaskCreateDefaults {
   projectId?: string
   status?: TaskStatus
@@ -98,6 +131,7 @@ export interface DomainState {
   labels: Label[]
   sessions: import("@renderer/types").TaskSession[]
   timeBlocks: import("@renderer/types").TimeBlock[]
+  calendarEvents: CalendarEvent[]
   medications: MedicationLog[]
   pkSettings: PkSettings
   uiScale: UiScale
@@ -140,6 +174,12 @@ export interface DomainActions {
     updates: TimeBlockUpdateInput
   ) => TimeBlockUpdateResult
   deleteTimeBlock: (id: string) => void
+  addCalendarEvent: (input: CalendarEventCreateInput) => CalendarEventResult
+  updateCalendarEvent: (
+    id: string,
+    updates: CalendarEventUpdateInput
+  ) => CalendarEventUpdateResult
+  deleteCalendarEvent: (id: string) => void
   setThemeId: (id: ThemeId) => void
   setCustomTokens: (tokens: Partial<ThemeTokens>) => void
   resetCustomTokens: () => void
@@ -203,6 +243,7 @@ export type PersistedDomainState = Pick<
   | "labels"
   | "sessions"
   | "timeBlocks"
+  | "calendarEvents"
   | "medications"
   | "pkSettings"
   | "uiScale"

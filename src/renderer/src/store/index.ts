@@ -1,3 +1,4 @@
+export { reloadDomainStore } from "./bootstrap"
 export { useDomainStore } from "./domain/domainStore"
 export {
   isTaskDueToday,

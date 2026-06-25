@@ -1,4 +1,8 @@
+export { AgendaView } from "./AgendaView"
+export { AllDayLane } from "./AllDayLane"
 export { DraftGhost } from "./DraftGhost"
+export { EventBlockView } from "./EventBlockView"
+export { MonthView } from "./MonthView"
 export { SessionBlockView } from "./SessionBlockView"
 export { SessionsCalendar } from "./SessionsCalendar"
 export { TimeBlockView } from "./TimeBlockView"

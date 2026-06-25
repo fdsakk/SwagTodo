@@ -17,6 +17,7 @@ test("pickPersistedState returns only persisted domain fields", () => {
 
   assert.deepEqual(Object.keys(persisted).sort(), [
     "appearance",
+    "calendarEvents",
     "isSidebarCollapsed",
     "labels",
     "medications",

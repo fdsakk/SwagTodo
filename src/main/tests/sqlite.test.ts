@@ -2,7 +2,7 @@ import assert from "node:assert/strict"
 import test from "node:test"
 import { DEFAULT_UI_SCALE } from "../../shared/defaults"
 import type { AppState } from "../../shared/types"
-import { normalizeAppState } from "../storage/appState"
+import { isAppStatePatch, normalizeAppState } from "../storage/appState"
 import {
   changedTaskChildIds,
   changedTaskIds,
@@ -66,6 +66,34 @@ const createFixtureState = (): AppState => ({
       createdAt: "2026-04-23T08:00:00.000Z"
     }
   ],
+  calendarEvents: [
+    {
+      id: "event-1",
+      title: "Standup",
+      description: "daily sync",
+      location: "Zoom",
+      color: "#3b82f6",
+      startAt: "2026-04-23T09:30:00.000Z",
+      endAt: "2026-04-23T09:45:00.000Z",
+      allDay: false,
+      googleCalendarId: "primary",
+      googleEventId: "g-event-1",
+      etag: '"abc123"',
+      syncStatus: "synced",
+      createdAt: "2026-04-23T08:00:00.000Z",
+      updatedAt: "2026-04-23T08:00:00.000Z"
+    },
+    {
+      id: "event-2",
+      title: "Conference",
+      startAt: "2026-05-01T00:00:00.000Z",
+      endAt: "2026-05-03T00:00:00.000Z",
+      allDay: true,
+      rrule: "FREQ=YEARLY",
+      createdAt: "2026-04-23T08:00:00.000Z",
+      updatedAt: "2026-04-23T08:00:00.000Z"
+    }
+  ],
   medications: [
     {
       id: "med-log-1",
@@ -98,6 +126,7 @@ test("deserializeAppState returns normalized defaults for an empty snapshot", ()
     labels: [],
     sessions: [],
     timeBlocks: [],
+    calendarEvents: [],
     medications: [],
     settings: []
   })
@@ -258,6 +287,42 @@ test("delta write: updating one task does not affect unchanged sibling", () => {
   const changed = changedTaskIds(prev, next)
   assert.ok(changed.has("task-1"))
   assert.ok(!changed.has("task-2"))
+})
+
+test("calendar events round-trip through serialize/deserialize", () => {
+  const initial = createFixtureState()
+  const loaded = deserializeAppState(serializeAppState(initial))
+  // JSON round-trip both sides so absent vs explicit-undefined optional keys
+  // compare equal (storage mapping fills optionals with `undefined`).
+  assert.deepEqual(
+    JSON.parse(JSON.stringify(loaded.calendarEvents)),
+    JSON.parse(JSON.stringify(initial.calendarEvents))
+  )
+})
+
+const UUID = "11111111-1111-4111-8111-111111111111"
+const calendarEventEntity = (id: string): unknown => ({
+  id,
+  title: "x",
+  startAt: "2026-04-23T09:00:00.000Z",
+  endAt: "2026-04-23T10:00:00.000Z",
+  allDay: false,
+  createdAt: "2026-04-23T08:00:00.000Z",
+  updatedAt: "2026-04-23T08:00:00.000Z"
+})
+
+test("isAppStatePatch accepts calendarEvents with uuid ids", () => {
+  assert.equal(
+    isAppStatePatch({ calendarEvents: [calendarEventEntity(UUID)] }),
+    true
+  )
+})
+
+test("isAppStatePatch rejects calendarEvents with a non-uuid id (e.g. google id)", () => {
+  assert.equal(
+    isAppStatePatch({ calendarEvents: [calendarEventEntity("g-event-1")] }),
+    false
+  )
 })
 
 test("settings: uiScale and appearance serialize to settings rows", () => {

@@ -63,6 +63,27 @@ export type StoredTimeBlockRow = {
   position: number
 }
 
+export type StoredCalendarEventRow = {
+  id: string
+  title: string
+  description: string | null
+  location: string | null
+  color: string | null
+  start_at: string
+  end_at: string
+  all_day: number
+  rrule: string | null
+  recurrence_id: string | null
+  google_calendar_id: string | null
+  google_event_id: string | null
+  etag: string | null
+  sync_status: string | null
+  deleted_at: string | null
+  created_at: string
+  updated_at: string
+  position: number
+}
+
 export type StoredMedicationRow = {
   id: string
   med_id: string
@@ -88,6 +109,7 @@ export interface SqliteStateSnapshot {
   labels: StoredLabelRow[]
   sessions: StoredSessionRow[]
   timeBlocks: StoredTimeBlockRow[]
+  calendarEvents: StoredCalendarEventRow[]
   medications: StoredMedicationRow[]
   settings: StoredSettingRow[]
 }
@@ -109,6 +131,7 @@ export const EMPTY_SNAPSHOT: SqliteStateSnapshot = {
   labels: [],
   sessions: [],
   timeBlocks: [],
+  calendarEvents: [],
   medications: [],
   settings: []
 }

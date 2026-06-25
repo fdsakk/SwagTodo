@@ -1,12 +1,14 @@
 import { formatHM, PX_PER_MIN, SLOT_MIN } from "@renderer/utils/calendar"
 import { X } from "lucide-react"
 import type { PointerEvent as ReactPointerEvent } from "react"
-import type { TimeBlockDisplayBlock } from "./types"
+import { columnStyle, type TimeBlockDisplayBlock } from "./types"
 
 interface TimeBlockViewProps {
   tb: TimeBlockDisplayBlock
   startMin: number
   endMin: number
+  columnIndex?: number
+  columnCount?: number
   onMovePointerDown: (event: ReactPointerEvent<HTMLDivElement>) => void
   onResizePointerDown: (event: ReactPointerEvent<HTMLDivElement>) => void
   onDelete: () => void
@@ -16,6 +18,8 @@ export function TimeBlockView({
   tb,
   startMin,
   endMin,
+  columnIndex = 0,
+  columnCount = 1,
   onMovePointerDown,
   onResizePointerDown,
   onDelete
@@ -28,8 +32,8 @@ export function TimeBlockView({
   return (
     <div
       data-session-block
-      className="group absolute left-1 right-1 z-[4] select-none overflow-hidden rounded-md border border-zinc-600/50 bg-zinc-700/40 px-1.5 py-1 text-[11px] text-zinc-400 shadow-sm hover:bg-zinc-700/60"
-      style={{ top, height }}
+      className="group absolute z-[4] select-none overflow-hidden rounded-md border border-zinc-600/50 bg-zinc-700/40 px-1.5 py-1 text-[11px] text-zinc-400 shadow-sm hover:bg-zinc-700/60"
+      style={{ top, height, ...columnStyle(columnIndex, columnCount) }}
       onPointerDown={onMovePointerDown}
     >
       <div className="flex items-center gap-1 text-[10px] text-app-text-muted">

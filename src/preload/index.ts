@@ -1,6 +1,11 @@
 import { electronAPI } from "@electron-toolkit/preload"
 import { contextBridge, ipcRenderer } from "electron"
-import type { AppState, WindowState } from "../shared/types"
+import type {
+  AppState,
+  GoogleAuthStatus,
+  GoogleSyncSummary,
+  WindowState
+} from "../shared/types"
 
 const api = {
   storage: {
@@ -28,6 +33,22 @@ const api = {
       return () => ipcRenderer.removeListener("window:state", handler)
     },
     platform: process.platform
+  },
+  google: {
+    authStatus: (): Promise<GoogleAuthStatus> =>
+      ipcRenderer.invoke("google:auth:status"),
+    authStart: (): Promise<GoogleAuthStatus> =>
+      ipcRenderer.invoke("google:auth:start"),
+    signout: (): Promise<void> => ipcRenderer.invoke("google:auth:signout"),
+    syncNow: (): Promise<GoogleSyncSummary> =>
+      ipcRenderer.invoke("google:sync:run"),
+    push: (eventId: string, op: "insert" | "patch" | "delete"): Promise<void> =>
+      ipcRenderer.invoke("google:push", eventId, op),
+    onSyncChanged: (listener: () => void): (() => void) => {
+      const handler = (): void => listener()
+      ipcRenderer.on("google:sync:changed", handler)
+      return () => ipcRenderer.removeListener("google:sync:changed", handler)
+    }
   }
 }
 

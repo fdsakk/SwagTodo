@@ -13,7 +13,7 @@ import { TaskDetailPanel } from "@renderer/components/task-panel"
 import { useKeyboardShortcuts } from "@renderer/hooks/useKeyboardShortcuts"
 import InboxPage from "@renderer/pages/InboxPage"
 import TodayPage from "@renderer/pages/TodayPage"
-import { useDomainStore, useUiStore } from "@renderer/store"
+import { reloadDomainStore, useDomainStore, useUiStore } from "@renderer/store"
 import { UI_SCALE_OPTIONS, type ViewName } from "@renderer/types"
 import { cn } from "@renderer/utils/cn"
 import { lazy, Suspense, useCallback, useEffect, useRef, useState } from "react"
@@ -59,6 +59,11 @@ function App(): React.JSX.Element {
       isFullScreen ? "0px" : "1.75rem"
     )
   }, [isFullScreen])
+
+  // Reload domain state when the main process pulls Google Calendar changes.
+  useEffect(() => {
+    return window.api?.google?.onSyncChanged(() => void reloadDomainStore())
+  }, [])
 
   const {
     selectedView,
@@ -152,12 +157,7 @@ function App(): React.JSX.Element {
 
   if (!hydrated) {
     return (
-      <div
-        className={cn(
-          "flex h-full flex-col overflow-hidden bg-[#070708] px-[2px] pb-[2px] ring-1 ring-white/5",
-          !isFullScreen && "rounded-md"
-        )}
-      >
+      <div className="flex h-full flex-col overflow-hidden bg-[#070708] px-[2px] pb-[2px] ring-1 ring-white/5">
         <TitleBar />
         <div
           className={cn(
@@ -178,7 +178,7 @@ function App(): React.JSX.Element {
     archive: <ArchivePage />,
     sessions: <SessionsPage />,
     settings: <SettingsPage />,
-    health: <HealthPage />, 
+    health: <HealthPage />,
     project: (
       <ProjectPage
         onEditProject={(project) => openEditProjectPanel(project.id)}
@@ -188,12 +188,7 @@ function App(): React.JSX.Element {
   const isFullHeightView = FULL_HEIGHT_VIEWS.has(selectedView)
 
   return (
-    <div
-      className={cn(
-        "flex h-full flex-col overflow-hidden bg-app-titlebar px-1.5 pb-1.5",
-        !isFullScreen && "rounded-md"
-      )}
-    >
+    <div className="flex h-full flex-col overflow-hidden bg-app-titlebar px-1.5 pb-1.5">
       <ThemeProvider />
       <TitleBar />
       <div

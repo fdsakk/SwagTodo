@@ -4,20 +4,46 @@ import { ChevronLeft, ChevronRight } from "lucide-react"
 export type DayCount = 1 | 3 | 5 | 7
 export const DAY_OPTIONS: readonly DayCount[] = [1, 3, 5, 7] as const
 
+export type ViewMode =
+  | { kind: "days"; count: DayCount }
+  | { kind: "month" }
+  | { kind: "agenda" }
+
+const isDays = (mode: ViewMode): mode is { kind: "days"; count: DayCount } =>
+  mode.kind === "days"
+
+const tabValue = (mode: ViewMode): string =>
+  isDays(mode) ? String(mode.count) : mode.kind
+
+const TAB_OPTIONS = [
+  ...DAY_OPTIONS.map((opt) => ({
+    value: String(opt),
+    label: `${opt} ${opt === 1 ? "day" : "days"}`
+  })),
+  { value: "month", label: "Month" },
+  { value: "agenda", label: "Agenda" }
+] as const
+
+const fromTabValue = (value: string): ViewMode => {
+  if (value === "month") return { kind: "month" }
+  if (value === "agenda") return { kind: "agenda" }
+  return { kind: "days", count: Number(value) as DayCount }
+}
+
 interface SessionsToolbarProps {
-  dayCount: DayCount
+  mode: ViewMode
   rangeLabel: string
   onShiftRange: (direction: -1 | 1) => void
   onGoToday: () => void
-  onDayCountChange: (count: DayCount) => void
+  onModeChange: (mode: ViewMode) => void
 }
 
 export function SessionsToolbar({
-  dayCount,
+  mode,
   rangeLabel,
   onShiftRange,
   onGoToday,
-  onDayCountChange
+  onModeChange
 }: SessionsToolbarProps): React.JSX.Element {
   return (
     <div className="flex items-center gap-2 px-4 py-2">
@@ -49,13 +75,13 @@ export function SessionsToolbar({
       <span className="text-sm text-app-text-secondary">{rangeLabel}</span>
       <Tabs
         className="ml-auto"
-        value={String(dayCount)}
-        onValueChange={(v) => onDayCountChange(Number(v) as DayCount)}
+        value={tabValue(mode)}
+        onValueChange={(v) => onModeChange(fromTabValue(v))}
       >
         <TabsList>
-          {DAY_OPTIONS.map((opt) => (
-            <TabsTab key={opt} value={String(opt)}>
-              {opt} {opt === 1 ? "day" : "days"}
+          {TAB_OPTIONS.map((opt) => (
+            <TabsTab key={opt.value} value={opt.value}>
+              {opt.label}
             </TabsTab>
           ))}
         </TabsList>

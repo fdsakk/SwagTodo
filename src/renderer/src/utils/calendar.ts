@@ -16,6 +16,19 @@ export const addDays = (d: Date, days: number): Date => {
   return x
 }
 
+export const addMonths = (d: Date, months: number): Date => {
+  const x = new Date(d)
+  x.setMonth(x.getMonth() + months)
+  return x
+}
+
+export const startOfMonth = (d: Date): Date => {
+  const x = new Date(d)
+  x.setHours(0, 0, 0, 0)
+  x.setDate(1)
+  return x
+}
+
 export const isSameDay = (a: Date, b: Date): boolean =>
   a.getFullYear() === b.getFullYear() &&
   a.getMonth() === b.getMonth() &&

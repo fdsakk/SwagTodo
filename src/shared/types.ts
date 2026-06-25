@@ -61,6 +61,33 @@ export interface TimeBlock {
   createdAt: string
 }
 
+export type CalendarEventSyncStatus = "synced" | "pending" | "local_only"
+
+export interface CalendarEvent {
+  id: string
+  title: string
+  description?: string
+  location?: string
+  color?: string
+  startAt: string
+  endAt: string
+  allDay: boolean
+  /** Raw RRULE string without the "RRULE:" prefix. Undefined = single event. */
+  rrule?: string
+  /** For an overridden recurring instance: the local id of the master event. */
+  recurrenceId?: string
+  // Google sync bookkeeping — undefined while the event is purely local.
+  googleCalendarId?: string
+  /** Google's event id (NOT our `id`, which is always a uuid). */
+  googleEventId?: string
+  etag?: string
+  syncStatus?: CalendarEventSyncStatus
+  /** Soft-delete tombstone for outbound sync. */
+  deletedAt?: string
+  createdAt: string
+  updatedAt: string
+}
+
 export interface AppearanceSettings {
   themeId: string
   customTokens: Record<string, string>
@@ -82,6 +109,7 @@ export interface AppState {
   labels: Label[]
   sessions: TaskSession[]
   timeBlocks: TimeBlock[]
+  calendarEvents?: CalendarEvent[]
   medications?: MedicationLog[]
   pkSettings?: unknown
   uiScale?: UiScale
@@ -92,4 +120,18 @@ export interface AppState {
 export interface WindowState {
   isMaximized: boolean
   isFullScreen: boolean
+}
+
+export interface GoogleAuthStatus {
+  connected: boolean
+  email?: string
+  lastSyncAt?: string
+  /** False when OS-level secret encryption is unavailable (e.g. no keyring). */
+  encryptionAvailable: boolean
+}
+
+export interface GoogleSyncSummary {
+  upserted: number
+  deleted: number
+  skipped: number
 }

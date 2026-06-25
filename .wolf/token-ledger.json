@@ -2,14 +2,14 @@
   "version": 1,
   "created_at": "2026-04-18T19:20:23.576Z",
   "lifetime": {
-    "total_tokens_estimated": 1197197,
-    "total_reads": 526,
-    "total_writes": 912,
-    "total_sessions": 66,
-    "anatomy_hits": 474,
+    "total_tokens_estimated": 1320729,
+    "total_reads": 579,
+    "total_writes": 1112,
+    "total_sessions": 69,
+    "anatomy_hits": 526,
     "anatomy_misses": 52,
-    "repeated_reads_blocked": 192,
-    "estimated_savings_vs_bare_cli": 796502
+    "repeated_reads_blocked": 230,
+    "estimated_savings_vs_bare_cli": 863212
   },
   "sessions": [
     {
@@ -9178,6 +9178,1358 @@
         "writes_count": 0,
         "repeated_reads_blocked": 0,
         "anatomy_lookups": 1
+      }
+    },
+    {
+      "id": "session-2026-05-22-1336",
+      "started": "2026-05-22T11:36:12.216Z",
+      "ended": "2026-05-22T11:40:58.995Z",
+      "reads": [
+        {
+          "file": "/home/fenta/Projects/SwagTodo/src/renderer/src/App.tsx",
+          "tokens_estimated": 2234,
+          "was_repeated": false,
+          "anatomy_had_description": false
+        },
+        {
+          "file": "/home/fenta/Projects/SwagTodo/electron-builder.yml",
+          "tokens_estimated": 419,
+          "was_repeated": false,
+          "anatomy_had_description": false
+        }
+      ],
+      "writes": [
+        {
+          "file": "/home/fenta/Projects/SwagTodo/src/main/index.ts",
+          "tokens_estimated": 30,
+          "action": "edit"
+        },
+        {
+          "file": "/home/fenta/Projects/SwagTodo/src/main/index.ts",
+          "tokens_estimated": 67,
+          "action": "edit"
+        },
+        {
+          "file": "/home/fenta/Projects/SwagTodo/src/main/index.ts",
+          "tokens_estimated": 72,
+          "action": "edit"
+        },
+        {
+          "file": "/home/fenta/Projects/SwagTodo/src/main/index.ts",
+          "tokens_estimated": 15,
+          "action": "edit"
+        },
+        {
+          "file": "/home/fenta/Projects/SwagTodo/electron-builder.yml",
+          "tokens_estimated": 7,
+          "action": "edit"
+        },
+        {
+          "file": "/home/fenta/Projects/SwagTodo/src/renderer/src/App.tsx",
+          "tokens_estimated": 38,
+          "action": "edit"
+        },
+        {
+          "file": "/home/fenta/Projects/SwagTodo/src/renderer/src/App.tsx",
+          "tokens_estimated": 32,
+          "action": "edit"
+        }
+      ],
+      "totals": {
+        "input_tokens_estimated": 2653,
+        "output_tokens_estimated": 261,
+        "reads_count": 2,
+        "writes_count": 7,
+        "repeated_reads_blocked": 0,
+        "anatomy_lookups": 2
+      }
+    },
+    {
+      "id": "session-2026-06-08-1402",
+      "started": "2026-06-08T12:02:24.496Z",
+      "ended": "2026-06-08T13:01:53.923Z",
+      "reads": [
+        {
+          "file": "/home/fenta/Projects/SwagTodo/src/renderer/src/components/sessions-calendar/types.ts",
+          "tokens_estimated": 1061,
+          "was_repeated": true,
+          "anatomy_had_description": false
+        },
+        {
+          "file": "/home/fenta/Projects/SwagTodo/src/renderer/src/components/sessions-calendar/SessionsCalendar.tsx",
+          "tokens_estimated": 3743,
+          "was_repeated": true,
+          "anatomy_had_description": false
+        },
+        {
+          "file": "/home/fenta/Projects/SwagTodo/src/renderer/src/components/sessions-calendar/CalendarHeader.tsx",
+          "tokens_estimated": 380,
+          "was_repeated": true,
+          "anatomy_had_description": false
+        },
+        {
+          "file": "/home/fenta/Projects/SwagTodo/src/renderer/src/components/sessions-calendar/TimeBlockView.tsx",
+          "tokens_estimated": 588,
+          "was_repeated": true,
+          "anatomy_had_description": false
+        },
+        {
+          "file": "/home/fenta/Projects/SwagTodo/src/renderer/src/components/sessions-calendar/SessionBlockView.tsx",
+          "tokens_estimated": 681,
+          "was_repeated": true,
+          "anatomy_had_description": false
+        },
+        {
+          "file": "/home/fenta/Projects/SwagTodo/src/renderer/src/components/sessions-calendar/DraftGhost.tsx",
+          "tokens_estimated": 216,
+          "was_repeated": false,
+          "anatomy_had_description": false
+        },
+        {
+          "file": "/home/fenta/Projects/SwagTodo/src/main/storage/sqlite/schema.ts",
+          "tokens_estimated": 646,
+          "was_repeated": true,
+          "anatomy_had_description": false
+        },
+        {
+          "file": "/home/fenta/Projects/SwagTodo/src/main/storage/sqlite/types.ts",
+          "tokens_estimated": 640,
+          "was_repeated": true,
+          "anatomy_had_description": false
+        },
+        {
+          "file": "/home/fenta/Projects/SwagTodo/package.json",
+          "tokens_estimated": 849,
+          "was_repeated": false,
+          "anatomy_had_description": false
+        },
+        {
+          "file": "/home/fenta/Projects/SwagTodo/src/renderer/src/components/sessions-calendar/useCalendarDrag.ts",
+          "tokens_estimated": 2746,
+          "was_repeated": false,
+          "anatomy_had_description": false
+        },
+        {
+          "file": "/home/fenta/Projects/SwagTodo/src/shared/types.ts",
+          "tokens_estimated": 495,
+          "was_repeated": true,
+          "anatomy_had_description": false
+        },
+        {
+          "file": "/home/fenta/Projects/SwagTodo/src/main/storage/sqlite/serialize.ts",
+          "tokens_estimated": 3224,
+          "was_repeated": true,
+          "anatomy_had_description": false
+        },
+        {
+          "file": "/home/fenta/Projects/SwagTodo/src/main/storage/sqlite/storage.ts",
+          "tokens_estimated": 3808,
+          "was_repeated": true,
+          "anatomy_had_description": false
+        },
+        {
+          "file": "/home/fenta/Projects/SwagTodo/src/renderer/src/store/domain/actions/sessions.ts",
+          "tokens_estimated": 1048,
+          "was_repeated": true,
+          "anatomy_had_description": false
+        },
+        {
+          "file": "/home/fenta/Projects/SwagTodo/src/main/ipcHandlers.ts",
+          "tokens_estimated": 933,
+          "was_repeated": true,
+          "anatomy_had_description": false
+        },
+        {
+          "file": "/home/fenta/Projects/SwagTodo/src/renderer/src/utils/calendar.ts",
+          "tokens_estimated": 362,
+          "was_repeated": true,
+          "anatomy_had_description": false
+        },
+        {
+          "file": "/home/fenta/Projects/SwagTodo/src/renderer/src/pages/SessionsPage.tsx",
+          "tokens_estimated": 2823,
+          "was_repeated": true,
+          "anatomy_had_description": false
+        },
+        {
+          "file": "/home/fenta/Projects/SwagTodo/src/preload/index.ts",
+          "tokens_estimated": 471,
+          "was_repeated": true,
+          "anatomy_had_description": false
+        },
+        {
+          "file": "/home/fenta/Projects/SwagTodo/src/preload/index.d.ts",
+          "tokens_estimated": 222,
+          "was_repeated": true,
+          "anatomy_had_description": false
+        },
+        {
+          "file": "/home/fenta/Projects/SwagTodo/src/main/index.ts",
+          "tokens_estimated": 1450,
+          "was_repeated": true,
+          "anatomy_had_description": false
+        },
+        {
+          "file": "/home/fenta/Projects/SwagTodo/src/renderer/src/pages/sessions/SessionsToolbar.tsx",
+          "tokens_estimated": 580,
+          "was_repeated": true,
+          "anatomy_had_description": false
+        },
+        {
+          "file": "/home/fenta/Projects/SwagTodo/src/renderer/src/pages/sessions/TaskPickerDialog.tsx",
+          "tokens_estimated": 1235,
+          "was_repeated": true,
+          "anatomy_had_description": false
+        },
+        {
+          "file": "/home/fenta/Projects/SwagTodo/src/renderer/src/pages/sessions/GhostBlockDialog.tsx",
+          "tokens_estimated": 931,
+          "was_repeated": true,
+          "anatomy_had_description": false
+        },
+        {
+          "file": "/home/fenta/Projects/SwagTodo/src/renderer/src/pages/sessions/useSessionsKeyboard.ts",
+          "tokens_estimated": 447,
+          "was_repeated": true,
+          "anatomy_had_description": false
+        },
+        {
+          "file": "/home/fenta/Projects/SwagTodo/src/renderer/src/store/domain/persist.ts",
+          "tokens_estimated": 1614,
+          "was_repeated": true,
+          "anatomy_had_description": false
+        },
+        {
+          "file": "/home/fenta/Projects/SwagTodo/src/renderer/src/store/domain/domainStore.ts",
+          "tokens_estimated": 406,
+          "was_repeated": true,
+          "anatomy_had_description": false
+        },
+        {
+          "file": "/home/fenta/Projects/SwagTodo/src/renderer/src/store/index.ts",
+          "tokens_estimated": 174,
+          "was_repeated": true,
+          "anatomy_had_description": false
+        },
+        {
+          "file": "/home/fenta/Projects/SwagTodo/src/renderer/src/store/shared/types.ts",
+          "tokens_estimated": 1716,
+          "was_repeated": true,
+          "anatomy_had_description": false
+        },
+        {
+          "file": "/home/fenta/Projects/SwagTodo/src/renderer/src/utils/sessions.ts",
+          "tokens_estimated": 438,
+          "was_repeated": true,
+          "anatomy_had_description": false
+        },
+        {
+          "file": "/home/fenta/Projects/SwagTodo/src/renderer/src/store/bootstrap.ts",
+          "tokens_estimated": 143,
+          "was_repeated": true,
+          "anatomy_had_description": false
+        },
+        {
+          "file": "/home/fenta/Projects/SwagTodo/src/main/storage/appState.ts",
+          "tokens_estimated": 1591,
+          "was_repeated": true,
+          "anatomy_had_description": false
+        },
+        {
+          "file": "/home/fenta/Projects/SwagTodo/src/renderer/src/components/sessions-calendar/index.tsx",
+          "tokens_estimated": 57,
+          "was_repeated": false,
+          "anatomy_had_description": false
+        },
+        {
+          "file": "/home/fenta/Projects/SwagTodo/src/renderer/src/utils/pharmacokinetics.test.ts",
+          "tokens_estimated": 633,
+          "was_repeated": false,
+          "anatomy_had_description": false
+        },
+        {
+          "file": "/home/fenta/Projects/SwagTodo/src/shared/stateSchema.ts",
+          "tokens_estimated": 1128,
+          "was_repeated": false,
+          "anatomy_had_description": false
+        },
+        {
+          "file": "/home/fenta/Projects/SwagTodo/src/renderer/src/store/domain/state.ts",
+          "tokens_estimated": 130,
+          "was_repeated": false,
+          "anatomy_had_description": false
+        },
+        {
+          "file": "/home/fenta/Projects/SwagTodo/src/renderer/src/store/shared/utils.ts",
+          "tokens_estimated": 635,
+          "was_repeated": false,
+          "anatomy_had_description": false
+        },
+        {
+          "file": "/home/fenta/Projects/SwagTodo/src/renderer/src/types/index.ts",
+          "tokens_estimated": 4740,
+          "was_repeated": false,
+          "anatomy_had_description": false
+        },
+        {
+          "file": "/home/fenta/Projects/SwagTodo/src/main/tests/sqlite.test.ts",
+          "tokens_estimated": 2274,
+          "was_repeated": false,
+          "anatomy_had_description": false
+        },
+        {
+          "file": "/home/fenta/Projects/SwagTodo/src/renderer/src/store/tests/domain-store.test.ts",
+          "tokens_estimated": 3590,
+          "was_repeated": true,
+          "anatomy_had_description": false
+        },
+        {
+          "file": "/home/fenta/Projects/SwagTodo/src/renderer/src/store/tests/persist.test.ts",
+          "tokens_estimated": 2814,
+          "was_repeated": false,
+          "anatomy_had_description": false
+        },
+        {
+          "file": "/home/fenta/Projects/SwagTodo/src/renderer/src/utils/task.ts",
+          "tokens_estimated": 412,
+          "was_repeated": false,
+          "anatomy_had_description": false
+        },
+        {
+          "file": "/home/fenta/Projects/SwagTodo/src/renderer/src/components/sessions-calendar/AgendaView.tsx",
+          "tokens_estimated": 1060,
+          "was_repeated": false,
+          "anatomy_had_description": false
+        },
+        {
+          "file": "/home/fenta/Projects/SwagTodo/src/renderer/src/components/sessions-calendar/MonthView.tsx",
+          "tokens_estimated": 1110,
+          "was_repeated": false,
+          "anatomy_had_description": false
+        },
+        {
+          "file": "/home/fenta/Projects/SwagTodo/src/main/tests/ipcHandlers.test.ts",
+          "tokens_estimated": 1091,
+          "was_repeated": false,
+          "anatomy_had_description": false
+        },
+        {
+          "file": "/home/fenta/Projects/SwagTodo/src/renderer/src/pages/SettingsPage.tsx",
+          "tokens_estimated": 372,
+          "was_repeated": false,
+          "anatomy_had_description": false
+        },
+        {
+          "file": "/home/fenta/Projects/SwagTodo/src/renderer/src/components/settings/index.tsx",
+          "tokens_estimated": 42,
+          "was_repeated": false,
+          "anatomy_had_description": false
+        },
+        {
+          "file": "/home/fenta/Projects/SwagTodo/src/renderer/src/components/settings/ThemeSection.tsx",
+          "tokens_estimated": 894,
+          "was_repeated": false,
+          "anatomy_had_description": false
+        },
+        {
+          "file": "/home/fenta/Projects/SwagTodo/src/main/google/syncEngine.ts",
+          "tokens_estimated": 1894,
+          "was_repeated": true,
+          "anatomy_had_description": false
+        },
+        {
+          "file": "/home/fenta/Projects/SwagTodo/src/renderer/src/main.tsx",
+          "tokens_estimated": 192,
+          "was_repeated": false,
+          "anatomy_had_description": false
+        },
+        {
+          "file": "/home/fenta/Projects/SwagTodo/src/renderer/src/App.tsx",
+          "tokens_estimated": 2189,
+          "was_repeated": false,
+          "anatomy_had_description": false
+        },
+        {
+          "file": "/home/fenta/Projects/SwagTodo/src/renderer/src/store/domain/actions/calendarEvents.ts",
+          "tokens_estimated": 881,
+          "was_repeated": false,
+          "anatomy_had_description": false
+        }
+      ],
+      "writes": [
+        {
+          "file": "/home/fenta/.claude/plans/przeanalizuj-obecna-implementacje-kalend-noble-horizon.md",
+          "tokens_estimated": 5645,
+          "action": "create"
+        },
+        {
+          "file": "/home/fenta/Projects/SwagTodo/src/renderer/src/utils/overlapLayout.ts",
+          "tokens_estimated": 575,
+          "action": "create"
+        },
+        {
+          "file": "/home/fenta/Projects/SwagTodo/src/renderer/src/utils/overlapLayout.test.ts",
+          "tokens_estimated": 666,
+          "action": "create"
+        },
+        {
+          "file": "/home/fenta/Projects/SwagTodo/src/renderer/src/components/sessions-calendar/SessionBlockView.tsx",
+          "tokens_estimated": 352,
+          "action": "edit"
+        },
+        {
+          "file": "/home/fenta/Projects/SwagTodo/src/renderer/src/components/sessions-calendar/types.ts",
+          "tokens_estimated": 186,
+          "action": "edit"
+        },
+        {
+          "file": "/home/fenta/Projects/SwagTodo/src/renderer/src/components/sessions-calendar/SessionBlockView.tsx",
+          "tokens_estimated": 39,
+          "action": "edit"
+        },
+        {
+          "file": "/home/fenta/Projects/SwagTodo/src/renderer/src/components/sessions-calendar/TimeBlockView.tsx",
+          "tokens_estimated": 321,
+          "action": "edit"
+        },
+        {
+          "file": "/home/fenta/Projects/SwagTodo/src/renderer/src/components/sessions-calendar/SessionsCalendar.tsx",
+          "tokens_estimated": 93,
+          "action": "edit"
+        },
+        {
+          "file": "/home/fenta/Projects/SwagTodo/src/renderer/src/components/sessions-calendar/SessionsCalendar.tsx",
+          "tokens_estimated": 420,
+          "action": "edit"
+        },
+        {
+          "file": "/home/fenta/Projects/SwagTodo/src/renderer/src/components/sessions-calendar/SessionsCalendar.tsx",
+          "tokens_estimated": 64,
+          "action": "edit"
+        },
+        {
+          "file": "/home/fenta/Projects/SwagTodo/src/renderer/src/components/sessions-calendar/SessionsCalendar.tsx",
+          "tokens_estimated": 222,
+          "action": "edit"
+        },
+        {
+          "file": "/home/fenta/Projects/SwagTodo/src/renderer/src/components/sessions-calendar/SessionsCalendar.tsx",
+          "tokens_estimated": 215,
+          "action": "edit"
+        },
+        {
+          "file": "/home/fenta/Projects/SwagTodo/src/renderer/src/pages/sessions/SessionsToolbar.tsx",
+          "tokens_estimated": 780,
+          "action": "create"
+        },
+        {
+          "file": "/home/fenta/Projects/SwagTodo/src/renderer/src/utils/calendar.ts",
+          "tokens_estimated": 112,
+          "action": "edit"
+        },
+        {
+          "file": "/home/fenta/Projects/SwagTodo/src/renderer/src/pages/sessions/useSessionsKeyboard.ts",
+          "tokens_estimated": 585,
+          "action": "create"
+        },
+        {
+          "file": "/home/fenta/Projects/SwagTodo/src/renderer/src/utils/calendarItems.ts",
+          "tokens_estimated": 612,
+          "action": "create"
+        },
+        {
+          "file": "/home/fenta/Projects/SwagTodo/src/renderer/src/components/sessions-calendar/AgendaView.tsx",
+          "tokens_estimated": 1060,
+          "action": "create"
+        },
+        {
+          "file": "/home/fenta/Projects/SwagTodo/src/renderer/src/components/sessions-calendar/MonthView.tsx",
+          "tokens_estimated": 1110,
+          "action": "create"
+        },
+        {
+          "file": "/home/fenta/Projects/SwagTodo/src/renderer/src/components/sessions-calendar/AllDayLane.tsx",
+          "tokens_estimated": 550,
+          "action": "create"
+        },
+        {
+          "file": "/home/fenta/Projects/SwagTodo/src/renderer/src/components/sessions-calendar/SessionsCalendar.tsx",
+          "tokens_estimated": 63,
+          "action": "edit"
+        },
+        {
+          "file": "/home/fenta/Projects/SwagTodo/src/renderer/src/components/sessions-calendar/SessionsCalendar.tsx",
+          "tokens_estimated": 41,
+          "action": "edit"
+        },
+        {
+          "file": "/home/fenta/Projects/SwagTodo/src/renderer/src/components/sessions-calendar/index.tsx",
+          "tokens_estimated": 92,
+          "action": "create"
+        },
+        {
+          "file": "/home/fenta/Projects/SwagTodo/src/renderer/src/pages/SessionsPage.tsx",
+          "tokens_estimated": 240,
+          "action": "edit"
+        },
+        {
+          "file": "/home/fenta/Projects/SwagTodo/src/renderer/src/pages/SessionsPage.tsx",
+          "tokens_estimated": 42,
+          "action": "edit"
+        },
+        {
+          "file": "/home/fenta/Projects/SwagTodo/src/renderer/src/pages/SessionsPage.tsx",
+          "tokens_estimated": 88,
+          "action": "edit"
+        },
+        {
+          "file": "/home/fenta/Projects/SwagTodo/src/renderer/src/pages/SessionsPage.tsx",
+          "tokens_estimated": 600,
+          "action": "edit"
+        },
+        {
+          "file": "/home/fenta/Projects/SwagTodo/src/renderer/src/pages/SessionsPage.tsx",
+          "tokens_estimated": 51,
+          "action": "edit"
+        },
+        {
+          "file": "/home/fenta/Projects/SwagTodo/src/renderer/src/pages/SessionsPage.tsx",
+          "tokens_estimated": 302,
+          "action": "edit"
+        },
+        {
+          "file": "/home/fenta/Projects/SwagTodo/src/renderer/src/pages/sessions/useSessionsKeyboard.ts",
+          "tokens_estimated": 187,
+          "action": "edit"
+        },
+        {
+          "file": "/home/fenta/Projects/SwagTodo/src/shared/types.ts",
+          "tokens_estimated": 266,
+          "action": "edit"
+        },
+        {
+          "file": "/home/fenta/Projects/SwagTodo/src/shared/types.ts",
+          "tokens_estimated": 34,
+          "action": "edit"
+        },
+        {
+          "file": "/home/fenta/Projects/SwagTodo/src/shared/stateSchema.ts",
+          "tokens_estimated": 280,
+          "action": "edit"
+        },
+        {
+          "file": "/home/fenta/Projects/SwagTodo/src/main/storage/appState.ts",
+          "tokens_estimated": 55,
+          "action": "edit"
+        },
+        {
+          "file": "/home/fenta/Projects/SwagTodo/src/main/storage/appState.ts",
+          "tokens_estimated": 131,
+          "action": "edit"
+        },
+        {
+          "file": "/home/fenta/Projects/SwagTodo/src/main/storage/appState.ts",
+          "tokens_estimated": 61,
+          "action": "edit"
+        },
+        {
+          "file": "/home/fenta/Projects/SwagTodo/src/main/storage/appState.ts",
+          "tokens_estimated": 53,
+          "action": "edit"
+        },
+        {
+          "file": "/home/fenta/Projects/SwagTodo/src/main/storage/appState.ts",
+          "tokens_estimated": 76,
+          "action": "edit"
+        },
+        {
+          "file": "/home/fenta/Projects/SwagTodo/src/main/storage/appState.ts",
+          "tokens_estimated": 86,
+          "action": "edit"
+        },
+        {
+          "file": "/home/fenta/Projects/SwagTodo/src/main/storage/sqlite/types.ts",
+          "tokens_estimated": 144,
+          "action": "edit"
+        },
+        {
+          "file": "/home/fenta/Projects/SwagTodo/src/main/storage/sqlite/types.ts",
+          "tokens_estimated": 59,
+          "action": "edit"
+        },
+        {
+          "file": "/home/fenta/Projects/SwagTodo/src/main/storage/sqlite/types.ts",
+          "tokens_estimated": 30,
+          "action": "edit"
+        },
+        {
+          "file": "/home/fenta/Projects/SwagTodo/src/main/storage/sqlite/schema.ts",
+          "tokens_estimated": 140,
+          "action": "edit"
+        },
+        {
+          "file": "/home/fenta/Projects/SwagTodo/src/main/storage/sqlite/schema.ts",
+          "tokens_estimated": 86,
+          "action": "edit"
+        },
+        {
+          "file": "/home/fenta/Projects/SwagTodo/src/main/storage/sqlite/serialize.ts",
+          "tokens_estimated": 30,
+          "action": "edit"
+        },
+        {
+          "file": "/home/fenta/Projects/SwagTodo/src/main/storage/sqlite/serialize.ts",
+          "tokens_estimated": 246,
+          "action": "edit"
+        },
+        {
+          "file": "/home/fenta/Projects/SwagTodo/src/main/storage/sqlite/serialize.ts",
+          "tokens_estimated": 338,
+          "action": "edit"
+        },
+        {
+          "file": "/home/fenta/Projects/SwagTodo/src/main/storage/sqlite/storage.ts",
+          "tokens_estimated": 30,
+          "action": "edit"
+        },
+        {
+          "file": "/home/fenta/Projects/SwagTodo/src/main/storage/sqlite/storage.ts",
+          "tokens_estimated": 79,
+          "action": "edit"
+        },
+        {
+          "file": "/home/fenta/Projects/SwagTodo/src/main/storage/sqlite/storage.ts",
+          "tokens_estimated": 368,
+          "action": "edit"
+        },
+        {
+          "file": "/home/fenta/Projects/SwagTodo/src/main/storage/sqlite/storage.ts",
+          "tokens_estimated": 246,
+          "action": "edit"
+        },
+        {
+          "file": "/home/fenta/Projects/SwagTodo/src/main/storage/sqlite/storage.ts",
+          "tokens_estimated": 123,
+          "action": "edit"
+        },
+        {
+          "file": "/home/fenta/Projects/SwagTodo/src/main/tests/sqlite.test.ts",
+          "tokens_estimated": 30,
+          "action": "edit"
+        },
+        {
+          "file": "/home/fenta/Projects/SwagTodo/src/main/tests/sqlite.test.ts",
+          "tokens_estimated": 277,
+          "action": "edit"
+        },
+        {
+          "file": "/home/fenta/Projects/SwagTodo/src/main/tests/sqlite.test.ts",
+          "tokens_estimated": 21,
+          "action": "edit"
+        },
+        {
+          "file": "/home/fenta/Projects/SwagTodo/src/main/tests/sqlite.test.ts",
+          "tokens_estimated": 287,
+          "action": "edit"
+        },
+        {
+          "file": "/home/fenta/Projects/SwagTodo/src/main/tests/sqlite.test.ts",
+          "tokens_estimated": 79,
+          "action": "edit"
+        },
+        {
+          "file": "/home/fenta/Projects/SwagTodo/src/main/tests/sqlite.test.ts",
+          "tokens_estimated": 132,
+          "action": "edit"
+        },
+        {
+          "file": "/home/fenta/Projects/SwagTodo/src/main/storage/sqlite/serialize.ts",
+          "tokens_estimated": 172,
+          "action": "edit"
+        },
+        {
+          "file": "/home/fenta/Projects/SwagTodo/src/main/storage/sqlite/serialize.ts",
+          "tokens_estimated": 25,
+          "action": "edit"
+        },
+        {
+          "file": "/home/fenta/Projects/SwagTodo/src/main/storage/sqlite/serialize.ts",
+          "tokens_estimated": 267,
+          "action": "edit"
+        },
+        {
+          "file": "/home/fenta/Projects/SwagTodo/src/main/storage/sqlite/storage.ts",
+          "tokens_estimated": 29,
+          "action": "edit"
+        },
+        {
+          "file": "/home/fenta/Projects/SwagTodo/src/main/storage/sqlite/storage.ts",
+          "tokens_estimated": 298,
+          "action": "edit"
+        },
+        {
+          "file": "/home/fenta/Projects/SwagTodo/src/renderer/src/store/shared/types.ts",
+          "tokens_estimated": 21,
+          "action": "edit"
+        },
+        {
+          "file": "/home/fenta/Projects/SwagTodo/src/renderer/src/types/index.ts",
+          "tokens_estimated": 146,
+          "action": "edit"
+        },
+        {
+          "file": "/home/fenta/Projects/SwagTodo/src/renderer/src/store/shared/types.ts",
+          "tokens_estimated": 216,
+          "action": "edit"
+        },
+        {
+          "file": "/home/fenta/Projects/SwagTodo/src/renderer/src/store/shared/types.ts",
+          "tokens_estimated": 48,
+          "action": "edit"
+        },
+        {
+          "file": "/home/fenta/Projects/SwagTodo/src/renderer/src/store/shared/types.ts",
+          "tokens_estimated": 88,
+          "action": "edit"
+        },
+        {
+          "file": "/home/fenta/Projects/SwagTodo/src/renderer/src/store/shared/types.ts",
+          "tokens_estimated": 25,
+          "action": "edit"
+        },
+        {
+          "file": "/home/fenta/Projects/SwagTodo/src/renderer/src/store/domain/state.ts",
+          "tokens_estimated": 22,
+          "action": "edit"
+        },
+        {
+          "file": "/home/fenta/Projects/SwagTodo/src/renderer/src/store/domain/persist.ts",
+          "tokens_estimated": 50,
+          "action": "edit"
+        },
+        {
+          "file": "/home/fenta/Projects/SwagTodo/src/renderer/src/store/domain/persist.ts",
+          "tokens_estimated": 61,
+          "action": "edit"
+        },
+        {
+          "file": "/home/fenta/Projects/SwagTodo/src/renderer/src/store/domain/persist.ts",
+          "tokens_estimated": 55,
+          "action": "edit"
+        },
+        {
+          "file": "/home/fenta/Projects/SwagTodo/src/renderer/src/store/domain/persist.ts",
+          "tokens_estimated": 109,
+          "action": "edit"
+        },
+        {
+          "file": "/home/fenta/Projects/SwagTodo/src/renderer/src/store/domain/actions/calendarEvents.ts",
+          "tokens_estimated": 881,
+          "action": "create"
+        },
+        {
+          "file": "/home/fenta/Projects/SwagTodo/src/renderer/src/store/domain/domainStore.ts",
+          "tokens_estimated": 51,
+          "action": "edit"
+        },
+        {
+          "file": "/home/fenta/Projects/SwagTodo/src/renderer/src/store/domain/domainStore.ts",
+          "tokens_estimated": 37,
+          "action": "edit"
+        },
+        {
+          "file": "/home/fenta/Projects/SwagTodo/src/renderer/src/store/tests/domain-store.test.ts",
+          "tokens_estimated": 71,
+          "action": "edit"
+        },
+        {
+          "file": "/home/fenta/Projects/SwagTodo/src/renderer/src/store/tests/domain-store.test.ts",
+          "tokens_estimated": 37,
+          "action": "edit"
+        },
+        {
+          "file": "/home/fenta/Projects/SwagTodo/src/renderer/src/store/tests/persist.test.ts",
+          "tokens_estimated": 72,
+          "action": "edit"
+        },
+        {
+          "file": "/home/fenta/Projects/SwagTodo/src/renderer/src/utils/recurrence.ts",
+          "tokens_estimated": 691,
+          "action": "create"
+        },
+        {
+          "file": "/home/fenta/Projects/SwagTodo/src/renderer/src/utils/recurrence.test.ts",
+          "tokens_estimated": 789,
+          "action": "create"
+        },
+        {
+          "file": "/home/fenta/Projects/SwagTodo/src/renderer/src/utils/recurrence.test.ts",
+          "tokens_estimated": 14,
+          "action": "edit"
+        },
+        {
+          "file": "/home/fenta/Projects/SwagTodo/src/renderer/src/components/sessions-calendar/types.ts",
+          "tokens_estimated": 42,
+          "action": "edit"
+        },
+        {
+          "file": "/home/fenta/Projects/SwagTodo/src/renderer/src/components/sessions-calendar/types.ts",
+          "tokens_estimated": 99,
+          "action": "edit"
+        },
+        {
+          "file": "/home/fenta/Projects/SwagTodo/src/renderer/src/components/sessions-calendar/types.ts",
+          "tokens_estimated": 761,
+          "action": "edit"
+        },
+        {
+          "file": "/home/fenta/Projects/SwagTodo/src/renderer/src/components/sessions-calendar/EventBlockView.tsx",
+          "tokens_estimated": 628,
+          "action": "create"
+        },
+        {
+          "file": "/home/fenta/Projects/SwagTodo/src/renderer/src/components/sessions-calendar/AllDayLane.tsx",
+          "tokens_estimated": 770,
+          "action": "create"
+        },
+        {
+          "file": "/home/fenta/Projects/SwagTodo/src/renderer/src/components/sessions-calendar/SessionsCalendar.tsx",
+          "tokens_estimated": 289,
+          "action": "edit"
+        },
+        {
+          "file": "/home/fenta/Projects/SwagTodo/src/renderer/src/components/sessions-calendar/SessionsCalendar.tsx",
+          "tokens_estimated": 172,
+          "action": "edit"
+        },
+        {
+          "file": "/home/fenta/Projects/SwagTodo/src/renderer/src/components/sessions-calendar/SessionsCalendar.tsx",
+          "tokens_estimated": 72,
+          "action": "edit"
+        },
+        {
+          "file": "/home/fenta/Projects/SwagTodo/src/renderer/src/components/sessions-calendar/SessionsCalendar.tsx",
+          "tokens_estimated": 298,
+          "action": "edit"
+        },
+        {
+          "file": "/home/fenta/Projects/SwagTodo/src/renderer/src/components/sessions-calendar/SessionsCalendar.tsx",
+          "tokens_estimated": 264,
+          "action": "edit"
+        },
+        {
+          "file": "/home/fenta/Projects/SwagTodo/src/renderer/src/components/sessions-calendar/SessionsCalendar.tsx",
+          "tokens_estimated": 48,
+          "action": "edit"
+        },
+        {
+          "file": "/home/fenta/Projects/SwagTodo/src/renderer/src/components/sessions-calendar/SessionsCalendar.tsx",
+          "tokens_estimated": 84,
+          "action": "edit"
+        },
+        {
+          "file": "/home/fenta/Projects/SwagTodo/src/renderer/src/components/sessions-calendar/SessionsCalendar.tsx",
+          "tokens_estimated": 242,
+          "action": "edit"
+        },
+        {
+          "file": "/home/fenta/Projects/SwagTodo/src/renderer/src/components/sessions-calendar/index.tsx",
+          "tokens_estimated": 38,
+          "action": "edit"
+        },
+        {
+          "file": "/home/fenta/Projects/SwagTodo/src/renderer/src/pages/sessions/EventEditorDialog.tsx",
+          "tokens_estimated": 2049,
+          "action": "create"
+        },
+        {
+          "file": "/home/fenta/Projects/SwagTodo/src/renderer/src/utils/calendarItems.ts",
+          "tokens_estimated": 199,
+          "action": "edit"
+        },
+        {
+          "file": "/home/fenta/Projects/SwagTodo/src/renderer/src/utils/calendarItems.ts",
+          "tokens_estimated": 64,
+          "action": "edit"
+        },
+        {
+          "file": "/home/fenta/Projects/SwagTodo/src/renderer/src/utils/calendarItems.ts",
+          "tokens_estimated": 214,
+          "action": "edit"
+        },
+        {
+          "file": "/home/fenta/Projects/SwagTodo/src/renderer/src/utils/calendarItems.ts",
+          "tokens_estimated": 169,
+          "action": "edit"
+        },
+        {
+          "file": "/home/fenta/Projects/SwagTodo/src/renderer/src/components/sessions-calendar/AgendaView.tsx",
+          "tokens_estimated": 61,
+          "action": "edit"
+        },
+        {
+          "file": "/home/fenta/Projects/SwagTodo/src/renderer/src/components/sessions-calendar/AgendaView.tsx",
+          "tokens_estimated": 28,
+          "action": "edit"
+        },
+        {
+          "file": "/home/fenta/Projects/SwagTodo/src/renderer/src/components/sessions-calendar/AgendaView.tsx",
+          "tokens_estimated": 146,
+          "action": "edit"
+        },
+        {
+          "file": "/home/fenta/Projects/SwagTodo/src/renderer/src/components/sessions-calendar/MonthView.tsx",
+          "tokens_estimated": 32,
+          "action": "edit"
+        },
+        {
+          "file": "/home/fenta/Projects/SwagTodo/src/renderer/src/components/sessions-calendar/MonthView.tsx",
+          "tokens_estimated": 32,
+          "action": "edit"
+        },
+        {
+          "file": "/home/fenta/Projects/SwagTodo/src/renderer/src/components/sessions-calendar/MonthView.tsx",
+          "tokens_estimated": 41,
+          "action": "edit"
+        },
+        {
+          "file": "/home/fenta/Projects/SwagTodo/src/renderer/src/pages/SessionsPage.tsx",
+          "tokens_estimated": 199,
+          "action": "edit"
+        },
+        {
+          "file": "/home/fenta/Projects/SwagTodo/src/renderer/src/pages/SessionsPage.tsx",
+          "tokens_estimated": 416,
+          "action": "edit"
+        },
+        {
+          "file": "/home/fenta/Projects/SwagTodo/src/renderer/src/pages/SessionsPage.tsx",
+          "tokens_estimated": 37,
+          "action": "edit"
+        },
+        {
+          "file": "/home/fenta/Projects/SwagTodo/src/renderer/src/pages/SessionsPage.tsx",
+          "tokens_estimated": 140,
+          "action": "edit"
+        },
+        {
+          "file": "/home/fenta/Projects/SwagTodo/src/renderer/src/pages/SessionsPage.tsx",
+          "tokens_estimated": 502,
+          "action": "edit"
+        },
+        {
+          "file": "/home/fenta/Projects/SwagTodo/src/renderer/src/pages/SessionsPage.tsx",
+          "tokens_estimated": 305,
+          "action": "edit"
+        },
+        {
+          "file": "/home/fenta/Projects/SwagTodo/src/renderer/src/pages/SessionsPage.tsx",
+          "tokens_estimated": 249,
+          "action": "edit"
+        },
+        {
+          "file": "/home/fenta/Projects/SwagTodo/src/renderer/src/pages/sessions/TaskPickerDialog.tsx",
+          "tokens_estimated": 34,
+          "action": "edit"
+        },
+        {
+          "file": "/home/fenta/Projects/SwagTodo/src/renderer/src/pages/sessions/TaskPickerDialog.tsx",
+          "tokens_estimated": 30,
+          "action": "edit"
+        },
+        {
+          "file": "/home/fenta/Projects/SwagTodo/src/renderer/src/pages/sessions/TaskPickerDialog.tsx",
+          "tokens_estimated": 177,
+          "action": "edit"
+        },
+        {
+          "file": "/home/fenta/Projects/SwagTodo/src/renderer/src/pages/SessionsPage.tsx",
+          "tokens_estimated": 59,
+          "action": "edit"
+        },
+        {
+          "file": "/home/fenta/Projects/SwagTodo/src/shared/types.ts",
+          "tokens_estimated": 110,
+          "action": "edit"
+        },
+        {
+          "file": "/home/fenta/Projects/SwagTodo/src/main/storage/sqlite/schema.ts",
+          "tokens_estimated": 111,
+          "action": "edit"
+        },
+        {
+          "file": "/home/fenta/Projects/SwagTodo/src/main/storage/sqlite/storage.ts",
+          "tokens_estimated": 56,
+          "action": "edit"
+        },
+        {
+          "file": "/home/fenta/Projects/SwagTodo/src/main/google/accountStore.ts",
+          "tokens_estimated": 817,
+          "action": "create"
+        },
+        {
+          "file": "/home/fenta/Projects/SwagTodo/src/main/google/client.ts",
+          "tokens_estimated": 991,
+          "action": "create"
+        },
+        {
+          "file": "/home/fenta/Projects/SwagTodo/src/main/google/oauth.ts",
+          "tokens_estimated": 1306,
+          "action": "create"
+        },
+        {
+          "file": "/home/fenta/Projects/SwagTodo/src/main/google/syncEngine.ts",
+          "tokens_estimated": 858,
+          "action": "create"
+        },
+        {
+          "file": "/home/fenta/Projects/SwagTodo/src/main/ipcHandlers.ts",
+          "tokens_estimated": 89,
+          "action": "edit"
+        },
+        {
+          "file": "/home/fenta/Projects/SwagTodo/src/main/ipcHandlers.ts",
+          "tokens_estimated": 96,
+          "action": "edit"
+        },
+        {
+          "file": "/home/fenta/Projects/SwagTodo/src/main/ipcHandlers.ts",
+          "tokens_estimated": 59,
+          "action": "edit"
+        },
+        {
+          "file": "/home/fenta/Projects/SwagTodo/src/main/ipcHandlers.ts",
+          "tokens_estimated": 40,
+          "action": "edit"
+        },
+        {
+          "file": "/home/fenta/Projects/SwagTodo/src/main/ipcHandlers.ts",
+          "tokens_estimated": 148,
+          "action": "edit"
+        },
+        {
+          "file": "/home/fenta/Projects/SwagTodo/src/main/index.ts",
+          "tokens_estimated": 59,
+          "action": "edit"
+        },
+        {
+          "file": "/home/fenta/Projects/SwagTodo/src/main/index.ts",
+          "tokens_estimated": 48,
+          "action": "edit"
+        },
+        {
+          "file": "/home/fenta/Projects/SwagTodo/src/main/index.ts",
+          "tokens_estimated": 106,
+          "action": "edit"
+        },
+        {
+          "file": "/home/fenta/Projects/SwagTodo/src/main/index.ts",
+          "tokens_estimated": 53,
+          "action": "edit"
+        },
+        {
+          "file": "/home/fenta/Projects/SwagTodo/src/preload/index.ts",
+          "tokens_estimated": 62,
+          "action": "edit"
+        },
+        {
+          "file": "/home/fenta/Projects/SwagTodo/src/preload/index.ts",
+          "tokens_estimated": 362,
+          "action": "edit"
+        },
+        {
+          "file": "/home/fenta/Projects/SwagTodo/src/preload/index.d.ts",
+          "tokens_estimated": 46,
+          "action": "edit"
+        },
+        {
+          "file": "/home/fenta/Projects/SwagTodo/src/preload/index.d.ts",
+          "tokens_estimated": 147,
+          "action": "edit"
+        },
+        {
+          "file": "/home/fenta/Projects/SwagTodo/src/main/tests/ipcHandlers.test.ts",
+          "tokens_estimated": 45,
+          "action": "edit"
+        },
+        {
+          "file": "/home/fenta/Projects/SwagTodo/src/main/tests/ipcHandlers.test.ts",
+          "tokens_estimated": 206,
+          "action": "edit"
+        },
+        {
+          "file": "/home/fenta/Projects/SwagTodo/src/main/tests/ipcHandlers.test.ts",
+          "tokens_estimated": 229,
+          "action": "edit"
+        },
+        {
+          "file": "/home/fenta/Projects/SwagTodo/src/renderer/src/components/settings/IntegrationsSection.tsx",
+          "tokens_estimated": 1304,
+          "action": "create"
+        },
+        {
+          "file": "/home/fenta/Projects/SwagTodo/src/renderer/src/components/settings/index.tsx",
+          "tokens_estimated": 58,
+          "action": "edit"
+        },
+        {
+          "file": "/home/fenta/Projects/SwagTodo/src/renderer/src/pages/SettingsPage.tsx",
+          "tokens_estimated": 70,
+          "action": "edit"
+        },
+        {
+          "file": "/home/fenta/Projects/SwagTodo/src/renderer/src/pages/SettingsPage.tsx",
+          "tokens_estimated": 88,
+          "action": "edit"
+        },
+        {
+          "file": "/home/fenta/Projects/SwagTodo/src/main/tests/google-oauth.test.ts",
+          "tokens_estimated": 884,
+          "action": "create"
+        },
+        {
+          "file": "/home/fenta/Projects/SwagTodo/src/renderer/src/types/index.ts",
+          "tokens_estimated": 152,
+          "action": "edit"
+        },
+        {
+          "file": "/home/fenta/Projects/SwagTodo/src/main/google/googleSchema.ts",
+          "tokens_estimated": 440,
+          "action": "create"
+        },
+        {
+          "file": "/home/fenta/Projects/SwagTodo/src/main/google/eventMapper.ts",
+          "tokens_estimated": 1681,
+          "action": "create"
+        },
+        {
+          "file": "/home/fenta/Projects/SwagTodo/src/main/tests/eventMapper.test.ts",
+          "tokens_estimated": 2139,
+          "action": "create"
+        },
+        {
+          "file": "/home/fenta/Projects/SwagTodo/src/main/google/client.ts",
+          "tokens_estimated": 528,
+          "action": "edit"
+        },
+        {
+          "file": "/home/fenta/Projects/SwagTodo/src/main/google/syncEngine.ts",
+          "tokens_estimated": 2365,
+          "action": "create"
+        },
+        {
+          "file": "/home/fenta/Projects/SwagTodo/src/main/index.ts",
+          "tokens_estimated": 107,
+          "action": "edit"
+        },
+        {
+          "file": "/home/fenta/Projects/SwagTodo/src/renderer/src/store/bootstrap.ts",
+          "tokens_estimated": 109,
+          "action": "edit"
+        },
+        {
+          "file": "/home/fenta/Projects/SwagTodo/src/renderer/src/store/index.ts",
+          "tokens_estimated": 29,
+          "action": "edit"
+        },
+        {
+          "file": "/home/fenta/Projects/SwagTodo/src/renderer/src/App.tsx",
+          "tokens_estimated": 23,
+          "action": "edit"
+        },
+        {
+          "file": "/home/fenta/Projects/SwagTodo/src/renderer/src/App.tsx",
+          "tokens_estimated": 99,
+          "action": "edit"
+        },
+        {
+          "file": "/home/fenta/Projects/SwagTodo/src/main/google/syncEngine.ts",
+          "tokens_estimated": 119,
+          "action": "edit"
+        },
+        {
+          "file": "/home/fenta/Projects/SwagTodo/src/main/google/syncEngine.ts",
+          "tokens_estimated": 746,
+          "action": "edit"
+        },
+        {
+          "file": "/home/fenta/Projects/SwagTodo/src/main/google/syncEngine.ts",
+          "tokens_estimated": 26,
+          "action": "edit"
+        },
+        {
+          "file": "/home/fenta/Projects/SwagTodo/src/main/google/syncEngine.ts",
+          "tokens_estimated": 40,
+          "action": "edit"
+        },
+        {
+          "file": "/home/fenta/Projects/SwagTodo/src/main/google/eventMapper.ts",
+          "tokens_estimated": 46,
+          "action": "edit"
+        },
+        {
+          "file": "/home/fenta/Projects/SwagTodo/src/main/google/eventMapper.ts",
+          "tokens_estimated": 706,
+          "action": "edit"
+        },
+        {
+          "file": "/home/fenta/Projects/SwagTodo/src/main/google/syncEngine.ts",
+          "tokens_estimated": 27,
+          "action": "edit"
+        },
+        {
+          "file": "/home/fenta/Projects/SwagTodo/src/main/tests/eventMapper.test.ts",
+          "tokens_estimated": 28,
+          "action": "edit"
+        },
+        {
+          "file": "/home/fenta/Projects/SwagTodo/src/main/tests/eventMapper.test.ts",
+          "tokens_estimated": 838,
+          "action": "edit"
+        },
+        {
+          "file": "/home/fenta/Projects/SwagTodo/src/main/google/client.ts",
+          "tokens_estimated": 867,
+          "action": "edit"
+        },
+        {
+          "file": "/home/fenta/Projects/SwagTodo/src/main/google/outboxStore.ts",
+          "tokens_estimated": 693,
+          "action": "create"
+        },
+        {
+          "file": "/home/fenta/Projects/SwagTodo/src/main/ipcHandlers.ts",
+          "tokens_estimated": 102,
+          "action": "edit"
+        },
+        {
+          "file": "/home/fenta/Projects/SwagTodo/src/main/ipcHandlers.ts",
+          "tokens_estimated": 154,
+          "action": "edit"
+        },
+        {
+          "file": "/home/fenta/Projects/SwagTodo/src/main/google/eventMapper.ts",
+          "tokens_estimated": 176,
+          "action": "edit"
+        },
+        {
+          "file": "/home/fenta/Projects/SwagTodo/src/main/google/eventMapper.ts",
+          "tokens_estimated": 179,
+          "action": "edit"
+        },
+        {
+          "file": "/home/fenta/Projects/SwagTodo/src/main/google/syncEngine.ts",
+          "tokens_estimated": 182,
+          "action": "edit"
+        },
+        {
+          "file": "/home/fenta/Projects/SwagTodo/src/main/google/syncEngine.ts",
+          "tokens_estimated": 200,
+          "action": "edit"
+        },
+        {
+          "file": "/home/fenta/Projects/SwagTodo/src/main/google/syncEngine.ts",
+          "tokens_estimated": 1430,
+          "action": "edit"
+        },
+        {
+          "file": "/home/fenta/Projects/SwagTodo/src/preload/index.ts",
+          "tokens_estimated": 90,
+          "action": "edit"
+        },
+        {
+          "file": "/home/fenta/Projects/SwagTodo/src/preload/index.d.ts",
+          "tokens_estimated": 98,
+          "action": "edit"
+        },
+        {
+          "file": "/home/fenta/Projects/SwagTodo/src/renderer/src/store/domain/actions/calendarEvents.ts",
+          "tokens_estimated": 141,
+          "action": "edit"
+        },
+        {
+          "file": "/home/fenta/Projects/SwagTodo/src/renderer/src/store/domain/actions/calendarEvents.ts",
+          "tokens_estimated": 48,
+          "action": "edit"
+        },
+        {
+          "file": "/home/fenta/Projects/SwagTodo/src/renderer/src/store/domain/actions/calendarEvents.ts",
+          "tokens_estimated": 141,
+          "action": "edit"
+        },
+        {
+          "file": "/home/fenta/Projects/SwagTodo/src/main/tests/ipcHandlers.test.ts",
+          "tokens_estimated": 58,
+          "action": "edit"
+        },
+        {
+          "file": "/home/fenta/Projects/SwagTodo/src/main/tests/ipcHandlers.test.ts",
+          "tokens_estimated": 54,
+          "action": "edit"
+        },
+        {
+          "file": "/home/fenta/Projects/SwagTodo/src/main/tests/ipcHandlers.test.ts",
+          "tokens_estimated": 153,
+          "action": "edit"
+        },
+        {
+          "file": "/home/fenta/Projects/SwagTodo/src/main/tests/eventMapper.test.ts",
+          "tokens_estimated": 39,
+          "action": "edit"
+        },
+        {
+          "file": "/home/fenta/Projects/SwagTodo/src/main/tests/eventMapper.test.ts",
+          "tokens_estimated": 451,
+          "action": "edit"
+        },
+        {
+          "file": "/home/fenta/Projects/SwagTodo/src/main/tests/outboxStore.test.ts",
+          "tokens_estimated": 555,
+          "action": "create"
+        },
+        {
+          "file": "/home/fenta/Projects/SwagTodo/src/main/google/outboxStore.ts",
+          "tokens_estimated": 383,
+          "action": "edit"
+        },
+        {
+          "file": "/home/fenta/Projects/SwagTodo/src/main/google/outboxStore.ts",
+          "tokens_estimated": 353,
+          "action": "edit"
+        },
+        {
+          "file": "/home/fenta/Projects/SwagTodo/src/main/tests/outboxStore.test.ts",
+          "tokens_estimated": 414,
+          "action": "create"
+        },
+        {
+          "file": "/home/fenta/Projects/SwagTodo/src/renderer/src/store/domain/actions/calendarEvents.ts",
+          "tokens_estimated": 52,
+          "action": "edit"
+        },
+        {
+          "file": "/home/fenta/.claude/projects/-home-fenta-Projects-SwagTodo/memory/sqlite-test-native-mismatch.md",
+          "tokens_estimated": 304,
+          "action": "create"
+        },
+        {
+          "file": "/home/fenta/.claude/projects/-home-fenta-Projects-SwagTodo/memory/google-sync-tz-mapping.md",
+          "tokens_estimated": 357,
+          "action": "create"
+        },
+        {
+          "file": "/home/fenta/.claude/projects/-home-fenta-Projects-SwagTodo/memory/MEMORY.md",
+          "tokens_estimated": 84,
+          "action": "create"
+        }
+      ],
+      "totals": {
+        "input_tokens_estimated": 61799,
+        "output_tokens_estimated": 58819,
+        "reads_count": 51,
+        "writes_count": 193,
+        "repeated_reads_blocked": 38,
+        "anatomy_lookups": 50
       }
     }
   ],

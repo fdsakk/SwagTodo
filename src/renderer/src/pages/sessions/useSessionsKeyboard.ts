@@ -1,19 +1,19 @@
-import { addDays, startOfDay } from "@renderer/utils/calendar"
+import { addDays, addMonths, startOfDay } from "@renderer/utils/calendar"
 import { useEffect } from "react"
-import { DAY_OPTIONS, type DayCount } from "./SessionsToolbar"
+import { DAY_OPTIONS, type DayCount, type ViewMode } from "./SessionsToolbar"
 
 interface Args {
-  dayCount: DayCount
+  mode: ViewMode
   blocked: boolean
   setAnchor: (updater: (current: Date) => Date) => void
-  setDayCount: (updater: (current: DayCount) => DayCount) => void
+  setMode: (updater: (current: ViewMode) => ViewMode) => void
 }
 
 export function useSessionsKeyboard({
-  dayCount,
+  mode,
   blocked,
   setAnchor,
-  setDayCount
+  setMode
 }: Args): void {
   useEffect(() => {
     const onKey = (e: KeyboardEvent): void => {
@@ -25,18 +25,26 @@ export function useSessionsKeyboard({
       }
       if (e.ctrlKey || e.metaKey || e.altKey) return
       if (blocked) return
+
+      // In days mode arrows step by the visible span; in month mode by a month;
+      // in agenda mode by a week.
+      const step = (dir: -1 | 1) => (d: Date) => {
+        if (mode.kind === "month") return addMonths(d, dir)
+        const span = mode.kind === "days" ? mode.count : 7
+        return addDays(d, dir * span)
+      }
+
       if (e.key === "[") {
         e.preventDefault()
-        setAnchor((current) => addDays(current, -dayCount))
+        setAnchor(step(-1))
       } else if (e.key === "]") {
         e.preventDefault()
-        setAnchor((current) => addDays(current, dayCount))
-      } else if (e.key.toLowerCase() === "d") {
+        setAnchor(step(1))
+      } else if (e.key.toLowerCase() === "d" && mode.kind === "days") {
         e.preventDefault()
-        setDayCount((current) => {
-          const idx = DAY_OPTIONS.indexOf(current)
-          return DAY_OPTIONS[(idx + 1) % DAY_OPTIONS.length] ?? current
-        })
+        const idx = DAY_OPTIONS.indexOf(mode.count)
+        const next = DAY_OPTIONS[(idx + 1) % DAY_OPTIONS.length] as DayCount
+        setMode(() => ({ kind: "days", count: next }))
       } else if (e.key.toLowerCase() === "g") {
         e.preventDefault()
         setAnchor(() => startOfDay(new Date()))
@@ -44,5 +52,5 @@ export function useSessionsKeyboard({
     }
     window.addEventListener("keydown", onKey)
     return () => window.removeEventListener("keydown", onKey)
-  }, [dayCount, blocked, setAnchor, setDayCount])
+  }, [mode, blocked, setAnchor, setMode])
 }

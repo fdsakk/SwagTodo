@@ -1,4 +1,5 @@
 import { CustomizeSection } from "@renderer/components/settings/CustomizeSection"
+import { IntegrationsSection } from "@renderer/components/settings/IntegrationsSection"
 import { ThemeSection } from "@renderer/components/settings/ThemeSection"
 import { useDomainStore } from "@renderer/store"
 import { useShallow } from "zustand/react/shallow"
@@ -40,6 +41,8 @@ export default function SettingsPage(): React.JSX.Element {
           onSetCustomTokens={setCustomTokens}
           onResetCustomTokens={resetCustomTokens}
         />
+        <div className="h-px bg-app-border" />
+        <IntegrationsSection />
       </div>
     </div>
   )

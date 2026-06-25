@@ -75,6 +75,44 @@ CREATE TABLE IF NOT EXISTS time_blocks (
   position INTEGER NOT NULL
 );
 
+CREATE TABLE IF NOT EXISTS calendar_events (
+  id TEXT PRIMARY KEY,
+  title TEXT NOT NULL,
+  description TEXT,
+  location TEXT,
+  color TEXT,
+  start_at TEXT NOT NULL,
+  end_at TEXT NOT NULL,
+  all_day INTEGER NOT NULL,
+  rrule TEXT,
+  recurrence_id TEXT,
+  google_calendar_id TEXT,
+  google_event_id TEXT,
+  etag TEXT,
+  sync_status TEXT,
+  deleted_at TEXT,
+  created_at TEXT NOT NULL,
+  updated_at TEXT NOT NULL,
+  position INTEGER NOT NULL
+);
+
+CREATE TABLE IF NOT EXISTS calendar_accounts (
+  id TEXT PRIMARY KEY,
+  email TEXT,
+  encrypted_refresh_token BLOB,
+  google_calendar_id TEXT,
+  sync_token TEXT,
+  last_sync_at TEXT
+);
+
+CREATE TABLE IF NOT EXISTS calendar_outbox (
+  id TEXT PRIMARY KEY,
+  event_id TEXT NOT NULL,
+  op TEXT NOT NULL,
+  payload TEXT,
+  created_at TEXT NOT NULL
+);
+
 CREATE TABLE IF NOT EXISTS medications (
   id TEXT PRIMARY KEY,
   med_id TEXT NOT NULL,
@@ -92,4 +130,6 @@ CREATE TABLE IF NOT EXISTS settings (
 
 CREATE INDEX IF NOT EXISTS idx_task_subtasks_task_id ON task_subtasks(task_id);
 CREATE INDEX IF NOT EXISTS idx_task_labels_task_id ON task_labels(task_id);
+CREATE UNIQUE INDEX IF NOT EXISTS idx_calendar_events_google_event_id
+  ON calendar_events(google_event_id) WHERE google_event_id IS NOT NULL;
 `

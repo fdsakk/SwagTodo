@@ -11,11 +11,13 @@ import {
   inflateTaskRows,
   parseSetting,
   readLegacyElectronStore,
-  serializeAppState
+  serializeAppState,
+  stripUndefined
 } from "./serialize"
 import {
   EMPTY_SNAPSHOT,
   type SqliteStateSnapshot,
+  type StoredCalendarEventRow,
   type StoredLabelRow,
   type StoredMedicationRow,
   type StoredProjectRow,
@@ -90,6 +92,9 @@ export class SqliteAppStorage {
     const selectTimeBlocks = this.db.prepare<[], StoredTimeBlockRow>(
       "SELECT * FROM time_blocks ORDER BY position ASC"
     )
+    const selectCalendarEvents = this.db.prepare<[], StoredCalendarEventRow>(
+      "SELECT * FROM calendar_events ORDER BY position ASC"
+    )
     const selectMedications = this.db.prepare<[], StoredMedicationRow>(
       "SELECT * FROM medications ORDER BY position ASC"
     )
@@ -136,6 +141,32 @@ export class SqliteAppStorage {
           endAt: timeBlock.end_at,
           createdAt: timeBlock.created_at
         })),
+        calendarEvents: selectCalendarEvents.all().map((event) =>
+          stripUndefined({
+            id: event.id,
+            title: event.title,
+            description: event.description ?? undefined,
+            location: event.location ?? undefined,
+            color: event.color ?? undefined,
+            startAt: event.start_at,
+            endAt: event.end_at,
+            allDay: Boolean(event.all_day),
+            rrule: event.rrule ?? undefined,
+            recurrenceId: event.recurrence_id ?? undefined,
+            googleCalendarId: event.google_calendar_id ?? undefined,
+            googleEventId: event.google_event_id ?? undefined,
+            etag: event.etag ?? undefined,
+            syncStatus:
+              (event.sync_status as
+                | "synced"
+                | "pending"
+                | "local_only"
+                | null) ?? undefined,
+            deletedAt: event.deleted_at ?? undefined,
+            createdAt: event.created_at,
+            updatedAt: event.updated_at
+          })
+        ),
         medications: selectMedications.all().map((medication) => ({
           id: medication.id,
           medId: medication.med_id,
@@ -205,6 +236,20 @@ export class SqliteAppStorage {
     const deleteTimeBlocksNotIn = this.db.prepare(
       `DELETE FROM time_blocks WHERE id NOT IN (SELECT value FROM json_each(?))`
     )
+    const upsertCalendarEvent = this.db.prepare(`
+      INSERT OR REPLACE INTO calendar_events (
+        id, title, description, location, color, start_at, end_at, all_day,
+        rrule, recurrence_id, google_calendar_id, google_event_id, etag,
+        sync_status, deleted_at, created_at, updated_at, position
+      ) VALUES (
+        @id, @title, @description, @location, @color, @start_at, @end_at, @all_day,
+        @rrule, @recurrence_id, @google_calendar_id, @google_event_id, @etag,
+        @sync_status, @deleted_at, @created_at, @updated_at, @position
+      )
+    `)
+    const deleteCalendarEventsNotIn = this.db.prepare(
+      `DELETE FROM calendar_events WHERE id NOT IN (SELECT value FROM json_each(?))`
+    )
     const upsertMedication = this.db.prepare(`
       INSERT OR REPLACE INTO medications (id, med_id, med_name, dose, taken_at, created_at, position)
       VALUES (@id, @med_id, @med_name, @dose, @taken_at, @created_at, @position)
@@ -259,6 +304,11 @@ export class SqliteAppStorage {
           deleteTimeBlocksNotIn.run(idsJson(next.timeBlocks))
         }
 
+        if (changedIds(prev.calendarEvents, next.calendarEvents)) {
+          for (const row of next.calendarEvents) upsertCalendarEvent.run(row)
+          deleteCalendarEventsNotIn.run(idsJson(next.calendarEvents))
+        }
+
         if (changedIds(prev.medications, next.medications)) {
           for (const row of next.medications) upsertMedication.run(row)
           deleteMedicationsNotIn.run(idsJson(next.medications))
@@ -272,6 +322,11 @@ export class SqliteAppStorage {
     this.cachedState = migratedState ?? readStateFromDb()
     this.cachedSnapshot = serializeAppState(this.cachedState)
     if (migratedState) this.writeDeltaTx(EMPTY_SNAPSHOT, this.cachedSnapshot)
+  }
+
+  /** Shared connection for sync-internal tables (calendar_accounts/outbox). */
+  get database(): SqliteDatabase {
+    return this.db
   }
 
   loadState(): AppState {

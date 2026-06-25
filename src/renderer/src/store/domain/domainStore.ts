@@ -1,6 +1,7 @@
 import { create } from "zustand"
 import { persist } from "zustand/middleware"
 import type { DomainStore } from "../shared/types"
+import { createCalendarEventActions } from "./actions/calendarEvents"
 import { createHealthActions } from "./actions/health"
 import { createLabelActions } from "./actions/labels"
 import { createProjectActions } from "./actions/projects"
@@ -19,6 +20,7 @@ export const useDomainStore = create<DomainStore>()(
         ...createProjectActions(set),
         ...createLabelActions(set),
         ...createSessionActions(set, get),
+        ...createCalendarEventActions(set, get),
         ...createHealthActions(set)
       }
 

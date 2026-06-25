@@ -11,6 +11,7 @@ export const createInitialDomainState = (): DomainState => ({
   labels: [],
   sessions: [],
   timeBlocks: [],
+  calendarEvents: [],
   medications: [],
   pkSettings: DEFAULT_PK_SETTINGS,
   uiScale: UI_SCALE_OPTIONS[0],

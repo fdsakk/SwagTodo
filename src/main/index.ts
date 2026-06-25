@@ -8,14 +8,19 @@ import {
   ipcMain,
   shell
 } from "electron"
-import icon from "../../resources/icon.png?asset"
+import iconIco from "../../resources/icon.ico?asset"
+import iconPng from "../../resources/icon.png?asset"
+import { createGoogleSync, type GoogleSync } from "./google/syncEngine"
 import { registerIpcHandlers } from "./ipcHandlers"
 import { createSqliteAppStorage, type SqliteAppStorage } from "./storage/sqlite"
 
 const IS_MAC = process.platform === "darwin"
+const IS_WINDOWS = process.platform === "win32"
 const IS_WAYLAND =
   process.platform === "linux" && process.env.XDG_SESSION_TYPE === "wayland"
+const APP_USER_MODEL_ID = "com.swagtodo.app"
 let appStorage: SqliteAppStorage | null = null
+let googleSync: GoogleSync | null = null
 let appStoragePath: string | null = null
 let hasShownProcessErrorDialog = false
 
@@ -35,6 +40,20 @@ const getAppStorage = (): SqliteAppStorage => {
     appStorage = createSqliteAppStorage(appStoragePath)
   }
   return appStorage
+}
+
+const getGoogleSync = (): GoogleSync => {
+  if (!googleSync) {
+    const storage = getAppStorage()
+    googleSync = createGoogleSync(storage.database, storage, () => {
+      for (const window of BrowserWindow.getAllWindows()) {
+        if (!window.isDestroyed()) {
+          window.webContents.send("google:sync:changed")
+        }
+      }
+    })
+  }
+  return googleSync
 }
 
 const formatProcessError = (value: unknown): string => {
@@ -82,12 +101,11 @@ function createWindow(): void {
     minHeight: 640,
     show: false,
     autoHideMenuBar: true,
-    transparent: true,
-    backgroundColor: "#00000000",
+    backgroundColor: "#070708",
     ...(IS_MAC
       ? { titleBarStyle: "hiddenInset", trafficLightPosition: { x: 16, y: 14 } }
       : { titleBarStyle: "hidden" }),
-    icon,
+    icon: IS_WINDOWS ? iconIco : iconPng,
     webPreferences: {
       preload: join(__dirname, "../preload/index.js"),
       sandbox: false,
@@ -144,7 +162,7 @@ function createWindow(): void {
 }
 
 app.whenReady().then(() => {
-  electronApp.setAppUserModelId("com.electron.app")
+  electronApp.setAppUserModelId(APP_USER_MODEL_ID)
 
   app.on("browser-window-created", (_, window) => {
     optimizer.watchWindowShortcuts(window)
@@ -154,6 +172,7 @@ app.whenReady().then(() => {
   registerIpcHandlers({
     ipcMain,
     getAppStorage,
+    getGoogleSync,
     resolveSenderWindow: (event: IpcMainInvokeEvent) =>
       BrowserWindow.fromWebContents(event.sender)
   })

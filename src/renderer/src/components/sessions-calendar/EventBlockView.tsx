@@ -1,37 +1,35 @@
 import { formatHM, PX_PER_MIN, SLOT_MIN } from "@renderer/utils/calendar"
 import { X } from "lucide-react"
-import type { CSSProperties, PointerEvent as ReactPointerEvent } from "react"
-import { columnStyle, type SessionBlock } from "./types"
+import type { CSSProperties } from "react"
+import { type CalendarEventDisplayBlock, columnStyle } from "./types"
 
-interface SessionBlockViewProps {
-  block: SessionBlock
+interface EventBlockViewProps {
+  block: CalendarEventDisplayBlock
   startMin: number
   endMin: number
   columnIndex?: number
   columnCount?: number
-  onMovePointerDown: (event: ReactPointerEvent<HTMLDivElement>) => void
-  onResizePointerDown: (event: ReactPointerEvent<HTMLDivElement>) => void
+  onOpen: () => void
   onDelete: () => void
 }
 
-export function SessionBlockView({
+const DEFAULT_COLOR = "#6366f1"
+
+export function EventBlockView({
   block,
   startMin,
   endMin,
   columnIndex = 0,
   columnCount = 1,
-  onMovePointerDown,
-  onResizePointerDown,
+  onOpen,
   onDelete
-}: SessionBlockViewProps): React.JSX.Element {
+}: EventBlockViewProps): React.JSX.Element {
   const top = startMin * PX_PER_MIN
   const height = Math.max(
     PX_PER_MIN * SLOT_MIN,
     (endMin - startMin) * PX_PER_MIN
   )
-  const color = block.project?.color ?? "#52525b"
-  const title = block.task?.title ?? "Deleted task"
-  const projectName = block.project?.name
+  const color = block.event.color ?? DEFAULT_COLOR
   const style: CSSProperties = {
     top,
     height,
@@ -40,11 +38,12 @@ export function SessionBlockView({
     ...columnStyle(columnIndex, columnCount)
   }
   return (
-    <div
+    <button
+      type="button"
       data-session-block
-      className="group absolute z-[5] select-none overflow-hidden rounded-md border-l-2 bg-zinc-900/70 px-1.5 py-1 text-[11px] text-zinc-100 shadow-sm hover:bg-zinc-900/85"
+      className="group absolute z-[6] flex select-none flex-col overflow-hidden rounded-md border-l-2 bg-zinc-900/70 px-1.5 py-1 text-left text-[11px] text-zinc-100 shadow-sm hover:bg-zinc-900/85"
       style={style}
-      onPointerDown={onMovePointerDown}
+      onClick={onOpen}
     >
       <div className="flex items-center gap-1 text-[10px] text-zinc-400">
         <span>
@@ -52,27 +51,25 @@ export function SessionBlockView({
         </span>
       </div>
       <div className="truncate text-[11px] font-medium text-zinc-100">
-        {title}
+        {block.event.title}
       </div>
-      {projectName && (
-        <div className="truncate text-[10px] text-zinc-400">{projectName}</div>
+      {block.event.location && (
+        <div className="truncate text-[10px] text-zinc-400">
+          {block.event.location}
+        </div>
       )}
-      <button
-        type="button"
-        onPointerDown={(e) => e.stopPropagation()}
+      <span
+        role="button"
+        tabIndex={0}
         onClick={(e) => {
           e.stopPropagation()
           onDelete()
         }}
-        title="Delete session"
+        title="Delete event"
         className="absolute right-1 top-1 z-50 flex h-5 w-5 items-center justify-center rounded border border-transparent text-app-text-secondary opacity-0 transition-all duration-200 hover:border-red-600 hover:bg-app-titlebar/80 group-hover:opacity-100"
       >
         <X size={10} />
-      </button>
-      <div
-        onPointerDown={onResizePointerDown}
-        className="absolute bottom-0 left-0 right-0 h-1.5 cursor-ns-resize bg-app-hover hover:bg-app-active"
-      />
-    </div>
+      </span>
+    </button>
   )
 }

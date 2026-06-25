@@ -9,6 +9,7 @@ import {
 import { z } from "zod"
 import type { PersistStorage } from "zustand/middleware"
 import {
+  calendarEventSchema,
   labelSchema,
   medicationSchema,
   projectSchema,
@@ -64,6 +65,7 @@ const persistedDomainSchema = z
     labels: z.array(labelSchema).catch([]),
     sessions: z.array(sessionSchema).catch([]),
     timeBlocks: z.array(timeBlockSchema).catch([]),
+    calendarEvents: z.array(calendarEventSchema).catch([]),
     medications: z.array(medicationSchema).catch([]),
     pkSettings: z.unknown().optional(),
     uiScale: z
@@ -95,6 +97,7 @@ export const stateFromPersisted = (
     labels: data.labels,
     sessions: data.sessions,
     timeBlocks: data.timeBlocks,
+    calendarEvents: data.calendarEvents,
     medications: data.medications,
     pkSettings: normalizePkSettings(data.pkSettings),
     uiScale: data.uiScale ?? defaultPersistedState.uiScale,
@@ -111,6 +114,7 @@ export function pickPersistedState(state: DomainState): PersistedDomainState {
     labels,
     sessions,
     timeBlocks,
+    calendarEvents,
     medications,
     pkSettings,
     uiScale,
@@ -123,6 +127,7 @@ export function pickPersistedState(state: DomainState): PersistedDomainState {
     labels,
     sessions,
     timeBlocks,
+    calendarEvents,
     medications,
     pkSettings,
     uiScale,

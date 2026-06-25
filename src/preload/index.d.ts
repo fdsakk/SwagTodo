@@ -1,5 +1,10 @@
 import { ElectronAPI } from "@electron-toolkit/preload"
-import type { AppState, WindowState } from "../shared/types"
+import type {
+  AppState,
+  GoogleAuthStatus,
+  GoogleSyncSummary,
+  WindowState
+} from "../shared/types"
 
 interface RendererApi {
   storage: {
@@ -18,6 +23,14 @@ interface RendererApi {
     getState: () => Promise<WindowState>
     onStateChange: (listener: (state: WindowState) => void) => () => void
     platform: NodeJS.Platform
+  }
+  google: {
+    authStatus: () => Promise<GoogleAuthStatus>
+    authStart: () => Promise<GoogleAuthStatus>
+    signout: () => Promise<void>
+    syncNow: () => Promise<GoogleSyncSummary>
+    push: (eventId: string, op: "insert" | "patch" | "delete") => Promise<void>
+    onSyncChanged: (listener: () => void) => () => void
   }
 }
 

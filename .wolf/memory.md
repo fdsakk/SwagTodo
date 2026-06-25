@@ -555,3 +555,221 @@
 
 | Time | Action | File(s) | Outcome | ~Tokens |
 |------|--------|---------|---------|--------|
+
+## Session: 2026-05-22 13:36
+
+| Time | Action | File(s) | Outcome | ~Tokens |
+|------|--------|---------|---------|--------|
+| 13:39 | Edited src/main/index.ts | added 1 import(s) | ~30 |
+| 13:39 | Edited src/main/index.ts | 3→5 lines | ~67 |
+| 13:39 | Edited src/main/index.ts | 8→7 lines | ~72 |
+| 13:39 | Edited src/main/index.ts | inline fix | ~15 |
+| 13:39 | Edited electron-builder.yml | inline fix | ~7 |
+| 13:39 | Edited src/renderer/src/App.tsx | 7→2 lines | ~38 |
+| 13:40 | Edited src/renderer/src/App.tsx | 7→2 lines | ~32 |
+| 13:40 | Session end: 7 writes across 3 files (index.ts, electron-builder.yml, App.tsx) | 2 reads | ~2914 tok |
+
+## Session: 2026-05-28 12:41
+
+| Time | Action | File(s) | Outcome | ~Tokens |
+|------|--------|---------|---------|--------|
+
+## Session: 2026-06-08 14:02
+
+| Time | Action | File(s) | Outcome | ~Tokens |
+|------|--------|---------|---------|--------|
+| 14:15 | Created ../../.claude/plans/przeanalizuj-obecna-implementacje-kalend-noble-horizon.md | — | ~5269 |
+| 14:17 | Created src/renderer/src/utils/overlapLayout.ts | — | ~575 |
+| 14:17 | Created src/renderer/src/utils/overlapLayout.test.ts | — | ~666 |
+| 14:18 | Edited src/renderer/src/components/sessions-calendar/SessionBlockView.tsx | modified SessionBlockView() | ~352 |
+| 14:18 | Edited src/renderer/src/components/sessions-calendar/types.ts | expanded (+17 lines) | ~186 |
+| 14:18 | Edited src/renderer/src/components/sessions-calendar/SessionBlockView.tsx | 2→2 lines | ~39 |
+| 14:18 | Edited src/renderer/src/components/sessions-calendar/TimeBlockView.tsx | modified TimeBlockView() | ~321 |
+| 14:18 | Edited src/renderer/src/components/sessions-calendar/SessionsCalendar.tsx | 4→8 lines | ~93 |
+| 14:18 | Edited src/renderer/src/components/sessions-calendar/SessionsCalendar.tsx | added 1 condition(s) | ~420 |
+| 14:18 | Edited src/renderer/src/components/sessions-calendar/SessionsCalendar.tsx | 3→4 lines | ~64 |
+| 14:19 | Edited src/renderer/src/components/sessions-calendar/SessionsCalendar.tsx | added optional chaining | ~222 |
+| 14:19 | Edited src/renderer/src/components/sessions-calendar/SessionsCalendar.tsx | added optional chaining | ~215 |
+| 14:19 | Created src/renderer/src/pages/sessions/SessionsToolbar.tsx | — | ~780 |
+| 14:19 | Edited src/renderer/src/utils/calendar.ts | expanded (+13 lines) | ~112 |
+| 14:19 | Created src/renderer/src/pages/sessions/useSessionsKeyboard.ts | — | ~585 |
+| 14:20 | Created src/renderer/src/utils/calendarItems.ts | — | ~612 |
+| 14:20 | Created src/renderer/src/components/sessions-calendar/AgendaView.tsx | — | ~1060 |
+| 14:20 | Created src/renderer/src/components/sessions-calendar/MonthView.tsx | — | ~1110 |
+| 14:20 | Created src/renderer/src/components/sessions-calendar/AllDayLane.tsx | — | ~550 |
+| 14:20 | Edited src/renderer/src/components/sessions-calendar/SessionsCalendar.tsx | 5→6 lines | ~63 |
+| 14:21 | Edited src/renderer/src/components/sessions-calendar/SessionsCalendar.tsx | added 1 import(s) | ~41 |
+| 14:21 | Created src/renderer/src/components/sessions-calendar/index.tsx | — | ~92 |
+| 14:21 | Edited src/renderer/src/pages/SessionsPage.tsx | expanded (+9 lines) | ~240 |
+| 14:21 | Edited src/renderer/src/pages/SessionsPage.tsx | CSS: kind, count | ~42 |
+| 14:21 | Edited src/renderer/src/pages/SessionsPage.tsx | added 1 condition(s) | ~88 |
+| 14:21 | Edited src/renderer/src/pages/SessionsPage.tsx | added nullish coalescing | ~600 |
+| 14:21 | Edited src/renderer/src/pages/SessionsPage.tsx | 7→7 lines | ~51 |
+| 14:21 | Edited src/renderer/src/pages/SessionsPage.tsx | expanded (+17 lines) | ~302 |
+| 14:22 | Edited src/renderer/src/pages/sessions/useSessionsKeyboard.ts | added 1 condition(s) | ~187 |
+| 14:24 | Edited src/shared/types.ts | expanded (+27 lines) | ~266 |
+| 14:24 | Edited src/shared/types.ts | 3→4 lines | ~34 |
+| 14:24 | Edited src/shared/stateSchema.ts | expanded (+25 lines) | ~280 |
+| 14:24 | Edited src/main/storage/appState.ts | 9→10 lines | ~55 |
+| 14:24 | Edited src/main/storage/appState.ts | 23→25 lines | ~131 |
+| 14:24 | Edited src/main/storage/appState.ts | 3→4 lines | ~61 |
+| 14:24 | Edited src/main/storage/appState.ts | 4→5 lines | ~53 |
+| 14:24 | Edited src/main/storage/appState.ts | added 1 condition(s) | ~76 |
+| 14:24 | Edited src/main/storage/appState.ts | added 1 condition(s) | ~86 |
+| 14:25 | Edited src/main/storage/sqlite/types.ts | expanded (+21 lines) | ~144 |
+| 14:25 | Edited src/main/storage/sqlite/types.ts | 6→7 lines | ~59 |
+| 14:25 | Edited src/main/storage/sqlite/types.ts | 6→7 lines | ~30 |
+| 14:25 | Edited src/main/storage/sqlite/schema.ts | expanded (+21 lines) | ~140 |
+| 14:25 | Edited src/main/storage/sqlite/schema.ts | 3→5 lines | ~86 |
+| 14:25 | Edited src/main/storage/sqlite/serialize.ts | 5→6 lines | ~30 |
+| 14:25 | Edited src/main/storage/sqlite/serialize.ts | added nullish coalescing | ~246 |
+| 14:25 | Edited src/main/storage/sqlite/serialize.ts | added nullish coalescing | ~338 |
+| 14:25 | Edited src/main/storage/sqlite/storage.ts | 3→4 lines | ~30 |
+| 14:25 | Edited src/main/storage/sqlite/storage.ts | 3→6 lines | ~79 |
+| 14:26 | Edited src/main/storage/sqlite/storage.ts | added nullish coalescing | ~368 |
+| 14:26 | Edited src/main/storage/sqlite/storage.ts | expanded (+14 lines) | ~246 |
+| 14:26 | Edited src/main/storage/sqlite/storage.ts | added 1 condition(s) | ~123 |
+| 14:26 | Edited src/main/tests/sqlite.test.ts | 5→6 lines | ~30 |
+| 14:26 | Edited src/main/tests/sqlite.test.ts | expanded (+28 lines) | ~277 |
+| 14:26 | Edited src/main/tests/sqlite.test.ts | inline fix | ~21 |
+| 14:27 | Edited src/main/tests/sqlite.test.ts | expanded (+31 lines) | ~287 |
+| 14:27 | Edited src/main/tests/sqlite.test.ts | 5→8 lines | ~79 |
+| 14:27 | Edited src/main/tests/sqlite.test.ts | 8→10 lines | ~132 |
+| 14:28 | Edited src/main/storage/sqlite/serialize.ts | added 1 condition(s) | ~172 |
+| 14:28 | Edited src/main/storage/sqlite/serialize.ts | 1→3 lines | ~25 |
+| 14:28 | Edited src/main/storage/sqlite/serialize.ts | 24→26 lines | ~267 |
+| 14:28 | Edited src/main/storage/sqlite/storage.ts | 4→5 lines | ~29 |
+| 14:28 | Edited src/main/storage/sqlite/storage.ts | 24→26 lines | ~298 |
+| 14:29 | Edited src/renderer/src/store/shared/types.ts | 3→4 lines | ~21 |
+| 14:29 | Edited src/renderer/src/types/index.ts | 29→33 lines | ~146 |
+| 14:29 | Edited src/renderer/src/store/shared/types.ts | expanded (+32 lines) | ~216 |
+| 14:29 | Edited src/renderer/src/store/shared/types.ts | 3→4 lines | ~48 |
+| 14:29 | Edited src/renderer/src/store/shared/types.ts | expanded (+6 lines) | ~88 |
+| 14:29 | Edited src/renderer/src/store/shared/types.ts | 4→5 lines | ~25 |
+| 14:29 | Edited src/renderer/src/store/domain/state.ts | 3→4 lines | ~22 |
+| 14:29 | Edited src/renderer/src/store/domain/persist.ts | 8→9 lines | ~50 |
+| 14:29 | Edited src/renderer/src/store/domain/persist.ts | 3→4 lines | ~61 |
+| 14:30 | Edited src/renderer/src/store/domain/persist.ts | 4→5 lines | ~55 |
+| 14:30 | Edited src/renderer/src/store/domain/persist.ts | 24→26 lines | ~109 |
+| 14:30 | Created src/renderer/src/store/domain/actions/calendarEvents.ts | — | ~881 |
+| 14:30 | Edited src/renderer/src/store/domain/domainStore.ts | added 1 import(s) | ~51 |
+| 14:30 | Edited src/renderer/src/store/domain/domainStore.ts | 2→3 lines | ~37 |
+| 14:30 | Edited src/renderer/src/store/tests/domain-store.test.ts | added 1 import(s) | ~71 |
+| 14:30 | Edited src/renderer/src/store/tests/domain-store.test.ts | 3→4 lines | ~37 |
+| 14:31 | Edited src/renderer/src/store/tests/persist.test.ts | 12→13 lines | ~72 |
+| 14:32 | Created src/renderer/src/utils/recurrence.ts | — | ~691 |
+| 14:32 | Created src/renderer/src/utils/recurrence.test.ts | — | ~789 |
+| 14:32 | Edited src/renderer/src/utils/recurrence.test.ts | 3→2 lines | ~14 |
+| 14:32 | Edited src/renderer/src/components/sessions-calendar/types.ts | expanded (+6 lines) | ~42 |
+| 14:32 | Edited src/renderer/src/components/sessions-calendar/types.ts | expanded (+13 lines) | ~99 |
+| 14:33 | Edited src/renderer/src/components/sessions-calendar/types.ts | added 13 condition(s) | ~761 |
+| 14:33 | Created src/renderer/src/components/sessions-calendar/EventBlockView.tsx | — | ~628 |
+| 14:33 | Created src/renderer/src/components/sessions-calendar/AllDayLane.tsx | — | ~770 |
+| 14:33 | Edited src/renderer/src/components/sessions-calendar/SessionsCalendar.tsx | expanded (+13 lines) | ~289 |
+| 14:33 | Edited src/renderer/src/components/sessions-calendar/SessionsCalendar.tsx | 11→14 lines | ~172 |
+| 14:34 | Edited src/renderer/src/components/sessions-calendar/SessionsCalendar.tsx | 11→14 lines | ~72 |
+| 14:34 | Edited src/renderer/src/components/sessions-calendar/SessionsCalendar.tsx | added nullish coalescing | ~298 |
+| 14:34 | Edited src/renderer/src/components/sessions-calendar/SessionsCalendar.tsx | CSS: e | ~264 |
+| 14:34 | Edited src/renderer/src/components/sessions-calendar/SessionsCalendar.tsx | 2→6 lines | ~48 |
+| 14:34 | Edited src/renderer/src/components/sessions-calendar/SessionsCalendar.tsx | 4→5 lines | ~84 |
+| 14:35 | Edited src/renderer/src/components/sessions-calendar/SessionsCalendar.tsx | added optional chaining | ~242 |
+| 14:35 | Edited src/renderer/src/components/sessions-calendar/index.tsx | 2→3 lines | ~38 |
+| 14:35 | Created src/renderer/src/pages/sessions/EventEditorDialog.tsx | — | ~2049 |
+| 14:36 | Edited src/renderer/src/utils/calendarItems.ts | expanded (+9 lines) | ~199 |
+| 14:36 | Edited src/renderer/src/utils/calendarItems.ts | 6→7 lines | ~64 |
+| 14:36 | Edited src/renderer/src/utils/calendarItems.ts | added 2 condition(s) | ~214 |
+| 14:36 | Edited src/renderer/src/utils/calendarItems.ts | 14→15 lines | ~169 |
+| 14:36 | Edited src/renderer/src/components/sessions-calendar/AgendaView.tsx | CSS: onOpenItem, item, item | ~61 |
+| 14:36 | Edited src/renderer/src/components/sessions-calendar/AgendaView.tsx | modified AgendaView() | ~28 |
+| 14:36 | Edited src/renderer/src/components/sessions-calendar/AgendaView.tsx | 11→11 lines | ~146 |
+| 14:37 | Edited src/renderer/src/components/sessions-calendar/MonthView.tsx | CSS: onOpenItem, item | ~32 |
+| 14:37 | Edited src/renderer/src/components/sessions-calendar/MonthView.tsx | modified MonthView() | ~32 |
+| 14:37 | Edited src/renderer/src/components/sessions-calendar/MonthView.tsx | onOpenSession() → onOpenItem() | ~41 |
+| 14:37 | Edited src/renderer/src/pages/SessionsPage.tsx | expanded (+9 lines) | ~199 |
+| 14:37 | Edited src/renderer/src/pages/SessionsPage.tsx | expanded (+9 lines) | ~416 |
+| 14:37 | Edited src/renderer/src/pages/SessionsPage.tsx | 6→6 lines | ~37 |
+| 14:37 | Edited src/renderer/src/pages/SessionsPage.tsx | expanded (+9 lines) | ~140 |
+| 14:38 | Edited src/renderer/src/pages/SessionsPage.tsx | added 6 condition(s) | ~502 |
+| 14:38 | Edited src/renderer/src/pages/SessionsPage.tsx | 31→34 lines | ~305 |
+| 14:38 | Edited src/renderer/src/pages/SessionsPage.tsx | expanded (+21 lines) | ~249 |
+| 14:38 | Edited src/renderer/src/pages/sessions/TaskPickerDialog.tsx | CSS: onSwitchToEvent | ~34 |
+| 14:38 | Edited src/renderer/src/pages/sessions/TaskPickerDialog.tsx | 4→5 lines | ~30 |
+| 14:38 | Edited src/renderer/src/pages/sessions/TaskPickerDialog.tsx | expanded (+8 lines) | ~177 |
+| 14:38 | Edited src/renderer/src/pages/SessionsPage.tsx | 4→5 lines | ~59 |
+| 14:41 | Edited src/shared/types.ts | expanded (+14 lines) | ~110 |
+| 14:42 | Edited src/main/storage/sqlite/schema.ts | expanded (+17 lines) | ~111 |
+| 14:42 | Edited src/main/storage/sqlite/storage.ts | modified database() | ~56 |
+| 14:42 | Created src/main/google/accountStore.ts | — | ~817 |
+| 14:42 | Created src/main/google/client.ts | — | ~991 |
+| 14:43 | Created src/main/google/oauth.ts | — | ~1306 |
+| 14:43 | Created src/main/google/syncEngine.ts | — | ~858 |
+| 14:43 | Edited src/main/ipcHandlers.ts | 8→12 lines | ~89 |
+| 14:43 | Edited src/main/ipcHandlers.ts | modified loadState() | ~96 |
+| 14:43 | Edited src/main/ipcHandlers.ts | 5→6 lines | ~59 |
+| 14:43 | Edited src/main/ipcHandlers.ts | modified registerIpcHandlers() | ~40 |
+| 14:43 | Edited src/main/ipcHandlers.ts | 7→12 lines | ~148 |
+| 14:43 | Edited src/main/index.ts | added 1 import(s) | ~59 |
+| 14:44 | Edited src/main/index.ts | 3→4 lines | ~48 |
+| 14:44 | Edited src/main/index.ts | added 1 condition(s) | ~106 |
+| 14:44 | Edited src/main/index.ts | 6→7 lines | ~53 |
+| 14:44 | Edited src/preload/index.ts | 3→8 lines | ~62 |
+| 14:44 | Edited src/preload/index.ts | expanded (+14 lines) | ~362 |
+| 14:44 | Edited src/preload/index.d.ts | 2→7 lines | ~46 |
+| 14:44 | Edited src/preload/index.d.ts | expanded (+7 lines) | ~147 |
+| 14:45 | Edited src/main/tests/ipcHandlers.test.ts | 7→8 lines | ~45 |
+| 14:45 | Edited src/main/tests/ipcHandlers.test.ts | expanded (+16 lines) | ~206 |
+| 14:45 | Edited src/main/tests/ipcHandlers.test.ts | expanded (+22 lines) | ~229 |
+| 14:45 | Created src/renderer/src/components/settings/IntegrationsSection.tsx | — | ~1304 |
+| 14:45 | Edited src/renderer/src/components/settings/index.tsx | 3→4 lines | ~58 |
+| 14:46 | Edited src/renderer/src/pages/SettingsPage.tsx | added 1 import(s) | ~70 |
+| 14:46 | Edited src/renderer/src/pages/SettingsPage.tsx | 7→9 lines | ~88 |
+| 14:46 | Created src/main/tests/google-oauth.test.ts | — | ~884 |
+| 14:46 | Edited src/renderer/src/types/index.ts | 32→36 lines | ~152 |
+| 14:47 | Created src/main/google/googleSchema.ts | — | ~440 |
+| 14:48 | Created src/main/google/eventMapper.ts | — | ~1681 |
+| 14:48 | Created src/main/tests/eventMapper.test.ts | — | ~2139 |
+| 14:49 | Edited src/main/google/client.ts | added 4 condition(s) | ~528 |
+| 14:50 | Created src/main/google/syncEngine.ts | — | ~2365 |
+| 14:50 | Edited src/main/index.ts | added 1 condition(s) | ~107 |
+| 14:51 | Edited src/renderer/src/store/bootstrap.ts | added error handling | ~109 |
+| 14:51 | Edited src/renderer/src/store/index.ts | 1→2 lines | ~29 |
+| 14:51 | Edited src/renderer/src/App.tsx | inline fix | ~23 |
+| 14:51 | Edited src/renderer/src/App.tsx | added optional chaining | ~99 |
+| 14:51 | Edited src/main/google/syncEngine.ts | added error handling | ~119 |
+| 14:52 | Edited src/main/google/syncEngine.ts | modified applyRemote() | ~746 |
+| 14:52 | Edited src/main/google/syncEngine.ts | 2→2 lines | ~26 |
+| 14:52 | Edited src/main/google/syncEngine.ts | removed 83 lines | ~40 |
+| 14:52 | Edited src/main/google/eventMapper.ts | 3→3 lines | ~46 |
+| 14:52 | Edited src/main/google/eventMapper.ts | added 8 condition(s) | ~706 |
+| 14:52 | Edited src/main/google/syncEngine.ts | 6→5 lines | ~27 |
+| 14:53 | Edited src/main/tests/eventMapper.test.ts | 1→5 lines | ~28 |
+| 14:53 | Edited src/main/tests/eventMapper.test.ts | added optional chaining | ~838 |
+| 14:54 | Edited src/main/google/client.ts | added 7 condition(s) | ~867 |
+| 14:54 | Created src/main/google/outboxStore.ts | — | ~693 |
+| 14:54 | Edited src/main/ipcHandlers.ts | modified status() | ~102 |
+| 14:55 | Edited src/main/ipcHandlers.ts | added 1 condition(s) | ~154 |
+| 14:55 | Edited src/main/google/eventMapper.ts | added 3 condition(s) | ~176 |
+| 14:55 | Edited src/main/google/eventMapper.ts | added 2 condition(s) | ~179 |
+| 14:55 | Edited src/main/google/syncEngine.ts | modified loadState() | ~182 |
+| 14:55 | Edited src/main/google/syncEngine.ts | 18→22 lines | ~200 |
+| 14:56 | Edited src/main/google/syncEngine.ts | added error handling | ~1430 |
+| 14:56 | Edited src/preload/index.ts | 3→7 lines | ~90 |
+| 14:56 | Edited src/preload/index.d.ts | 7→11 lines | ~98 |
+| 14:56 | Edited src/renderer/src/store/domain/actions/calendarEvents.ts | added optional chaining | ~141 |
+| 14:56 | Edited src/renderer/src/store/domain/actions/calendarEvents.ts | 4→5 lines | ~48 |
+| 14:56 | Edited src/renderer/src/store/domain/actions/calendarEvents.ts | added 2 condition(s) | ~141 |
+| 14:57 | Edited src/main/tests/ipcHandlers.test.ts | 5→8 lines | ~58 |
+| 14:57 | Edited src/main/tests/ipcHandlers.test.ts | 6→7 lines | ~54 |
+| 14:57 | Edited src/main/tests/ipcHandlers.test.ts | expanded (+16 lines) | ~153 |
+| 14:57 | Edited src/main/tests/eventMapper.test.ts | 5→7 lines | ~39 |
+| 14:57 | Edited src/main/tests/eventMapper.test.ts | expanded (+43 lines) | ~451 |
+| 14:57 | Created src/main/tests/outboxStore.test.ts | — | ~555 |
+| 14:58 | Edited src/main/google/outboxStore.ts | added 2 condition(s) | ~383 |
+| 14:58 | Edited src/main/google/outboxStore.ts | added 1 condition(s) | ~353 |
+| 14:58 | Created src/main/tests/outboxStore.test.ts | — | ~414 |
+| 14:59 | Edited src/renderer/src/store/domain/actions/calendarEvents.ts | added 1 condition(s) | ~52 |
+| 15:00 | Created ../../.claude/projects/-home-fenta-Projects-SwagTodo/memory/sqlite-test-native-mismatch.md | — | ~284 |
+| 15:00 | Created ../../.claude/projects/-home-fenta-Projects-SwagTodo/memory/google-sync-tz-mapping.md | — | ~334 |
+| 15:00 | Created ../../.claude/projects/-home-fenta-Projects-SwagTodo/memory/MEMORY.md | — | ~78 |
+| 15:01 | Session end: 193 writes across 54 files (przeanalizuj-obecna-implementacje-kalend-noble-horizon.md, overlapLayout.ts, overlapLayout.test.ts, SessionBlockView.tsx, types.ts) | 51 reads | ~120618 tok |
+| 09:59 | prepared commit for advanced calendar Google sync branch | git status, diff | staged full working tree for user-requested push | ~4000 |

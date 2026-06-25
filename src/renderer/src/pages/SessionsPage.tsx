@@ -1,17 +1,35 @@
-import { SessionsCalendar } from "@renderer/components/sessions-calendar"
+import {
+  AgendaView,
+  MonthView,
+  SessionsCalendar
+} from "@renderer/components/sessions-calendar"
 import { useDomainStore, useUiStore } from "@renderer/store"
 import {
   addDays,
   buildIsoAtMinutes,
   isSameDay,
-  startOfDay
+  startOfDay,
+  startOfMonth
 } from "@renderer/utils/calendar"
+import {
+  buildCalendarItems,
+  type CalendarItem
+} from "@renderer/utils/calendarItems"
+import { endOfMonth, endOfWeek, startOfWeek } from "date-fns"
 import { useCallback, useEffect, useMemo, useState } from "react"
 import { useShallow } from "zustand/react/shallow"
+import {
+  EventEditorDialog,
+  type EventEditorValues
+} from "./sessions/EventEditorDialog"
 import { GhostBlockDialog } from "./sessions/GhostBlockDialog"
-import { type DayCount, SessionsToolbar } from "./sessions/SessionsToolbar"
+import { SessionsToolbar, type ViewMode } from "./sessions/SessionsToolbar"
 import { type DraftCreate, TaskPickerDialog } from "./sessions/TaskPickerDialog"
 import { useSessionsKeyboard } from "./sessions/useSessionsKeyboard"
+
+type DraftMode = "task" | "ghost" | "event"
+
+const AGENDA_DAYS = 14
 
 const NOW_TICK_MS = 60 * 1000
 
@@ -21,34 +39,43 @@ export default function SessionsPage(): React.JSX.Element {
     tasks,
     projects,
     timeBlocks,
+    calendarEvents,
     addSession,
     updateSession,
     deleteSession,
     addTimeBlock,
     updateTimeBlock,
-    deleteTimeBlock
+    deleteTimeBlock,
+    addCalendarEvent,
+    updateCalendarEvent,
+    deleteCalendarEvent
   } = useDomainStore(
     useShallow((state) => ({
       sessions: state.sessions,
       tasks: state.tasks,
       projects: state.projects,
       timeBlocks: state.timeBlocks,
+      calendarEvents: state.calendarEvents,
       addSession: state.addSession,
       updateSession: state.updateSession,
       deleteSession: state.deleteSession,
       addTimeBlock: state.addTimeBlock,
       updateTimeBlock: state.updateTimeBlock,
-      deleteTimeBlock: state.deleteTimeBlock
+      deleteTimeBlock: state.deleteTimeBlock,
+      addCalendarEvent: state.addCalendarEvent,
+      updateCalendarEvent: state.updateCalendarEvent,
+      deleteCalendarEvent: state.deleteCalendarEvent
     }))
   )
   const openEditPanel = useUiStore((state) => state.openEditPanel)
 
-  const [dayCount, setDayCount] = useState<DayCount>(5)
+  const [mode, setMode] = useState<ViewMode>({ kind: "days", count: 5 })
   const [anchor, setAnchor] = useState<Date>(() => startOfDay(new Date()))
   const [now, setNow] = useState<Date>(() => new Date())
   const [error, setError] = useState<string | null>(null)
   const [draftCreate, setDraftCreate] = useState<DraftCreate | null>(null)
-  const [draftMode, setDraftMode] = useState<"task" | "ghost">("task")
+  const [draftMode, setDraftMode] = useState<DraftMode>("task")
+  const [editingEventId, setEditingEventId] = useState<string | null>(null)
 
   useEffect(() => {
     const interval = setInterval(() => setNow(new Date()), NOW_TICK_MS)
@@ -62,17 +89,18 @@ export default function SessionsPage(): React.JSX.Element {
   }, [error])
 
   useSessionsKeyboard({
-    dayCount,
-    blocked: Boolean(draftCreate),
+    mode,
+    blocked: Boolean(draftCreate) || Boolean(editingEventId),
     setAnchor,
-    setDayCount
+    setMode
   })
 
   const days = useMemo(() => {
+    if (mode.kind !== "days") return []
     const out: Date[] = []
-    for (let i = 0; i < dayCount; i++) out.push(addDays(anchor, i))
+    for (let i = 0; i < mode.count; i++) out.push(addDays(anchor, i))
     return out
-  }, [anchor, dayCount])
+  }, [anchor, mode])
 
   const projectTasks = useMemo(
     () => tasks.filter((t) => Boolean(t.projectId) && !t.archivedAt),
@@ -99,24 +127,83 @@ export default function SessionsPage(): React.JSX.Element {
     return m
   }, [projects])
 
+  // Range covered by the active view, used for month/agenda item queries.
+  const range = useMemo(() => {
+    if (mode.kind === "month") {
+      return {
+        start: startOfWeek(startOfMonth(anchor)),
+        end: addDays(endOfWeek(endOfMonth(anchor)), 1)
+      }
+    }
+    if (mode.kind === "agenda") {
+      const start = startOfDay(anchor)
+      return { start, end: addDays(start, AGENDA_DAYS) }
+    }
+    const start = days[0] ?? startOfDay(anchor)
+    const last = days[days.length - 1] ?? start
+    return { start, end: addDays(last, 1) }
+  }, [mode, anchor, days])
+
+  const rangeItems = useMemo(
+    () =>
+      buildCalendarItems(
+        sessions,
+        timeBlocks,
+        calendarEvents,
+        tasks,
+        projects,
+        range.start.getTime(),
+        range.end.getTime()
+      ),
+    [sessions, timeBlocks, calendarEvents, tasks, projects, range]
+  )
+
+  const editingEvent = useMemo(
+    () =>
+      editingEventId
+        ? calendarEvents.find((e) => e.id === editingEventId)
+        : undefined,
+    [editingEventId, calendarEvents]
+  )
+
   const shiftRange = useCallback(
     (direction: -1 | 1) =>
-      setAnchor((current) => addDays(current, direction * dayCount)),
-    [dayCount]
+      setAnchor((current) => {
+        if (mode.kind === "month") {
+          const m = new Date(current)
+          m.setMonth(m.getMonth() + direction)
+          return m
+        }
+        const span = mode.kind === "days" ? mode.count : 7
+        return addDays(current, direction * span)
+      }),
+    [mode]
   )
 
   const goToday = useCallback(() => setAnchor(startOfDay(new Date())), [])
 
   const rangeLabel = useMemo(() => {
-    const first = days[0]
-    const last = days[days.length - 1]
-    if (!first || !last) return ""
+    if (mode.kind === "month") {
+      return anchor.toLocaleDateString(undefined, {
+        month: "long",
+        year: "numeric"
+      })
+    }
     const fmt = (d: Date): string =>
       d.toLocaleDateString(undefined, { month: "short", day: "numeric" })
+    const first = mode.kind === "agenda" ? range.start : days[0]
+    const last =
+      mode.kind === "agenda" ? addDays(range.end, -1) : days[days.length - 1]
+    if (!first || !last) return ""
     const year = last.getFullYear()
     if (isSameDay(first, last)) return `${fmt(first)} ${year}`
     return `${fmt(first)} – ${fmt(last)} ${year}`
-  }, [days])
+  }, [mode, anchor, days, range])
+
+  const handlePickDay = useCallback((day: Date) => {
+    setAnchor(startOfDay(day))
+    setMode({ kind: "days", count: 1 })
+  }, [])
 
   const handleCreateDraft = useCallback(
     (dayIndex: number, startMin: number, endMin: number) => {
@@ -191,14 +278,67 @@ export default function SessionsPage(): React.JSX.Element {
     [addTimeBlock, draftCreate]
   )
 
+  const handleCreateEvent = useCallback(
+    (values: EventEditorValues) => {
+      if (!draftCreate) return
+      const result = addCalendarEvent({
+        title: values.title,
+        startAt: draftCreate.startAt,
+        endAt: draftCreate.endAt,
+        allDay: values.allDay,
+        description: values.description,
+        location: values.location,
+        color: values.color,
+        rrule: values.rrule
+      })
+      if (!result.ok) {
+        setError(result.error)
+        return
+      }
+      setDraftCreate(null)
+    },
+    [addCalendarEvent, draftCreate]
+  )
+
+  const handleSaveEvent = useCallback(
+    (values: EventEditorValues) => {
+      if (!editingEventId) return
+      const result = updateCalendarEvent(editingEventId, {
+        title: values.title,
+        allDay: values.allDay,
+        description: values.description,
+        location: values.location,
+        color: values.color,
+        rrule: values.rrule
+      })
+      if (!result.ok) {
+        setError(result.error)
+        return
+      }
+      setEditingEventId(null)
+    },
+    [updateCalendarEvent, editingEventId]
+  )
+
+  const handleOpenItem = useCallback(
+    (item: CalendarItem) => {
+      if (item.sessionId) {
+        handleOpenSession(item.sessionId)
+      } else if (item.eventId) {
+        setEditingEventId(item.eventId)
+      }
+    },
+    [handleOpenSession]
+  )
+
   return (
     <div className="flex h-full flex-col">
       <SessionsToolbar
-        dayCount={dayCount}
+        mode={mode}
         rangeLabel={rangeLabel}
         onShiftRange={shiftRange}
         onGoToday={goToday}
-        onDayCountChange={setDayCount}
+        onModeChange={setMode}
       />
 
       {error && (
@@ -215,21 +355,41 @@ export default function SessionsPage(): React.JSX.Element {
       )}
 
       <div className="min-h-0 flex-1 border-t border-app-border">
-        <SessionsCalendar
-          days={days}
-          sessions={sessions}
-          tasks={tasks}
-          projects={projects}
-          timeBlocks={timeBlocks}
-          now={now}
-          pendingDraft={pendingDraft}
-          onCreateDraft={handleCreateDraft}
-          onUpdate={handleUpdate}
-          onOpenSession={handleOpenSession}
-          onDeleteSession={deleteSession}
-          onUpdateTimeBlock={handleUpdateTimeBlock}
-          onDeleteTimeBlock={deleteTimeBlock}
-        />
+        {mode.kind === "days" && (
+          <SessionsCalendar
+            days={days}
+            sessions={sessions}
+            tasks={tasks}
+            projects={projects}
+            timeBlocks={timeBlocks}
+            calendarEvents={calendarEvents}
+            now={now}
+            pendingDraft={pendingDraft}
+            onCreateDraft={handleCreateDraft}
+            onUpdate={handleUpdate}
+            onOpenSession={handleOpenSession}
+            onDeleteSession={deleteSession}
+            onUpdateTimeBlock={handleUpdateTimeBlock}
+            onDeleteTimeBlock={deleteTimeBlock}
+            onOpenEvent={setEditingEventId}
+            onDeleteEvent={deleteCalendarEvent}
+          />
+        )}
+        {mode.kind === "month" && (
+          <MonthView
+            anchor={anchor}
+            items={rangeItems}
+            onOpenItem={handleOpenItem}
+            onPickDay={handlePickDay}
+          />
+        )}
+        {mode.kind === "agenda" && (
+          <AgendaView
+            items={rangeItems}
+            now={now}
+            onOpenItem={handleOpenItem}
+          />
+        )}
       </div>
 
       {draftCreate && draftMode === "task" && (
@@ -240,6 +400,7 @@ export default function SessionsPage(): React.JSX.Element {
           onCancel={() => setDraftCreate(null)}
           onPick={handlePickTask}
           onSwitchToGhost={() => setDraftMode("ghost")}
+          onSwitchToEvent={() => setDraftMode("event")}
         />
       )}
 
@@ -249,6 +410,27 @@ export default function SessionsPage(): React.JSX.Element {
           onCancel={() => setDraftCreate(null)}
           onCreate={handlePickGhostBlock}
           onSwitchToTask={() => setDraftMode("task")}
+        />
+      )}
+
+      {draftCreate && draftMode === "event" && (
+        <EventEditorDialog
+          draft={draftCreate}
+          onCancel={() => setDraftCreate(null)}
+          onSubmit={handleCreateEvent}
+          onSwitchToTask={() => setDraftMode("task")}
+        />
+      )}
+
+      {editingEvent && (
+        <EventEditorDialog
+          event={editingEvent}
+          onCancel={() => setEditingEventId(null)}
+          onSubmit={handleSaveEvent}
+          onDelete={() => {
+            deleteCalendarEvent(editingEvent.id)
+            setEditingEventId(null)
+          }}
         />
       )}
     </div>
