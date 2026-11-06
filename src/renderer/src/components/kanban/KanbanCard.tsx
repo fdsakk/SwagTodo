@@ -2,6 +2,7 @@ import { useSortable } from "@dnd-kit/sortable"
 import { CSS } from "@dnd-kit/utilities"
 import { SubtaskProgressRing } from "@renderer/components/task-list/subtask-progress-ring"
 import { TaskContextMenu } from "@renderer/components/task-list/task-context-menu"
+import { useUndoableTaskActions } from "@renderer/hooks/useUndoableTaskActions"
 import { useDomainStore } from "@renderer/store"
 import type { Label, Priority, Task, TaskStatus } from "@renderer/types"
 import { cn } from "@renderer/utils/cn"
@@ -80,9 +81,8 @@ export const SortableCard = memo(function SortableCard({
     [transform, transition]
   )
   const handleClick = useCallback(() => onOpen(task.id), [onOpen, task.id])
-  const { archiveTask, unarchiveTask, deleteTask, updateTask } = useDomainStore(
-    (state) => state.actions
-  )
+  const { unarchiveTask, updateTask } = useDomainStore((state) => state.actions)
+  const { archiveTask, deleteTask } = useUndoableTaskActions()
   const handleSetPriority = useCallback(
     (taskId: string, priority: Priority) => updateTask(taskId, { priority }),
     [updateTask]

@@ -7,8 +7,9 @@ import type {
   TaskStatus
 } from "@renderer/types"
 import { cn } from "@renderer/utils/cn"
+import { describeRecurrence } from "@renderer/utils/recurrence"
 import { formatDueDate, PRIORITY_META } from "@renderer/utils/task"
-import { Flag } from "lucide-react"
+import { Flag, Lock, Paperclip, Repeat } from "lucide-react"
 import { Fragment, memo, useEffect, useRef, useState } from "react"
 import { AnimatedCheckbox } from "./animated-checkbox"
 import { SubtaskProgressRing } from "./subtask-progress-ring"
@@ -17,11 +18,13 @@ import { TaskContextMenu } from "./task-context-menu"
 interface TaskRowProps {
   task: Task
   project?: Project
-  labels: Label[]
+  labelById: ReadonlyMap<string, Label>
   showProjectContext?: boolean
   delayCompleteAnimation?: boolean
+  selected?: boolean
+  blocked?: boolean
   index: number
-  onOpen: (taskId: string) => void
+  onOpen: (taskId: string, event?: React.MouseEvent) => void
   onToggleComplete: (taskId: string, options?: { delayMs?: number }) => void
   onArchive?: (taskId: string) => void
   onUnarchive?: (taskId: string) => void
@@ -84,6 +87,41 @@ function TaskRowBase(props: TaskRowProps): React.JSX.Element {
     metaParts.push(
       <span className={cn(overdue && "text-red-400/80")} key="due-date">
         {formatDueDate(props.task.dueDate)}
+        {props.task.dueTime && ` ${props.task.dueTime}`}
+      </span>
+    )
+  }
+
+  if (props.task.recurrence) {
+    metaParts.push(
+      <span
+        className="inline-flex items-center gap-1"
+        key="recurrence"
+        title={describeRecurrence(props.task.recurrence)}
+      >
+        <Repeat size={11} />
+        {describeRecurrence(props.task.recurrence)}
+      </span>
+    )
+  }
+
+  if (props.blocked) {
+    metaParts.push(
+      <span
+        className="inline-flex items-center gap-1 text-amber-400/90"
+        key="blocked"
+      >
+        <Lock size={11} />
+        Blocked
+      </span>
+    )
+  }
+
+  if (props.task.attachments?.length) {
+    metaParts.push(
+      <span className="inline-flex items-center gap-1" key="attachments">
+        <Paperclip size={11} />
+        {props.task.attachments.length}
       </span>
     )
   }
@@ -92,7 +130,9 @@ function TaskRowBase(props: TaskRowProps): React.JSX.Element {
     metaParts.push(<span key="project">{projectContext}</span>)
   }
 
-  for (const label of props.labels) {
+  for (const labelId of props.task.labels) {
+    const label = props.labelById.get(labelId)
+    if (!label) continue
     metaParts.push(<span key={`label-${label.id}`}>#{label.name}</span>)
   }
 
@@ -116,15 +156,18 @@ function TaskRowBase(props: TaskRowProps): React.JSX.Element {
       onSetStatus={(taskId, status) => props.onUpdate?.(taskId, { status })}
       onUnarchive={props.onUnarchive ?? (() => {})}
     >
-      <li>
+      <div>
         <div
+          data-selected={props.selected || undefined}
           className={cn(
             "group relative flex cursor-pointer items-center gap-3.5 rounded-lg border border-app-border/64 bg-app-card px-3.5 py-2.5 shadow-xs/5 transition-colors before:pointer-events-none before:absolute before:inset-0 before:rounded-[calc(var(--radius-lg)-1px)] before:shadow-[0_1px_--theme(--color-black/4%)] hover:bg-app-hover dark:before:shadow-[0_-1px_--theme(--color-white/6%)]",
-            isVisuallyCompleted && "opacity-40"
+            isVisuallyCompleted && "opacity-40",
+            props.selected &&
+              "border-app-accent/70 bg-app-active ring-1 ring-app-accent/40"
           )}
-          onClick={() => {
+          onClick={(event) => {
             if (isCompleting) return
-            props.onOpen(props.task.id)
+            props.onOpen(props.task.id, event)
           }}
         >
           <div onClick={(e) => e.stopPropagation()}>
@@ -170,7 +213,7 @@ function TaskRowBase(props: TaskRowProps): React.JSX.Element {
             <SubtaskProgressRing completed={subTaskDone} total={subTaskTotal} />
           )}
         </div>
-      </li>
+      </div>
     </TaskContextMenu>
   )
 }

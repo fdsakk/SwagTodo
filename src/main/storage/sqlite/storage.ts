@@ -2,19 +2,20 @@ import { existsSync } from "node:fs"
 import Database from "better-sqlite3"
 import { DEFAULT_UI_SCALE } from "../../../shared/defaults"
 import type { AppState } from "../../../shared/types"
-import { defaultAppState, mergeAppState, normalizeAppState } from "../appState"
+import { defaultAppState, normalizeAppState } from "../appState"
 import { SCHEMA } from "./schema"
 import {
   changedIds,
-  changedTaskChildIds,
-  changedTaskIds,
+  diffTasks,
   inflateTaskRows,
   parseSetting,
   readLegacyElectronStore,
-  serializeAppState
+  serializeAppState,
+  serializeNormalizedState
 } from "./serialize"
 import {
   EMPTY_SNAPSHOT,
+  SETTINGS_KEYS,
   type SqliteStateSnapshot,
   type StoredLabelRow,
   type StoredMedicationRow,
@@ -22,7 +23,8 @@ import {
   type StoredSessionRow,
   type StoredSettingRow,
   type StoredTaskAggregateRow,
-  type StoredTimeBlockRow
+  type StoredTimeBlockRow,
+  TASK_MIGRATION_COLUMNS
 } from "./types"
 
 type SqliteDatabase = Database.Database
@@ -40,12 +42,16 @@ export class SqliteAppStorage {
     const isNewDatabase = !existsSync(path)
     this.db = new Database(path)
     this.db.exec(SCHEMA)
-    const taskColumns = this.db
-      .prepare<[], { name: string }>("PRAGMA table_info(tasks)")
-      .all()
-      .map((column) => column.name)
-    if (!taskColumns.includes("archived_at")) {
-      this.db.exec("ALTER TABLE tasks ADD COLUMN archived_at TEXT")
+    const taskColumns = new Set(
+      this.db
+        .prepare<[], { name: string }>("PRAGMA table_info(tasks)")
+        .all()
+        .map((column) => column.name)
+    )
+    for (const column of TASK_MIGRATION_COLUMNS) {
+      if (!taskColumns.has(column)) {
+        this.db.exec(`ALTER TABLE tasks ADD COLUMN ${column} TEXT`)
+      }
     }
 
     const selectTasks = this.db.prepare<[], StoredTaskAggregateRow>(`
@@ -147,18 +153,41 @@ export class SqliteAppStorage {
         pkSettings: parseSetting(settings, "pkSettings"),
         uiScale: parseSetting(settings, "uiScale"),
         isSidebarCollapsed: parseSetting(settings, "isSidebarCollapsed"),
-        appearance: parseSetting(settings, "appearance")
+        appearance: parseSetting(settings, "appearance"),
+        preferences: parseSetting(settings, "preferences")
       })
     }
 
+    // Real UPSERT: OR REPLACE deletes the row first, which cascades and wipes
+    // task_subtasks/task_labels for tasks whose children did not change.
     const upsertTask = this.db.prepare(`
-      INSERT OR REPLACE INTO tasks (
-        id, title, description, priority, due_date, project_id, completed, status,
-        completed_at, archived_at, created_at, updated_at, sort_order, position
+      INSERT INTO tasks (
+        id, title, description, priority, due_date, due_time, recurrence,
+        blocked_by, attachments, project_id, completed, status, completed_at,
+        archived_at, created_at, updated_at, sort_order, position
       ) VALUES (
-        @id, @title, @description, @priority, @due_date, @project_id, @completed, @status,
-        @completed_at, @archived_at, @created_at, @updated_at, @sort_order, @position
+        @id, @title, @description, @priority, @due_date, @due_time, @recurrence,
+        @blocked_by, @attachments, @project_id, @completed, @status, @completed_at,
+        @archived_at, @created_at, @updated_at, @sort_order, @position
       )
+      ON CONFLICT(id) DO UPDATE SET
+        title = excluded.title,
+        description = excluded.description,
+        priority = excluded.priority,
+        due_date = excluded.due_date,
+        due_time = excluded.due_time,
+        recurrence = excluded.recurrence,
+        blocked_by = excluded.blocked_by,
+        attachments = excluded.attachments,
+        project_id = excluded.project_id,
+        completed = excluded.completed,
+        status = excluded.status,
+        completed_at = excluded.completed_at,
+        archived_at = excluded.archived_at,
+        created_at = excluded.created_at,
+        updated_at = excluded.updated_at,
+        sort_order = excluded.sort_order,
+        position = excluded.position
     `)
     const deleteTasksNotIn = this.db.prepare(
       `DELETE FROM tasks WHERE id NOT IN (SELECT value FROM json_each(?))`
@@ -185,8 +214,12 @@ export class SqliteAppStorage {
       `DELETE FROM projects WHERE id NOT IN (SELECT value FROM json_each(?))`
     )
     const upsertLabel = this.db.prepare(`
-      INSERT OR REPLACE INTO labels (id, name, color, position)
+      INSERT INTO labels (id, name, color, position)
       VALUES (@id, @name, @color, @position)
+      ON CONFLICT(id) DO UPDATE SET
+        name = excluded.name,
+        color = excluded.color,
+        position = excluded.position
     `)
     const deleteLabelsNotIn = this.db.prepare(
       `DELETE FROM labels WHERE id NOT IN (SELECT value FROM json_each(?))`
@@ -221,32 +254,35 @@ export class SqliteAppStorage {
 
     this.writeDeltaTx = this.db.transaction(
       (prev: SqliteStateSnapshot, next: SqliteStateSnapshot) => {
-        const taskIds = JSON.stringify(next.tasks.map((t) => t.id))
-        const changed = changedTaskIds(prev, next)
-        const changedChildren = changedTaskChildIds(prev, next)
-        for (const t of next.tasks) {
-          if (changed.has(t.id)) upsertTask.run(t)
+        // Labels first: task_labels rows reference labels(id).
+        if (changedIds(prev.labels, next.labels)) {
+          for (const row of next.labels) upsertLabel.run(row)
+          deleteLabelsNotIn.run(idsJson(next.labels))
         }
-        deleteTasksNotIn.run(next.tasks.length ? taskIds : "[]")
+
+        const { changed, changedChildren } = diffTasks(prev, next)
+        if (changed.size > 0) {
+          for (const t of next.tasks) {
+            if (changed.has(t.id)) upsertTask.run(t)
+          }
+          deleteTasksNotIn.run(idsJson(next.tasks))
+        }
         for (const taskId of changedChildren) {
           deleteSubtasksForTask.run(taskId)
           deleteLabelsForTask.run(taskId)
         }
-        for (const row of next.taskSubtasks) {
-          if (changedChildren.has(row.task_id)) insertSubTask.run(row)
-        }
-        for (const row of next.taskLabels) {
-          if (changedChildren.has(row.task_id)) insertTaskLabel.run(row)
+        if (changedChildren.size > 0) {
+          for (const row of next.taskSubtasks) {
+            if (changedChildren.has(row.task_id)) insertSubTask.run(row)
+          }
+          for (const row of next.taskLabels) {
+            if (changedChildren.has(row.task_id)) insertTaskLabel.run(row)
+          }
         }
 
         if (changedIds(prev.projects, next.projects)) {
           for (const row of next.projects) upsertProject.run(row)
           deleteProjectsNotIn.run(idsJson(next.projects))
-        }
-
-        if (changedIds(prev.labels, next.labels)) {
-          for (const row of next.labels) upsertLabel.run(row)
-          deleteLabelsNotIn.run(idsJson(next.labels))
         }
 
         if (changedIds(prev.sessions, next.sessions)) {
@@ -264,7 +300,12 @@ export class SqliteAppStorage {
           deleteMedicationsNotIn.run(idsJson(next.medications))
         }
 
-        for (const row of next.settings) upsertSetting.run(row)
+        const prevSettings = new Map(
+          prev.settings.map((row): [string, string] => [row.key, row.value])
+        )
+        for (const row of next.settings) {
+          if (prevSettings.get(row.key) !== row.value) upsertSetting.run(row)
+        }
       }
     )
 
@@ -287,7 +328,36 @@ export class SqliteAppStorage {
   }
 
   savePartial(patch: Partial<AppState>): void {
-    this.writeState(mergeAppState(this.cachedState, patch))
+    // Cached state is already normalized; validate only the patched keys.
+    const normalizedPatch = normalizeAppState(patch)
+    const keys = Object.keys(patch) as (keyof AppState)[]
+    const nextState = { ...this.cachedState } as Record<string, unknown>
+    for (const key of keys) nextState[key] = normalizedPatch[key]
+
+    const prev = this.cachedSnapshot
+    const next = serializeNormalizedState(nextState as unknown as AppState)
+    const has = (key: keyof AppState): boolean => keys.includes(key)
+    // Reuse untouched slices so writeDeltaTx can skip them by reference.
+    if (!has("tasks")) {
+      next.tasks = prev.tasks
+      next.taskSubtasks = prev.taskSubtasks
+      next.taskLabels = prev.taskLabels
+    }
+    if (!has("projects")) next.projects = prev.projects
+    if (!has("labels")) next.labels = prev.labels
+    if (!has("sessions")) next.sessions = prev.sessions
+    if (!has("timeBlocks")) next.timeBlocks = prev.timeBlocks
+    if (!has("medications")) next.medications = prev.medications
+    if (!SETTINGS_KEYS.some(has)) next.settings = prev.settings
+
+    this.writeDeltaTx(prev, next)
+    this.cachedState = nextState as unknown as AppState
+    this.cachedSnapshot = next
+  }
+
+  /** Online, consistent copy of the live database (better-sqlite3 backup API). */
+  async backupTo(destination: string): Promise<void> {
+    await this.db.backup(destination)
   }
 
   close(): void {
@@ -296,7 +366,7 @@ export class SqliteAppStorage {
 
   private writeState(state: AppState): void {
     const normalized = normalizeAppState(state)
-    const next = serializeAppState(normalized)
+    const next = serializeNormalizedState(normalized)
     this.writeDeltaTx(this.cachedSnapshot, next)
     this.cachedState = normalized
     this.cachedSnapshot = next

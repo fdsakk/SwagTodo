@@ -36,6 +36,16 @@
 - **Windows app icon**: `electron-builder.yml` points `win.icon` at `build/icon.ico`; keep it as a real multi-size ICO generated from `build/icon.png` with 256/128/64/48/32/16 sizes. `resources/icon.ico` is a packaged copy for manual/runtime access; runtime window icon still imports `resources/icon.png`.
 - **Activity page responsive rows**: `ActivityRow` should not rely on fixed project/time columns; omit relative elapsed time when space is tight and use adaptive `minmax`/fraction tracks with `min-w-0 truncate` so task titles/projects share width without horizontal scroll.
 
+- **SQLite save perf**: `savePartial` normalizes only patched keys (cache already normalized) and reuses untouched snapshot slices by reference; `diffTasks`/`changedIds` short-circuit on `===`. Renderer `persistedStorage` skips `JSON.stringify` for keys whose reference didn't change. Bench (3000 tasks): settings save 19→0.3 ms, task save 20→10 ms.
+- **Real SQLite check**: native `better-sqlite3` works under `ELECTRON_RUN_AS_NODE=1 ./node_modules/.bin/electron -r sucrase/register/ts <script.ts>` — use for ad-hoc storage roundtrips (not in `bun run test`).
+- **TaskRow memo**: pass stable `labelById` map + stable callbacks (`useTaskComplete` reads `getState()`), else `memo` is useless.
+
+- **Feature data model (2026-11-06)**: Task optional `dueTime` ("HH:mm"), `recurrence`, `blockedBy`, `attachments` → SQLite TEXT/JSON columns migrated via `TASK_MIGRATION_COLUMNS` loop. App settings live in one persisted key `preferences` (shared `preferencesSchema`, `DEFAULT_PREFERENCES`). Recurring completion goes through `mapTasks` → `finalizeTaskChange` in every completion path (toggle, bulk, updateTask status, kanban).
+- **Main features** wired in `src/main/features.ts`; pure logic in `backup.ts`/`reminders.ts`/`attachments.ts` (tested). Main reacts to preference changes via `registerIpcHandlers({ onStateSaved })`. Single-instance lock in `index.ts`.
+- **Headless app run**: no xvfb on this machine; `electron --ozone-platform=headless --user-data-dir=<scratch> .` driven by `playwright-core` `_electron` (installed in scratchpad, not repo) works for screenshots; GLX errors in stderr are noise.
+
+- **Auto-archive**: `archiveStaleCompletedTasks` (AUTO_ARCHIVE_DAYS=14 by `completedAt`) sets only `archivedAt`, never `updatedAt` — ActivityPage treats updatedAt changes as edits.
+
 ## Do-Not-Repeat
 
 - [2026-04-19] No loose components at `components/` root; no default exports for new components.
@@ -48,6 +58,10 @@
 - [2026-04-29] No static-import TSX UI from persistence/store modules in Node tests; use `.ts` helpers/injected reporters.
 - [2026-04-29] No type re-export alone when same file needs type locally; import + re-export separately.
 
+- [2026-11-06] No `INSERT OR REPLACE` on tables with FK `ON DELETE CASCADE` children (tasks, labels) — it deletes rows and wipes children. Use `ON CONFLICT(id) DO UPDATE`.
+
+- [2026-11-06] No `window.prompt()` in renderer — Electron does not support it; use inline inputs/dialogs.
+
 ## Decision Log
 
 - [2026-04-19] Component reorg: 23 loose files → domain subfolders w/ `index.tsx` barrels, named exports.
@@ -57,3 +71,4 @@
 - [2026-04-24] Archive task merge: keep `archive-tooltip-2` data model + filtering; Radix/shadcn `TaskContextMenu` from `archive-tooltip` w/ hover colors from `archive-tooltip-2`.
 - [2026-04-28] `/components/ui` uses coss/Base UI + Tailwind v4; task right-click direct Base UI `ContextMenu`; Radix runtime removed.
 - [2026-04-28] SearchSortBar filters: coss `Popover` w/ selects (not `Menu` — nested selects fight focus).
+- [2026-11-06] Feature pack: recurrence (completed instance keeps history, rule moves to spawned task), Undo toasts replace delete confirm, quick add uses `#label @project`, preferences as single settings key, react-markdown (no raw HTML) for notes, attachments copied into userData/attachments with orphan GC at startup.

@@ -7,6 +7,7 @@ import {
   TabsTab
 } from "@renderer/components/ui/tabs"
 import { useTaskComplete } from "@renderer/hooks/useTaskComplete"
+import { useUndoableTaskActions } from "@renderer/hooks/useUndoableTaskActions"
 import {
   selectProjectById,
   selectProjectTaskGroups,
@@ -58,6 +59,7 @@ export default function ProjectPage(
     }))
   )
   const toggleTaskComplete = useTaskComplete()
+  const undoable = useUndoableTaskActions()
 
   const project = useDomainStore((state) =>
     selectProjectById(state, selectedProjectId)
@@ -159,8 +161,8 @@ export default function ProjectPage(
             emptyStateTitle="No tasks"
             groups={groupedTasks}
             labels={labels}
-            onArchiveTask={actions.archiveTask}
-            onDeleteTask={actions.deleteTask}
+            onArchiveTask={undoable.archiveTask}
+            onDeleteTask={undoable.deleteTask}
             onOpenTask={openEditPanel}
             onToggleComplete={toggleTaskComplete}
             onUpdateTask={actions.updateTask}

@@ -11,9 +11,14 @@ export {
   selectTaskById,
   selectTasksForProject,
   selectTodayTaskGroups,
-  selectVisibleTasks
+  selectUpcomingTaskGroups,
+  selectVisibleTasks,
+  taskMatchesQuery,
+  UPCOMING_DAYS
 } from "./domain/selectors"
 export type {
+  ActiveTimer,
+  DeletedTasksSnapshot,
   DomainActions,
   DomainState,
   DomainStore,

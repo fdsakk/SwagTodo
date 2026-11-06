@@ -9,6 +9,7 @@ import {
   shell
 } from "electron"
 import icon from "../../resources/icon.png?asset"
+import { type FeatureHandle, setupFeatures } from "./features"
 import { registerIpcHandlers } from "./ipcHandlers"
 import { createSqliteAppStorage, type SqliteAppStorage } from "./storage/sqlite"
 
@@ -18,6 +19,8 @@ const IS_WAYLAND =
 let appStorage: SqliteAppStorage | null = null
 let appStoragePath: string | null = null
 let hasShownProcessErrorDialog = false
+let mainWindow: BrowserWindow | null = null
+let features: FeatureHandle | null = null
 
 if (IS_WAYLAND) {
   const WAYLAND_CM_FEATURES =
@@ -75,7 +78,7 @@ function installGlobalErrorHandlers(): void {
 }
 
 function createWindow(): void {
-  const mainWindow = new BrowserWindow({
+  const win = new BrowserWindow({
     width: 1280,
     height: 800,
     minWidth: 960,
@@ -96,29 +99,39 @@ function createWindow(): void {
     }
   })
 
+  mainWindow = win
   const emitWindowState = (): void => {
-    if (mainWindow.isDestroyed()) return
-    mainWindow.webContents.send("window:state", {
-      isMaximized: mainWindow.isMaximized(),
-      isFullScreen: mainWindow.isFullScreen()
+    if (win.isDestroyed()) return
+    win.webContents.send("window:state", {
+      isMaximized: win.isMaximized(),
+      isFullScreen: win.isFullScreen()
     })
   }
 
-  mainWindow.on("maximize", emitWindowState)
-  mainWindow.on("unmaximize", emitWindowState)
-  mainWindow.on("enter-full-screen", emitWindowState)
-  mainWindow.on("leave-full-screen", emitWindowState)
-  mainWindow.setMenuBarVisibility(false)
+  win.on("maximize", emitWindowState)
+  win.on("unmaximize", emitWindowState)
+  win.on("enter-full-screen", emitWindowState)
+  win.on("leave-full-screen", emitWindowState)
+  win.setMenuBarVisibility(false)
+  win.on("close", (event) => {
+    if (features?.shouldHideOnClose()) {
+      event.preventDefault()
+      win.hide()
+    }
+  })
+  win.on("closed", () => {
+    if (mainWindow === win) mainWindow = null
+  })
 
   const showWindow = (): void => {
-    if (!mainWindow.isDestroyed() && !mainWindow.isVisible()) mainWindow.show()
+    if (!win.isDestroyed() && !win.isVisible()) win.show()
   }
 
-  mainWindow.once("ready-to-show", showWindow)
-  mainWindow.webContents.once("dom-ready", showWindow)
+  win.once("ready-to-show", showWindow)
+  win.webContents.once("dom-ready", showWindow)
 
   const ALLOWED_PROTOCOLS = new Set(["https:", "http:"])
-  mainWindow.webContents.setWindowOpenHandler(({ url }) => {
+  win.webContents.setWindowOpenHandler(({ url }) => {
     try {
       const { protocol } = new URL(url)
       if (ALLOWED_PROTOCOLS.has(protocol)) void shell.openExternal(url)
@@ -128,19 +141,28 @@ function createWindow(): void {
     return { action: "deny" }
   })
 
-  mainWindow.webContents.on(
-    "did-fail-load",
-    (_, errorCode, errorDescription) => {
-      console.error("[renderer] did-fail-load", { errorCode, errorDescription })
-    }
-  )
+  win.webContents.on("did-fail-load", (_, errorCode, errorDescription) => {
+    console.error("[renderer] did-fail-load", { errorCode, errorDescription })
+  })
 
   const rendererUrl = process.env.ELECTRON_RENDERER_URL
   if (is.dev && rendererUrl) {
-    void mainWindow.loadURL(rendererUrl)
+    void win.loadURL(rendererUrl)
   } else {
-    void mainWindow.loadFile(join(__dirname, "../renderer/index.html"))
+    void win.loadFile(join(__dirname, "../renderer/index.html"))
   }
+}
+
+// One instance owns the SQLite file; a second launch focuses the first.
+if (!app.requestSingleInstanceLock()) {
+  app.quit()
+} else {
+  app.on("second-instance", () => {
+    if (!mainWindow || mainWindow.isDestroyed()) return
+    if (mainWindow.isMinimized()) mainWindow.restore()
+    mainWindow.show()
+    mainWindow.focus()
+  })
 }
 
 app.whenReady().then(() => {
@@ -155,9 +177,17 @@ app.whenReady().then(() => {
     ipcMain,
     getAppStorage,
     resolveSenderWindow: (event: IpcMainInvokeEvent) =>
-      BrowserWindow.fromWebContents(event.sender)
+      BrowserWindow.fromWebContents(event.sender),
+    onStateSaved: () => features?.onStateSaved()
   })
   createWindow()
+  features = setupFeatures({
+    ipcMain,
+    getAppStorage,
+    getMainWindow: () => mainWindow,
+    userDataDir: app.getPath("userData"),
+    iconPath: icon
+  })
 
   app.on("activate", () => {
     if (BrowserWindow.getAllWindows().length === 0) createWindow()
@@ -171,6 +201,12 @@ app.on("window-all-closed", () => {
 })
 
 app.on("before-quit", () => {
+  features?.markQuitting()
+})
+
+app.on("will-quit", () => {
+  features?.dispose()
+  features = null
   appStorage?.close()
   appStorage = null
 })

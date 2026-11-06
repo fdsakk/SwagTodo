@@ -1,3 +1,5 @@
+import { BulkActionBar } from "@renderer/components/bulk-actions"
+import { CommandPalette } from "@renderer/components/command-palette"
 import {
   SearchSortBar,
   Sidebar,
@@ -9,7 +11,10 @@ import {
   ProjectPickerModal,
   ShortcutsHelpModal
 } from "@renderer/components/modals"
+import { QuickAddModal } from "@renderer/components/quick-add"
 import { TaskDetailPanel } from "@renderer/components/task-panel"
+import { useTimerCompletion } from "@renderer/components/timer"
+import { useAutoArchive } from "@renderer/hooks/useAutoArchive"
 import { useKeyboardShortcuts } from "@renderer/hooks/useKeyboardShortcuts"
 import InboxPage from "@renderer/pages/InboxPage"
 import TodayPage from "@renderer/pages/TodayPage"
@@ -19,7 +24,12 @@ import { cn } from "@renderer/utils/cn"
 import { lazy, Suspense, useCallback, useEffect, useRef, useState } from "react"
 import { useShallow } from "zustand/react/shallow"
 
-const FULL_HEIGHT_VIEWS = new Set<ViewName>(["sessions", "settings", "health"])
+const FULL_HEIGHT_VIEWS = new Set<ViewName>([
+  "sessions",
+  "settings",
+  "health",
+  "stats"
+])
 const ActivityPage = lazy(() => import("@renderer/pages/ActivityPage"))
 const ArchivePage = lazy(() => import("@renderer/pages/ArchivePage"))
 const HealthPage = lazy(() =>
@@ -30,6 +40,8 @@ const HealthPage = lazy(() =>
 const ProjectPage = lazy(() => import("@renderer/pages/ProjectPage"))
 const SessionsPage = lazy(() => import("@renderer/pages/SessionsPage"))
 const SettingsPage = lazy(() => import("@renderer/pages/SettingsPage"))
+const UpcomingPage = lazy(() => import("@renderer/pages/UpcomingPage"))
+const StatsPage = lazy(() => import("@renderer/pages/StatsPage"))
 
 function ViewFallback(): React.JSX.Element {
   return (
@@ -76,7 +88,13 @@ function App(): React.JSX.Element {
       selectSettings,
       selectHealth,
       selectProject,
-      setProjectTab
+      setProjectTab,
+      selectUpcoming,
+      selectStats,
+      setQuickAddOpen,
+      setCommandPaletteOpen,
+      openEditPanel,
+      clearSelection
     }
   } = useUiStore(
     useShallow((state) => ({
@@ -109,6 +127,20 @@ function App(): React.JSX.Element {
     contentRef.current?.focus({ preventScroll: true })
   }, [])
 
+  useTimerCompletion()
+  useAutoArchive(hydrated)
+
+  useEffect(() => {
+    const appApi = window.api?.app
+    if (!appApi) return
+    const offQuickAdd = appApi.onQuickAdd(() => setQuickAddOpen(true))
+    const offOpenTask = appApi.onOpenTask((taskId) => openEditPanel(taskId))
+    return () => {
+      offQuickAdd()
+      offOpenTask()
+    }
+  }, [openEditPanel, setQuickAddOpen])
+
   useEffect(() => {
     if (!hydrated || !window.api?.ui) return
     void window.api.ui.setZoomFactor(uiScale / 100)
@@ -119,7 +151,10 @@ function App(): React.JSX.Element {
       if (projectPickerOpen) setProjectPickerOpen(false)
       else if (helpOpen) setHelpOpen(false)
       else if (labelModalOpen) setLabelModalOpen(false)
-      else closeTaskPanel()
+      else {
+        closeTaskPanel()
+        clearSelection()
+      }
       focusContent()
     },
     onFocusSearch: triggerSearchFocus,
@@ -147,7 +182,11 @@ function App(): React.JSX.Element {
       const idx = UI_SCALE_OPTIONS.indexOf(uiScale)
       if (idx > 0) setUiScale(UI_SCALE_OPTIONS[idx - 1])
     },
-    onZoomReset: () => setUiScale(100)
+    onZoomReset: () => setUiScale(100),
+    onQuickAdd: () => setQuickAddOpen(true),
+    onGoUpcoming: selectUpcoming,
+    onGoStats: selectStats,
+    onCommandPalette: () => setCommandPaletteOpen(true)
   })
 
   if (!hydrated) {
@@ -179,6 +218,8 @@ function App(): React.JSX.Element {
     sessions: <SessionsPage />,
     settings: <SettingsPage />,
     health: <HealthPage />,
+    upcoming: <UpcomingPage />,
+    stats: <StatsPage />,
     project: (
       <ProjectPage
         onEditProject={(project) => openEditProjectPanel(project.id)}
@@ -223,6 +264,7 @@ function App(): React.JSX.Element {
               {viewContent[selectedView]}
             </Suspense>
           </div>
+          <BulkActionBar />
         </div>
 
         <TaskDetailPanel onClose={closeTaskPanel} />
@@ -241,6 +283,8 @@ function App(): React.JSX.Element {
       </button>
 
       <ShortcutsHelpModal open={helpOpen} onClose={() => setHelpOpen(false)} />
+      <QuickAddModal />
+      <CommandPalette />
 
       <ProjectPickerModal
         open={projectPickerOpen}

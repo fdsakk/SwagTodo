@@ -1,5 +1,10 @@
-import { SessionStats } from "@renderer/components/task-edit/SessionStats"
-import { SubtaskList } from "@renderer/components/task-edit/SubtaskList"
+import {
+  AttachmentList,
+  DependencyList,
+  MarkdownNote,
+  SessionStats,
+  SubtaskList
+} from "@renderer/components/task-edit"
 import { Button } from "@renderer/components/ui/button"
 import {
   DialogFooter,
@@ -8,11 +13,12 @@ import {
   DialogTitle
 } from "@renderer/components/ui/dialog"
 import { Separator } from "@renderer/components/ui/separator"
-import { Textarea } from "@renderer/components/ui/textarea"
-import { useDomainStore } from "@renderer/store"
-import type { Priority, Task, TaskStatus } from "@renderer/types"
+import { useUndoableTaskActions } from "@renderer/hooks/useUndoableTaskActions"
+import { useDomainStore, useUiStore } from "@renderer/store"
+import type { Priority, Recurrence, Task, TaskStatus } from "@renderer/types"
 import { computeTaskStats } from "@renderer/utils/sessions"
-import { Trash2 } from "lucide-react"
+import { startTaskTimer } from "@renderer/utils/timer"
+import { Play, Timer, Trash2 } from "lucide-react"
 import { useCallback, useEffect, useMemo, useRef, useState } from "react"
 import { useShallow } from "zustand/react/shallow"
 import { TaskFormFields } from "./task-form-fields"
@@ -30,24 +36,28 @@ export function TaskEditPanel({
   onClose
 }: TaskEditPanelProps): React.JSX.Element {
   const {
+    tasks,
     projects,
     labels,
     sessions,
+    addAttachments,
+    removeAttachment,
     updateTask,
     addSubTask,
     toggleSubTask,
-    deleteSubTask,
-    deleteTask
+    deleteSubTask
   } = useDomainStore(
     useShallow((state) => ({
+      tasks: state.tasks,
+      addAttachments: state.addAttachments,
+      removeAttachment: state.removeAttachment,
       projects: state.projects,
       labels: state.labels,
       sessions: state.sessions,
       updateTask: state.updateTask,
       addSubTask: state.addSubTask,
       toggleSubTask: state.toggleSubTask,
-      deleteSubTask: state.deleteSubTask,
-      deleteTask: state.deleteTask
+      deleteSubTask: state.deleteSubTask
     }))
   )
 
@@ -172,11 +182,10 @@ export function TaskEditPanel({
     [addSubTask, newSubTaskTitle, task.id]
   )
 
+  const { deleteTask } = useUndoableTaskActions()
   const handleDelete = useCallback(() => {
-    if (window.confirm("Delete this task?")) {
-      deleteTask(task.id)
-      onClose()
-    }
+    onClose()
+    deleteTask(task.id)
   }, [deleteTask, onClose, task.id])
 
   const handleDueDateChange = useCallback(
@@ -194,6 +203,19 @@ export function TaskEditPanel({
       updateTask(task.id, { projectId: v ?? undefined }),
     [task.id, updateTask]
   )
+
+  const handleDueTimeChange = useCallback(
+    (v: string | undefined) => updateTask(task.id, { dueTime: v }),
+    [task.id, updateTask]
+  )
+
+  const handleRecurrenceChange = useCallback(
+    (v: Recurrence | undefined) => updateTask(task.id, { recurrence: v }),
+    [task.id, updateTask]
+  )
+
+  const openEditPanel = useUiStore((state) => state.openEditPanel)
+  const timerTaskId = useUiStore((state) => state.activeTimer?.taskId)
 
   const handleStatusChange = useCallback(
     (v: TaskStatus) => updateTask(task.id, { status: v }),
@@ -219,11 +241,9 @@ export function TaskEditPanel({
               value={title}
             />
 
-            <Textarea
-              className="flex-1 min-h-[10.25rem] resize-none"
+            <MarkdownNote
               onBlur={flushDescription}
               onChange={handleDescriptionChange}
-              placeholder="Add description..."
               value={description}
             />
           </div>
@@ -232,9 +252,13 @@ export function TaskEditPanel({
 
           <TaskFormFields
             dueDate={task.dueDate}
+            dueTime={task.dueTime}
             emptyLabelsMessage="No labels selected."
             labels={labels}
             onDueDateChange={handleDueDateChange}
+            onDueTimeChange={handleDueTimeChange}
+            onRecurrenceChange={handleRecurrenceChange}
+            recurrence={task.recurrence}
             onPriorityChange={handlePriorityChange}
             onProjectChange={handleProjectChange}
             onStatusChange={handleStatusChange}
@@ -260,8 +284,55 @@ export function TaskEditPanel({
             onAdd={handleAddSubTask}
           />
         </div>
+        <div className="grid gap-5 sm:grid-cols-2">
+          <DependencyList
+            onChange={(blockedBy) => updateTask(task.id, { blockedBy })}
+            onOpenTask={openEditPanel}
+            task={task}
+            tasks={tasks}
+          />
+          <AttachmentList
+            attachments={task.attachments ?? []}
+            onAdd={(added) => addAttachments(task.id, added)}
+            onRemove={(attachmentId) => removeAttachment(task.id, attachmentId)}
+          />
+        </div>
         <div className="space-y-2">
-          <p className="text-xs font-medium text-app-text-muted">Sessions</p>
+          <div className="flex items-center gap-2">
+            <p className="text-xs font-medium text-app-text-muted">Sessions</p>
+            {!task.completed && timerTaskId !== task.id && (
+              <>
+                <Button
+                  className="h-6 px-1.5 text-xs"
+                  onClick={() => startTaskTimer(task.id, "stopwatch")}
+                  size="sm"
+                  title={
+                    task.projectId
+                      ? undefined
+                      : "Assign a project to track time"
+                  }
+                  type="button"
+                  variant="ghost"
+                >
+                  <Play size={11} />
+                  Timer
+                </Button>
+                <Button
+                  className="h-6 px-1.5 text-xs"
+                  onClick={() => startTaskTimer(task.id, "pomodoro")}
+                  size="sm"
+                  type="button"
+                  variant="ghost"
+                >
+                  <Timer size={11} />
+                  Pomodoro
+                </Button>
+              </>
+            )}
+            {timerTaskId === task.id && (
+              <span className="text-xs text-app-accent">Timer running</span>
+            )}
+          </div>
           <SessionStats stats={stats} />
         </div>
       </DialogPanel>

@@ -1,5 +1,6 @@
 import { TaskList } from "@renderer/components/task-list"
 import { useTaskComplete } from "@renderer/hooks/useTaskComplete"
+import { useUndoableTaskActions } from "@renderer/hooks/useUndoableTaskActions"
 import {
   selectArchivedTaskGroups,
   useDomainStore,
@@ -25,6 +26,7 @@ export default function ArchivePage(): React.JSX.Element {
     }))
   )
   const toggleTaskComplete = useTaskComplete()
+  const undoable = useUndoableTaskActions()
 
   const groupedTasks = useMemo(
     () => selectArchivedTaskGroups({ tasks }, visibleInput),
@@ -37,7 +39,7 @@ export default function ArchivePage(): React.JSX.Element {
       emptyStateTitle="Archive is empty"
       groups={groupedTasks}
       labels={labels}
-      onDeleteTask={actions.deleteTask}
+      onDeleteTask={undoable.deleteTask}
       onOpenTask={openEditPanel}
       onToggleComplete={toggleTaskComplete}
       onUnarchiveTask={actions.unarchiveTask}

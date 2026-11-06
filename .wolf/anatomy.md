@@ -1,7 +1,7 @@
 # anatomy.md
 
-> Auto-maintained by OpenWolf. Last scanned: 2026-05-11T17:20:10.114Z
-> Files: 262 tracked | Anatomy hits: 0 | Misses: 0
+> Auto-maintained by OpenWolf. Last scanned: 2026-11-06T14:05:34.188Z
+> Files: 278 tracked | Anatomy hits: 0 | Misses: 0
 
 ## ./
 
@@ -21,12 +21,6 @@
 - `tsconfig.json` — TypeScript configuration (~31 tok)
 - `tsconfig.node.json` — /_", "src/preload/\*\*/_", "src/shared/\*_/_"], (~72 tok)
 - `tsconfig.web.json` (~116 tok)
-
-## build/
-
-- `icon.icns` — macOS app icon resource (~0 tok)
-- `icon.ico` — Windows multi-size app icon resource used by electron-builder (~0 tok)
-- `icon.png` — Source PNG app icon, 1024x1024 RGBA (~0 tok)
 
 ## .agents/skills/coss-particles/
 
@@ -113,6 +107,12 @@
 
 - `openwolf.md` (~313 tok)
 
+## build/
+
+- `icon.icns` — macOS app icon resource (~0 tok)
+- `icon.ico` — Windows multi-size app icon resource used by electron-builder (~0 tok)
+- `icon.png` — Source PNG app icon, 1024x1024 RGBA (~0 tok)
+
 ## out/main/
 
 - `index.js` — Declares electron (~9831 tok)
@@ -136,8 +136,16 @@
 
 ## src/main/
 
+- `attachments.ts` — pure attachment name validation (`<uuid>.<ext>`), orphan detection
+- `backup.ts` — pure backup naming/pruning, JSON export envelope, import parsing, tasks CSV
+- `features.ts` — setupFeatures: backup/export/import/attachments/notify IPC, tray, global quick-add shortcut, reminder scheduler, daily auto-backup, close-to-tray
+- `reminders.ts` — pure collectDueReminders (dueDate+dueTime, lead minutes, window)
+- `attachments.ts` — Stored names are `<uuid><ext>` — never a path, never user-controlled. (~348 tok)
+- `backup.ts` — e.g. swag-todo-2026-11-06.db, or swag-todo-2026-11-06-pre-import.db (~977 tok)
+- `features.ts` — True when the close should hide to tray instead of quitting. (~3384 tok)
 - `index.ts` — IpcMainInvokeEvent: installGlobalErrorHandlers, createWindow (~1406 tok)
 - `ipcHandlers.ts` — Exports IpcRegistrar, IpcStorage, isZoomFactor, getPersistedUiScale, registerIpcHandlers (~933 tok)
+- `reminders.ts` — Local wall-clock due moment, or null when the task has no time. (~354 tok)
 
 ## src/main/storage/
 
@@ -153,6 +161,7 @@
 
 ## src/main/tests/
 
+- `features.test.ts` — reminders, backup, CSV, attachments, new task fields/preferences serialization
 - `ipcHandlers.test.ts` — Declares IpcRegistrar (~1091 tok)
 - `sqlite.test.ts` — Declares createFixtureState (~2274 tok)
 
@@ -222,6 +231,8 @@
 
 ## src/renderer/src/components/settings/
 
+- `WorkflowSection.tsx` — reminders, tray, global shortcut, pomodoro, saved views
+- `DataSection.tsx` — auto-backup, backup now, export JSON/CSV, import/restore
 - `CustomizeSection.tsx` — TOKEN_LABELS — uses useState, useEffect, useCallback, useMemo (~2960 tok)
 - `index.tsx` (~42 tok)
 - `ThemeSection.tsx` — UI_SCALE_ITEMS (~894 tok)
@@ -236,6 +247,9 @@
 
 ## src/renderer/src/components/task-edit/
 
+- `MarkdownNote.tsx` — description Write/Preview (react-markdown + remark-gfm)
+- `DependencyList.tsx` — blockedBy editor + 'Blocks' list
+- `AttachmentList.tsx` — attach/open/remove files via window.api.attachments
 - `index.tsx` (~26 tok)
 - `SessionStats.tsx` — SessionStats (~345 tok)
 - `SubtaskList.tsx` — SubtaskList (~614 tok)
@@ -246,12 +260,14 @@
 - `index.tsx` (~70 tok)
 - `subtask-progress-ring.tsx` — SubtaskProgressRingBase (~516 tok)
 - `task-context-menu.tsx` — STATUSES (~1935 tok)
-- `TaskList.tsx` — TaskList — uses useMemo (~909 tok)
+- `TaskList.tsx` — Show groups without tasks (as drop targets). (~2910 tok)
 - `TaskRow.tsx` — COMPLETE_TOGGLE_DELAY_MS (~1585 tok)
 
 ## src/renderer/src/components/task-panel/
 
+- `recurrence-field.tsx` — repeat rule editor (freq, interval, weekdays, from completion)
 - `index.tsx` (~59 tok)
+- `recurrence-field.tsx` — Monday-first display order, values are JS weekday numbers. (~1303 tok)
 - `task-form-fields.tsx` — INBOX_VALUE — uses useCallback, useMemo (~2304 tok)
 - `TaskCreatePanel.tsx` — INITIAL_STATE — renders form, modal — uses useCallback (~1266 tok)
 - `TaskDetailPanel.tsx` — TaskDetailPanel — renders modal — uses useEffect (~770 tok)
@@ -316,10 +332,13 @@
 
 ## src/renderer/src/hooks/
 
+- `useAutoArchive.ts` — on hydrate + hourly: archiveStaleCompletedTasks (done >= 14 days)
+- `useUndoableTaskActions.ts` — delete/archive with Undo toast
 - `use-media-query.ts` — Touch-like input (finger). Use "fine" for mouse/trackpad. (~740 tok)
 - `useKeyboardShortcuts.ts` — Exports useKeyboardShortcuts (~766 tok)
 - `useTaskComplete.ts` — Exports useTaskComplete (~514 tok)
 - `useThemeColors.ts` — Exports useThemeColors (~196 tok)
+- `useUndoableTaskActions.ts` — Destructive task actions that offer an "Undo" toast instead of a confirm. (~542 tok)
 
 ## src/renderer/src/lib/
 
@@ -327,6 +346,8 @@
 
 ## src/renderer/src/pages/
 
+- `UpcomingPage.tsx` — overdue + next 7 days, drag task between days
+- `StatsPage.tsx` — summary cards, completions/day, time per project (recharts)
 - `ActivityPage.tsx` — buildEvents — uses useMemo (~1650 tok)
 - `ArchivePage.tsx` — ArchivePage — uses useMemo (~401 tok)
 - `HealthPage.tsx` — HealthPage — renders chart — uses useState, useMemo (~691 tok)
@@ -371,10 +392,12 @@
 - `projects.ts` — Exports createProjectActions (~489 tok)
 - `sessions.ts` — Exports createSessionActions (~1048 tok)
 - `settings.ts` — Exports createSettingsActions (~576 tok)
-- `tasks.ts` — Exports createTaskActions (~1610 tok)
+- `tasks.ts` — Applies `change` to every task in `ids`, spawning the next occurrence for (~2750 tok)
 
 ## src/renderer/src/store/domain/helpers/
 
+- `recurrence.ts` — finalizeTaskChange: spawn next occurrence when recurring task completes
+- `recurrence.ts` — When a recurring task transitions to completed, the completed instance (~411 tok)
 - `relations.ts` — Exports removeTaskRelations, removeProjectSessions, detachProjectFromTasks, detachLabelFromTasks (~444 tok)
 
 ## src/renderer/src/store/shared/
@@ -385,6 +408,7 @@
 
 ## src/renderer/src/store/tests/
 
+- `features.test.ts` — recurrence spawn, delete/restore, bulk, attachments, search, upcoming
 - `domain-store.test.ts` — Declares createTask (~3488 tok)
 - `persist.test.ts` — Declares state (~2814 tok)
 - `register-aliases.cjs` — Module: patchedResolveFilename (~210 tok)
@@ -401,15 +425,45 @@
 
 ## src/renderer/src/utils/
 
+- `quickAdd.ts` — parseQuickAdd (PL/EN dates, times, p1-4, #label, @project, recurrence)
+- `recurrence.ts` — nextDueDate, describeRecurrence
+- `stats.ts` — completionsPerDay, timePerProject, summarizeTasks
+- `timer.ts` — startTaskTimer/stopActiveTimer (logs sessions), formatClock
+- `*.test.ts` — tests for the above
 - `calendar.ts` — Exports HOUR_PX, SLOT_MIN, PX_PER_MIN, startOfDay + 7 more (~362 tok)
 - `cn.ts` — Exports cn (~50 tok)
 - `pharmacokinetics.test.ts` — Declares MedicationLog (~633 tok)
 - `pharmacokinetics.ts` — Default ke0 for this drug class (effect-site equilibration rate [1/h]). (~2754 tok)
+- `quickAdd.ts` — `#names` that do not match an existing label. (~3344 tok)
+- `recurrence.ts` — Monday-based index so a week boundary falls between Sunday and Monday. (~703 tok)
 - `sessions.ts` — Exports sessionsInRange, computeTaskStats, formatDuration (~438 tok)
+- `stats.ts` — Consecutive days (ending today or yesterday) with >= 1 completion. (~1086 tok)
 - `task.ts` — Exports PROJECT_COLOR_SWATCHES, PRIORITY_META, formatDueDate, useVisibleTasks (~412 tok)
+- `timer.ts` — Stops the running timer and logs it as a session when long enough. (~675 tok)
 
 ## src/shared/
 
 - `defaults.ts` — Exports UI_SCALE_OPTIONS, UiScale, DEFAULT_UI_SCALE (~53 tok)
 - `stateSchema.ts` — Zod schemas: storedBooleanSchema, prioritySchema, taskStatusSchema (~1128 tok)
 - `types.ts` — Exports Priority, TaskStatus, SubTask, Task + 8 more (~495 tok)
+
+## src/renderer/src/components/bulk-actions/
+
+- `index.tsx` (barrel)
+- `BulkActionBar.tsx` — floating bar for multi-selected tasks (complete/priority/due/move/archive/delete)
+
+## src/renderer/src/components/command-palette/
+
+- `index.tsx` (barrel)
+- `CommandPalette.tsx` — Ctrl+K palette (actions, nav, saved views, projects, tasks)
+- `dataActions.ts` — runDataAction: backup/export/import via window.api.backup + toasts
+
+## src/renderer/src/components/quick-add/
+
+- `index.tsx` (barrel)
+- `QuickAddModal.tsx` — natural-language quick add (q / global shortcut / tray)
+
+## src/renderer/src/components/timer/
+
+- `index.tsx` (barrel)
+- `TimerWidget.tsx` — titlebar stopwatch/pomodoro pill + useTimerCompletion (mounted in App)

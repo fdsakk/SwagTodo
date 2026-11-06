@@ -1,11 +1,11 @@
 import { TaskList } from "@renderer/components/task-list"
 import { useTaskComplete } from "@renderer/hooks/useTaskComplete"
+import { useUndoableTaskActions } from "@renderer/hooks/useUndoableTaskActions"
 import {
   selectTodayTaskGroups,
   useDomainStore,
   useUiStore
 } from "@renderer/store"
-import { useVisibleTasks } from "@renderer/utils/task"
 import { useMemo } from "react"
 import { useShallow } from "zustand/react/shallow"
 
@@ -27,8 +27,9 @@ export default function TodayPage(): React.JSX.Element {
     }))
   )
   const toggleTaskComplete = useTaskComplete()
+  const undoable = useUndoableTaskActions()
 
-  const tasks = useVisibleTasks()
+  const tasks = useDomainStore((state) => state.tasks)
   const groupedTasks = useMemo(
     () => selectTodayTaskGroups({ tasks }, visibleInput),
     [tasks, visibleInput]
@@ -40,8 +41,8 @@ export default function TodayPage(): React.JSX.Element {
       emptyStateTitle="You're all caught up"
       groups={groupedTasks}
       labels={labels}
-      onArchiveTask={actions.archiveTask}
-      onDeleteTask={actions.deleteTask}
+      onArchiveTask={undoable.archiveTask}
+      onDeleteTask={undoable.deleteTask}
       onOpenTask={openEditPanel}
       onToggleComplete={toggleTaskComplete}
       onUpdateTask={actions.updateTask}

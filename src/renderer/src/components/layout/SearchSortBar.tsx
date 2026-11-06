@@ -14,8 +14,9 @@ import {
 } from "@renderer/components/ui/select"
 import { useDomainStore, useUiStore } from "@renderer/store"
 import { PRIORITY_META } from "@renderer/utils/task"
-import { ListFilter, Plus, Search } from "lucide-react"
-import { useEffect, useMemo, useRef } from "react"
+import { Bookmark, ListFilter, Plus, Search } from "lucide-react"
+import { useEffect, useMemo, useRef, useState } from "react"
+import { v4 as uuidv4 } from "uuid"
 import { useShallow } from "zustand/react/shallow"
 import { Badge } from "../ui/badge"
 import { Button, buttonVariants } from "../ui/button"
@@ -23,7 +24,8 @@ import { Button, buttonVariants } from "../ui/button"
 const SORT_OPTIONS = [
   { value: "priority", label: "Priority" },
   { value: "due_date", label: "Due date" },
-  { value: "created_at", label: "Creation date" }
+  { value: "created_at", label: "Creation date" },
+  { value: "manual", label: "Manual (drag)" }
 ] as const
 
 const STATUS_FILTER_OPTIONS = [
@@ -77,7 +79,32 @@ export function SearchSortBar(): React.JSX.Element {
       selectedView: state.selectedView
     }))
   )
-  const projects = useDomainStore((state) => state.projects)
+  const { projects, savedViews, updatePreferences } = useDomainStore(
+    useShallow((state) => ({
+      projects: state.projects,
+      savedViews: state.preferences.savedViews,
+      updatePreferences: state.updatePreferences
+    }))
+  )
+  const [viewName, setViewName] = useState("")
+  const saveCurrentView = (): void => {
+    const name = viewName.trim()
+    if (!name) return
+    setViewName("")
+    updatePreferences({
+      savedViews: [
+        ...savedViews,
+        {
+          id: uuidv4(),
+          name,
+          query: searchQuery,
+          status: inboxStatusFilter,
+          projectId: inboxProjectFilter,
+          priority: inboxPriorityFilter
+        }
+      ]
+    })
+  }
   const showInboxFilters = selectedView === "inbox"
   const showDoneFilter = !showInboxFilters && selectedView !== "project"
   const projectFilterOptions = useMemo(
@@ -274,6 +301,34 @@ export function SearchSortBar(): React.JSX.Element {
                   </Select>
                 </div>
               </>
+            )}
+            {showInboxFilters && (
+              <div className="grid gap-1.5">
+                <span className="text-xs font-medium text-app-text-muted">
+                  Save filters as view
+                </span>
+                <div className="flex items-center gap-1.5">
+                  <input
+                    className="h-7 min-w-0 flex-1 rounded-md border border-app-border bg-transparent px-2 text-xs text-app-text placeholder:text-app-text-muted focus:outline-none"
+                    onChange={(event) => setViewName(event.target.value)}
+                    onKeyDown={(event) => {
+                      if (event.key === "Enter") saveCurrentView()
+                    }}
+                    placeholder="View name"
+                    value={viewName}
+                  />
+                  <Button
+                    aria-label="Save view"
+                    disabled={!viewName.trim()}
+                    onClick={saveCurrentView}
+                    size="icon-sm"
+                    type="button"
+                    variant="outline"
+                  >
+                    <Bookmark size={12} />
+                  </Button>
+                </div>
+              </div>
             )}
             {showDoneFilter && (
               <div className="flex cursor-pointer items-center justify-between gap-3 rounded-md px-1 py-0.5 text-xs font-medium text-app-text-muted hover:text-app-text-secondary">

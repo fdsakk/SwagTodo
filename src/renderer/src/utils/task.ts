@@ -1,8 +1,5 @@
-import { selectVisibleTasks, useDomainStore, useUiStore } from "@renderer/store"
-import type { Priority, Task } from "@renderer/types"
+import type { Priority } from "@renderer/types"
 import { format, parseISO } from "date-fns"
-import { useMemo } from "react"
-import { useShallow } from "zustand/react/shallow"
 
 export const PROJECT_COLOR_SWATCHES = [
   "#f4f4f5",
@@ -41,21 +38,4 @@ export const PRIORITY_META: Record<Priority, { label: string; color: string }> =
 
 export function formatDueDate(date?: string): string {
   return date ? format(parseISO(date), "MMM d") : ""
-}
-
-export function useVisibleTasks(): Task[] {
-  const tasks = useDomainStore((state) => state.tasks)
-  const visibleInput = useUiStore(
-    useShallow((state) => ({
-      sortMode: state.sortMode,
-      searchQuery: state.searchQuery,
-      showCompleted: state.showCompleted,
-      selectedView: state.selectedView
-    }))
-  )
-
-  return useMemo(
-    () => selectVisibleTasks({ tasks }, visibleInput),
-    [tasks, visibleInput]
-  )
 }

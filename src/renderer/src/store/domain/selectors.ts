@@ -1,27 +1,46 @@
 import type { Project, Task, TaskGroup } from "@renderer/types"
-import { format, isBefore, isToday, parseISO, startOfToday } from "date-fns"
+import {
+  addDays,
+  format,
+  isBefore,
+  isToday,
+  parseISO,
+  startOfToday
+} from "date-fns"
 import type { DomainState, UiState } from "../shared/types"
 
 const PRIORITY_WEIGHT = { p1: 1, p2: 2, p3: 3, p4: 4 } as const
 
 const getDueDateMs = (task: Task): number | null =>
+  task.dueDate
+    ? parseISO(
+        task.dueTime ? `${task.dueDate}T${task.dueTime}` : task.dueDate
+      ).getTime()
+    : null
+
+const getDueDayMs = (task: Task): number | null =>
   task.dueDate ? parseISO(task.dueDate).getTime() : null
 
 export const isTaskDueToday = (task: Task): boolean => {
-  const dueDateMs = getDueDateMs(task)
-  return dueDateMs !== null && isToday(dueDateMs)
+  const dueDayMs = getDueDayMs(task)
+  return dueDayMs !== null && isToday(dueDayMs)
 }
 
 export const isTaskOverdue = (task: Task): boolean => {
   if (!task.dueDate || task.completed) return false
-  const dueDateMs = getDueDateMs(task)
-  return dueDateMs !== null && isBefore(dueDateMs, startOfToday())
+  const dueDayMs = getDueDayMs(task)
+  return dueDayMs !== null && isBefore(dueDayMs, startOfToday())
 }
+
+export const taskMatchesQuery = (task: Task, needle: string): boolean =>
+  task.title.toLowerCase().includes(needle) ||
+  (task.description?.toLowerCase().includes(needle) ?? false) ||
+  task.subTasks.some((subTask) => subTask.title.toLowerCase().includes(needle))
 
 const filterBySearch = (tasks: readonly Task[], query: string): Task[] => {
   const needle = query.trim().toLowerCase()
   if (!needle) return tasks as Task[]
-  return tasks.filter((task) => task.title.toLowerCase().includes(needle))
+  return tasks.filter((task) => taskMatchesQuery(task, needle))
 }
 
 const activeTasks = (tasks: readonly Task[]): Task[] =>
@@ -45,6 +64,7 @@ const sortTasks = (
   }
 
   return [...tasks].sort((a, b) => {
+    if (sortMode === "manual") return a.order - b.order
     if (sortMode === "priority") return sortByPriority(a, b)
     if (sortMode === "created_at") {
       return (createdAtMs.get(b.id) ?? 0) - (createdAtMs.get(a.id) ?? 0)
@@ -265,4 +285,55 @@ export const selectInboxCounts = (
   }
 
   return { inboxCount, todayCount }
+}
+
+export const UPCOMING_DAYS = 7
+
+/** Overdue bucket plus one group per day for the next UPCOMING_DAYS days. */
+export const selectUpcomingTaskGroups = (
+  state: Pick<DomainState, "tasks">,
+  input: Pick<UiState, "searchQuery" | "sortMode">,
+  today: Date = startOfToday()
+): TaskGroup[] => {
+  const tasks = sortTasks(
+    filterBySearch(
+      state.tasks.filter(
+        (task) => !task.archivedAt && !task.completed && task.dueDate
+      ),
+      input.searchQuery
+    ),
+    input.sortMode
+  )
+  const days: TaskGroup[] = []
+  const byDate = new Map<string, TaskGroup>()
+  for (let offset = 0; offset < UPCOMING_DAYS; offset++) {
+    const day = addDays(today, offset)
+    const key = format(day, "yyyy-MM-dd")
+    const group: TaskGroup = {
+      id: key,
+      title:
+        offset === 0
+          ? `Today · ${format(day, "EEE d MMM")}`
+          : offset === 1
+            ? `Tomorrow · ${format(day, "EEE d MMM")}`
+            : format(day, "EEEE · d MMM"),
+      tasks: []
+    }
+    days.push(group)
+    byDate.set(key, group)
+  }
+
+  const overdue: TaskGroup = {
+    id: "overdue",
+    title: "Overdue",
+    accentClass: "text-red-400/80",
+    tasks: []
+  }
+  const todayKey = format(today, "yyyy-MM-dd")
+  for (const task of tasks) {
+    const dueDate = task.dueDate as string
+    if (dueDate < todayKey) overdue.tasks.push(task)
+    else byDate.get(dueDate)?.tasks.push(task)
+  }
+  return [overdue, ...days]
 }

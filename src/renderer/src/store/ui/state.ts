@@ -11,5 +11,10 @@ export const createInitialUiState = (): UiState => ({
   inboxProjectFilter: "all",
   inboxPriorityFilter: "all",
   projectTab: "list",
-  searchFocusSignal: 0
+  searchFocusSignal: 0,
+  selectedTaskIds: [],
+  selectionAnchorId: undefined,
+  activeTimer: undefined,
+  quickAddOpen: false,
+  commandPaletteOpen: false
 })

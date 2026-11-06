@@ -106,8 +106,27 @@ export function normalizeTaskPatch(
 
   if ("priority" in updates && updates.priority !== task.priority)
     patch.priority = updates.priority
-  if ("dueDate" in updates && updates.dueDate !== task.dueDate)
+  if ("dueDate" in updates && updates.dueDate !== task.dueDate) {
     patch.dueDate = updates.dueDate
+    if (!updates.dueDate && task.dueTime) patch.dueTime = undefined
+  }
+  if ("dueTime" in updates) {
+    const dueTime =
+      updates.dueTime && (updates.dueDate ?? task.dueDate)
+        ? updates.dueTime
+        : undefined
+    if (dueTime !== task.dueTime) patch.dueTime = dueTime
+  }
+  if (
+    "recurrence" in updates &&
+    JSON.stringify(updates.recurrence) !== JSON.stringify(task.recurrence)
+  )
+    patch.recurrence = updates.recurrence
+  if ("blockedBy" in updates) {
+    const blockedBy = (updates.blockedBy ?? []).filter((id) => id !== task.id)
+    if (!arrayShallowEqual(blockedBy, task.blockedBy ?? []))
+      patch.blockedBy = blockedBy.length ? blockedBy : undefined
+  }
   if ("archivedAt" in updates && updates.archivedAt !== task.archivedAt)
     patch.archivedAt = updates.archivedAt
   if ("projectId" in updates && updates.projectId !== task.projectId)

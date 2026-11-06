@@ -14,12 +14,19 @@ import {
   SelectTrigger,
   SelectValue
 } from "@renderer/components/ui/select"
-import type { Label, Priority, Project, TaskStatus } from "@renderer/types"
+import type {
+  Label,
+  Priority,
+  Project,
+  Recurrence,
+  TaskStatus
+} from "@renderer/types"
 import { cn } from "@renderer/utils/cn"
 import { PRIORITY_META } from "@renderer/utils/task"
 import { format, parseISO } from "date-fns"
 import { CalendarIcon, ChevronDownIcon, X } from "lucide-react"
 import { memo, useCallback, useMemo } from "react"
+import { RecurrenceField } from "./recurrence-field"
 
 const INBOX_VALUE = "__inbox__"
 const PRIORITIES: readonly Priority[] = ["p1", "p2", "p3", "p4"] as const
@@ -81,6 +88,8 @@ interface TaskFormFieldsProps {
   status: TaskStatus
   projectId: string | undefined
   dueDate: string | undefined
+  dueTime: string | undefined
+  recurrence: Recurrence | undefined
   selectedLabelIds: readonly string[]
   projects: Project[]
   labels: Label[]
@@ -88,6 +97,8 @@ interface TaskFormFieldsProps {
   onStatusChange: (value: TaskStatus) => void
   onProjectChange: (value: string | undefined) => void
   onDueDateChange: (value: string | undefined) => void
+  onDueTimeChange: (value: string | undefined) => void
+  onRecurrenceChange: (value: Recurrence | undefined) => void
   onToggleLabel: (id: string) => void
   emptyLabelsMessage?: string
 }
@@ -97,6 +108,8 @@ function TaskFormFieldsImpl({
   status,
   projectId,
   dueDate,
+  dueTime,
+  recurrence,
   selectedLabelIds,
   projects,
   labels,
@@ -104,6 +117,8 @@ function TaskFormFieldsImpl({
   onStatusChange,
   onProjectChange,
   onDueDateChange,
+  onDueTimeChange,
+  onRecurrenceChange,
   onToggleLabel,
   emptyLabelsMessage
 }: TaskFormFieldsProps): React.JSX.Element {
@@ -218,6 +233,22 @@ function TaskFormFieldsImpl({
             </Button>
           )}
         </div>
+        {selectedDate && (
+          <input
+            aria-label="Due time"
+            className="mt-2 h-8 w-full rounded-md border border-app-border bg-transparent px-2 text-sm text-app-text focus:outline-none [color-scheme:dark] [.app-theme-light_&]:[color-scheme:light]"
+            onChange={(event) =>
+              onDueTimeChange(event.target.value || undefined)
+            }
+            type="time"
+            value={dueTime ?? ""}
+          />
+        )}
+      </Field>
+
+      <Field>
+        <FieldLabel>Repeat</FieldLabel>
+        <RecurrenceField onChange={onRecurrenceChange} value={recurrence} />
       </Field>
 
       <Field>

@@ -7,6 +7,7 @@ type SettingsActions = Pick<
   | "setThemeId"
   | "setCustomTokens"
   | "resetCustomTokens"
+  | "updatePreferences"
 >
 
 export const createSettingsActions = (
@@ -14,6 +15,16 @@ export const createSettingsActions = (
 ): SettingsActions => ({
   setUiScale: (uiScale) =>
     set((state) => (state.uiScale === uiScale ? state : { uiScale })),
+  updatePreferences: (patch) =>
+    set((state) => {
+      const changed = Object.entries(patch).some(
+        ([key, value]) =>
+          state.preferences[key as keyof typeof state.preferences] !== value
+      )
+      return changed
+        ? { preferences: { ...state.preferences, ...patch } }
+        : state
+    }),
   toggleSidebar: () =>
     set((state) => ({ isSidebarCollapsed: !state.isSidebarCollapsed })),
   setThemeId: (themeId) =>

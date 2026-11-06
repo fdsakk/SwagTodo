@@ -1,2 +1,5 @@
+export { AttachmentList } from "./AttachmentList"
+export { DependencyList } from "./DependencyList"
+export { MarkdownNote } from "./MarkdownNote"
 export { SessionStats } from "./SessionStats"
 export { SubtaskList } from "./SubtaskList"

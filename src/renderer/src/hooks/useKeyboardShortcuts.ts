@@ -21,6 +21,10 @@ interface KeyboardShortcutOptions {
   onZoomIn: () => void
   onZoomOut: () => void
   onZoomReset: () => void
+  onQuickAdd: () => void
+  onGoUpcoming: () => void
+  onGoStats: () => void
+  onCommandPalette: () => void
 }
 
 function isInputLikeElement(element: Element | null): boolean {
@@ -51,6 +55,9 @@ const KEY_BINDINGS: Record<string, HandlerKey> = {
   ",": "onGoSettings",
   "/": "onFocusSearch",
   "?": "onShowHelp",
+  q: "onQuickAdd",
+  u: "onGoUpcoming",
+  c: "onGoStats",
   "1": "onProjectTabList",
   "2": "onProjectTabKanban"
 }
@@ -72,6 +79,16 @@ export function useKeyboardShortcuts(options: KeyboardShortcutOptions): void {
           ;(activeElement as HTMLElement).blur()
         }
         o.onEscape()
+        return
+      }
+
+      if (
+        (event.ctrlKey || event.metaKey) &&
+        !event.altKey &&
+        event.key.toLowerCase() === "k"
+      ) {
+        event.preventDefault()
+        o.onCommandPalette()
         return
       }
 

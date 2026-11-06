@@ -17,7 +17,10 @@ import { cn } from "@renderer/utils/cn"
 import {
   Activity,
   Archive,
+  BarChart3,
+  Bookmark,
   Calendar,
+  CalendarDays,
   ChevronLeft,
   ChevronRight,
   Inbox,
@@ -42,10 +45,11 @@ const SIDEBAR_WIDTH = {
 const noop = (): void => {}
 
 export function Sidebar(props: SidebarProps): React.JSX.Element {
-  const { projects, hasLabels, isSidebarCollapsed, toggleSidebar } =
+  const { projects, savedViews, hasLabels, isSidebarCollapsed, toggleSidebar } =
     useDomainStore(
       useShallow((state) => ({
         projects: state.projects,
+        savedViews: state.preferences.savedViews,
         hasLabels: state.labels.length > 0,
         isSidebarCollapsed: state.isSidebarCollapsed,
         toggleSidebar: state.toggleSidebar
@@ -64,7 +68,10 @@ export function Sidebar(props: SidebarProps): React.JSX.Element {
     selectSessions,
     selectSettings,
     selectHealth,
-    selectProject
+    selectProject,
+    selectUpcoming,
+    selectStats,
+    applySavedView
   } = useUiStore(
     useShallow((state) => ({
       selectedView: state.selectedView,
@@ -76,7 +83,10 @@ export function Sidebar(props: SidebarProps): React.JSX.Element {
       selectSessions: state.selectSessions,
       selectSettings: state.selectSettings,
       selectHealth: state.selectHealth,
-      selectProject: state.selectProject
+      selectProject: state.selectProject,
+      selectUpcoming: state.selectUpcoming,
+      selectStats: state.selectStats,
+      applySavedView: state.applySavedView
     }))
   )
 
@@ -154,11 +164,25 @@ export function Sidebar(props: SidebarProps): React.JSX.Element {
                   onClick={selectToday}
                 />
                 <NavItem
+                  active={selectedView === "upcoming"}
+                  collapsed={!open}
+                  icon={<CalendarDays size={14} />}
+                  label="Upcoming"
+                  onClick={selectUpcoming}
+                />
+                <NavItem
                   active={selectedView === "activity"}
                   collapsed={!open}
                   icon={<Activity size={14} />}
                   label="Activity"
                   onClick={selectActivity}
+                />
+                <NavItem
+                  active={selectedView === "stats"}
+                  collapsed={!open}
+                  icon={<BarChart3 size={14} />}
+                  label="Statistics"
+                  onClick={selectStats}
                 />
                 <NavItem
                   active={selectedView === "archive"}
@@ -183,6 +207,28 @@ export function Sidebar(props: SidebarProps): React.JSX.Element {
                 />
               </SidebarMenu>
             </SidebarGroup>
+
+            {savedViews.length > 0 && (
+              <SidebarGroup className="py-0">
+                {open && (
+                  <SidebarGroupLabel className="px-4 text-[11px] text-app-text-muted">
+                    Views
+                  </SidebarGroupLabel>
+                )}
+                <SidebarMenu className="gap-0.5">
+                  {savedViews.map((view) => (
+                    <NavItem
+                      active={false}
+                      collapsed={!open}
+                      icon={<Bookmark size={14} />}
+                      key={view.id}
+                      label={view.name}
+                      onClick={() => applySavedView(view)}
+                    />
+                  ))}
+                </SidebarMenu>
+              </SidebarGroup>
+            )}
 
             <SidebarGroup className="flex-1 py-0">
               {open && (

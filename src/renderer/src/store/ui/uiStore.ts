@@ -12,7 +12,11 @@ const UI_STORE_PERSIST_KEY = "ui-store"
 
 type PersistedUiFilters = Pick<
   UiState,
-  "inboxStatusFilter" | "inboxProjectFilter" | "inboxPriorityFilter"
+  | "inboxStatusFilter"
+  | "inboxProjectFilter"
+  | "inboxPriorityFilter"
+  | "sortMode"
+  | "activeTimer"
 >
 
 const localUiStorage: StateStorage = {
@@ -42,7 +46,9 @@ export const useUiStore = create<UiStore>()(
       partialize: (state): PersistedUiFilters => ({
         inboxStatusFilter: state.inboxStatusFilter,
         inboxProjectFilter: state.inboxProjectFilter,
-        inboxPriorityFilter: state.inboxPriorityFilter
+        inboxPriorityFilter: state.inboxPriorityFilter,
+        sortMode: state.sortMode,
+        activeTimer: state.activeTimer
       }),
       merge: (persistedState, currentState) => ({
         ...currentState,

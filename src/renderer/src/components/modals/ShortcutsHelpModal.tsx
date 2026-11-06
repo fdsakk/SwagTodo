@@ -14,6 +14,8 @@ interface ShortcutsHelpModalProps {
 }
 
 const SHORTCUTS: { keys: string[]; label: string }[] = [
+  { keys: ["Ctrl", "K"], label: "Command palette" },
+  { keys: ["q"], label: "Quick add (natural language)" },
   { keys: ["n"], label: "New task" },
   { keys: ["o"], label: "New project" },
   { keys: ["l"], label: "Open labels manager" },
@@ -23,6 +25,10 @@ const SHORTCUTS: { keys: string[]; label: string }[] = [
   { keys: ["?"], label: "Show shortcuts help" },
   { keys: ["i"], label: "Go to Inbox" },
   { keys: ["t"], label: "Go to Today" },
+  { keys: ["u"], label: "Go to Upcoming" },
+  { keys: ["c"], label: "Go to Statistics" },
+  { keys: ["Ctrl", "Click"], label: "Select / deselect task" },
+  { keys: ["Shift", "Click"], label: "Select range of tasks" },
   { keys: ["a"], label: "Go to Activity" },
   { keys: ["s"], label: "Go to Sessions" },
   { keys: ["p"], label: "Go to Projects" },

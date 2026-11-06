@@ -1,5 +1,9 @@
-import { CustomizeSection } from "@renderer/components/settings/CustomizeSection"
-import { ThemeSection } from "@renderer/components/settings/ThemeSection"
+import {
+  CustomizeSection,
+  DataSection,
+  ThemeSection,
+  WorkflowSection
+} from "@renderer/components/settings"
 import { useDomainStore } from "@renderer/store"
 import { useShallow } from "zustand/react/shallow"
 
@@ -10,7 +14,9 @@ export default function SettingsPage(): React.JSX.Element {
     setCustomTokens,
     resetCustomTokens,
     uiScale,
-    setUiScale
+    setUiScale,
+    preferences,
+    updatePreferences
   } = useDomainStore(
     useShallow((s) => ({
       appearance: s.appearance,
@@ -18,7 +24,9 @@ export default function SettingsPage(): React.JSX.Element {
       setCustomTokens: s.setCustomTokens,
       resetCustomTokens: s.resetCustomTokens,
       uiScale: s.uiScale,
-      setUiScale: s.setUiScale
+      setUiScale: s.setUiScale,
+      preferences: s.preferences,
+      updatePreferences: s.updatePreferences
     }))
   )
 
@@ -40,6 +48,13 @@ export default function SettingsPage(): React.JSX.Element {
           onSetCustomTokens={setCustomTokens}
           onResetCustomTokens={resetCustomTokens}
         />
+        <div className="h-px bg-app-border" />
+        <WorkflowSection
+          onUpdate={updatePreferences}
+          preferences={preferences}
+        />
+        <div className="h-px bg-app-border" />
+        <DataSection onUpdate={updatePreferences} preferences={preferences} />
       </div>
     </div>
   )

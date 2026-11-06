@@ -1,3 +1,4 @@
+import { TimerWidget } from "@renderer/components/timer"
 import { useEffect, useState } from "react"
 
 const isMac = window.api?.window?.platform === "darwin"
@@ -60,36 +61,41 @@ export function TitleBar(): React.JSX.Element | null {
       className="flex h-7 shrink-0 items-center justify-between select-none px-2.5 z-50"
       style={{ WebkitAppRegion: "drag" } as React.CSSProperties}
     >
-      <span className="text-sm text-app-text-secondary ml-2">😎</span>
+      <div className="ml-2 flex min-w-0 flex-1 items-center gap-2">
+        <span className="text-sm text-app-text-secondary">😎</span>
+        <TimerWidget />
+      </div>
       <span className="text-xs font-semibold tracking-wide tabular-nums text-app-text-secondary">
         {clock}
       </span>
 
-      {!isMac && (
-        <div
-          className="flex h-full items-center gap-2"
-          style={{ WebkitAppRegion: "no-drag" } as React.CSSProperties}
-        >
-          <button
-            type="button"
-            aria-label="Minimize window"
-            onClick={handleMinimize}
-            className="group h-2.5 w-2.5 rounded-full bg-neutral-800 transition-colors hover:bg-yellow-400 focus-visible:bg-yellow-400 focus-visible:outline-none"
-          />
-          <button
-            type="button"
-            aria-label={isMaximized ? "Restore window" : "Maximize window"}
-            onClick={handleToggleMaximize}
-            className="h-2.5 w-2.5 rounded-full bg-neutral-800 transition-colors hover:bg-green-500 focus-visible:bg-green-500 focus-visible:outline-none"
-          />
-          <button
-            type="button"
-            aria-label="Close window"
-            onClick={handleClose}
-            className="h-2.5 w-2.5 rounded-full bg-neutral-800 transition-colors hover:bg-red-500 focus-visible:bg-red-500 focus-visible:outline-none"
-          />
-        </div>
-      )}
+      <div className="flex flex-1 justify-end">
+        {!isMac && (
+          <div
+            className="flex h-full items-center gap-2"
+            style={{ WebkitAppRegion: "no-drag" } as React.CSSProperties}
+          >
+            <button
+              type="button"
+              aria-label="Minimize window"
+              onClick={handleMinimize}
+              className="group h-2.5 w-2.5 rounded-full bg-neutral-800 transition-colors hover:bg-yellow-400 focus-visible:bg-yellow-400 focus-visible:outline-none"
+            />
+            <button
+              type="button"
+              aria-label={isMaximized ? "Restore window" : "Maximize window"}
+              onClick={handleToggleMaximize}
+              className="h-2.5 w-2.5 rounded-full bg-neutral-800 transition-colors hover:bg-green-500 focus-visible:bg-green-500 focus-visible:outline-none"
+            />
+            <button
+              type="button"
+              aria-label="Close window"
+              onClick={handleClose}
+              className="h-2.5 w-2.5 rounded-full bg-neutral-800 transition-colors hover:bg-red-500 focus-visible:bg-red-500 focus-visible:outline-none"
+            />
+          </div>
+        )}
+      </div>
     </div>
   )
 }

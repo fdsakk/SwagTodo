@@ -3,6 +3,8 @@ import { DEFAULT_UI_SCALE, UI_SCALE_OPTIONS } from "../../shared/defaults"
 import {
   labelSchema,
   medicationSchema,
+  normalizePreferences,
+  preferencesSchema,
   projectSchema,
   sessionSchema,
   sharedAppearanceSchema,
@@ -39,7 +41,8 @@ export const APP_STATE_KEYS: ReadonlySet<string> = new Set([
   "pkSettings",
   "uiScale",
   "isSidebarCollapsed",
-  "appearance"
+  "appearance",
+  "preferences"
 ])
 
 export const isUiScale = (v: unknown): v is UiScale =>
@@ -67,7 +70,8 @@ const appStateSchema = z
     pkSettings: z.unknown().optional(),
     uiScale: z.number().refine(isUiScale).optional().catch(DEFAULT_UI_SCALE),
     isSidebarCollapsed: z.boolean().optional().catch(false),
-    appearance: sharedAppearanceSchema.optional().catch(undefined)
+    appearance: sharedAppearanceSchema.optional().catch(undefined),
+    preferences: z.unknown().optional()
   })
   .passthrough()
 
@@ -108,6 +112,8 @@ export const normalizeAppState = (state: unknown): AppState => {
 
   if ("pkSettings" in data) next.pkSettings = data.pkSettings
   if (data.appearance) next.appearance = data.appearance
+  if (data.preferences !== undefined)
+    next.preferences = normalizePreferences(data.preferences)
 
   return next
 }
@@ -175,13 +181,10 @@ export const isAppStatePatch = (v: unknown): v is Partial<AppState> => {
   }
   if (patch.appearance !== undefined && !normalizeAppearance(patch.appearance))
     return false
+  if (
+    patch.preferences !== undefined &&
+    !preferencesSchema.safeParse(patch.preferences).success
+  )
+    return false
   return true
-}
-
-export const mergeAppState = (
-  current: AppState,
-  patch: Partial<AppState>
-): AppState => {
-  const next: AppState = { ...current, ...patch }
-  return patch.tasks !== undefined ? normalizeAppState(next) : next
 }

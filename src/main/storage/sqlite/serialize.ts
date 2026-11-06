@@ -6,10 +6,61 @@ import {
   LEGACY_STORE_FILES,
   SETTINGS_KEYS,
   type SqliteStateSnapshot,
-  type StoredTaskAggregateRow
+  type StoredTaskAggregateRow,
+  type StoredTaskRow
 } from "./types"
 
 type LegacyElectronStore = { appState?: unknown }
+
+const encodeJson = (value: unknown): string | null =>
+  value === undefined || (Array.isArray(value) && value.length === 0)
+    ? null
+    : JSON.stringify(value)
+
+const decodeJson = <T>(raw: string | null, context: string): T | undefined => {
+  if (!raw) return undefined
+  try {
+    return JSON.parse(raw) as T
+  } catch (error) {
+    console.error(`[storage] failed to parse ${context}`, error)
+    return undefined
+  }
+}
+
+type TaskExtraRow = Pick<
+  StoredTaskRow,
+  "due_time" | "recurrence" | "blocked_by" | "attachments"
+>
+
+export const encodeTaskExtras = (task: Task): TaskExtraRow => ({
+  due_time: task.dueTime ?? null,
+  recurrence: encodeJson(task.recurrence),
+  blocked_by: encodeJson(task.blockedBy),
+  attachments: encodeJson(task.attachments)
+})
+
+export const decodeTaskExtras = (
+  row: TaskExtraRow & { id: string }
+): Partial<Task> => {
+  const extras: Partial<Task> = {}
+  if (row.due_time) extras.dueTime = row.due_time
+  const recurrence = decodeJson<Task["recurrence"]>(
+    row.recurrence,
+    `recurrence for ${row.id}`
+  )
+  if (recurrence) extras.recurrence = recurrence
+  const blockedBy = decodeJson<string[]>(
+    row.blocked_by,
+    `blocked_by for ${row.id}`
+  )
+  if (blockedBy?.length) extras.blockedBy = blockedBy
+  const attachments = decodeJson<Task["attachments"]>(
+    row.attachments,
+    `attachments for ${row.id}`
+  )
+  if (attachments?.length) extras.attachments = attachments
+  return extras
+}
 
 export const parseSetting = <T>(
   rows: Map<string, string>,
@@ -41,6 +92,7 @@ export const parseJsonArray = <T>(
 
 export const inflateTaskRows = (rows: StoredTaskAggregateRow[]): Task[] =>
   rows.map((task) => ({
+    ...decodeTaskExtras(task),
     id: task.id,
     title: task.title,
     description: task.description ?? undefined,
@@ -112,8 +164,12 @@ export const readLegacyElectronStore = (dbPath: string): AppState | null => {
   return null
 }
 
-export const serializeAppState = (state: AppState): SqliteStateSnapshot => {
-  const normalized = normalizeAppState(state)
+export const serializeAppState = (state: AppState): SqliteStateSnapshot =>
+  serializeNormalizedState(normalizeAppState(state))
+
+export const serializeNormalizedState = (
+  normalized: AppState
+): SqliteStateSnapshot => {
   const snapshot: SqliteStateSnapshot = {
     tasks: [],
     taskSubtasks: [],
@@ -133,6 +189,7 @@ export const serializeAppState = (state: AppState): SqliteStateSnapshot => {
       description: task.description ?? null,
       priority: task.priority,
       due_date: task.dueDate ?? null,
+      ...encodeTaskExtras(task),
       project_id: task.projectId ?? null,
       completed: task.completed ? 1 : 0,
       status: task.status,
@@ -252,6 +309,7 @@ export const deserializeAppState = (
   return normalizeAppState({
     ...defaultAppState,
     tasks: snapshot.tasks.map((task) => ({
+      ...decodeTaskExtras(task),
       id: task.id,
       title: task.title,
       description: task.description ?? undefined,
@@ -308,7 +366,8 @@ export const deserializeAppState = (
     pkSettings: parseSetting(settings, "pkSettings"),
     uiScale: parseSetting(settings, "uiScale"),
     isSidebarCollapsed: parseSetting(settings, "isSidebarCollapsed"),
-    appearance: parseSetting(settings, "appearance")
+    appearance: parseSetting(settings, "appearance"),
+    preferences: parseSetting(settings, "preferences")
   })
 }
 
@@ -330,25 +389,33 @@ const isSameRow = <T extends Record<string, unknown>>(a: T, b: T): boolean => {
   return aKeys.every((key) => Object.is(a[key], b[key]))
 }
 
-export const changedTaskIds = (
+export const diffTasks = (
   prev: SqliteStateSnapshot,
   next: SqliteStateSnapshot
-): Set<string> => {
+): { changed: Set<string>; changedChildren: Set<string> } => {
+  const changed = new Set<string>()
+  const changedChildren = new Set<string>()
+  if (
+    prev.tasks === next.tasks &&
+    prev.taskSubtasks === next.taskSubtasks &&
+    prev.taskLabels === next.taskLabels
+  ) {
+    return { changed, changedChildren }
+  }
+
   const prevTaskById = new Map(prev.tasks.map((t) => [t.id, t]))
   const prevSubJson = buildChildJson(prev.taskSubtasks, JSON.stringify)
   const prevLblJson = buildChildJson(prev.taskLabels, JSON.stringify)
   const nextSubJson = buildChildJson(next.taskSubtasks, JSON.stringify)
   const nextLblJson = buildChildJson(next.taskLabels, JSON.stringify)
 
-  const changed = new Set<string>()
   for (const t of next.tasks) {
-    const prevTask = prevTaskById.get(t.id)
-    if (
-      !prevTask ||
-      !isSameRow(prevTask, t) ||
+    const childrenChanged =
       (prevSubJson.get(t.id) ?? "") !== (nextSubJson.get(t.id) ?? "") ||
       (prevLblJson.get(t.id) ?? "") !== (nextLblJson.get(t.id) ?? "")
-    ) {
+    if (childrenChanged) changedChildren.add(t.id)
+    const prevTask = prevTaskById.get(t.id)
+    if (!prevTask || childrenChanged || !isSameRow(prevTask, t)) {
       changed.add(t.id)
     }
   }
@@ -356,35 +423,24 @@ export const changedTaskIds = (
   for (const t of prev.tasks) {
     if (!nextTaskIds.has(t.id)) changed.add(t.id)
   }
-  return changed
+  return { changed, changedChildren }
 }
+
+export const changedTaskIds = (
+  prev: SqliteStateSnapshot,
+  next: SqliteStateSnapshot
+): Set<string> => diffTasks(prev, next).changed
 
 export const changedTaskChildIds = (
   prev: SqliteStateSnapshot,
   next: SqliteStateSnapshot
-): Set<string> => {
-  const prevSubJson = buildChildJson(prev.taskSubtasks, JSON.stringify)
-  const prevLblJson = buildChildJson(prev.taskLabels, JSON.stringify)
-  const nextSubJson = buildChildJson(next.taskSubtasks, JSON.stringify)
-  const nextLblJson = buildChildJson(next.taskLabels, JSON.stringify)
-  const ids = new Set<string>()
-
-  for (const task of next.tasks) {
-    if (
-      (prevSubJson.get(task.id) ?? "") !== (nextSubJson.get(task.id) ?? "") ||
-      (prevLblJson.get(task.id) ?? "") !== (nextLblJson.get(task.id) ?? "")
-    ) {
-      ids.add(task.id)
-    }
-  }
-
-  return ids
-}
+): Set<string> => diffTasks(prev, next).changedChildren
 
 export const changedIds = <T extends { id: string }>(
   prev: T[],
   next: T[]
 ): boolean => {
+  if (prev === next) return false
   if (prev.length !== next.length) return true
   const prevMap = new Map(prev.map((r) => [r.id, r]))
   return next.some((r) => {

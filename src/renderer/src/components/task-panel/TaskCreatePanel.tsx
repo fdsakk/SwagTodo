@@ -8,7 +8,7 @@ import {
 import { Separator } from "@renderer/components/ui/separator"
 import { Textarea } from "@renderer/components/ui/textarea"
 import { useDomainStore } from "@renderer/store"
-import type { Priority, TaskStatus } from "@renderer/types"
+import type { Priority, Recurrence, TaskStatus } from "@renderer/types"
 import { useCallback, useState } from "react"
 import { useShallow } from "zustand/react/shallow"
 import { TaskFormFields } from "./task-form-fields"
@@ -18,6 +18,8 @@ interface FormState {
   description: string
   priority: Priority
   dueDate: string
+  dueTime: string
+  recurrence?: Recurrence
   projectId: string
   status: TaskStatus
   labels: string[]
@@ -35,6 +37,8 @@ const INITIAL_STATE = (props: TaskCreatePanelProps): FormState => ({
   description: "",
   priority: "p4",
   dueDate: props.defaultDueDate ?? "",
+  dueTime: "",
+  recurrence: undefined,
   projectId: props.defaultProjectId ?? "",
   status: props.defaultStatus ?? "todo",
   labels: []
@@ -76,6 +80,8 @@ export function TaskCreatePanel(
       description: form.description.trim() || undefined,
       priority: form.priority,
       dueDate: form.dueDate || undefined,
+      dueTime: form.dueTime || undefined,
+      recurrence: form.recurrence,
       projectId: form.projectId || undefined,
       labels: form.labels,
       status: form.status
@@ -126,8 +132,12 @@ export function TaskCreatePanel(
 
           <TaskFormFields
             dueDate={form.dueDate || undefined}
+            dueTime={form.dueTime || undefined}
             labels={labels}
             onDueDateChange={(v) => patch({ dueDate: v ?? "" })}
+            onDueTimeChange={(v) => patch({ dueTime: v ?? "" })}
+            onRecurrenceChange={(v) => patch({ recurrence: v })}
+            recurrence={form.recurrence}
             onPriorityChange={(v) => patch({ priority: v })}
             onProjectChange={(v) => patch({ projectId: v ?? "" })}
             onStatusChange={(v) => patch({ status: v })}

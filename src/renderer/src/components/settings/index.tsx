@@ -1,3 +1,5 @@
 export { CustomizeSection } from "./CustomizeSection"
+export { DataSection } from "./DataSection"
 export { ThemeSection } from "./ThemeSection"
 export { ThemeSwatch } from "./ThemeSwatch"
+export { WorkflowSection } from "./WorkflowSection"

@@ -26,12 +26,11 @@ export function useTaskComplete(): (
   taskId: string,
   options?: ToggleTaskCompleteOptions
 ) => void {
-  const tasks = useDomainStore((state) => state.tasks)
   const toggleTaskComplete = useDomainStore((state) => state.toggleTaskComplete)
 
   return useCallback(
     (taskId: string, options?: ToggleTaskCompleteOptions) => {
-      const task = tasks.find((t) => t.id === taskId)
+      const task = useDomainStore.getState().tasks.find((t) => t.id === taskId)
       const wasCompleted = task?.completed ?? true
       const runToggle = () => toggleTaskComplete(taskId)
 
@@ -57,6 +56,6 @@ export function useTaskComplete(): (
 
       runToggle()
     },
-    [tasks, toggleTaskComplete]
+    [toggleTaskComplete]
   )
 }

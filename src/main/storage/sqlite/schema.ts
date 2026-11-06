@@ -1,5 +1,6 @@
 export const SCHEMA = `
 PRAGMA journal_mode = WAL;
+PRAGMA synchronous = NORMAL;
 PRAGMA foreign_keys = ON;
 
 CREATE TABLE IF NOT EXISTS tasks (
@@ -8,6 +9,10 @@ CREATE TABLE IF NOT EXISTS tasks (
   description TEXT,
   priority TEXT NOT NULL,
   due_date TEXT,
+  due_time TEXT,
+  recurrence TEXT,
+  blocked_by TEXT,
+  attachments TEXT,
   project_id TEXT,
   completed INTEGER NOT NULL,
   status TEXT NOT NULL,

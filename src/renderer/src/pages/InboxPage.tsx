@@ -1,5 +1,6 @@
 import { TaskList } from "@renderer/components/task-list"
 import { useTaskComplete } from "@renderer/hooks/useTaskComplete"
+import { useUndoableTaskActions } from "@renderer/hooks/useUndoableTaskActions"
 import {
   selectInboxTaskGroups,
   useDomainStore,
@@ -27,6 +28,7 @@ export default function InboxPage(): React.JSX.Element {
     }))
   )
   const toggleTaskComplete = useTaskComplete()
+  const undoable = useUndoableTaskActions()
 
   const tasks = useDomainStore((state) => state.tasks)
   const groupedTasks = useMemo(
@@ -41,8 +43,8 @@ export default function InboxPage(): React.JSX.Element {
       delayCompleteAnimation
       groups={groupedTasks}
       labels={labels}
-      onArchiveTask={actions.archiveTask}
-      onDeleteTask={actions.deleteTask}
+      onArchiveTask={undoable.archiveTask}
+      onDeleteTask={undoable.deleteTask}
       onOpenTask={openEditPanel}
       onToggleComplete={toggleTaskComplete}
       onUpdateTask={actions.updateTask}

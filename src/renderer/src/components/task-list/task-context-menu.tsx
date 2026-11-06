@@ -4,6 +4,7 @@ import { Calendar } from "@renderer/components/ui/calendar"
 import type { Priority, Task, TaskStatus } from "@renderer/types"
 import { cn } from "@renderer/utils/cn"
 import { PRIORITY_META } from "@renderer/utils/task"
+import { startTaskTimer } from "@renderer/utils/timer"
 import { format, parseISO } from "date-fns"
 import {
   Archive,
@@ -12,6 +13,8 @@ import {
   Check,
   ChevronRight,
   Flag,
+  Play,
+  Timer,
   Trash2,
   TrendingUp
 } from "lucide-react"
@@ -202,6 +205,26 @@ export function TaskContextMenu({
                 </ContextMenu.Item>
               )}
             </SubmenuShell>
+
+            {!task.completed && !task.archivedAt && (
+              <>
+                <ContextMenu.Separator className={separatorClass} />
+                <ContextMenu.Item
+                  className={menuItemClass}
+                  onClick={() => startTaskTimer(task.id, "stopwatch")}
+                >
+                  <Play size={13} className="shrink-0" />
+                  Start timer
+                </ContextMenu.Item>
+                <ContextMenu.Item
+                  className={menuItemClass}
+                  onClick={() => startTaskTimer(task.id, "pomodoro")}
+                >
+                  <Timer size={13} className="shrink-0" />
+                  Start pomodoro
+                </ContextMenu.Item>
+              </>
+            )}
 
             <ContextMenu.Separator className={separatorClass} />
 

@@ -10,6 +10,11 @@ import {
   parseLegacyElectronStore,
   serializeAppState
 } from "../storage/sqlite"
+import {
+  changedIds,
+  diffTasks,
+  serializeNormalizedState
+} from "../storage/sqlite/serialize"
 
 const createFixtureState = (): AppState => ({
   tasks: [
@@ -272,4 +277,39 @@ test("settings: uiScale and appearance serialize to settings rows", () => {
     JSON.parse(appearanceRow.value).customTokensByTheme.retro["--app-bg"],
     "#101010"
   )
+})
+
+test("serializeNormalizedState matches serializeAppState for normalized input", () => {
+  const normalized = normalizeAppState(createFixtureState())
+  assert.deepEqual(
+    serializeNormalizedState(normalized),
+    serializeAppState(normalized)
+  )
+})
+
+test("diffTasks reports changed rows and children in one pass", () => {
+  const base = createFixtureState()
+  const modified: AppState = {
+    ...base,
+    tasks: base.tasks.map((t) =>
+      t.id === "task-1"
+        ? { ...t, subTasks: t.subTasks.slice(1), title: "Renamed" }
+        : t
+    )
+  }
+  const { changed, changedChildren } = diffTasks(
+    serializeAppState(base),
+    serializeAppState(modified)
+  )
+  assert.deepEqual([...changed], ["task-1"])
+  assert.deepEqual([...changedChildren], ["task-1"])
+})
+
+test("diffTasks and changedIds short-circuit on shared slices", () => {
+  const prev = serializeAppState(createFixtureState())
+  const next = { ...prev, settings: [] }
+  const { changed, changedChildren } = diffTasks(prev, next)
+  assert.equal(changed.size, 0)
+  assert.equal(changedChildren.size, 0)
+  assert.equal(changedIds(prev.projects, next.projects), false)
 })

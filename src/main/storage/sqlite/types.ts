@@ -6,6 +6,13 @@ export type StoredTaskRow = {
   description: string | null
   priority: Task["priority"]
   due_date: string | null
+  due_time: string | null
+  /** JSON-encoded Recurrence */
+  recurrence: string | null
+  /** JSON-encoded string[] */
+  blocked_by: string | null
+  /** JSON-encoded TaskAttachment[] */
+  attachments: string | null
   project_id: string | null
   completed: number
   status: Task["status"]
@@ -96,7 +103,17 @@ export const SETTINGS_KEYS = [
   "pkSettings",
   "uiScale",
   "isSidebarCollapsed",
-  "appearance"
+  "appearance",
+  "preferences"
+] as const
+
+/** Columns added after the first release; migrated with ALTER TABLE. */
+export const TASK_MIGRATION_COLUMNS = [
+  "archived_at",
+  "due_time",
+  "recurrence",
+  "blocked_by",
+  "attachments"
 ] as const
 
 export const LEGACY_STORE_FILES = ["todoist-clone.json", "config.json"] as const

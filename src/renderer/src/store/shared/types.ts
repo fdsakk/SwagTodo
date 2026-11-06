@@ -1,5 +1,6 @@
 import type {
   AppearanceSettings,
+  AppPreferences,
   CreateTaskInput,
   InboxPriorityFilter,
   InboxProjectFilter,
@@ -10,6 +11,8 @@ import type {
   Project,
   ProjectTab,
   Task,
+  TaskAttachment,
+  TaskSession,
   TaskSort,
   TaskStatus,
   ThemeId,
@@ -26,6 +29,9 @@ export type UpdateTaskInput = Partial<
     | "description"
     | "priority"
     | "dueDate"
+    | "dueTime"
+    | "recurrence"
+    | "blockedBy"
     | "projectId"
     | "labels"
     | "status"
@@ -103,7 +109,14 @@ export interface DomainState {
   uiScale: UiScale
   isSidebarCollapsed: boolean
   appearance: AppearanceSettings
+  preferences: AppPreferences
   hydrated: boolean
+}
+
+/** Snapshot taken before a destructive action so it can be undone. */
+export interface DeletedTasksSnapshot {
+  tasks: { task: Task; index: number }[]
+  sessions: TaskSession[]
 }
 
 export interface DomainActions {
@@ -115,6 +128,18 @@ export interface DomainActions {
   archiveTask: (taskId: string) => void
   unarchiveTask: (taskId: string) => void
   deleteTask: (taskId: string) => void
+  deleteTasks: (taskIds: string[]) => DeletedTasksSnapshot
+  restoreTasks: (snapshot: DeletedTasksSnapshot) => void
+  updateTasks: (taskIds: string[], updates: UpdateTaskInput) => void
+  setTasksCompleted: (taskIds: string[], completed: boolean) => void
+  archiveTasks: (taskIds: string[]) => void
+  unarchiveTasks: (taskIds: string[]) => void
+  /** Archives tasks completed at least AUTO_ARCHIVE_DAYS ago; returns count. */
+  archiveStaleCompletedTasks: (now?: Date) => number
+  setTaskOrders: (orders: Record<string, number>) => void
+  addAttachments: (taskId: string, attachments: TaskAttachment[]) => void
+  removeAttachment: (taskId: string, attachmentId: string) => void
+  updatePreferences: (patch: Partial<AppPreferences>) => void
   addSubTask: (taskId: string, title: string) => void
   toggleSubTask: (taskId: string, subTaskId: string) => void
   deleteSubTask: (taskId: string, subTaskId: string) => void
@@ -149,6 +174,14 @@ export interface DomainActions {
   updateChartSettings: (patch: Partial<PkSettings>) => void
 }
 
+export interface ActiveTimer {
+  taskId: string
+  startAt: string
+  mode: "stopwatch" | "pomodoro"
+  /** Pomodoro length in minutes. */
+  durationMin?: number
+}
+
 export interface UiState {
   selectedView: ViewName
   selectedProjectId?: string
@@ -161,6 +194,11 @@ export interface UiState {
   inboxPriorityFilter: InboxPriorityFilter
   projectTab: ProjectTab
   searchFocusSignal: number
+  selectedTaskIds: string[]
+  selectionAnchorId?: string
+  activeTimer?: ActiveTimer
+  quickAddOpen: boolean
+  commandPaletteOpen: boolean
 }
 
 export interface UiActions {
@@ -171,6 +209,16 @@ export interface UiActions {
   selectSettings: () => void
   selectHealth: () => void
   selectArchive: () => void
+  selectUpcoming: () => void
+  selectStats: () => void
+  applySavedView: (view: import("@renderer/types").SavedView) => void
+  setSelectedTaskIds: (ids: string[], anchorId?: string) => void
+  toggleTaskSelection: (id: string) => void
+  clearSelection: () => void
+  startTimer: (timer: ActiveTimer) => void
+  stopTimer: () => void
+  setQuickAddOpen: (open: boolean) => void
+  setCommandPaletteOpen: (open: boolean) => void
   selectProject: (projectId: string) => void
   setProjectTab: (tab: ProjectTab) => void
   setSearchQuery: (query: string) => void
@@ -208,6 +256,7 @@ export type PersistedDomainState = Pick<
   | "uiScale"
   | "isSidebarCollapsed"
   | "appearance"
+  | "preferences"
 >
 
 export type DomainStore = DomainState & DomainActions & DomainStoreMeta

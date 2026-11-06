@@ -1,12 +1,17 @@
 import { UI_SCALE_OPTIONS } from "../../../shared/defaults"
 import type {
+  AppPreferences,
   Label,
   MedicationLog,
   Priority,
   Project,
+  Recurrence,
+  RecurrenceFreq,
+  SavedView,
   AppState as SharedAppState,
   SubTask,
   Task,
+  TaskAttachment,
   TaskSession,
   TaskStatus,
   TimeBlock,
@@ -14,13 +19,19 @@ import type {
   WindowState
 } from "../../../shared/types"
 
+export { DEFAULT_PREFERENCES } from "../../../shared/defaults"
 export type {
+  AppPreferences,
   Label,
   MedicationLog,
   Priority,
   Project,
+  Recurrence,
+  RecurrenceFreq,
+  SavedView,
   SubTask,
   Task,
+  TaskAttachment,
   TaskSession,
   TaskStatus,
   TimeBlock,
@@ -30,7 +41,7 @@ export type {
 export { UI_SCALE_OPTIONS }
 
 export const TASK_STATUSES: TaskStatus[] = ["todo", "in_progress", "done"]
-export type TaskSort = "priority" | "due_date" | "created_at"
+export type TaskSort = "priority" | "due_date" | "created_at" | "manual"
 export type InboxStatusFilter = "all" | "active" | "done"
 export type InboxProjectFilter = "all" | "no_project" | string
 export type InboxPriorityFilter = "all" | Priority
@@ -43,6 +54,8 @@ export type ViewName =
   | "settings"
   | "health"
   | "archive"
+  | "upcoming"
+  | "stats"
 export type ProjectTab = "list" | "kanban"
 
 export interface TaskSessionStats {
@@ -80,6 +93,8 @@ export interface CreateTaskInput {
   description?: string
   priority?: Priority
   dueDate?: string
+  dueTime?: string
+  recurrence?: Recurrence
   projectId?: string
   labels?: string[]
   status?: TaskStatus
@@ -520,8 +535,9 @@ export const DEFAULT_APPEARANCE: AppearanceSettings = {
 
 export type AppState = Omit<
   SharedAppState,
-  "pkSettings" | "appearance" | "medications"
+  "pkSettings" | "appearance" | "medications" | "preferences"
 > & {
+  preferences?: AppPreferences
   medications: MedicationLog[]
   pkSettings?: PkSettings
   appearance?: AppearanceSettings

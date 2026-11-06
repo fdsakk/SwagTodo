@@ -41,6 +41,8 @@ interface RegisterIpcHandlersArgs {
   ipcMain: IpcRegistrar
   getAppStorage: () => IpcStorage
   resolveSenderWindow: (event: IpcMainInvokeEvent) => SenderWindow | null
+  /** Called after persisted state changed (main-side features react to it). */
+  onStateSaved?: () => void
 }
 
 export const isZoomFactor = (v: unknown): v is number =>
@@ -65,19 +67,22 @@ const senderWindow = (
 export function registerIpcHandlers({
   ipcMain,
   getAppStorage,
-  resolveSenderWindow
+  resolveSenderWindow,
+  onStateSaved
 }: RegisterIpcHandlersArgs): void {
   ipcMain.handle("store:load", async () => getAppStorage().loadState())
 
   ipcMain.handle("store:save", async (_, nextState: unknown) => {
     if (!isAppState(nextState)) throw new Error("Invalid app state payload")
     getAppStorage().saveState(nextState)
+    onStateSaved?.()
   })
 
   ipcMain.handle("store:savePartial", async (_, patch: unknown) => {
     if (!isAppStatePatch(patch))
       throw new Error("Invalid app state patch payload")
     getAppStorage().savePartial(patch)
+    onStateSaved?.()
   })
 
   ipcMain.handle("ui:getZoomFactor", (event) =>

@@ -11,6 +11,7 @@ import type { PersistStorage } from "zustand/middleware"
 import {
   labelSchema,
   medicationSchema,
+  normalizePreferences,
   projectSchema,
   sessionSchema,
   taskSchema,
@@ -75,7 +76,8 @@ const persistedDomainSchema = z
       .boolean()
       .optional()
       .catch(defaultPersistedState.isSidebarCollapsed),
-    appearance: z.unknown().optional()
+    appearance: z.unknown().optional(),
+    preferences: z.unknown().optional()
   })
   .passthrough()
 
@@ -100,7 +102,8 @@ export const stateFromPersisted = (
     uiScale: data.uiScale ?? defaultPersistedState.uiScale,
     isSidebarCollapsed:
       data.isSidebarCollapsed ?? defaultPersistedState.isSidebarCollapsed,
-    appearance: normalizeAppearance(data.appearance ?? DEFAULT_APPEARANCE)
+    appearance: normalizeAppearance(data.appearance ?? DEFAULT_APPEARANCE),
+    preferences: normalizePreferences(data.preferences)
   }
 }
 
@@ -115,7 +118,8 @@ export function pickPersistedState(state: DomainState): PersistedDomainState {
     pkSettings,
     uiScale,
     isSidebarCollapsed,
-    appearance
+    appearance,
+    preferences
   } = state
   return {
     tasks,
@@ -127,7 +131,8 @@ export function pickPersistedState(state: DomainState): PersistedDomainState {
     pkSettings,
     uiScale,
     isSidebarCollapsed,
-    appearance
+    appearance,
+    preferences
   }
 }
 
@@ -135,6 +140,7 @@ type PersistedJson = Map<keyof PersistedDomainState, string>
 type PersistenceErrorReporter = (error: unknown) => void | Promise<void>
 
 let lastPersistedJson: PersistedJson | undefined
+let lastPersistedState: PersistedDomainState | undefined
 let persistenceErrorReporter: PersistenceErrorReporter = (error) => {
   toastManager.add({
     id: "storage-save-failed",
@@ -154,6 +160,24 @@ const getPersistenceErrorMessage = (error: unknown): string => {
 const buildPersistedJson = (state: PersistedDomainState): PersistedJson =>
   new Map(PERSISTED_KEYS.map((k) => [k, JSON.stringify(state[k])]))
 
+// Store updates are immutable: an unchanged reference means unchanged data,
+// so only stringify keys whose reference moved since the last save.
+const buildNextPersistedJson = (state: PersistedDomainState): PersistedJson => {
+  if (!lastPersistedJson || !lastPersistedState)
+    return buildPersistedJson(state)
+  const json: PersistedJson = new Map()
+  for (const key of PERSISTED_KEYS) {
+    const previous = lastPersistedJson.get(key)
+    json.set(
+      key,
+      state[key] === lastPersistedState[key] && previous !== undefined
+        ? previous
+        : JSON.stringify(state[key])
+    )
+  }
+  return json
+}
+
 export const setPersistenceErrorReporter = (
   reporter: PersistenceErrorReporter
 ): (() => void) => {
@@ -169,13 +193,14 @@ export const persistedStorage: PersistStorage<PersistedDomainState> = {
     if (!window.api?.storage) return null
     const loaded = stateFromPersisted(await window.api.storage.loadState())
     lastPersistedJson = buildPersistedJson(loaded)
+    lastPersistedState = loaded
     return { state: loaded, version: 1 }
   },
   setItem: async (_, value) => {
     if (!window.api?.storage) return
 
     const nextState = value.state
-    const nextJson = buildPersistedJson(nextState)
+    const nextJson = buildNextPersistedJson(nextState)
     const patch = {} as Partial<PersistedDomainState>
 
     for (const key of PERSISTED_KEYS) {
@@ -187,7 +212,10 @@ export const persistedStorage: PersistStorage<PersistedDomainState> = {
       }
     }
 
-    if (Object.keys(patch).length === 0) return
+    if (Object.keys(patch).length === 0) {
+      lastPersistedState = nextState
+      return
+    }
     try {
       await window.api.storage.savePartial(patch)
     } catch (error) {
@@ -195,8 +223,10 @@ export const persistedStorage: PersistStorage<PersistedDomainState> = {
       return
     }
     lastPersistedJson = nextJson
+    lastPersistedState = nextState
   },
   removeItem: async () => {
     lastPersistedJson = undefined
+    lastPersistedState = undefined
   }
 }

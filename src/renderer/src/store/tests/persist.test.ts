@@ -21,6 +21,7 @@ test("pickPersistedState returns only persisted domain fields", () => {
     "labels",
     "medications",
     "pkSettings",
+    "preferences",
     "projects",
     "sessions",
     "tasks",
@@ -340,4 +341,50 @@ test("hydrateDomainStore deduplicates in-flight rehydration", async () => {
 
   useDomainStore.persist.hasHydrated = originalHasHydrated
   useDomainStore.persist.rehydrate = originalRehydrate
+})
+
+test("persistedStorage skips unchanged references and sends only moved keys", async () => {
+  const patches: Record<string, unknown>[] = []
+  ;(globalThis as { window?: Window }).window = {
+    api: {
+      storage: {
+        loadState: async () => ({
+          uiScale: 100,
+          tasks: [],
+          projects: [],
+          labels: [],
+          sessions: [],
+          timeBlocks: [],
+          medications: []
+        }),
+        saveState: async () => {},
+        savePartial: async (patch: Record<string, unknown>) => {
+          patches.push(patch)
+        }
+      }
+    }
+  } as unknown as Window
+
+  await persistedStorage.removeItem("app-state")
+  const loaded = await persistedStorage.getItem("app-state")
+  assert.ok(loaded)
+  const base = { ...createInitialDomainState(), ...loaded.state }
+
+  await persistedStorage.setItem("app-state", { state: base, version: 1 })
+  assert.equal(patches.length, 0)
+
+  const toggled = !base.isSidebarCollapsed
+  const withCollapsed = { ...base, isSidebarCollapsed: toggled }
+  await persistedStorage.setItem("app-state", {
+    state: withCollapsed,
+    version: 1
+  })
+  assert.deepEqual(patches, [{ isSidebarCollapsed: toggled }])
+
+  // New array reference with identical content is still not re-sent.
+  await persistedStorage.setItem("app-state", {
+    state: { ...withCollapsed, tasks: [...withCollapsed.tasks] },
+    version: 1
+  })
+  assert.equal(patches.length, 1)
 })

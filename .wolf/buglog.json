@@ -1182,6 +1182,43 @@
       ],
       "occurrences": 1,
       "last_seen": "2026-06-25T10:11:29+02:00"
+    },
+    {
+      "id": "bug-070",
+      "timestamp": "2026-11-06T15:30:00+01:00",
+      "error_message": "Subtasks/labels silently disappear from SQLite after restart when only the task row changed (title, status, order) or a label was edited.",
+      "file": "src/main/storage/sqlite/storage.ts",
+      "root_cause": "upsertTask/upsertLabel used INSERT OR REPLACE, which deletes the conflicting row first; with foreign_keys=ON the ON DELETE CASCADE wiped task_subtasks/task_labels, and children were only re-inserted for tasks whose children changed. In-memory cache hid the loss until reload.",
+      "fix": "Switched tasks and labels to INSERT ... ON CONFLICT(id) DO UPDATE SET (real upsert, no delete/cascade). Verified with real better-sqlite3 via ELECTRON_RUN_AS_NODE roundtrip.",
+      "tags": [
+        "sqlite",
+        "data-loss",
+        "cascade",
+        "upsert",
+        "persistence"
+      ],
+      "related_bugs": [],
+      "occurrences": 1,
+      "last_seen": "2026-11-06T15:30:00+01:00"
+    },
+    {
+      "id": "bug-071",
+      "timestamp": "2026-11-06T15:30:00+01:00",
+      "error_message": "SqliteError: FOREIGN KEY constraint failed when one patch adds a label and a task referencing it (e.g. first-run legacy migration).",
+      "file": "src/main/storage/sqlite/storage.ts",
+      "root_cause": "writeDeltaTx inserted task_labels rows before upserting labels.",
+      "fix": "Moved labels upsert/delete to the start of writeDeltaTx.",
+      "tags": [
+        "sqlite",
+        "foreign-key",
+        "migration",
+        "transaction-order"
+      ],
+      "related_bugs": [
+        "bug-070"
+      ],
+      "occurrences": 1,
+      "last_seen": "2026-11-06T15:30:00+01:00"
     }
   ]
 }

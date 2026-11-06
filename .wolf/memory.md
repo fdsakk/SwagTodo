@@ -559,3 +559,27 @@
 | 10:06 | Logged Activity responsive bug and learning | .wolf/buglog.json, .wolf/cerebrum.md | Added bug-068 and Activity row layout note | ~600 |
 | 10:11 | Removed fixed Activity project/time columns | src/renderer/src/pages/ActivityPage.tsx | Project width now adapts dynamically and elapsed time is no longer rendered | ~1500 |
 | 10:11 | Logged Activity project column overflow fix | .wolf/buglog.json, .wolf/cerebrum.md | Added bug-069 and refined responsive row learning | ~500 |
+
+## Session: 2026-11-06 14:39
+
+| Time | Action | File(s) | Outcome | ~Tokens |
+|------|--------|---------|---------|--------|
+| 15:30 | Perf: savePartial patch-only normalize + slice reuse, diffTasks single pass, WAL synchronous=NORMAL, persist ref-skip, TaskRow memo fix, Today double-sort removed | src/main/storage/*, persist.ts, TaskList/TaskRow, useTaskComplete, TodayPage, utils/task.ts | 43 tests pass, build ok | ~40k |
+| 15:30 | Fix data loss: OR REPLACE cascade wiped subtasks/labels; labels written before task_labels | src/main/storage/sqlite/storage.ts | verified real sqlite roundtrip | ~5k |
+| 14:53 | Created src/renderer/src/utils/recurrence.ts | — | ~703 |
+| 14:53 | Created src/renderer/src/store/domain/helpers/recurrence.ts | — | ~411 |
+| 14:53 | Created src/renderer/src/store/domain/actions/tasks.ts | — | ~2750 |
+| 14:55 | Created src/renderer/src/utils/quickAdd.ts | — | ~3344 |
+| 14:55 | Created src/renderer/src/utils/stats.ts | — | ~1086 |
+| 14:56 | Created src/main/reminders.ts | — | ~354 |
+| 14:56 | Created src/main/backup.ts | — | ~977 |
+| 14:56 | Created src/main/attachments.ts | — | ~348 |
+| 14:58 | Created src/main/features.ts | — | ~3384 |
+| 15:00 | Created src/renderer/src/hooks/useUndoableTaskActions.ts | — | ~542 |
+| 15:01 | Created src/renderer/src/utils/timer.ts | — | ~675 |
+| 15:01 | Created src/renderer/src/components/task-list/TaskList.tsx | — | ~2910 |
+| 15:05 | Created src/renderer/src/components/task-panel/recurrence-field.tsx | — | ~1303 |
+| 16:10 | Feature pack: recurrence, due time+reminders, tray, global quick add, NL parser, undo, backup/export/import, upcoming, search desc/subtasks, saved views, timer/pomodoro, stats, command palette, multi-select+bulk, manual sort, dependencies, markdown notes, attachments | src/main/*, src/shared/*, renderer store/components/pages | 71 tests, lint/typecheck/build ok, driven headless | ~250k |
+| 15:11 | Session end: 13 writes across 12 files (recurrence.ts, tasks.ts, quickAdd.ts, stats.ts, reminders.ts) | 10 reads | ~18787 tok |
+| 16:20 | Auto-archive done tasks older than 14 days (startup + hourly) | tasks.ts, useAutoArchive.ts, App.tsx, features.test.ts | 72 tests, verified in app | ~8k |
+| 15:17 | Session end: 13 writes across 12 files (recurrence.ts, tasks.ts, quickAdd.ts, stats.ts, reminders.ts) | 10 reads | ~18787 tok |

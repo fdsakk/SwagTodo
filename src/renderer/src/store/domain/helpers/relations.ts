@@ -1,16 +1,5 @@
 import type { DomainState } from "../../shared/types"
 
-export const removeTaskRelations = (
-  state: Pick<DomainState, "sessions">,
-  taskId: string
-): Pick<DomainState, "sessions"> => {
-  const sessions = state.sessions.filter((session) => session.taskId !== taskId)
-  return {
-    sessions:
-      sessions.length === state.sessions.length ? state.sessions : sessions
-  }
-}
-
 export const removeProjectSessions = (
   state: Pick<DomainState, "sessions">,
   projectId: string
